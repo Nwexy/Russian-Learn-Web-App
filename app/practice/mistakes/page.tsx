@@ -8,11 +8,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { db } from "@/lib/db";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getAllMistakes, removeMistake, recordMistake } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
-import type { Mistake } from "@/types";
+import { PronunciationText } from "@/components/pronunciation-text";
+import type { Mistake, Item } from "@/types";
 
 type Phase = "list" | "active" | "result";
 
@@ -21,6 +23,7 @@ export default function MistakesPage() {
   const t = getMessages(uiLang);
 
   const [mistakes, setMistakes] = useState<Mistake[]>([]);
+  const [itemsMap, setItemsMap] = useState<Map<string, Item>>(new Map());
   const [loading, setLoading] = useState(true);
   const [phase, setPhase] = useState<Phase>("list");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,6 +46,10 @@ export default function MistakesPage() {
     async function load() {
       const all = await getAllMistakes();
       setMistakes(all);
+      const allItems = await db.items.toArray();
+      const map = new Map<string, Item>();
+      allItems.forEach((i) => map.set(i.id, i));
+      setItemsMap(map);
       setTtsSupported(isTTSSupported());
       setLoading(false);
     }
@@ -210,12 +217,14 @@ export default function MistakesPage() {
 
   const mistake = mistakes[currentIndex];
   const qd = mistake.questionData;
+  const currentItem = itemsMap.get(mistake.itemId);
 
   /* --- Çoktan Seçmeli --- */
   if (mistake.exerciseType === "multipleChoice") {
     const options = (qd.options as string[]) || [];
     const correctIdx = (qd.correctIndex as number) ?? 0;
     const question = (qd.question as string) || "";
+    const ruQuestion = qd.direction !== "target-to-ru";
 
     const handleSelect = async (idx: number) => {
       if (revealed) return;
@@ -234,8 +243,9 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          <div className="flashcard-ru">{question}</div>
-          <p className="practice-instruction">{t.chooseAnswer}</p>
+          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{question}</div>
+          {ruQuestion && currentItem && <PronunciationText item={currentItem} />}
+          <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
 
         <div className="mc-options">
@@ -255,9 +265,12 @@ export default function MistakesPage() {
 
         {revealed && (
           <div className="practice-feedback">
-            <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-              {feedbackMsg}
-            </span>
+            <div>
+              <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
+                {feedbackMsg}
+              </span>
+              {currentItem && <PronunciationText item={currentItem} className="pronunciation-inline" />}
+            </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
             </button>
@@ -290,6 +303,7 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru">{sentence}</div>
+          {currentItem && <PronunciationText item={currentItem} />}
           {hint && <p className="practice-hint">{hint}</p>}
         </div>
 
@@ -314,9 +328,12 @@ export default function MistakesPage() {
 
         {revealed && (
           <div className="practice-feedback">
-            <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-              {feedbackMsg}
-            </span>
+            <div>
+              <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
+                {feedbackMsg}
+              </span>
+              {currentItem && <PronunciationText item={currentItem} className="pronunciation-inline" />}
+            </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
             </button>
@@ -348,6 +365,7 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru">{ru}</div>
+          {currentItem && <PronunciationText item={currentItem} />}
           <p className="practice-instruction">{t.matchPairs}</p>
         </div>
 
@@ -372,9 +390,12 @@ export default function MistakesPage() {
 
         {revealed && (
           <div className="practice-feedback">
-            <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-              {feedbackMsg}
-            </span>
+            <div>
+              <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
+                {feedbackMsg}
+              </span>
+              {currentItem && <PronunciationText item={currentItem} className="pronunciation-inline" />}
+            </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
             </button>
@@ -444,9 +465,12 @@ export default function MistakesPage() {
 
         {revealed && (
           <div className="practice-feedback">
-            <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-              {feedbackMsg}
-            </span>
+            <div>
+              <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
+                {feedbackMsg}
+              </span>
+              {currentItem && <PronunciationText item={currentItem} className="pronunciation-inline" />}
+            </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
             </button>

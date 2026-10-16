@@ -15,6 +15,7 @@ import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getDueCards, reviewCard } from "@/lib/srs";
 import { getReview, upsertReview, getAllReviews } from "@/lib/reviews";
+import { PronunciationText } from "@/components/pronunciation-text";
 import type { Item, Review, Lang } from "@/types";
 import type { Rating } from "@/lib/srs";
 
@@ -170,6 +171,7 @@ export default function ReviewPage() {
         {/* Ön yüz — her zaman görünür */}
         <div className="flashcard-front">
           <div className="flashcard-ru">{currentCard.ru}</div>
+          <PronunciationText item={currentCard} />
           {currentCard.exampleRu && (
             <div className="flashcard-example-ru">
               « {currentCard.exampleRu} »

@@ -37,16 +37,32 @@ export function getUnitTitle(unit: { titleTr: string; titleEn: string }, uiLang:
 }
 
 /**
+ * Ünitede alıştırma/test yapılabilecek (type="word") öğe var mı?
+ * Sadece harf içeren üniteler (alfabe) için false döner.
+ */
+export function unitHasExercises(unit: { items: { type: string }[] }): boolean {
+  return unit.items.some((i) => i.type === "word");
+}
+
+/**
  * Tüm üniteleri döndürür (başlık ve meta bilgi).
  * Sayfalar arası navigasyonda kullanılır.
  */
-export function getAllUnits(): { id: string; titleTr: string; titleEn: string; level: string; itemCount: number }[] {
+export function getAllUnits(): {
+  id: string;
+  titleTr: string;
+  titleEn: string;
+  level: string;
+  itemCount: number;
+  hasExercises: boolean;
+}[] {
   return UNIT_MODULES.map((unit) => ({
     id: unit.id,
     titleTr: unit.titleTr,
     titleEn: unit.titleEn,
     level: unit.level,
     itemCount: unit.items.length,
+    hasExercises: unitHasExercises(unit),
   }));
 }
 
@@ -76,6 +92,8 @@ export async function seedDatabase(): Promise<void> {
       exampleRu: raw.exampleRu,
       exampleTr: raw.exampleTr,
       exampleEn: raw.exampleEn,
+      pronunciationTr: raw.pronunciationTr,
+      pronunciationEn: raw.pronunciationEn,
       tags: raw.tags,
     }));
 

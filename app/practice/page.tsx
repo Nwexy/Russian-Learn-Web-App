@@ -1,7 +1,9 @@
 /**
  * Alıştırma sayfası — /practice
  * 4 alıştırma tipi: Çoktan Seçmeli, Boşluk Doldurma, Eşleştirme, Dinleme.
- * Dexie'den word tipindeki tüm öğeleri çeker.
+ * Üstte ünite seçici: "Tüm üniteler" veya belirli bir ünite.
+ * Çoktan seçmeli sorular çift yönlü (%70 RU->EN/TR, %30 EN/TR->RU).
+ * Telaffuz gösterimi: Rusça soruda ve cevap açıklamasında.
  */
 
 "use client";
@@ -11,6 +13,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
+import { getAllUnits, getUnitTitle } from "@/lib/content";
 import {
   generateMultipleChoice,
   generateFillBlank,
@@ -25,6 +28,7 @@ import type {
 } from "@/lib/exercises";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
+import { PronunciationText } from "@/components/pronunciation-text";
 import type { Item, ExerciseType } from "@/types";
 
 /** Alıştırma durumları */
@@ -39,7 +43,9 @@ function getMeaning(item: Item, translationLang: string): string {
 export default function PracticePage() {
   const { uiLang, translationLang } = useLang();
   const t = getMessages(uiLang);
+  const units = getAllUnits();
 
+  const [selectedUnitId, setSelectedUnitId] = useState<string>("all");
   const [items, setItems] = useState<Item[]>([]);
   const [exerciseType, setExerciseType] = useState<ExerciseType>("multipleChoice");
   const [phase, setPhase] = useState<Phase>("select");
@@ -80,7 +86,59 @@ export default function PracticePage() {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  /** Veri yükle */
+  /** Belirli bir havuzla alıştırma oturumunu başlatır */
+  const initExerciseWith = useCallback((pool: Item[], type: ExerciseType) => {
+    setScore(0);
+    setPhase("active");
+
+    switch (type) {
+      case "multipleChoice": {
+        const q = generateMultipleChoice(pool, translationLang, 10);
+        setMcQuestions(q);
+        setMcIndex(0);
+        setMcSelected(null);
+        setMcRevealed(false);
+        break;
+      }
+      case "fillBlank": {
+        const q = generateFillBlank(pool, translationLang, 10);
+        setFbQuestions(q);
+        setFbIndex(0);
+        setFbAnswer("");
+        setFbRevealed(false);
+        setFbCorrect(null);
+        break;
+      }
+      case "matching": {
+        const q = generateMatching(pool, translationLang, 6);
+        setMatchData(q);
+        setMatchSelectedLeft(null);
+        setMatchSelectedRight(null);
+        setMatchedIds(new Set());
+        setMatchWrong(false);
+        setMatchAttempts(0);
+        setMatchCorrectCount(0);
+        const shuffled = [...q.pairs.map((p) => ({ id: p.id, translation: p.translation }))];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        setMatchShuffledRight(shuffled);
+        break;
+      }
+      case "listening": {
+        const q = generateListening(pool, 10);
+        setListenQuestions(q);
+        setListenIndex(0);
+        setListenAnswer("");
+        setListenRevealed(false);
+        setListenCorrect(null);
+        break;
+      }
+    }
+  }, [translationLang]);
+
+  /** İlk veri yükleme */
   useEffect(() => {
     async function load() {
       const allItems = await db.items.where("type").equals("word").toArray();
@@ -93,58 +151,39 @@ export default function PracticePage() {
     load();
   }, []);
 
-  /** Alıştırmayı başlat */
-  const startExercise = useCallback(() => {
-    setScore(0);
-    setPhase("active");
-
-    switch (exerciseType) {
-      case "multipleChoice": {
-        const q = generateMultipleChoice(items, translationLang, 10);
-        setMcQuestions(q);
-        setMcIndex(0);
-        setMcSelected(null);
-        setMcRevealed(false);
-        break;
-      }
-      case "fillBlank": {
-        const q = generateFillBlank(items, translationLang, 10);
-        setFbQuestions(q);
-        setFbIndex(0);
-        setFbAnswer("");
-        setFbRevealed(false);
-        setFbCorrect(null);
-        break;
-      }
-      case "matching": {
-        const q = generateMatching(items, translationLang, 6);
-        setMatchData(q);
-        setMatchSelectedLeft(null);
-        setMatchSelectedRight(null);
-        setMatchedIds(new Set());
-        setMatchWrong(false);
-        setMatchAttempts(0);
-        setMatchCorrectCount(0);
-        // Sağ sütunu karıştır
-        const shuffled = [...q.pairs.map((p) => ({ id: p.id, translation: p.translation }))];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        setMatchShuffledRight(shuffled);
-        break;
-      }
-      case "listening": {
-        const q = generateListening(items, 10);
-        setListenQuestions(q);
-        setListenIndex(0);
-        setListenAnswer("");
-        setListenRevealed(false);
-        setListenCorrect(null);
-        break;
-      }
+  /** Ünite seçici değiştiğinde: mevcut oturum sıfırlanıp yeni sorular üretilir */
+  const handleUnitChange = async (unitId: string) => {
+    setSelectedUnitId(unitId);
+    let loaded: Item[];
+    if (unitId === "all") {
+      loaded = await db.items.where("type").equals("word").toArray();
+    } else {
+      loaded = await db.items
+        .where("unitId").equals(unitId)
+        .and((i) => i.type === "word")
+        .toArray();
     }
-  }, [exerciseType, items, translationLang]);
+    setItems(loaded);
+
+    if (loaded.length === 0) {
+      setPhase("select");
+      setScore(0);
+      return;
+    }
+
+    if (phase === "active") {
+      initExerciseWith(loaded, exerciseType);
+    } else if (phase === "result") {
+      setPhase("select");
+      setScore(0);
+    }
+  };
+
+  /** Butonla başlat */
+  const startExercise = useCallback(() => {
+    if (items.length === 0) return;
+    initExerciseWith(items, exerciseType);
+  }, [items, exerciseType, initExerciseWith]);
 
   /* ========================================
      ÇOKTAN SEÇMELİ
@@ -161,7 +200,7 @@ export default function PracticePage() {
       await recordMistake({
         exerciseType: "multipleChoice",
         itemId: q.item.id,
-        questionData: { question: q.question, options: q.options, correctIndex: q.correctIndex },
+        questionData: { question: q.question, options: q.options, correctIndex: q.correctIndex, direction: q.direction },
         userAnswer: q.options[idx],
         correctAnswer: q.options[q.correctIndex],
       });
@@ -220,7 +259,6 @@ export default function PracticePage() {
     if (matchedIds.has(id)) return;
     setMatchSelectedLeft(id);
     setMatchWrong(false);
-    // Sağ da seçiliyse kontrol et
     if (matchSelectedRight !== null) {
       checkMatch(id, matchSelectedRight);
     }
@@ -230,7 +268,6 @@ export default function PracticePage() {
     if (matchedIds.has(id)) return;
     setMatchSelectedRight(id);
     setMatchWrong(false);
-    // Sol da seçiliyse kontrol et
     if (matchSelectedLeft !== null) {
       checkMatch(matchSelectedLeft, id);
     }
@@ -239,7 +276,6 @@ export default function PracticePage() {
   const checkMatch = async (leftId: string, rightId: string) => {
     setMatchAttempts((a) => a + 1);
     if (leftId === rightId) {
-      // Doğru eşleşme
       const newMatched = new Set(matchedIds);
       newMatched.add(leftId);
       setMatchedIds(newMatched);
@@ -248,7 +284,6 @@ export default function PracticePage() {
       setMatchSelectedRight(null);
       await removeMistakeByKey("matching", leftId);
 
-      // Tüm çiftler eşleşti mi?
       if (matchData && newMatched.size >= matchData.pairs.length) {
         setTimeout(() => {
           setScore(matchData!.pairs.length);
@@ -256,7 +291,6 @@ export default function PracticePage() {
         }, 400);
       }
     } else {
-      // Yanlış eşleşme
       setMatchWrong(true);
       const leftPair = matchData?.pairs.find((p) => p.id === leftId);
       const rightPair = matchData?.pairs.find((p) => p.id === rightId);
@@ -317,6 +351,28 @@ export default function PracticePage() {
     }
   };
 
+  /** Üst ünite seçici bileşeni */
+  const unitFilterSelector = (
+    <div className="practice-unit-filter">
+      <label htmlFor="unit-filter-select" className="practice-unit-filter-label">
+        {t.selectUnit}:
+      </label>
+      <select
+        id="unit-filter-select"
+        className="practice-unit-select"
+        value={selectedUnitId}
+        onChange={(e) => handleUnitChange(e.target.value)}
+      >
+        <option value="all">{t.allUnits}</option>
+        {units.map((u) => (
+          <option key={u.id} value={u.id}>
+            {getUnitTitle(u, uiLang)} ({u.level})
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+
   /* ========================================
      RENDER — Yükleniyor
      ======================================== */
@@ -344,6 +400,7 @@ export default function PracticePage() {
 
     return (
       <div className="page-container">
+        {unitFilterSelector}
         <div className="practice-result">
           <div className="practice-result-icon">
             {pct >= 80 ? "🎉" : pct >= 50 ? "👍" : "📖"}
@@ -382,6 +439,8 @@ export default function PracticePage() {
       { key: "listening", label: t.listening, icon: "🎧", desc: t.listenAndType },
     ];
 
+    const hasEnoughItems = items.length >= 2;
+
     return (
       <div className="page-container">
         <Link href="/" className="back-link">
@@ -391,34 +450,48 @@ export default function PracticePage() {
           {t.backToHome}
         </Link>
 
+        {unitFilterSelector}
+
         <div className="page-header">
           <h1 className="page-title">{t.practiceTitle}</h1>
           <p className="page-subtitle">{t.practiceDesc}</p>
         </div>
 
-        <div className="practice-type-grid">
-          {types.map((tp) => (
-            <button
-              key={tp.key}
-              className={`practice-type-card ${exerciseType === tp.key ? "practice-type-active" : ""}`}
-              onClick={() => setExerciseType(tp.key)}
-              disabled={tp.key === "listening" && !ttsSupported}
-            >
-              <span className="practice-type-icon">{tp.icon}</span>
-              <span className="practice-type-label">{tp.label}</span>
-              <span className="practice-type-desc">{tp.desc}</span>
-              {tp.key === "listening" && !ttsSupported && (
-                <span className="practice-type-warning">{t.ttsNotSupported}</span>
-              )}
-            </button>
-          ))}
-        </div>
+        {items.length === 0 ? (
+          <div className="empty-state">
+            <p className="empty-state-text">{t.noExercisesForUnit}</p>
+          </div>
+        ) : (
+          <>
+            <div className="practice-type-grid">
+              {types.map((tp) => (
+                <button
+                  key={tp.key}
+                  className={`practice-type-card ${exerciseType === tp.key ? "practice-type-active" : ""}`}
+                  onClick={() => setExerciseType(tp.key)}
+                  disabled={tp.key === "listening" && !ttsSupported}
+                >
+                  <span className="practice-type-icon">{tp.icon}</span>
+                  <span className="practice-type-label">{tp.label}</span>
+                  <span className="practice-type-desc">{tp.desc}</span>
+                  {tp.key === "listening" && !ttsSupported && (
+                    <span className="practice-type-warning">{t.ttsNotSupported}</span>
+                  )}
+                </button>
+              ))}
+            </div>
 
-        <div className="practice-start-area">
-          <button className="practice-btn practice-btn-primary" onClick={startExercise}>
-            {t.start}
-          </button>
-        </div>
+            <div className="practice-start-area">
+              <button
+                className="practice-btn practice-btn-primary"
+                onClick={startExercise}
+                disabled={!hasEnoughItems}
+              >
+                {t.start}
+              </button>
+            </div>
+          </>
+        )}
 
         {/* Yanlışlarım butonu */}
         <div className="mistakes-banner">
@@ -444,8 +517,11 @@ export default function PracticePage() {
      ======================================== */
   if (exerciseType === "multipleChoice" && mcQuestions.length > 0) {
     const q = mcQuestions[mcIndex];
+    const ruQuestion = q.direction !== "target-to-ru";
+
     return (
       <div className="page-container">
+        {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{mcIndex + 1} / {mcQuestions.length}</span>
           <span className="practice-type-badge">{t.multipleChoice}</span>
@@ -455,8 +531,9 @@ export default function PracticePage() {
         </div>
 
         <div className="flashcard">
-          <div className="flashcard-ru">{q.question}</div>
-          <p className="practice-instruction">{t.chooseAnswer}</p>
+          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{q.question}</div>
+          {ruQuestion && <PronunciationText item={q.item} />}
+          <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
 
         <div className="mc-options">
@@ -485,6 +562,7 @@ export default function PracticePage() {
               <span className="feedback-meaning">
                 {" "} — {q.item.ru} {t.meaningEquals} {getMeaning(q.item, translationLang)}
               </span>
+              <PronunciationText item={q.item} className="pronunciation-inline" />
             </div>
             <button className="practice-btn practice-btn-primary" onClick={handleMcNext}>
               {t.next}
@@ -502,6 +580,7 @@ export default function PracticePage() {
     const q = fbQuestions[fbIndex];
     return (
       <div className="page-container">
+        {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{fbIndex + 1} / {fbQuestions.length}</span>
           <span className="practice-type-badge">{t.fillBlank}</span>
@@ -512,6 +591,7 @@ export default function PracticePage() {
 
         <div className="flashcard">
           <div className="flashcard-ru">{q.sentenceWithBlank}</div>
+          <PronunciationText item={q.item} />
           <p className="practice-hint">{q.hint}</p>
         </div>
 
@@ -543,6 +623,7 @@ export default function PracticePage() {
               <span className="feedback-meaning">
                 {" "} — {q.item.ru} {t.meaningEquals} {getMeaning(q.item, translationLang)}
               </span>
+              <PronunciationText item={q.item} className="pronunciation-inline" />
             </div>
             <button className="practice-btn practice-btn-primary" onClick={handleFbNext}>
               {t.next}
@@ -559,6 +640,7 @@ export default function PracticePage() {
   if (exerciseType === "matching" && matchData) {
     return (
       <div className="page-container">
+        {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">
             {matchedIds.size} / {matchData.pairs.length}
@@ -612,6 +694,7 @@ export default function PracticePage() {
   if (exerciseType === "listening" && listenQuestions.length > 0) {
     return (
       <div className="page-container">
+        {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{listenIndex + 1} / {listenQuestions.length}</span>
           <span className="practice-type-badge">{t.listening}</span>
@@ -665,6 +748,7 @@ export default function PracticePage() {
               <span className="feedback-meaning">
                 {" "} — {listenQuestions[listenIndex].item.ru} {t.meaningEquals} {getMeaning(listenQuestions[listenIndex].item, translationLang)}
               </span>
+              <PronunciationText item={listenQuestions[listenIndex].item} className="pronunciation-inline" />
             </div>
             <button className="practice-btn practice-btn-primary" onClick={handleListenNext}>
               {t.next}

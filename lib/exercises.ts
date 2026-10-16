@@ -14,12 +14,19 @@ import type { Item, Lang } from "@/types";
    Soru tipleri
    ======================================== */
 
+/** Çoktan seçmeli soru yönü */
+export type McDirection = "ru-to-target" | "target-to-ru";
+
+/** RU→çeviri yönünün seçilme olasılığı (kalanı ters yön) */
+const RU_TO_TARGET_PROBABILITY = 0.7;
+
 /** Çoktan seçmeli soru */
 export interface MultipleChoiceQuestion {
   item: Item;
-  question: string;        // Rusça kelime
-  options: string[];        // 4 şık (çeviri dilinde)
+  question: string;         // ru-to-target: Rusça kelime, target-to-ru: çeviri
+  options: string[];        // 4 şık (yöne göre çeviri dilinde veya Rusça)
   correctIndex: number;     // Doğru şıkkın indeksi
+  direction: McDirection;   // Soru yönü
 }
 
 /** Boşluk doldurma sorusu */
@@ -86,15 +93,29 @@ function getExampleText(item: Item, lang: Lang): string {
   return primary || fallback || "";
 }
 
+/**
+ * Okunuşu çeviri diline göre döndürür (pronunciationLang = translationLang).
+ * Alan yoksa boş string döner; fallback yapılmaz çünkü okunuş yazımı dile özgüdür.
+ */
+export function getPronunciation(
+  item: { pronunciationTr?: string; pronunciationEn?: string },
+  lang: Lang
+): string {
+  return (lang === "tr" ? item.pronunciationTr : item.pronunciationEn) || "";
+}
+
 /* ========================================
    Çoktan Seçmeli (Multiple Choice)
    ======================================== */
 
 /**
  * Çoktan seçmeli sorular üretir.
+ * Her soru için rastgele yön seçilir:
+ *  - %70 ru-to-target: soru Rusça, şıklar çeviri dilinde
+ *  - %30 target-to-ru: soru çeviri dilinde, şıklar Rusça
  *
  * @param items - Tüm kelime öğeleri
- * @param lang  - Çeviri dili (şıkların dili)
+ * @param lang  - Çeviri dili
  * @param count - Soru sayısı (varsayılan 10, item sayısını aşamaz)
  */
 export function generateMultipleChoice(
@@ -110,14 +131,24 @@ export function generateMultipleChoice(
   const selected = shuffle([...eligible]).slice(0, questionCount);
 
   return selected.map((item) => {
-    const correctAnswer = getTranslationText(item, lang);
+    const direction: McDirection =
+      Math.random() < RU_TO_TARGET_PROBABILITY ? "ru-to-target" : "target-to-ru";
 
-    // Yanlış şıklar: aynı havuzdan, doğru cevap hariç
-    const distractors = shuffle(
-      eligible.filter((i) => i.id !== item.id)
-    )
-      .slice(0, 3)
-      .map((i) => getTranslationText(i, lang));
+    // Yöne göre soru ve şık metnini belirleyen fonksiyonlar
+    const optionText = (i: Item) =>
+      direction === "ru-to-target" ? getTranslationText(i, lang) : i.ru;
+    const question =
+      direction === "ru-to-target" ? item.ru : getTranslationText(item, lang);
+
+    const correctAnswer = optionText(item);
+
+    // Yanlış şıklar: aynı havuzdan, doğru cevap hariç, tekrar eden metin olmadan
+    const distractors: string[] = [];
+    for (const other of shuffle(eligible.filter((i) => i.id !== item.id))) {
+      const text = optionText(other);
+      if (text !== correctAnswer && !distractors.includes(text)) distractors.push(text);
+      if (distractors.length === 3) break;
+    }
 
     // 4 şıkkı birleştir ve karıştır
     const options = shuffle([correctAnswer, ...distractors]);
@@ -125,9 +156,10 @@ export function generateMultipleChoice(
 
     return {
       item,
-      question: item.ru,
+      question,
       options,
       correctIndex,
+      direction,
     };
   });
 }
@@ -234,4 +266,79 @@ export function generateListening(
     item,
     correctWord: item.ru,
   }));
+}
+
+/* ========================================
+   Karışık Alıştırma (Mixed Practice)
+   ======================================== */
+
+/** Karışık oturumdaki tek bir soru */
+export type MixedQuestion =
+  | { kind: "multipleChoice"; data: MultipleChoiceQuestion }
+  | { kind: "fillBlank"; data: FillBlankQuestion }
+  | { kind: "matching"; data: MatchingQuestion }
+  | { kind: "listening"; data: ListeningQuestion };
+
+/** Karışık oturumda bir eşleştirme sorusundaki çift sayısı */
+const MIXED_MATCHING_PAIRS = 4;
+
+/**
+ * Karışık alıştırma oturumu üretir.
+ * Soru tipleri rastgele dağıtılır; uygun olmayan tipler atlanır
+ * (örn. TTS yoksa dinleme, örnek cümle yoksa boşluk doldurma).
+ * Bir eşleştirme sorusu tek soru sayılır.
+ *
+ * @param items        - Kelime öğeleri (type="word")
+ * @param lang         - Çeviri dili
+ * @param count        - Toplam soru sayısı (varsayılan 10)
+ * @param ttsSupported - Tarayıcı ses okumayı destekliyor mu
+ */
+export function generateMixedPractice(
+  items: Item[],
+  lang: Lang,
+  count: number = 10,
+  ttsSupported: boolean = true
+): MixedQuestion[] {
+  const withTranslation = items.filter((i) => getTranslationText(i, lang) !== "—");
+  const withExample = items.filter((i) => i.exampleRu && i.ru);
+
+  // Kullanılabilir tipler
+  const kinds: MixedQuestion["kind"][] = [];
+  if (withTranslation.length >= 2) kinds.push("multipleChoice");
+  if (withExample.length > 0) kinds.push("fillBlank");
+  if (withTranslation.length >= 3) kinds.push("matching");
+  if (ttsSupported && items.length > 0) kinds.push("listening");
+  if (kinds.length === 0) return [];
+
+  // Her slot için rastgele tip seç (eşleştirme en fazla 2 kez)
+  const plan: Record<MixedQuestion["kind"], number> = {
+    multipleChoice: 0, fillBlank: 0, matching: 0, listening: 0,
+  };
+  for (let s = 0; s < count; s++) {
+    let kind = kinds[Math.floor(Math.random() * kinds.length)];
+    if (kind === "matching" && plan.matching >= 2) {
+      const others = kinds.filter((k) => k !== "matching");
+      if (others.length === 0) continue;
+      kind = others[Math.floor(Math.random() * others.length)];
+    }
+    plan[kind]++;
+  }
+
+  const questions: MixedQuestion[] = [
+    ...generateMultipleChoice(items, lang, plan.multipleChoice).map(
+      (data) => ({ kind: "multipleChoice" as const, data })
+    ),
+    ...generateFillBlank(items, lang, plan.fillBlank).map(
+      (data) => ({ kind: "fillBlank" as const, data })
+    ),
+    ...Array.from({ length: plan.matching }, () => ({
+      kind: "matching" as const,
+      data: generateMatching(items, lang, MIXED_MATCHING_PAIRS),
+    })),
+    ...generateListening(items, plan.listening).map(
+      (data) => ({ kind: "listening" as const, data })
+    ),
+  ];
+
+  return shuffle(questions).slice(0, count);
 }

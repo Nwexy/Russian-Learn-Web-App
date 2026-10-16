@@ -18,6 +18,7 @@ import { generateMultipleChoice, generateFillBlank, generateListening } from "@/
 import { setTestComplete } from "@/lib/progress";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
+import { PronunciationText } from "@/components/pronunciation-text";
 import type { Item } from "@/types";
 
 interface TestQuestion {
@@ -27,6 +28,7 @@ interface TestQuestion {
   question?: string;
   options?: string[];
   correctIndex?: number;
+  direction?: "ru-to-target" | "target-to-ru";
   // Fill fields
   sentenceWithBlank?: string;
   correctWord?: string;
@@ -87,6 +89,7 @@ export default function TestPage() {
         question: q.question,
         options: q.options,
         correctIndex: q.correctIndex,
+        direction: q.direction,
       })),
       ...fillQs.map((q) => ({
         type: "fill" as const,
@@ -234,6 +237,7 @@ export default function TestPage() {
 
   /* --- Çoktan Seçmeli --- */
   if (q.type === "mc" && q.options && q.correctIndex !== undefined) {
+    const ruQuestion = q.direction !== "target-to-ru";
     const handleSelect = async (idx: number) => {
       if (revealed) return;
       setMcSelected(idx);
@@ -251,8 +255,9 @@ export default function TestPage() {
         </div>
 
         <div className="flashcard">
-          <div className="flashcard-ru">{q.question}</div>
-          <p className="practice-instruction">{t.chooseAnswer}</p>
+          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{q.question}</div>
+          {ruQuestion && <PronunciationText item={q.item} />}
+          <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
 
         <div className="mc-options">
@@ -277,6 +282,7 @@ export default function TestPage() {
                 {isCorrect ? t.correct : t.wrong}
               </span>
               <span className="feedback-meaning"> — {feedbackMeaning}</span>
+              <PronunciationText item={q.item} className="pronunciation-inline" />
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
@@ -306,6 +312,7 @@ export default function TestPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru">{q.sentenceWithBlank}</div>
+          <PronunciationText item={q.item} />
           {q.hint && <p className="practice-hint">{q.hint}</p>}
         </div>
 
@@ -335,6 +342,7 @@ export default function TestPage() {
                 {isCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
               </span>
               <span className="feedback-meaning"> — {feedbackMeaning}</span>
+              <PronunciationText item={q.item} className="pronunciation-inline" />
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
@@ -402,6 +410,7 @@ export default function TestPage() {
                 {isCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
               </span>
               <span className="feedback-meaning"> — {feedbackMeaning}</span>
+              <PronunciationText item={q.item} className="pronunciation-inline" />
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}

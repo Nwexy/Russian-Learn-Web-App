@@ -126,6 +126,15 @@ export interface Messages {
 
   // Meaning feedback
   meaningEquals: string;
+
+  // Faz 4.5 — ünite filtresi, telaffuz, alfabe notu
+  noExercisesForUnit: string;
+  selectUnit: string;
+  allUnits: string;
+  pronunciation: string;
+  pronunciationNotAvailable: string;
+  buUnitHasNoExercises: string;
+  chooseRussian: string;
 }
 
 /** Tüm çeviriler */
@@ -242,6 +251,14 @@ const messages: Record<Lang, Messages> = {
     unitTest: "Ünite Testi",
 
     meaningEquals: "=",
+
+    noExercisesForUnit: "Seçili ünitede alıştırma için kelime yok.",
+    selectUnit: "Ünite seç",
+    allUnits: "Tüm üniteler",
+    pronunciation: "Okunuş",
+    pronunciationNotAvailable: "Okunuş bilgisi yok.",
+    buUnitHasNoExercises: "Bu ünitede alıştırma yok. Harfler /review sayfasında tekrar edilir.",
+    chooseRussian: "Rusça karşılığını seçin",
   },
   en: {
     appName: "Learn Russian",
@@ -355,6 +372,14 @@ const messages: Record<Lang, Messages> = {
     unitTest: "Unit Test",
 
     meaningEquals: "=",
+
+    noExercisesForUnit: "The selected unit has no words to practice.",
+    selectUnit: "Select unit",
+    allUnits: "All units",
+    pronunciation: "Pronunciation",
+    pronunciationNotAvailable: "No pronunciation available.",
+    buUnitHasNoExercises: "This unit has no exercises. Letters are reviewed on the /review page.",
+    chooseRussian: "Choose the Russian word",
   },
 };
 

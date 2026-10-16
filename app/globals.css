@@ -1737,3 +1737,111 @@ body {
   margin-top: 0.25rem;
   font-style: italic;
 }
+
+/* ========================================
+   Pronunciation / Telaffuz
+   ======================================== */
+
+.pronunciation {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+  margin-top: 0.35rem;
+}
+
+.pronunciation-inline {
+  display: inline-block;
+  font-size: 0.85rem;
+  margin-left: 0.5rem;
+  margin-top: 0;
+  vertical-align: middle;
+}
+
+.item-card-pronunciation {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  opacity: 0.85;
+  margin-top: 0.2rem;
+  margin-bottom: 0.35rem;
+}
+
+.pronunciation-missing {
+  font-size: 0.75rem;
+  opacity: 0.6;
+  font-style: italic;
+}
+
+/* Ters yönlü sorularda çeviri dili başlığı */
+.flashcard-target {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* ========================================
+   Unit Filter (Alıştırma Sayfası)
+   ======================================== */
+
+.practice-unit-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--card-bg, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+}
+
+.practice-unit-filter-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.practice-unit-select {
+  flex: 1;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-primary, #1e293b);
+  color: var(--text-primary, #f8fafc);
+  border: 1px solid var(--border-color, rgba(255, 255, 255, 0.15));
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+.practice-unit-select:focus {
+  border-color: var(--accent, #3b82f6);
+}
+
+/* ========================================
+   Unit Info Box (Alıştırmasız Üniteler)
+   ======================================== */
+
+.unit-no-exercises-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-md);
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  margin-top: 0.5rem;
+}
+
+.unit-no-exercises-icon {
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.unit-no-exercises-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+  margin: 0;
+}
+

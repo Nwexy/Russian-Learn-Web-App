@@ -3,6 +3,15 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16 (Faz 4.5)
+- Alfabe unitisinde Alistirma/Test butonlari gizlendi.
+- Alistirma ve Test farki netlestirildi (esik + uniteyi tamamlama).
+- /practice sayfasina unite filtresi eklendi.
+- Coktan secmeli sorulara ters yon destegi eklendi (%70 RU->EN, %30 EN->RU).
+- Icerige pronunciationTr ve pronunciationEn alanlari eklendi.
+- Selamlasma ve sayilar unitelerine telaffuzlar yazildi.
+- Telaffuz ders, alistirma, test ve kart ekranlarinda gosteriliyor.
+
 ## 2026-10-16 (Faz 4)
 - Unite akisi eklendi: Ders -> Alistirma -> Test.
 - Ilerleme takibi (progress tablosu aktif kullanima alindi).

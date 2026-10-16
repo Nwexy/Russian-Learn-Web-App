@@ -13,6 +13,7 @@ import { getUnitById, getUnitTitle } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getProgress, setLessonComplete } from "@/lib/progress";
+import { PronunciationText } from "@/components/pronunciation-text";
 import type { Lang, RawItem, Progress } from "@/types";
 
 /**
@@ -76,6 +77,9 @@ export default function UnitPage() {
     );
   }
 
+  /** Ünitede kelime (type="word") var mı? Yoksa alıştırma/test gizlenir */
+  const hasWordItems = unit.items.some((item) => item.type === "word");
+
   /** Ders tamamla */
   const handleCompleteLesson = async () => {
     await setLessonComplete(unit.id);
@@ -86,10 +90,13 @@ export default function UnitPage() {
   };
 
   /** İlerleme yüzdesini hesapla */
-  const phasesDone = progress
-    ? [progress.lessonDone, progress.practiceDone, progress.testDone].filter(Boolean).length
+  const progressPct = hasWordItems
+    ? Math.round(
+        ([progress?.lessonDone, progress?.testDone].filter(Boolean).length / 2) * 100
+      )
+    : progress?.lessonDone
+    ? 100
     : 0;
-  const progressPct = Math.round((phasesDone / 3) * 100);
 
   /** Ders görünümü */
   if (viewMode === "lesson") {
@@ -123,6 +130,8 @@ export default function UnitPage() {
                     <span className="fallback-badge">({translation.fallbackLang})</span>
                   )}
                 </div>
+                {/* Telaffuz (çevirinin altında küçük puntoyla) */}
+                <PronunciationText item={item} className="item-card-pronunciation" />
                 {(item.exampleRu || exampleTr) && (
                   <div className="item-example">
                     {item.exampleRu && (
@@ -157,7 +166,7 @@ export default function UnitPage() {
     );
   }
 
-  /** Ana görünüm — 3 aşamalı akış */
+  /** Ana görünüm — akış kartları */
   return (
     <div className="page-container">
       <Link href="/" className="back-link">
@@ -180,9 +189,9 @@ export default function UnitPage() {
         <div className="review-progress-fill" style={{ width: `${progressPct}%` }} />
       </div>
 
-      {/* 3 aşama kartları */}
+      {/* Akış kartları */}
       <div className="unit-phases">
-        {/* Ders */}
+        {/* Ders aşaması (her zaman görünür) */}
         <div className={`unit-phase-card ${progress?.lessonDone ? "unit-phase-done" : ""}`}>
           <div className="unit-phase-header">
             <span className="unit-phase-number">1</span>
@@ -196,39 +205,43 @@ export default function UnitPage() {
           </button>
         </div>
 
-        {/* Alıştırma */}
-        <div className={`unit-phase-card ${progress?.practiceDone ? "unit-phase-done" : ""}`}>
-          <div className="unit-phase-header">
-            <span className="unit-phase-number">2</span>
-            <span className="unit-phase-title">{t.practice}</span>
-            <span className={`unit-status-badge ${progress?.practiceDone ? "unit-status-completed" : progress?.practiceScore ? "unit-status-in-progress" : "unit-status-not-started"}`}>
-              {progress?.practiceDone ? t.completed : progress?.practiceScore ? t.inProgress : t.notStarted}
-            </span>
+        {/* Kelime yoksa (Alfabe ünitesi): Alıştırma ve Test yerine bilgi notu göster */}
+        {!hasWordItems ? (
+          <div className="unit-no-exercises-box">
+            <span className="unit-no-exercises-icon">ℹ️</span>
+            <p className="unit-no-exercises-text">{t.buUnitHasNoExercises}</p>
           </div>
-          {progress?.practiceScore ? (
-            <p className="unit-phase-score">{t.yourScore}: {progress.practiceScore}%</p>
-          ) : null}
-          <Link href={`/unit/${unit.id}/practice`} className="practice-btn practice-btn-primary">
-            {t.startPractice}
-          </Link>
-        </div>
+        ) : (
+          <>
+            {/* Alıştırma (sadece kelime içeren ünitelerde) */}
+            <div className="unit-phase-card">
+              <div className="unit-phase-header">
+                <span className="unit-phase-number">2</span>
+                <span className="unit-phase-title">{t.practice}</span>
+              </div>
+              <Link href={`/unit/${unit.id}/practice`} className="practice-btn practice-btn-primary">
+                {t.startPractice}
+              </Link>
+            </div>
 
-        {/* Test */}
-        <div className={`unit-phase-card ${progress?.testDone ? "unit-phase-done" : ""}`}>
-          <div className="unit-phase-header">
-            <span className="unit-phase-number">3</span>
-            <span className="unit-phase-title">{t.test}</span>
-            <span className={`unit-status-badge ${progress?.testDone ? "unit-status-completed" : progress?.testScore ? "unit-status-in-progress" : "unit-status-not-started"}`}>
-              {progress?.testDone ? t.completed : progress?.testScore ? t.inProgress : t.notStarted}
-            </span>
-          </div>
-          {progress?.testScore ? (
-            <p className="unit-phase-score">{t.yourScore}: {progress.testScore}%</p>
-          ) : null}
-          <Link href={`/unit/${unit.id}/test`} className="practice-btn practice-btn-primary">
-            {t.startTest}
-          </Link>
-        </div>
+            {/* Test (sadece kelime içeren ünitelerde) */}
+            <div className={`unit-phase-card ${progress?.testDone ? "unit-phase-done" : ""}`}>
+              <div className="unit-phase-header">
+                <span className="unit-phase-number">3</span>
+                <span className="unit-phase-title">{t.test}</span>
+                <span className={`unit-status-badge ${progress?.testDone ? "unit-status-completed" : progress?.testScore ? "unit-status-in-progress" : "unit-status-not-started"}`}>
+                  {progress?.testDone ? t.completed : progress?.testScore ? t.inProgress : t.notStarted}
+                </span>
+              </div>
+              {progress?.testScore ? (
+                <p className="unit-phase-score">{t.yourScore}: {progress.testScore}%</p>
+              ) : null}
+              <Link href={`/unit/${unit.id}/test`} className="practice-btn practice-btn-primary">
+                {t.startTest}
+              </Link>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
