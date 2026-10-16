@@ -1,0 +1,118 @@
+{
+  "id": "unit-02",
+  "titleTr": "Sayılar 1-10",
+  "titleEn": "Numbers 1-10",
+  "level": "A0",
+  "items": [
+    {
+      "id": "n01",
+      "type": "word",
+      "ru": "один",
+      "tr": "bir",
+      "en": "one",
+      "exampleRu": "Один кофе, пожалуйста.",
+      "exampleTr": "Bir kahve, lütfen.",
+      "exampleEn": "One coffee, please.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n02",
+      "type": "word",
+      "ru": "два",
+      "tr": "iki",
+      "en": "two",
+      "exampleRu": "У меня два брата.",
+      "exampleTr": "İki erkek kardeşim var.",
+      "exampleEn": "I have two brothers.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n03",
+      "type": "word",
+      "ru": "три",
+      "tr": "üç",
+      "en": "three",
+      "exampleRu": "Три дня назад.",
+      "exampleTr": "Üç gün önce.",
+      "exampleEn": "Three days ago.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n04",
+      "type": "word",
+      "ru": "четыре",
+      "tr": "dört",
+      "en": "four",
+      "exampleRu": "В комнате четыре стула.",
+      "exampleTr": "Odada dört sandalye var.",
+      "exampleEn": "There are four chairs in the room.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n05",
+      "type": "word",
+      "ru": "пять",
+      "tr": "beş",
+      "en": "five",
+      "exampleRu": "Мне пять лет.",
+      "exampleTr": "Ben beş yaşındayım.",
+      "exampleEn": "I am five years old.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n06",
+      "type": "word",
+      "ru": "шесть",
+      "tr": "altı",
+      "en": "six",
+      "exampleRu": "Шесть часов утра.",
+      "exampleTr": "Sabah altı.",
+      "exampleEn": "Six o'clock in the morning.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n07",
+      "type": "word",
+      "ru": "семь",
+      "tr": "yedi",
+      "en": "seven",
+      "exampleRu": "В неделе семь дней.",
+      "exampleTr": "Bir haftada yedi gün var.",
+      "exampleEn": "There are seven days in a week.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n08",
+      "type": "word",
+      "ru": "восемь",
+      "tr": "sekiz",
+      "en": "eight",
+      "exampleRu": "Урок начинается в восемь.",
+      "exampleTr": "Ders sekizde başlıyor.",
+      "exampleEn": "The lesson starts at eight.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n09",
+      "type": "word",
+      "ru": "девять",
+      "tr": "dokuz",
+      "en": "nine",
+      "exampleRu": "Магазин открывается в девять.",
+      "exampleTr": "Mağaza dokuzda açılıyor.",
+      "exampleEn": "The store opens at nine.",
+      "tags": ["sayilar"]
+    },
+    {
+      "id": "n10",
+      "type": "word",
+      "ru": "десять",
+      "tr": "on",
+      "en": "ten",
+      "exampleRu": "Десять минут пешком.",
+      "exampleTr": "Yürüyerek on dakika.",
+      "exampleEn": "Ten minutes on foot.",
+      "tags": ["sayilar"]
+    }
+  ]
+}

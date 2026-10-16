@@ -38,10 +38,12 @@ chmod +x start.sh   # Sadece ilk seferde gerekli
 ```
 ├── app/                    # Next.js App Router sayfaları
 │   ├── layout.tsx          # Kök layout (tema, navbar, db init)
-│   ├── page.tsx            # Ana sayfa (ünite listesi + tekrar kartı)
+│   ├── page.tsx            # Ana sayfa (ünite listesi + tekrar + alıştırma)
 │   ├── globals.css         # Tasarım sistemi
 │   ├── review/
 │   │   └── page.tsx        # Kelime kartı tekrar sayfası (SRS)
+│   ├── practice/
+│   │   └── page.tsx        # Alıştırma sayfası (4 tip)
 │   ├── settings/
 │   │   └── page.tsx        # Ayarlar sayfası
 │   └── unit/
@@ -58,12 +60,15 @@ chmod +x start.sh   # Sadece ilk seferde gerekli
 │   ├── i18n.ts             # Çoklu dil (tr/en) mesajları
 │   ├── lang-context.tsx    # Dil yönetimi context
 │   ├── srs.ts              # SM-2 tabanlı SRS motoru
-│   └── reviews.ts          # Dexie reviews tablosu yardımcıları
+│   ├── reviews.ts          # Dexie reviews tablosu yardımcıları
+│   ├── exercises.ts        # Alıştırma motoru (4 tip)
+│   └── tts.ts              # Web Speech API TTS
 ├── types/                  # TypeScript tip tanımları
 │   └── index.ts
 ├── content/                # Ünite JSON dosyaları
 │   ├── unit-00-alphabet.json
-│   └── unit-01-greetings.json
+│   ├── unit-01-greetings.json
+│   └── unit-02-numbers.json
 ├── start.bat               # Windows tek tıkla başlatma
 ├── start.sh                # Mac/Linux tek tıkla başlatma
 ├── CHANGELOG.md            # Değişiklik kaydı
@@ -121,6 +126,17 @@ Uygulama basit bir SM-2 tabanlı SRS (Spaced Repetition System) motoru içerir.
 - Tekrar tarihleri Dexie `reviews` tablosunda saklanır.
 - Ana sayfadaki "Bugünün Tekrarı" kartı, kaç kartın tekrar zamanının geldiğini gösterir.
 - Sadece `type: "word"` olan öğeler tekrar havuzuna dahil edilir.
+
+## Alıştırmalar
+
+Uygulama 4 farklı alıştırma tipi sunar (`/practice` sayfası):
+
+- **Çoktan Seçmeli**: Rusça kelime gösterilir, 4 şıktan doğru çeviriyi seçin.
+- **Boşluk Doldurma**: Cümledeki boşluğa Rusça kelimeyi yazın.
+- **Eşleştirme**: Rusça kelimeleri çevirileriyle eşleştirin.
+- **Dinleme**: TTS ile kelimeleri dinleyip Rusça yazın (Web Speech API).
+
+Tüm alıştırmalarda ilerleme göstergesi ve sonuç ekranı vardır. Dinleme alıştırması tarayıcının TTS desteğine bağlıdır.
 
 ## Geliştirme Notları
 

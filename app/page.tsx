@@ -83,6 +83,22 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Alıştırmalar kartı */}
+      <section className="review-banner">
+        <div className="review-banner-content">
+          <div className="review-banner-left">
+            <h2 className="review-banner-title">
+              <span className="review-banner-icon">✏️</span>
+              {t.practiceTitle}
+            </h2>
+            <p className="review-banner-desc">{t.practiceDesc}</p>
+          </div>
+          <Link href="/practice" className="review-banner-btn">
+            {t.practice}
+          </Link>
+        </div>
+      </section>
+
       {/* Ünite listesi */}
       <section>
         <h2 className="section-title">

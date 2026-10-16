@@ -20,10 +20,12 @@ import type { UnitData, Item, Lang } from "@/types";
 // Yeni ünite eklerken buraya bir satır eklemen yeterli.
 import unitAlphabet from "@/content/unit-00-alphabet.json";
 import unitGreetings from "@/content/unit-01-greetings.json";
+import unitNumbers from "@/content/unit-02-numbers.json";
 
 const UNIT_MODULES: UnitData[] = [
   unitAlphabet as UnitData,
   unitGreetings as UnitData,
+  unitNumbers as UnitData,
 ];
 
 /**

@@ -65,6 +65,32 @@ export interface Messages {
   backToHome: string;
   review: string;
   progress: string;
+
+  // Alıştırmalar / Practice
+  practice: string;
+  practiceTitle: string;
+  practiceDesc: string;
+  multipleChoice: string;
+  fillBlank: string;
+  matching: string;
+  listening: string;
+  start: string;
+  next: string;
+  check: string;
+  correct: string;
+  wrong: string;
+  showCorrect: string;
+  play: string;
+  replay: string;
+  result: string;
+  yourScore: string;
+  tryAgain: string;
+  typeYourAnswer: string;
+  chooseAnswer: string;
+  matchPairs: string;
+  listenAndType: string;
+  exerciseComplete: string;
+  ttsNotSupported: string;
 }
 
 /** Tüm çeviriler */
@@ -121,6 +147,32 @@ const messages: Record<Lang, Messages> = {
     backToHome: "Ana Sayfaya Dön",
     review: "Tekrar",
     progress: "İlerleme",
+
+    // Alıştırmalar / Practice
+    practice: "Alıştırma",
+    practiceTitle: "Alıştırmalar",
+    practiceDesc: "Kelime bilginizi pekiştirmek için alıştırma yapın.",
+    multipleChoice: "Çoktan Seçmeli",
+    fillBlank: "Boşluk Doldurma",
+    matching: "Eşleştirme",
+    listening: "Dinleme",
+    start: "Başlat",
+    next: "Sonraki",
+    check: "Kontrol Et",
+    correct: "Doğru",
+    wrong: "Yanlış",
+    showCorrect: "Doğru cevap",
+    play: "Dinle",
+    replay: "Tekrar Dinle",
+    result: "Sonuç",
+    yourScore: "Puanınız",
+    tryAgain: "Tekrar Dene",
+    typeYourAnswer: "Cevabınızı yazın...",
+    chooseAnswer: "Doğru çeviriyi seçin",
+    matchPairs: "Eşleşen çiftleri bulun",
+    listenAndType: "Dinleyin ve Rusça yazın",
+    exerciseComplete: "Alıştırma tamamlandı!",
+    ttsNotSupported: "Tarayıcınız ses okumayı desteklemiyor.",
   },
   en: {
     appName: "Learn Russian",
@@ -174,6 +226,32 @@ const messages: Record<Lang, Messages> = {
     backToHome: "Back to Home",
     review: "Review",
     progress: "Progress",
+
+    // Practice
+    practice: "Practice",
+    practiceTitle: "Practice",
+    practiceDesc: "Practice to reinforce your vocabulary.",
+    multipleChoice: "Multiple Choice",
+    fillBlank: "Fill in the Blank",
+    matching: "Matching",
+    listening: "Listening",
+    start: "Start",
+    next: "Next",
+    check: "Check",
+    correct: "Correct",
+    wrong: "Wrong",
+    showCorrect: "Correct answer",
+    play: "Play",
+    replay: "Replay",
+    result: "Result",
+    yourScore: "Your score",
+    tryAgain: "Try Again",
+    typeYourAnswer: "Type your answer...",
+    chooseAnswer: "Choose the correct translation",
+    matchPairs: "Find the matching pairs",
+    listenAndType: "Listen and type in Russian",
+    exerciseComplete: "Exercise complete!",
+    ttsNotSupported: "Your browser does not support text-to-speech.",
   },
 };
 
