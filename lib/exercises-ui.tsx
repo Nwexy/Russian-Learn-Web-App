@@ -42,9 +42,13 @@ export function renderHighlightedText(text?: string | null): React.ReactNode {
   return parts.map((part, i) => {
     if (part.startsWith("{") && part.endsWith("}")) {
       const inner = part.slice(1, -1);
-      return React.createElement("span", { key: i, className: "fill-highlight" }, inner);
+      return (
+        <span key={i} className="fill-highlight">
+          {inner}
+        </span>
+      );
     }
-    return React.createElement(React.Fragment, { key: i }, part);
+    return <React.Fragment key={i}>{part}</React.Fragment>;
   });
 }
 
