@@ -5,21 +5,23 @@
  */
 
 import Dexie, { type Table } from "dexie";
-import type { Item, Review, Progress, Setting } from "@/types";
+import type { Item, Review, Progress, Setting, Mistake } from "@/types";
 
 /**
  * RussianLearnDB — IndexedDB üzerinde çalışan yerel veritabanı.
  * Tablolar:
  *  - items: Öğrenme öğeleri (harf, kelime, kalıp vb.)
- *  - reviews: SRS tekrar kayıtları (Faz 2)
+ *  - reviews: SRS tekrar kayıtları
  *  - progress: Ünite ilerleme durumları
  *  - settings: Uygulama ayarları (tema vb.)
+ *  - mistakes: Yanlış yapılan sorular (Faz 3.5)
  */
 class RussianLearnDB extends Dexie {
   items!: Table<Item, string>;
   reviews!: Table<Review, string>;
   progress!: Table<Progress, string>;
   settings!: Table<Setting, string>;
+  mistakes!: Table<Mistake, number>;
 
   constructor() {
     super("RussianLearnDB");
@@ -31,6 +33,17 @@ class RussianLearnDB extends Dexie {
       reviews: "itemId, due",
       progress: "unitId",
       settings: "key",
+    });
+
+    // Sürüm 2: mistakes tablosu eklendi
+    // Mevcut tablolar aynı kalır, yeni tablo eklenir.
+    // [exerciseType+itemId] bileşik indeks — aynı soru için tek kayıt tutulur.
+    this.version(2).stores({
+      items: "id, unitId, type, tags",
+      reviews: "itemId, due",
+      progress: "unitId",
+      settings: "key",
+      mistakes: "++id, [exerciseType+itemId], exerciseType, itemId, createdAt",
     });
   }
 }

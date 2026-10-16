@@ -3,6 +3,14 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16 (Faz 3.5)
+- mistakes tablosu Dexie semasina eklendi.
+- Yanlis cevaplar kalici olarak kaydediliyor.
+- Bir soruyu bir kez dogru yapinca listeden dusuyor.
+- /practice/mistakes sayfasi eklendi.
+- Ana sayfa ve alistirma sayfasina "Yanlislarim" kartlari eklendi.
+- Ayarlara "Yanlislari Temizle" butonu eklendi.
+
 ## 2026-10-16 (Faz 3)
 - Sayilar unitesi eklendi (unit-02-numbers.json).
 - Web Speech API ile TTS destegi eklendi (lib/tts.ts).

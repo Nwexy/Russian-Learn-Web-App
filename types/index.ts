@@ -69,3 +69,19 @@ export interface UnitData {
   level: string;
   items: RawItem[];
 }
+
+/** Alıştırma tipleri */
+export type ExerciseType = "multipleChoice" | "fillBlank" | "matching" | "listening";
+
+/** Yanlış yapılan soru kaydı (Dexie mistakes tablosu) */
+export interface Mistake {
+  id?: number;               // auto-increment
+  exerciseType: ExerciseType;
+  itemId: string;
+  questionData: Record<string, unknown>;  // Sorunun yeniden üretilebilmesi için veri
+  userAnswer: string;        // Kullanıcının verdiği cevap
+  correctAnswer: string;     // Doğru cevap
+  createdAt: Date;
+  lastTriedAt: Date;
+  timesWrong: number;        // Bu soru kaç kez yanlış yapıldı
+}

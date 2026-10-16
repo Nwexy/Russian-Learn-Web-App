@@ -91,6 +91,19 @@ export interface Messages {
   listenAndType: string;
   exerciseComplete: string;
   ttsNotSupported: string;
+
+  // Mistakes
+  myMistakes: string;
+  noMistakes: string;
+  startMistakesReview: string;
+  mistakesRemaining: string;
+  mistakeFixed: string;
+  mistakeStillWrong: string;
+  mistakesCount: string;
+  clearMistakes: string;
+  confirmClear: string;
+  mistakesCleared: string;
+  dataSection: string;
 }
 
 /** Tüm çeviriler */
@@ -173,6 +186,19 @@ const messages: Record<Lang, Messages> = {
     listenAndType: "Dinleyin ve Rusça yazın",
     exerciseComplete: "Alıştırma tamamlandı!",
     ttsNotSupported: "Tarayıcınız ses okumayı desteklemiyor.",
+
+    // Mistakes
+    myMistakes: "Yanlışlarım",
+    noMistakes: "Yanlışın yok.",
+    startMistakesReview: "Yanlışları Tekrarla",
+    mistakesRemaining: "kalan yanlış",
+    mistakeFixed: "Doğru! Listeden düştü.",
+    mistakeStillWrong: "Yanlış. Listede kaldı.",
+    mistakesCount: "yanlış",
+    clearMistakes: "Yanlışları Temizle",
+    confirmClear: "Tüm yanlış kayıtları silinecek. Emin misiniz?",
+    mistakesCleared: "Tüm yanlışlar temizlendi.",
+    dataSection: "Veri",
   },
   en: {
     appName: "Learn Russian",
@@ -252,6 +278,19 @@ const messages: Record<Lang, Messages> = {
     listenAndType: "Listen and type in Russian",
     exerciseComplete: "Exercise complete!",
     ttsNotSupported: "Your browser does not support text-to-speech.",
+
+    // Mistakes
+    myMistakes: "My Mistakes",
+    noMistakes: "No mistakes.",
+    startMistakesReview: "Review Mistakes",
+    mistakesRemaining: "mistakes remaining",
+    mistakeFixed: "Correct! Removed from list.",
+    mistakeStillWrong: "Wrong. Stays on list.",
+    mistakesCount: "mistakes",
+    clearMistakes: "Clear Mistakes",
+    confirmClear: "All mistake records will be deleted. Are you sure?",
+    mistakesCleared: "All mistakes cleared.",
+    dataSection: "Data",
   },
 };
 

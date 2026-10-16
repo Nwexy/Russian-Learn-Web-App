@@ -24,10 +24,8 @@ import type {
   ListeningQuestion,
 } from "@/lib/exercises";
 import { speak, isTTSSupported } from "@/lib/tts";
-import type { Item } from "@/types";
-
-/** Alıştırma tipleri */
-type ExerciseType = "multipleChoice" | "fillBlank" | "matching" | "listening";
+import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
+import type { Item, ExerciseType } from "@/types";
 
 /** Alıştırma durumları */
 type Phase = "select" | "active" | "result";
@@ -41,6 +39,7 @@ export default function PracticePage() {
   const [phase, setPhase] = useState<Phase>("select");
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [mistakeCount, setMistakeCount] = useState(0);
 
   // Çoktan seçmeli state
   const [mcQuestions, setMcQuestions] = useState<MultipleChoiceQuestion[]>([]);
@@ -81,6 +80,8 @@ export default function PracticePage() {
       const allItems = await db.items.where("type").equals("word").toArray();
       setItems(allItems);
       setTtsSupported(isTTSSupported());
+      const mc = await getMistakeCount();
+      setMistakeCount(mc);
       setLoading(false);
     }
     load();
@@ -142,12 +143,22 @@ export default function PracticePage() {
   /* ========================================
      ÇOKTAN SEÇMELİ
      ======================================== */
-  const handleMcSelect = (idx: number) => {
+  const handleMcSelect = async (idx: number) => {
     if (mcRevealed) return;
+    const q = mcQuestions[mcIndex];
     setMcSelected(idx);
     setMcRevealed(true);
-    if (idx === mcQuestions[mcIndex].correctIndex) {
+    if (idx === q.correctIndex) {
       setScore((s) => s + 1);
+      await removeMistakeByKey("multipleChoice", q.item.id);
+    } else {
+      await recordMistake({
+        exerciseType: "multipleChoice",
+        itemId: q.item.id,
+        questionData: { question: q.question, options: q.options, correctIndex: q.correctIndex },
+        userAnswer: q.options[idx],
+        correctAnswer: q.options[q.correctIndex],
+      });
     }
   };
 
@@ -164,13 +175,24 @@ export default function PracticePage() {
   /* ========================================
      BOŞLUK DOLDURMA
      ======================================== */
-  const handleFbCheck = () => {
+  const handleFbCheck = async () => {
     if (fbRevealed) return;
     const q = fbQuestions[fbIndex];
     const isCorrect = fbAnswer.trim().toLowerCase() === q.correctWord.toLowerCase();
     setFbCorrect(isCorrect);
     setFbRevealed(true);
-    if (isCorrect) setScore((s) => s + 1);
+    if (isCorrect) {
+      setScore((s) => s + 1);
+      await removeMistakeByKey("fillBlank", q.item.id);
+    } else {
+      await recordMistake({
+        exerciseType: "fillBlank",
+        itemId: q.item.id,
+        questionData: { sentenceWithBlank: q.sentenceWithBlank, correctWord: q.correctWord, hint: q.hint },
+        userAnswer: fbAnswer.trim(),
+        correctAnswer: q.correctWord,
+      });
+    }
   };
 
   const handleFbNext = () => {
@@ -208,7 +230,7 @@ export default function PracticePage() {
     }
   };
 
-  const checkMatch = (leftId: string, rightId: string) => {
+  const checkMatch = async (leftId: string, rightId: string) => {
     setMatchAttempts((a) => a + 1);
     if (leftId === rightId) {
       // Doğru eşleşme
@@ -218,6 +240,7 @@ export default function PracticePage() {
       setMatchCorrectCount((c) => c + 1);
       setMatchSelectedLeft(null);
       setMatchSelectedRight(null);
+      await removeMistakeByKey("matching", leftId);
 
       // Tüm çiftler eşleşti mi?
       if (matchData && newMatched.size >= matchData.pairs.length) {
@@ -229,6 +252,17 @@ export default function PracticePage() {
     } else {
       // Yanlış eşleşme
       setMatchWrong(true);
+      const leftPair = matchData?.pairs.find((p) => p.id === leftId);
+      const rightPair = matchData?.pairs.find((p) => p.id === rightId);
+      if (leftPair) {
+        await recordMistake({
+          exerciseType: "matching",
+          itemId: leftPair.id,
+          questionData: { ru: leftPair.ru, translation: leftPair.translation },
+          userAnswer: rightPair?.translation || "",
+          correctAnswer: leftPair.translation,
+        });
+      }
       setTimeout(() => {
         setMatchSelectedLeft(null);
         setMatchSelectedRight(null);
@@ -245,13 +279,24 @@ export default function PracticePage() {
     speak(q.correctWord);
   };
 
-  const handleListenCheck = () => {
+  const handleListenCheck = async () => {
     if (listenRevealed) return;
     const q = listenQuestions[listenIndex];
     const isCorrect = listenAnswer.trim().toLowerCase() === q.correctWord.toLowerCase();
     setListenCorrect(isCorrect);
     setListenRevealed(true);
-    if (isCorrect) setScore((s) => s + 1);
+    if (isCorrect) {
+      setScore((s) => s + 1);
+      await removeMistakeByKey("listening", q.item.id);
+    } else {
+      await recordMistake({
+        exerciseType: "listening",
+        itemId: q.item.id,
+        questionData: { correctWord: q.correctWord },
+        userAnswer: listenAnswer.trim(),
+        correctAnswer: q.correctWord,
+      });
+    }
   };
 
   const handleListenNext = () => {
@@ -367,6 +412,22 @@ export default function PracticePage() {
           <button className="practice-btn practice-btn-primary" onClick={startExercise}>
             {t.start}
           </button>
+        </div>
+
+        {/* Yanlışlarım butonu */}
+        <div className="mistakes-banner">
+          <Link
+            href="/practice/mistakes"
+            className={`mistakes-banner-link ${mistakeCount === 0 ? "mistakes-banner-disabled" : ""}`}
+            onClick={(e) => { if (mistakeCount === 0) e.preventDefault(); }}
+          >
+            <span className="mistakes-banner-icon">📝</span>
+            <span className="mistakes-banner-text">
+              {mistakeCount > 0
+                ? `${t.myMistakes} (${mistakeCount})`
+                : t.noMistakes}
+            </span>
+          </Link>
         </div>
       </div>
     );

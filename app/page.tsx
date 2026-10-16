@@ -14,6 +14,7 @@ import { getMessages } from "@/lib/i18n";
 import { db } from "@/lib/db";
 import { getDueCards } from "@/lib/srs";
 import { getAllReviews } from "@/lib/reviews";
+import { getMistakeCount } from "@/lib/mistakes";
 import type { Item, Review } from "@/types";
 
 export default function HomePage() {
@@ -23,6 +24,7 @@ export default function HomePage() {
 
   /** Bugün tekrar edilecek kart sayısı */
   const [dueCount, setDueCount] = useState<number>(0);
+  const [mistakeCount, setMistakeCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +38,8 @@ export default function HomePage() {
         const reviews: Review[] = await getAllReviews();
         const due = getDueCards(allItems, reviews, new Date());
         setDueCount(due.length);
+        const mc = await getMistakeCount();
+        setMistakeCount(mc);
       } catch {
         setDueCount(0);
       } finally {
@@ -95,6 +99,33 @@ export default function HomePage() {
           </div>
           <Link href="/practice" className="review-banner-btn">
             {t.practice}
+          </Link>
+        </div>
+      </section>
+
+      {/* Yanlışlarım kartı */}
+      <section className="review-banner">
+        <div className="review-banner-content">
+          <div className="review-banner-left">
+            <h2 className="review-banner-title">
+              <span className="review-banner-icon">📝</span>
+              {t.myMistakes}
+            </h2>
+            <p className="review-banner-desc">
+              {mistakeCount > 0
+                ? `${mistakeCount} ${t.mistakesCount}`
+                : t.noMistakes}
+            </p>
+          </div>
+          <Link
+            href="/practice/mistakes"
+            className={`review-banner-btn ${mistakeCount === 0 ? "review-banner-btn-disabled" : ""}`}
+            aria-disabled={mistakeCount === 0}
+            onClick={(e) => {
+              if (mistakeCount === 0) e.preventDefault();
+            }}
+          >
+            {t.startMistakesReview}
           </Link>
         </div>
       </section>

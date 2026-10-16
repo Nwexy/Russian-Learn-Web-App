@@ -1530,3 +1530,73 @@ body {
     font-size: 0.85rem;
   }
 }
+
+/* ========================================
+   Mistakes Banner (Practice sayfası)
+   ======================================== */
+
+.mistakes-banner {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.mistakes-banner-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.mistakes-banner-link:hover:not(.mistakes-banner-disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.mistakes-banner-disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.mistakes-banner-icon {
+  font-size: 1.1rem;
+}
+
+.mistakes-banner-text {
+  font-size: 0.9rem;
+}
+
+/* ========================================
+   Settings Danger Button
+   ======================================== */
+
+.settings-danger-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: #ef4444;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #ef4444;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.settings-danger-btn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.settings-danger-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  color: #22c55e;
+  border-color: #22c55e;
+}

@@ -1,20 +1,31 @@
 /**
  * Ayarlar sayfası — /settings
- * Tema, arayüz dili ve çeviri dili seçimleri.
+ * Tema, arayüz dili, çeviri dili ve veri yönetimi.
  * Tüm değişiklikler anında uygulanır ve Dexie'ye kaydedilir.
  */
 
 "use client";
 
+import { useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
+import { clearAllMistakes } from "@/lib/mistakes";
 import type { Lang } from "@/types";
 
 export default function SettingsPage() {
   const { theme, toggleTheme } = useTheme();
   const { uiLang, translationLang, setUiLang, setTranslationLang } = useLang();
   const t = getMessages(uiLang);
+  const [cleared, setCleared] = useState(false);
+
+  const handleClearMistakes = async () => {
+    const confirmed = window.confirm(t.confirmClear);
+    if (!confirmed) return;
+    await clearAllMistakes();
+    setCleared(true);
+    setTimeout(() => setCleared(false), 3000);
+  };
 
   return (
     <div className="page-container">
@@ -94,13 +105,33 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Veri */}
+      <div className="settings-section">
+        <h2 className="settings-section-title">{t.dataSection}</h2>
+        <div className="settings-row">
+          <div className="settings-label">
+            <span className="settings-label-text">{t.clearMistakes}</span>
+            <span className="settings-label-desc">
+              {cleared ? t.mistakesCleared : t.confirmClear}
+            </span>
+          </div>
+          <button
+            className="settings-danger-btn"
+            onClick={handleClearMistakes}
+            disabled={cleared}
+          >
+            {cleared ? t.mistakesCleared : t.clearMistakes}
+          </button>
+        </div>
+      </div>
+
       {/* Hakkında */}
       <div className="settings-section">
         <h2 className="settings-section-title">{t.about}</h2>
         <div className="settings-row">
           <div className="settings-label">
             <span className="settings-label-text">{t.version}</span>
-            <span className="settings-label-desc">0.2.0 — Faz 1.5</span>
+            <span className="settings-label-desc">0.4.0 — Faz 3.5</span>
           </div>
         </div>
         <div className="settings-row">
