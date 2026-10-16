@@ -144,6 +144,22 @@ export interface Messages {
   sessionActive: string;
   practicingAllUnits: string;
   practicingUnit: string;
+
+  // Faz 5 — Gramer
+  grammar: string;
+  grammarNotes: string;
+  relatedGrammar: string;
+  grammarCompleted: string;
+  grammarInProgress: string;
+  grammarNotStarted: string;
+  startLesson: string;
+  finishLesson: string;
+  lessonComplete: string;
+  backToGrammar: string;
+  correctAnswers: string;
+  totalQuestions: string;
+  reviewGrammar: string;
+  noGrammarForUnit: string;
 }
 
 /** Tüm çeviriler */
@@ -277,6 +293,22 @@ const messages: Record<Lang, Messages> = {
     sessionActive: "Oturum aktif",
     practicingAllUnits: "Alıştırma: Tüm Üniteler",
     practicingUnit: "Alıştırma",
+
+    // Faz 5 — Gramer
+    grammar: "Gramer",
+    grammarNotes: "Gramer Notları",
+    relatedGrammar: "İlgili Gramer",
+    grammarCompleted: "Tamamlandı",
+    grammarInProgress: "Devam ediyor",
+    grammarNotStarted: "Başlanmadı",
+    startLesson: "Dersi Başlat",
+    finishLesson: "Dersi Bitir",
+    lessonComplete: "Ders Tamamlandı",
+    backToGrammar: "Gramer Notlarına Dön",
+    correctAnswers: "Doğru",
+    totalQuestions: "Toplam Soru",
+    reviewGrammar: "Grameri İncele",
+    noGrammarForUnit: "Bu ünite için ilgili gramer konusu bulunmuyor.",
   },
   en: {
     appName: "Learn Russian",
@@ -407,6 +439,22 @@ const messages: Record<Lang, Messages> = {
     sessionActive: "Session active",
     practicingAllUnits: "Practice: All Units",
     practicingUnit: "Practice",
+
+    // Faz 5 — Grammar
+    grammar: "Grammar",
+    grammarNotes: "Grammar Notes",
+    relatedGrammar: "Related Grammar",
+    grammarCompleted: "Completed",
+    grammarInProgress: "In Progress",
+    grammarNotStarted: "Not Started",
+    startLesson: "Start Lesson",
+    finishLesson: "Finish Lesson",
+    lessonComplete: "Lesson Complete",
+    backToGrammar: "Back to Grammar",
+    correctAnswers: "Correct",
+    totalQuestions: "Total Questions",
+    reviewGrammar: "Review Grammar",
+    noGrammarForUnit: "No related grammar notes for this unit.",
   },
 };
 

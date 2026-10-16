@@ -97,3 +97,50 @@ export interface Mistake {
   lastTriedAt: Date;
   timesWrong: number;        // Bu soru kaç kez yanlış yapıldı
 }
+
+/** Dexie grammarProgress tablosundaki kayıt (Faz 5) */
+export interface GrammarProgress {
+  noteId: string;            // primary key
+  completed: boolean;
+  lastViewedAt: Date;
+  completedAt?: Date;
+}
+
+/** Gramer içerik bölümleri */
+export type GrammarSection =
+  | { type: "text"; bodyTr: string; bodyEn: string }
+  | {
+      type: "table";
+      headersTr: string[];
+      headersEn: string[];
+      rows: { cellsTr: string[]; cellsEn: string[] }[];
+    }
+  | {
+      type: "examples";
+      items: { ru: string; tr: string; en: string; note?: string }[];
+    };
+
+/** Gramer mini alıştırma sorusu */
+export interface MiniExercise {
+  type: "multipleChoice";
+  question: string;
+  questionLang: "ru" | "tr" | "en";
+  options: string[];
+  correctIndex: number;
+  explanationTr: string;
+  explanationEn: string;
+}
+
+/** Gramer notu yapısı */
+export interface GrammarNote {
+  id: string;
+  level: string;
+  titleTr: string;
+  titleEn: string;
+  summaryTr: string;
+  summaryEn: string;
+  sections: GrammarSection[];
+  relatedUnits: string[];
+  miniExercises: MiniExercise[];
+}
+

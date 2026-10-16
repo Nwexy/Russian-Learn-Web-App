@@ -5,7 +5,7 @@
  */
 
 import Dexie, { type Table } from "dexie";
-import type { Item, Review, Progress, Setting, Mistake } from "@/types";
+import type { Item, Review, Progress, Setting, Mistake, GrammarProgress } from "@/types";
 
 /**
  * RussianLearnDB — IndexedDB üzerinde çalışan yerel veritabanı.
@@ -15,6 +15,7 @@ import type { Item, Review, Progress, Setting, Mistake } from "@/types";
  *  - progress: Ünite ilerleme durumları
  *  - settings: Uygulama ayarları (tema, uiLang, translationLang, showPronunciation: "true"|"false")
  *  - mistakes: Yanlış yapılan sorular (Faz 3.5)
+ *  - grammarProgress: Gramer notları ilerleme durumları (Faz 5)
  */
 class RussianLearnDB extends Dexie {
   items!: Table<Item, string>;
@@ -22,6 +23,7 @@ class RussianLearnDB extends Dexie {
   progress!: Table<Progress, string>;
   settings!: Table<Setting, string>;
   mistakes!: Table<Mistake, number>;
+  grammarProgress!: Table<GrammarProgress, string>;
 
   constructor() {
     super("RussianLearnDB");
@@ -44,6 +46,16 @@ class RussianLearnDB extends Dexie {
       progress: "unitId",
       settings: "key",
       mistakes: "++id, [exerciseType+itemId], exerciseType, itemId, createdAt",
+    });
+
+    // Sürüm 3: grammarProgress tablosu eklendi (Faz 5)
+    this.version(3).stores({
+      items: "id, unitId, type, tags",
+      reviews: "itemId, due",
+      progress: "unitId",
+      settings: "key",
+      mistakes: "++id, [exerciseType+itemId], exerciseType, itemId, createdAt",
+      grammarProgress: "noteId, completed, lastViewedAt, completedAt",
     });
   }
 }

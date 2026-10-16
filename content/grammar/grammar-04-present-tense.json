@@ -1,0 +1,101 @@
+{
+  "id": "grammar-04-present-tense",
+  "level": "A1",
+  "titleTr": "Şimdiki Zaman Fiil Çekimleri",
+  "titleEn": "Present Tense Verb Conjugations",
+  "summaryTr": "Rusça'da fiiller şimdiki zamanda iki ana gruba (I. grup ve II. grup) ayrılarak çekimlenir. читать (okumak) ve говорить (konuşmak) fiilleriyle çekim kuralları.",
+  "summaryEn": "Russian verbs in the present tense follow two main conjugation patterns: Group I (-ать/-ять) and Group II (-ить). Patterns illustrated with читать (to read) and говорить (to speak).",
+  "relatedUnits": ["unit-01-greetings"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Rusça'da fiiller şimdiki zamanda şahsa göre çekimlenir. Fiiller son eklerine göre iki temel gruba (спряжение) ayrılır:\n• I. Grup (I Спряжение): Genellikle -ать veya -ять ile biten fiillerdir. Şahıs eklerinde 'е' harfi baskındır (-ю/-у, -ешь, -ет, -ем, -ете, -ют/-ут).\n• II. Grup (II Спряжение): Genellikle -ить ile biten fiillerdir. Şahıs eklerinde 'и' harfi baskındır (-ю/-у, -ишь, -ит, -им, -иte, -ят/-ат).",
+      "bodyEn": "Russian verbs conjugate according to grammatical person. They are classified into two main conjugation classes:\n• Group I (1st Conjugation): Mostly verbs ending in -ать or -ять. The letter 'е' dominates the endings (-ю/-у, -ешь, -ет, -ем, -ете, -ют/-ут).\n• Group II (2nd Conjugation): Mostly verbs ending in -ить. The letter 'и' dominates the endings (-ю/-у, -ишь, -ит, -им, -ите, -ят/-ат)."
+    },
+    {
+      "type": "table",
+      "headersTr": ["Zamir", "I. Grup: читать (okumak)", "II. Grup: говорить (konuşmak)"],
+      "headersEn": ["Pronoun", "Group I: читать (to read)", "Group II: говорить (to speak)"],
+      "rows": [
+        {
+          "cellsTr": ["я (ben)", "читаю (okuyorum)", "говорю (konuşuyorum)"],
+          "cellsEn": ["я (I)", "читаю (I read)", "говорю (I speak)"]
+        },
+        {
+          "cellsTr": ["ты (sen)", "читаешь (okuyorsun)", "говоришь (konuşuyorsun)"],
+          "cellsEn": ["ты (you)", "читаешь (you read)", "говоришь (you speak)"]
+        },
+        {
+          "cellsTr": ["он / она / оно (o)", "читает (okuyor)", "говорит (konuşuyor)"],
+          "cellsEn": ["он / она / оно (he/she/it)", "читает (reads)", "говорит (speaks)"]
+        },
+        {
+          "cellsTr": ["мы (biz)", "читаем (okuyoruz)", "говорим (konuşuyoruz)"],
+          "cellsEn": ["мы (we)", "читаем (we read)", "говорим (we speak)"]
+        },
+        {
+          "cellsTr": ["вы (siz)", "читаете (okuyorsunuz)", "говорите (konuşuyorsunuz)"],
+          "cellsEn": ["вы (you pl./formal)", "читаете (you read)", "говорите (you speak)"]
+        },
+        {
+          "cellsTr": ["они (onlar)", "читают (okuyorlar)", "говорят (konuşuyorlar)"],
+          "cellsEn": ["они (they)", "читают (they read)", "говорят (they speak)"]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bodyTr": "Çekim Yapma Adımları:\n1. Fiilin mastar ekini (-ть veya -ить) atarak kökü bulun (ör. чита-ть -> чита-, говор-ить -> говор-).\n2. Öznenin zamirine karşılık gelen şahıs ekini köke ekleyin.\n3. Vurgular fiilin formuna göre değişebilir (ör. говори́ть -> я говорю́, ты говори́шь).",
+      "bodyEn": "How to conjugate:\n1. Remove the infinitive suffix (-ть or -ить) to find the stem (e.g. чита-ть -> чита-, говор-ить -> говор-).\n2. Attach the personal ending corresponding to the subject.\n3. Stress patterns may shift depending on the verb (e.g. говори́ть -> я говорю́, ты говори́шь)."
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "Я читаю книгу.", "tr": "Kitap okuyorum.", "en": "I am reading a book.", "note": "читать -> читаю" },
+        { "ru": "Ты говоришь по-русски?", "tr": "Rusça konuşuyor musun?", "en": "Do you speak Russian?", "note": "говорить -> говоришь" },
+        { "ru": "Он читает газету.", "tr": "O gazete okuyor.", "en": "He is reading a newspaper.", "note": "читать -> читает" },
+        { "ru": "Мы говорим по-турецки.", "tr": "Türkçe konuşuyoruz.", "en": "We speak Turkish.", "note": "говорить -> говорим" },
+        { "ru": "Вы читаете быстро.", "tr": "Hızlı okuyorsunuz.", "en": "You read quickly.", "note": "читать -> читаете" },
+        { "ru": "Они говорят тихо.", "tr": "Onlar sessiz konuşuyorlar.", "en": "They speak quietly.", "note": "говорить -> говорят" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "«Я ... книгу.» (читать fiilinin doğru çekimi hangisidir?)",
+      "questionLang": "ru",
+      "options": ["читает", "читаю", "читаем", "читаешь"],
+      "correctIndex": 1,
+      "explanationTr": "«я» zamiri için I. grup çekim eki -ю/-у'dur: «я читаю».",
+      "explanationEn": "For «я», the 1st person ending is -ю: «я читаю»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Мы ... по-русски.» (говорить fiilinin doğru çekimi hangisidir?)",
+      "questionLang": "ru",
+      "options": ["говорит", "говорим", "говорите", "говорят"],
+      "correctIndex": 1,
+      "explanationTr": "«мы» zamiri için II. grup eki -им'dir: «мы говорим».",
+      "explanationEn": "For «мы», the 1st person plural ending is -им: «мы говорим»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Ты ...» (читать fiili için sen çekimi hangisidir?)",
+      "questionLang": "ru",
+      "options": ["читаешь", "читает", "читаете", "читаю"],
+      "correctIndex": 0,
+      "explanationTr": "«ты» zamiri için I. grup eki -ешь'tir: «ты читаешь».",
+      "explanationEn": "For «ты», the ending is -ешь: «ты читаешь»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "II. grup (-ить) fiillerin çekiminde (ты, он, мы, вы) hangi ünlü harf baskındır?",
+      "questionLang": "tr",
+      "options": ["е", "и", "а", "о"],
+      "correctIndex": 1,
+      "explanationTr": "II. grup fiillerde -ишь, -ит, -им, -ите ekleriyle 'и' harfi baskındır.",
+      "explanationEn": "In Group II, 'и' is prominent (-ишь, -ит, -им, -ите)."
+    }
+  ]
+}

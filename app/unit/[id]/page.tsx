@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getUnitById, getUnitTitle } from "@/lib/content";
+import { getGrammarByUnit } from "@/lib/grammar";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getProgress, setLessonComplete } from "@/lib/progress";
@@ -66,6 +67,8 @@ export default function UnitPage() {
     if (!unit) return;
     getProgress(unit.id).then(setProgress);
   }, [unit]);
+
+  const relatedGrammarNotes = unit ? getGrammarByUnit(unit.id) : [];
 
   if (!unit) {
     return (
@@ -196,6 +199,82 @@ export default function UnitPage() {
         <h1 className="page-title">{getUnitTitle(unit, uiLang)}</h1>
         <p className="page-subtitle">{unit.items.length} {t.items}</p>
       </div>
+
+      {/* İlgili Gramer bölümü */}
+      {relatedGrammarNotes.length > 0 && (
+        <section style={{ marginBottom: "1.75rem" }}>
+          <h2
+            style={{
+              fontSize: "1.05rem",
+              fontWeight: 700,
+              color: "var(--text-primary)",
+              marginBottom: "0.75rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <svg
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
+              style={{ width: "1.1rem", height: "1.1rem" }}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              />
+            </svg>
+            {t.relatedGrammar}
+          </h2>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+              gap: "0.75rem",
+            }}
+          >
+            {relatedGrammarNotes.map((gNote) => {
+              const gTitle = uiLang === "tr" ? gNote.titleTr : gNote.titleEn;
+              const gSummary = uiLang === "tr" ? gNote.summaryTr : gNote.summaryEn;
+              return (
+                <Link
+                  key={gNote.id}
+                  href={`/grammar/${gNote.id}`}
+                  className="card card-clickable"
+                  style={{ padding: "1rem" }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.35rem" }}>
+                    <span className="unit-card-level">{gNote.level}</span>
+                    <span style={{ fontSize: "0.8rem", color: "var(--accent)", fontWeight: 500 }}>
+                      {t.goToUnit} →
+                    </span>
+                  </div>
+                  <h3 style={{ fontSize: "1rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "0.25rem" }}>
+                    {gTitle}
+                  </h3>
+                  <p
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "var(--text-secondary)",
+                      margin: 0,
+                      lineHeight: 1.4,
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {gSummary}
+                  </p>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      )}
 
       {/* İlerleme çubuğu */}
       <div className="review-progress-bar" style={{ marginBottom: "1.5rem" }}>

@@ -16,6 +16,8 @@ import { getDueCards } from "@/lib/srs";
 import { getAllReviews } from "@/lib/reviews";
 import { getMistakeCount } from "@/lib/mistakes";
 import { getUnitStatus } from "@/lib/progress";
+import { loadGrammarNotes } from "@/lib/grammar";
+import { getAllGrammarProgress } from "@/lib/grammar-progress";
 import type { Item, Review, UnitStatus } from "@/types";
 
 export default function HomePage() {
@@ -26,6 +28,7 @@ export default function HomePage() {
   /** Bugün tekrar edilecek kart sayısı */
   const [dueCount, setDueCount] = useState<number>(0);
   const [mistakeCount, setMistakeCount] = useState<number>(0);
+  const [grammarStats, setGrammarStats] = useState({ completed: 0, total: 0 });
   const [unitStatuses, setUnitStatuses] = useState<Record<string, UnitStatus>>({});
   const [loading, setLoading] = useState(true);
 
@@ -42,6 +45,11 @@ export default function HomePage() {
         setDueCount(due.length);
         const mc = await getMistakeCount();
         setMistakeCount(mc);
+        // Gramer ilerlemesini çek
+        const gNotes = loadGrammarNotes();
+        const gProgress = await getAllGrammarProgress();
+        const gCompleted = gProgress.filter((p) => p.completed).length;
+        setGrammarStats({ completed: gCompleted, total: gNotes.length });
         // Ünite durumlarını çek
         const statuses: Record<string, UnitStatus> = {};
         for (const u of units) {
@@ -134,6 +142,38 @@ export default function HomePage() {
             }}
           >
             {t.startMistakesReview}
+          </Link>
+        </div>
+      </section>
+
+      {/* Gramer kartı */}
+      <section className="review-banner">
+        <div className="review-banner-content">
+          <div className="review-banner-left">
+            <h2 className="review-banner-title">
+              <span className="review-banner-icon" style={{ display: "inline-flex", alignItems: "center" }}>
+                <svg
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  style={{ width: "1.25rem", height: "1.25rem" }}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+              </span>
+              {t.grammar}
+            </h2>
+            <p className="review-banner-desc">
+              {grammarStats.completed} / {grammarStats.total} {t.grammarCompleted.toLowerCase()}
+            </p>
+          </div>
+          <Link href="/grammar" className="review-banner-btn">
+            {t.grammar}
           </Link>
         </div>
       </section>

@@ -29,7 +29,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="tr" className={`${inter.variable} dark`} suppressHydrationWarning>
+    <html
+      lang="tr"
+      className={`${inter.variable} dark`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <body className="min-h-screen flex flex-col antialiased">
         <ThemeProvider>
           <LangProvider>

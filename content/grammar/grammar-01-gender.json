@@ -1,0 +1,91 @@
+{
+  "id": "grammar-01-gender",
+  "level": "A1",
+  "titleTr": "İsimlerde Cinsiyet",
+  "titleEn": "Gender in Nouns",
+  "summaryTr": "Rusça'da isimler eril, dişil veya nötr cinsiyettedir. Kelimenin son harfine bakarak cinsiyeti kolayca anlayabilirsiniz.",
+  "summaryEn": "In Russian, nouns are masculine, feminine, or neuter. You can easily determine the gender by looking at the word ending.",
+  "relatedUnits": ["unit-00-alphabet", "unit-01-greetings"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Rusça'da her ismin bir cinsiyeti (eril, dişil veya nötr) vardır. İngilizce ve Türkçe gibi dillerden farklı olarak cansız nesneler de cinsiyet taşır. Bir nesnenin cinsiyeti keyfi değil, kelimenin son sesine bağlıdır.",
+      "bodyEn": "In Russian, every noun has a grammatical gender: masculine, feminine, or neuter. Unlike English or Turkish, inanimate objects also possess gender, determined primarily by the final letter or sound of the word."
+    },
+    {
+      "type": "text",
+      "bodyTr": "İsimlerin cinsiyetini belirleme kuralları:\n• Eril (Мужской род): Sert bir ünsüze (б, в, г, д, ж, з, к, л, м, н, п, р, с, т, ф, х, ц, ч, ш, щ) veya -й harfine biter.\n• Dişil (Женский род): -а veya -я harfine biter.\n• Nötr (Средний род): -о veya -е (bazen -ё veya -мя) harfine biter.\n• İstisnalar: -ь (yumuşatma işareti) ile biten isimler eril veya dişil olabilir (örneğin словарь eril, ночь dişil).",
+      "bodyEn": "Rules for determining noun gender:\n• Masculine (Мужской род): Ends in a hard consonant or -й.\n• Feminine (Женский род): Ends in -а or -я.\n• Neuter (Средний род): Ends in -о or -е (rarely -ё or -мя).\n• Exceptions: Nouns ending in -ь (soft sign) can be masculine or feminine (e.g. словарь is masculine, ночь is feminine)."
+    },
+    {
+      "type": "table",
+      "headersTr": ["Cinsiyet", "Kelime Sonu", "Örnekler", "Anlam"],
+      "headersEn": ["Gender", "Ending", "Examples", "Meaning"],
+      "rows": [
+        {
+          "cellsTr": ["Eril (Мужской)", "Ünsüz harf, -й", "кот, стол, чай", "kedi, masa, çay"],
+          "cellsEn": ["Masculine (Мужской)", "Consonant, -й", "кот, стол, чай", "cat, table, tea"]
+        },
+        {
+          "cellsTr": ["Dişil (Женский)", "-а, -я", "мама, книга, песня", "anne, kitap, şarkı"],
+          "cellsEn": ["Feminine (Женский)", "-а, -я", "мама, книга, песня", "mom, book, song"]
+        },
+        {
+          "cellsTr": ["Nötr (Средний)", "-о, -е", "окно, море, письмо", "pencere, deniz, mektup"],
+          "cellsEn": ["Neuter (Средний)", "-о, -е", "окно, море, письмо", "window, sea, letter"]
+        }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "стол", "tr": "masa", "en": "table", "note": "Eril (ünsüz -л) / Masculine" },
+        { "ru": "чай", "tr": "çay", "en": "tea", "note": "Eril (-й ile biter) / Masculine" },
+        { "ru": "книга", "tr": "kitap", "en": "book", "note": "Dişil (-а ile biter) / Feminine" },
+        { "ru": "мама", "tr": "anne", "en": "mom", "note": "Dişil (-а ile biter) / Feminine" },
+        { "ru": "окно", "tr": "pencere", "en": "window", "note": "Nötr (-о ile biter) / Neuter" },
+        { "ru": "море", "tr": "deniz", "en": "sea", "note": "Nötr (-е ile biter) / Neuter" },
+        { "ru": "словарь", "tr": "sözlük", "en": "dictionary", "note": "Eril (-ь ile biter, istisna) / Masculine" },
+        { "ru": "газета", "tr": "gazete", "en": "newspaper", "note": "Dişil (-а ile biter) / Feminine" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "«окно» (pencere) kelimesinin cinsiyeti nedir?",
+      "questionLang": "tr",
+      "options": ["Eril", "Dişil", "Nötr", "Çoğul"],
+      "correctIndex": 2,
+      "explanationTr": "«окно» kelimesi -о ile bittiği için nötr (orta) cinstir.",
+      "explanationEn": "«окно» ends with -о, so it is neuter."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«мама» kelimesinin cinsiyeti nedir?",
+      "questionLang": "tr",
+      "options": ["Eril", "Dişil", "Nötr", "Bilinemez"],
+      "correctIndex": 1,
+      "explanationTr": "«мама» -а ile bittiği için dişil cinstir.",
+      "explanationEn": "«мама» ends with -а, so it is feminine."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Aşağıdaki kelimelerden hangisi eril (masculine) cinstedir?",
+      "questionLang": "tr",
+      "options": ["книга", "море", "стол", "вода"],
+      "correctIndex": 2,
+      "explanationTr": "«стол» sert bir ünsüz (-л) ile bittiği için erildir.",
+      "explanationEn": "«стол» ends with a consonant (-л), so it is masculine."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Rusça'da -е ile biten isimler kural olarak hangi cinsiyettedir?",
+      "questionLang": "tr",
+      "options": ["Nötr", "Eril", "Dişil", "Belirsiz"],
+      "correctIndex": 0,
+      "explanationTr": "-о ve -е ile biten isimler kural olarak nötrdür.",
+      "explanationEn": "Nouns ending in -о and -е are typically neuter."
+    }
+  ]
+}

@@ -3,6 +3,15 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16
+- Gramer modulu eklendi.
+- grammarProgress tablosu Dexie semasina eklendi.
+- 4 gramer notu eklendi: cinsiyet, zamirler, olmak fiili, simdiki zaman.
+- /grammar ve /grammar/[id] sayfalari olusturuldu.
+- Navbar'a Gramer sekmesi eklendi.
+- Ana sayfaya Gramer karti eklendi.
+- Unite detayina "Ilgili Gramer" bolumu eklendi.
+
 ## 2026-10-16 (Faz 4.8.1)
 - Bosluk doldurmada ipucu cumlesi artik soru asamasinda da gosteriliyor.
 

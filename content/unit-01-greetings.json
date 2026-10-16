@@ -15,7 +15,10 @@
       "exampleRu": "Привет, как дела?",
       "exampleTr": "Merhaba, nasılsın?",
       "exampleEn": "Hello, how are you?",
-      "tags": ["selamlasma", "gunluk"]
+      "tags": [
+        "selamlasma",
+        "gunluk"
+      ]
     },
     {
       "id": "g02",
@@ -28,7 +31,10 @@
       "exampleRu": "Здравствуйте, меня зовут Анна.",
       "exampleTr": "Merhaba, benim adım Anna.",
       "exampleEn": "Hello, my name is Anna.",
-      "tags": ["selamlasma", "resmi"]
+      "tags": [
+        "selamlasma",
+        "resmi"
+      ]
     },
     {
       "id": "g03",
@@ -41,7 +47,9 @@
       "exampleRu": "Спасибо за помощь.",
       "exampleTr": "Yardımın için teşekkürler.",
       "exampleEn": "Thank you for your help.",
-      "tags": ["nezaket"]
+      "tags": [
+        "nezaket"
+      ]
     },
     {
       "id": "g04",
@@ -54,7 +62,9 @@
       "exampleRu": "Скажите, пожалуйста, где метро?",
       "exampleTr": "Lütfen söyleyin, metro nerede?",
       "exampleEn": "Please tell me, where is the metro?",
-      "tags": ["nezaket"]
+      "tags": [
+        "nezaket"
+      ]
     },
     {
       "id": "g05",
@@ -67,7 +77,9 @@
       "exampleRu": "Да, я понимаю.",
       "exampleTr": "Evet, anlıyorum.",
       "exampleEn": "Yes, I understand.",
-      "tags": ["temel"]
+      "tags": [
+        "temel"
+      ]
     },
     {
       "id": "g06",
@@ -80,7 +92,9 @@
       "exampleRu": "Нет, спасибо.",
       "exampleTr": "Hayır, teşekkürler.",
       "exampleEn": "No, thank you.",
-      "tags": ["temel"]
+      "tags": [
+        "temel"
+      ]
     },
     {
       "id": "g07",
@@ -93,7 +107,9 @@
       "exampleRu": "Извините, я опоздал.",
       "exampleTr": "Özür dilerim, geç kaldım.",
       "exampleEn": "Sorry, I am late.",
-      "tags": ["nezaket"]
+      "tags": [
+        "nezaket"
+      ]
     },
     {
       "id": "g08",
@@ -106,7 +122,10 @@
       "exampleRu": "Привет! Как дела?",
       "exampleTr": "Merhaba! Nasılsın?",
       "exampleEn": "Hello! How are you?",
-      "tags": ["selamlasma", "gunluk"]
+      "tags": [
+        "selamlasma",
+        "gunluk"
+      ]
     },
     {
       "id": "g09",
@@ -119,7 +138,9 @@
       "exampleRu": "Меня зовут Иван.",
       "exampleTr": "Benim adım İvan.",
       "exampleEn": "My name is Ivan.",
-      "tags": ["tanisma"]
+      "tags": [
+        "tanisma"
+      ]
     },
     {
       "id": "g10",
@@ -132,7 +153,10 @@
       "exampleRu": "До свидания, увидимся завтра.",
       "exampleTr": "Hoşça kalın, yarın görüşürüz.",
       "exampleEn": "Goodbye, see you tomorrow.",
-      "tags": ["selamlasma", "resmi"]
+      "tags": [
+        "selamlasma",
+        "resmi"
+      ]
     },
     {
       "id": "g11",
@@ -145,7 +169,10 @@
       "exampleRu": "Доброе утро! Как вы спали?",
       "exampleTr": "Günaydın! Nasıl uyudunuz?",
       "exampleEn": "Good morning! How did you sleep?",
-      "tags": ["selamlasma", "gunluk"]
+      "tags": [
+        "selamlasma",
+        "gunluk"
+      ]
     },
     {
       "id": "g12",
@@ -158,7 +185,10 @@
       "exampleRu": "Добрый вечер, рад вас видеть.",
       "exampleTr": "İyi akşamlar, sizi görmekten memnunum.",
       "exampleEn": "Good evening, glad to see you.",
-      "tags": ["selamlasma", "resmi"]
+      "tags": [
+        "selamlasma",
+        "resmi"
+      ]
     },
     {
       "id": "g13",
@@ -171,7 +201,10 @@
       "exampleRu": "Добрый день, как я могу вам помочь?",
       "exampleTr": "İyi günler, size nasıl yardımcı olabilirim?",
       "exampleEn": "Good afternoon, how can I help you?",
-      "tags": ["greeting", "selamlasma"]
+      "tags": [
+        "greeting",
+        "selamlasma"
+      ]
     },
     {
       "id": "g14",
@@ -184,7 +217,10 @@
       "exampleRu": "Спокойной ночи, приятных снов.",
       "exampleTr": "İyi geceler, tatlı rüyalar.",
       "exampleEn": "Good night, sweet dreams.",
-      "tags": ["greeting", "phrase"]
+      "tags": [
+        "greeting",
+        "phrase"
+      ]
     },
     {
       "id": "g15",
@@ -197,7 +233,10 @@
       "exampleRu": "Спасибо за кофе, до встречи!",
       "exampleTr": "Kahve için teşekkürler, görüşürüz!",
       "exampleEn": "Thanks for the coffee, see you!",
-      "tags": ["greeting", "gunluk"]
+      "tags": [
+        "greeting",
+        "gunluk"
+      ]
     },
     {
       "id": "g16",
@@ -210,7 +249,10 @@
       "exampleRu": "Мне пора идти, пока!",
       "exampleTr": "Gitmem gerek, bay bay!",
       "exampleEn": "I have to go, bye!",
-      "tags": ["greeting", "gunluk"]
+      "tags": [
+        "greeting",
+        "gunluk"
+      ]
     },
     {
       "id": "g17",
@@ -223,7 +265,10 @@
       "exampleRu": "Привет, как тебя зовут?",
       "exampleTr": "Merhaba, senin adın ne?",
       "exampleEn": "Hi, what is your name?",
-      "tags": ["phrase", "tanisma"]
+      "tags": [
+        "phrase",
+        "tanisma"
+      ]
     },
     {
       "id": "g18",
@@ -236,7 +281,10 @@
       "exampleRu": "Меня зовут Анна. — Очень приятно!",
       "exampleTr": "Benim adım Anna. — Çok memnun oldum!",
       "exampleEn": "My name is Anna. — Nice to meet you!",
-      "tags": ["phrase", "tanisma"]
+      "tags": [
+        "phrase",
+        "tanisma"
+      ]
     },
     {
       "id": "g19",
@@ -249,7 +297,10 @@
       "exampleRu": "Как дела? — Всё хорошо, спасибо.",
       "exampleTr": "Nasıl gidiyor? — Her şey iyi, teşekkürler.",
       "exampleEn": "How are you? — Everything is good, thanks.",
-      "tags": ["phrase", "gunluk"]
+      "tags": [
+        "phrase",
+        "gunluk"
+      ]
     },
     {
       "id": "g20",
@@ -262,7 +313,10 @@
       "exampleRu": "Сегодня погода очень плохая.",
       "exampleTr": "Bugün hava çok kötü.",
       "exampleEn": "Today the weather is very bad.",
-      "tags": ["phrase", "gunluk"]
+      "tags": [
+        "phrase",
+        "gunluk"
+      ]
     },
     {
       "id": "g21",
@@ -275,20 +329,25 @@
       "exampleRu": "Ты придёшь сегодня? — Конечно!",
       "exampleTr": "Bugün gelecek misin? — Tabii ki!",
       "exampleEn": "Are you coming today? — Of course!",
-      "tags": ["phrase", "gunluk"]
+      "tags": [
+        "phrase",
+        "gunluk"
+      ]
     },
     {
       "id": "g22",
       "type": "word",
-      "ru": "может быть",
+      "ru": "может",
       "tr": "belki",
       "en": "maybe",
       "pronunciationTr": "MO-jit BİT",
       "pronunciationEn": "MOH-zhet BIT",
-      "exampleRu": "Может быть, мы увидимся завтра.",
+      "exampleRu": "Может, мы увидимся завтра.",
       "exampleTr": "Belki yarın görüşürüz.",
       "exampleEn": "Maybe we will see each other tomorrow.",
-      "tags": ["phrase"]
+      "tags": [
+        "phrase"
+      ]
     },
     {
       "id": "g23",
@@ -301,7 +360,9 @@
       "exampleRu": "Извините, я не понимаю по-русски.",
       "exampleTr": "Özür dilerim, Rusça anlamıyorum.",
       "exampleEn": "Sorry, I don't understand Russian.",
-      "tags": ["phrase"]
+      "tags": [
+        "phrase"
+      ]
     },
     {
       "id": "g24",
@@ -314,7 +375,10 @@
       "exampleRu": "Повторите, пожалуйста, ещё раз.",
       "exampleTr": "Lütfen bir kez daha tekrar eder misiniz.",
       "exampleEn": "Please repeat one more time.",
-      "tags": ["phrase", "nezaket"]
+      "tags": [
+        "phrase",
+        "nezaket"
+      ]
     }
   ]
 }

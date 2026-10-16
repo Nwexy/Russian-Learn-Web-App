@@ -1,0 +1,94 @@
+{
+  "id": "grammar-03-to-be",
+  "level": "A1",
+  "titleTr": "'Olmak' Fiili ve Это",
+  "titleEn": "The Verb 'To Be' and Это",
+  "summaryTr": "Rusça'da şimdiki zamanda 'olmak' fiili kullanılmaz. 'Ben öğrenciyim' = 'Я студент'. 'Это' ise 'bu / bu bir ...' kalıbıdır.",
+  "summaryEn": "In Russian, the verb 'to be' is omitted in present tense. 'I am a student' = 'Я студент'. 'Это' means 'this is / it is'.",
+  "relatedUnits": ["unit-01-greetings"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Türkçede 'Ben öğrenciyim', İngilizcede 'I am a student' derken ek fiil (-yim/-im) veya 'am/is/are' kullanılır. Rusça'da ise şimdiki zamanda 'olmak' fiili (быть) KULLANILMAZ. Özne ve yüklem doğrudan yan yana gelir:\n• Я студент. = Ben öğrenciyim.\n• Он дома. = O evde.",
+      "bodyEn": "While English uses 'am/is/are' and Turkish uses suffixes, Russian simply omits the verb 'to be' (быть) in the present tense. Subject and complement are placed directly next to each other:\n• Я студент. = I am a student.\n• Он дома. = He is at home."
+    },
+    {
+      "type": "table",
+      "headersTr": ["Cümle Türü", "Rusça", "Türkçe", "İngilizce"],
+      "headersEn": ["Sentence Type", "Russian", "Turkish", "English"],
+      "rows": [
+        {
+          "cellsTr": ["Meslek / Kimlik", "Я врач.", "Ben doktorum.", "I am a doctor."],
+          "cellsEn": ["Profession / Identity", "Я врач.", "Ben doktorum.", "I am a doctor."]
+        },
+        {
+          "cellsTr": ["Durum / Sıfat", "Анна красивая.", "Anna güzeldir.", "Anna is beautiful."],
+          "cellsEn": ["State / Adjective", "Анна красивая.", "Anna is beautiful.", "Anna is beautiful."]
+        },
+        {
+          "cellsTr": ["Konum", "Мы здесь.", "Biz buradayız.", "We are here."],
+          "cellsEn": ["Location", "Мы здесь.", "Biz buradayız.", "We are here."]
+        },
+        {
+          "cellsTr": ["İşaret (Это)", "Это стол.", "Bu bir masadır.", "This is a table."],
+          "cellsEn": ["Demonstrative (Это)", "Это стол.", "Bu bir masadır.", "This is a table."]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bodyTr": "«Это» Kelimesinin Kullanımı: 'Это' kelimesi 'Bu / Bu ...dır' anlamına gelen sabit bir işaret kalıbıdır. Eril, dişil veya nötr tüm kelimeler için aynı şekilde kullanılır:\n• Это кот. (Bu bir kedidir - Eril)\n• Это книга. (Bu bir kitaptır - Dişil)\n• Это окно. (Bu bir penceredir - Nötr)\n• Soru sormak için tonlama değiştirilir: «Это стол?» (Bu bir masa mı?)",
+      "bodyEn": "Usage of «Это»: 'Это' means 'this is / these are / it is'. It remains invariable regardless of the noun's gender or number:\n• Это кот. (This is a cat - Masculine)\n• Это книга. (This is a book - Feminine)\n• Это окно. (This is a window - Neuter)\n• To ask a question, simply use rising intonation: «Это стол?» (Is this a table?)"
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "Я студент.", "tr": "Ben öğrenciyim.", "en": "I am a student.", "note": "Şimdiki zamanda 'olmak' fiili yok" },
+        { "ru": "Это стол.", "tr": "Bu bir masa.", "en": "This is a table.", "note": "Это + eril isim" },
+        { "ru": "Это книга.", "tr": "Bu bir kitap.", "en": "This is a book.", "note": "Это + dişil isim" },
+        { "ru": "Это окно.", "tr": "Bu bir pencere.", "en": "This is a window.", "note": "Это + nötr isim" },
+        { "ru": "Мы дома.", "tr": "Biz evdeyiz.", "en": "We are at home.", "note": "Özne + yer zarfı" },
+        { "ru": "Кто это?", "tr": "Bu kim?", "en": "Who is this?", "note": "Kişiler için soru kalıbı" },
+        { "ru": "Что это?", "tr": "Bu ne?", "en": "What is this?", "note": "Nesneler için soru kalıbı" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "Rusça'da 'Ben öğrenciyim' cümlesi nasıl söylenir?",
+      "questionLang": "tr",
+      "options": ["Я есть студент", "Я студент", "Я быть студент", "Студент я есть"],
+      "correctIndex": 1,
+      "explanationTr": "Rusça şimdiki zamanda olmak fiili kullanılmaz, doğrudan «Я студент» denir.",
+      "explanationEn": "In Russian present tense, 'to be' is omitted: «Я студент»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "'Bu bir kitaptır' cümlesi Rusça'da nasıl ifade edilir?",
+      "questionLang": "tr",
+      "options": ["Это книга", "Эта книга есть", "Книга это есть", "То книга"],
+      "correctIndex": 0,
+      "explanationTr": "«Это книга» = Bu bir kitaptır.",
+      "explanationEn": "«Это книга» = This is a book."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Что это?» sorusunun Türkçe karşılığı nedir?",
+      "questionLang": "tr",
+      "options": ["Bu kim?", "Bu ne?", "Nerede?", "Nasıl?"],
+      "correctIndex": 1,
+      "explanationTr": "«Что это?» nesneler için 'Bu ne?' anlamına gelir.",
+      "explanationEn": "«Что это?» means 'What is this?'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Rusça şimdiki zamanda 'olmak' fiili hakkında hangisi doğrudur?",
+      "questionLang": "tr",
+      "options": ["Her zaman yazılır", "Şimdiki zamanda kullanılmaz (düşer)", "Sadece dişillerde yazılır", "Sadece çoğullarda yazılır"],
+      "correctIndex": 1,
+      "explanationTr": "Rusça'da şimdiki zamanda 'olmak' fiili (быть) kural olarak kullanılmaz.",
+      "explanationEn": "In Russian present tense, the verb 'to be' is not used."
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "id": "grammar-02-pronouns",
+  "level": "A1",
+  "titleTr": "Şahıs Zamirleri",
+  "titleEn": "Personal Pronouns",
+  "summaryTr": "Rusça temel şahıs zamirleri: я (ben), ты (sen), он (o - eril), она (o - dişil), оно (o - nötr), мы (biz), вы (siz), они (onlar).",
+  "summaryEn": "Basic Russian personal pronouns: я (I), ты (you), он (he), она (she), оно (it), мы (we), вы (you pl./formal), они (they).",
+  "relatedUnits": ["unit-01-greetings"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Rusça'da şahıs zamirleri konuşan kişiyi, dinleyeni veya bahsedilen varlıkları temsil eder. Üçüncü tekil şahıs için üç farklı zamir vardır: он (eril), она (dişil) ve оно (nötr). Çoğulda ise tüm cinsler için tek bir zamir (они) kullanılır.",
+      "bodyEn": "Russian personal pronouns represent the speaker, the listener, or third parties. There are three third-person singular pronouns: он (masculine), она (feminine), and оно (neuter). In plural, a single pronoun (они) is used for all genders."
+    },
+    {
+      "type": "table",
+      "headersTr": ["Zamir", "Türkçe Karşılığı", "İngilizce Karşılığı", "Kullanım / Not"],
+      "headersEn": ["Pronoun", "Turkish", "English", "Usage / Note"],
+      "rows": [
+        {
+          "cellsTr": ["я", "ben", "I", "1. tekil şahıs"],
+          "cellsEn": ["я", "ben", "I", "1st person singular"]
+        },
+        {
+          "cellsTr": ["ты", "sen", "you (informal)", "2. tekil şahıs (samimi, arkadaşlar/aile)"],
+          "cellsEn": ["ты", "sen", "you (informal)", "2nd person singular (informal/friends)"]
+        },
+        {
+          "cellsTr": ["он", "o (eril)", "he", "3. tekil şahıs eril (erkekler ve eril isimler)"],
+          "cellsEn": ["он", "o (eril)", "he", "3rd person singular masculine"]
+        },
+        {
+          "cellsTr": ["она", "o (dişil)", "she", "3. tekil şahıs dişil (kadınlar ve dişil isimler)"],
+          "cellsEn": ["она", "o (dişil)", "she", "3rd person singular feminine"]
+        },
+        {
+          "cellsTr": ["оно", "o (nötr)", "it", "3. tekil şahıs nötr (nötr cins isimler)"],
+          "cellsEn": ["оно", "o (nötr)", "it", "3rd person singular neuter"]
+        },
+        {
+          "cellsTr": ["мы", "biz", "we", "1. çoğul şahıs"],
+          "cellsEn": ["мы", "biz", "we", "1st person plural"]
+        },
+        {
+          "cellsTr": ["вы", "siz", "you (formal/plural)", "2. çoğul şahıs veya saygı/resmi hitap"],
+          "cellsEn": ["вы", "siz", "you (formal/plural)", "2nd person plural or polite/formal address"]
+        },
+        {
+          "cellsTr": ["они", "onlar", "they", "3. çoğul şahıs (tüm cinsler için)"],
+          "cellsEn": ["они", "onlar", "they", "3rd person plural (all genders)"]
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "bodyTr": "Nezaket Kuralı: 'Вы' zamiri hem birden fazla kişiye ('siz') hem de tanımadığınız, sizden yaşça büyük veya resmi ortamlardaki tek bir kişiye saygı hitabı olarak (Türkçedeki 'Siz' gibi) kullanılır. 'Ты' ise sadece yakın arkadaşlar, çocuklar ve aile üyeleriyle konuşurken tercih edilir.",
+      "bodyEn": "Politeness Rule: 'Вы' is used both for plural 'you' and as a polite address to an adult stranger, elder, or colleague. 'Ты' is reserved for close friends, family, and children."
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "Я здесь.", "tr": "Ben buradayım.", "en": "I am here.", "note": "я = ben" },
+        { "ru": "Ты дома?", "tr": "Sen evde misin?", "en": "Are you home?", "note": "ты = sen" },
+        { "ru": "Он врач.", "tr": "O doktor.", "en": "He is a doctor.", "note": "он = o (eril)" },
+        { "ru": "Она учитель.", "tr": "O öğretmen.", "en": "She is a teacher.", "note": "она = o (dişil)" },
+        { "ru": "Оно там.", "tr": "O orada.", "en": "It is there.", "note": "оно = o (nötr)" },
+        { "ru": "Мы друзья.", "tr": "Biz arkadaşız.", "en": "We are friends.", "note": "мы = biz" },
+        { "ru": "Вы готовы?", "tr": "Hazır mısınız?", "en": "Are you ready?", "note": "вы = siz" },
+        { "ru": "Они студенты.", "tr": "Onlar öğrenci.", "en": "They are students.", "note": "они = onlar" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "Rusça'da 'Biz' anlamına gelen şahıs zamiri hangisidir?",
+      "questionLang": "tr",
+      "options": ["мы", "вы", "они", "ты"],
+      "correctIndex": 0,
+      "explanationTr": "«мы» = biz demektir.",
+      "explanationEn": "«мы» means 'we'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Dişil bir nesne veya kadın için 'O' zamiri hangisidir?",
+      "questionLang": "tr",
+      "options": ["он", "она", "оно", "они"],
+      "correctIndex": 1,
+      "explanationTr": "«она» kadınlar ve dişil isimler için kullanılır.",
+      "explanationEn": "«она» is used for feminine nouns and women."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Resmi veya kibar hitapta tek bir kişiye hitap ederken hangi zamir kullanılır?",
+      "questionLang": "tr",
+      "options": ["ты", "вы", "он", "мы"],
+      "correctIndex": 1,
+      "explanationTr": "«вы» zamiri kibar ve resmi hitapta tek kişi için de kullanılır.",
+      "explanationEn": "«вы» is used for formal/polite address to a single person."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«они» zamirinin Türkçe karşılığı nedir?",
+      "questionLang": "tr",
+      "options": ["biz", "siz", "onlar", "sen"],
+      "correctIndex": 2,
+      "explanationTr": "«они» = onlar demektir.",
+      "explanationEn": "«они» means 'they'."
+    }
+  ]
+}
