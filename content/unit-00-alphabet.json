@@ -1,0 +1,127 @@
+{
+  "id": "unit-00",
+  "title": "Alfabe ve Sesletim",
+  "level": "A0",
+  "items": [
+    {
+      "id": "a01",
+      "type": "letter",
+      "ru": "А а",
+      "tr": "A",
+      "en": "A",
+      "exampleRu": "Анна",
+      "exampleTr": "Anna",
+      "exampleEn": "Anna"
+    },
+    {
+      "id": "a02",
+      "type": "letter",
+      "ru": "Б б",
+      "tr": "B",
+      "en": "B",
+      "exampleRu": "Банк",
+      "exampleTr": "Banka",
+      "exampleEn": "Bank"
+    },
+    {
+      "id": "a03",
+      "type": "letter",
+      "ru": "В в",
+      "tr": "V",
+      "en": "V",
+      "exampleRu": "Вода",
+      "exampleTr": "Su",
+      "exampleEn": "Water"
+    },
+    {
+      "id": "a04",
+      "type": "letter",
+      "ru": "Г г",
+      "tr": "G",
+      "en": "G",
+      "exampleRu": "Город",
+      "exampleTr": "Sehir",
+      "exampleEn": "City"
+    },
+    {
+      "id": "a05",
+      "type": "letter",
+      "ru": "Д д",
+      "tr": "D",
+      "en": "D",
+      "exampleRu": "Дом",
+      "exampleTr": "Ev",
+      "exampleEn": "House"
+    },
+    {
+      "id": "a06",
+      "type": "letter",
+      "ru": "Е е",
+      "tr": "Ye",
+      "en": "Ye",
+      "exampleRu": "Ель",
+      "exampleTr": "Ladin agaci",
+      "exampleEn": "Fir tree"
+    },
+    {
+      "id": "a07",
+      "type": "letter",
+      "ru": "Ж ж",
+      "tr": "J (Zh)",
+      "en": "Zh",
+      "exampleRu": "Журнал",
+      "exampleTr": "Dergi",
+      "exampleEn": "Magazine"
+    },
+    {
+      "id": "a08",
+      "type": "letter",
+      "ru": "З з",
+      "tr": "Z",
+      "en": "Z",
+      "exampleRu": "Зима",
+      "exampleTr": "Kis",
+      "exampleEn": "Winter"
+    },
+    {
+      "id": "a09",
+      "type": "letter",
+      "ru": "И и",
+      "tr": "I",
+      "en": "I (ee)",
+      "exampleRu": "Имя",
+      "exampleTr": "Isim",
+      "exampleEn": "Name"
+    },
+    {
+      "id": "a10",
+      "type": "letter",
+      "ru": "К к",
+      "tr": "K",
+      "en": "K",
+      "exampleRu": "Кот",
+      "exampleTr": "Kedi",
+      "exampleEn": "Cat"
+    },
+    {
+      "id": "a11",
+      "type": "letter",
+      "ru": "Л л",
+      "tr": "L",
+      "en": "L",
+      "exampleRu": "Лампа",
+      "exampleTr": "Lamba",
+      "exampleEn": "Lamp"
+    },
+    {
+      "id": "a12",
+      "type": "letter",
+      "ru": "М м",
+      "tr": "M",
+      "en": "M",
+      "exampleRu": "Мама",
+      "exampleTr": "Anne",
+      "exampleEn": "Mother"
+    }
+  ]
+}
