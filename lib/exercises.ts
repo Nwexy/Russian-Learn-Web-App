@@ -96,14 +96,14 @@ function getExampleText(item: Item, lang: Lang): string {
 }
 
 /**
- * Okunuşu çeviri diline göre döndürür (pronunciationLang = translationLang).
- * Alan yoksa boş string döner; fallback yapılmaz çünkü okunuş yazımı dile özgüdür.
+ * Okunuşu döndürür (her zaman İngilizce telaffuz — Faz 5.1).
+ * Alan yoksa boş string döner.
  */
 export function getPronunciation(
-  item: { pronunciationTr?: string; pronunciationEn?: string },
-  lang: Lang
+  item: { pronunciationEn?: string },
+  _lang?: Lang
 ): string {
-  return (lang === "tr" ? item.pronunciationTr : item.pronunciationEn) || "";
+  return item.pronunciationEn || "";
 }
 
 /* ========================================

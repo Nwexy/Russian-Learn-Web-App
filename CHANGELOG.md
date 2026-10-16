@@ -4,6 +4,11 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-16
+- Turkce telaffuz alanlari (pronunciationTr) kaldirildi.
+- Telaffuz artik her zaman Ingilizce gosteriliyor (arayuz ve ceviri dilinden bagimsiz).
+- пожалуйста ve повторите пожалуйста telaffuzlari duzeltildi.
+
+## 2026-10-16 (Faz 5)
 - Gramer modulu eklendi.
 - grammarProgress tablosu Dexie semasina eklendi.
 - 4 gramer notu eklendi: cinsiyet, zamirler, olmak fiili, simdiki zaman.

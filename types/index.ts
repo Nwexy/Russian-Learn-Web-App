@@ -20,7 +20,6 @@ export interface Item {
   exampleRu?: string;  // Rusça örnek cümle
   exampleTr?: string;  // Türkçe örnek cümle
   exampleEn?: string;  // İngilizce örnek cümle
-  pronunciationTr?: string;  // Türkçe okunuş (vurgulu hece büyük harf)
   pronunciationEn?: string;  // İngilizce okunuş (vurgulu hece büyük harf)
   numberValue?: number;      // Sayısal değer (örn. 0-100)
   tags?: string[];     // Etiketler (opsiyonel)
@@ -67,7 +66,6 @@ export interface RawItem {
   exampleRu?: string;
   exampleTr?: string;
   exampleEn?: string;
-  pronunciationTr?: string;
   pronunciationEn?: string;
   numberValue?: number;
   tags?: string[];

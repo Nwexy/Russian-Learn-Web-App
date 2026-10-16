@@ -92,7 +92,6 @@ export async function seedDatabase(): Promise<void> {
       exampleRu: raw.exampleRu,
       exampleTr: raw.exampleTr,
       exampleEn: raw.exampleEn,
-      pronunciationTr: raw.pronunciationTr,
       pronunciationEn: raw.pronunciationEn,
       numberValue: raw.numberValue,
       tags: raw.tags,

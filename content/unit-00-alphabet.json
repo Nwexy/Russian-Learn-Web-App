@@ -13,9 +13,11 @@
       "exampleRu": "Анна",
       "exampleTr": "Anna",
       "exampleEn": "Anna",
-      "pronunciationTr": "A",
       "pronunciationEn": "A",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-be",
@@ -26,9 +28,11 @@
       "exampleRu": "Банк",
       "exampleTr": "Banka",
       "exampleEn": "Bank",
-      "pronunciationTr": "BYE",
       "pronunciationEn": "BE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-ve",
@@ -39,9 +43,11 @@
       "exampleRu": "Вода",
       "exampleTr": "Su",
       "exampleEn": "Water",
-      "pronunciationTr": "VYE",
       "pronunciationEn": "VE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-ge",
@@ -52,9 +58,11 @@
       "exampleRu": "Город",
       "exampleTr": "Şehir",
       "exampleEn": "City",
-      "pronunciationTr": "GYE",
       "pronunciationEn": "GE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-de",
@@ -65,9 +73,11 @@
       "exampleRu": "Дом",
       "exampleTr": "Ev",
       "exampleEn": "House",
-      "pronunciationTr": "DYE",
       "pronunciationEn": "DE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-ye",
@@ -78,9 +88,11 @@
       "exampleRu": "Ель",
       "exampleTr": "Ladin ağacı",
       "exampleEn": "Fir tree",
-      "pronunciationTr": "YE",
       "pronunciationEn": "YE",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-yo",
@@ -91,9 +103,11 @@
       "exampleRu": "Ёлка",
       "exampleTr": "Yılbaşı ağacı",
       "exampleEn": "Christmas tree",
-      "pronunciationTr": "YO",
       "pronunciationEn": "YO",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-zhe",
@@ -104,9 +118,11 @@
       "exampleRu": "Журнал",
       "exampleTr": "Dergi",
       "exampleEn": "Magazine",
-      "pronunciationTr": "JE",
       "pronunciationEn": "ZHE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-ze",
@@ -117,9 +133,11 @@
       "exampleRu": "Зима",
       "exampleTr": "Kış",
       "exampleEn": "Winter",
-      "pronunciationTr": "ZE",
       "pronunciationEn": "ZE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-i",
@@ -130,9 +148,11 @@
       "exampleRu": "Имя",
       "exampleTr": "İsim",
       "exampleEn": "Name",
-      "pronunciationTr": "İ",
       "pronunciationEn": "EE",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-iy",
@@ -143,9 +163,11 @@
       "exampleRu": "Йогурт",
       "exampleTr": "Yoğurt",
       "exampleEn": "Yogurt",
-      "pronunciationTr": "İ krat-ka-ye",
       "pronunciationEn": "EE krat-ko-ye",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-ka",
@@ -156,9 +178,11 @@
       "exampleRu": "Кот",
       "exampleTr": "Kedi",
       "exampleEn": "Cat",
-      "pronunciationTr": "KA",
       "pronunciationEn": "KA",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-el",
@@ -169,9 +193,11 @@
       "exampleRu": "Лампа",
       "exampleTr": "Lamba",
       "exampleEn": "Lamp",
-      "pronunciationTr": "EL",
       "pronunciationEn": "EL",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-em",
@@ -182,9 +208,11 @@
       "exampleRu": "Мама",
       "exampleTr": "Anne",
       "exampleEn": "Mother",
-      "pronunciationTr": "EM",
       "pronunciationEn": "EM",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-en",
@@ -195,9 +223,11 @@
       "exampleRu": "Нос",
       "exampleTr": "Burun",
       "exampleEn": "Nose",
-      "pronunciationTr": "EN",
       "pronunciationEn": "EN",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-o",
@@ -208,9 +238,11 @@
       "exampleRu": "Окно",
       "exampleTr": "Pencere",
       "exampleEn": "Window",
-      "pronunciationTr": "O",
       "pronunciationEn": "O",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-pe",
@@ -221,9 +253,11 @@
       "exampleRu": "Парк",
       "exampleTr": "Park",
       "exampleEn": "Park",
-      "pronunciationTr": "PE",
       "pronunciationEn": "PE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-er",
@@ -234,9 +268,11 @@
       "exampleRu": "Рыба",
       "exampleTr": "Balık",
       "exampleEn": "Fish",
-      "pronunciationTr": "ER",
       "pronunciationEn": "ER",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-es",
@@ -247,9 +283,11 @@
       "exampleRu": "Стол",
       "exampleTr": "Masa",
       "exampleEn": "Table",
-      "pronunciationTr": "ES",
       "pronunciationEn": "ES",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-te",
@@ -260,9 +298,11 @@
       "exampleRu": "Торт",
       "exampleTr": "Pasta",
       "exampleEn": "Cake",
-      "pronunciationTr": "TE",
       "pronunciationEn": "TE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-u",
@@ -273,9 +313,11 @@
       "exampleRu": "Утро",
       "exampleTr": "Sabah",
       "exampleEn": "Morning",
-      "pronunciationTr": "U",
       "pronunciationEn": "OO",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-ef",
@@ -286,9 +328,11 @@
       "exampleRu": "Фото",
       "exampleTr": "Fotoğraf",
       "exampleEn": "Photo",
-      "pronunciationTr": "EF",
       "pronunciationEn": "EF",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-ha",
@@ -299,9 +343,11 @@
       "exampleRu": "Хлеб",
       "exampleTr": "Ekmek",
       "exampleEn": "Bread",
-      "pronunciationTr": "HA",
       "pronunciationEn": "KHA",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-tse",
@@ -312,9 +358,11 @@
       "exampleRu": "Центр",
       "exampleTr": "Merkez",
       "exampleEn": "Center",
-      "pronunciationTr": "TSE",
       "pronunciationEn": "TSE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-che",
@@ -325,9 +373,11 @@
       "exampleRu": "Чай",
       "exampleTr": "Çay",
       "exampleEn": "Tea",
-      "pronunciationTr": "ÇE",
       "pronunciationEn": "CHE",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-sha",
@@ -338,9 +388,11 @@
       "exampleRu": "Школа",
       "exampleTr": "Okul",
       "exampleEn": "School",
-      "pronunciationTr": "ŞA",
       "pronunciationEn": "SHA",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-shcha",
@@ -351,9 +403,11 @@
       "exampleRu": "Щука",
       "exampleTr": "Turna balığı",
       "exampleEn": "Pike (fish)",
-      "pronunciationTr": "ŞÇA",
       "pronunciationEn": "SHCHA",
-      "tags": ["letter", "consonant"]
+      "tags": [
+        "letter",
+        "consonant"
+      ]
     },
     {
       "id": "letter-hard-sign",
@@ -364,9 +418,11 @@
       "exampleRu": "Объект",
       "exampleTr": "Nesne",
       "exampleEn": "Object",
-      "pronunciationTr": "tv-YOR-dıy znak",
       "pronunciationEn": "tv-YOR-diy znak",
-      "tags": ["letter", "sign"]
+      "tags": [
+        "letter",
+        "sign"
+      ]
     },
     {
       "id": "letter-y",
@@ -377,9 +433,11 @@
       "exampleRu": "Сын",
       "exampleTr": "Oğul",
       "exampleEn": "Son",
-      "pronunciationTr": "I",
       "pronunciationEn": "Y",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-soft-sign",
@@ -390,9 +448,11 @@
       "exampleRu": "День",
       "exampleTr": "Gün",
       "exampleEn": "Day",
-      "pronunciationTr": "MYAK-kiy znak",
       "pronunciationEn": "MYAG-kiy znak",
-      "tags": ["letter", "sign"]
+      "tags": [
+        "letter",
+        "sign"
+      ]
     },
     {
       "id": "letter-e",
@@ -403,9 +463,11 @@
       "exampleRu": "Это",
       "exampleTr": "Bu",
       "exampleEn": "This is",
-      "pronunciationTr": "E",
       "pronunciationEn": "EH",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-yu",
@@ -416,9 +478,11 @@
       "exampleRu": "Юбка",
       "exampleTr": "Etek",
       "exampleEn": "Skirt",
-      "pronunciationTr": "YU",
       "pronunciationEn": "YOO",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     },
     {
       "id": "letter-ya",
@@ -429,9 +493,11 @@
       "exampleRu": "Яблоко",
       "exampleTr": "Elma",
       "exampleEn": "Apple",
-      "pronunciationTr": "YA",
       "pronunciationEn": "YA",
-      "tags": ["letter", "vowel"]
+      "tags": [
+        "letter",
+        "vowel"
+      ]
     }
   ]
 }
