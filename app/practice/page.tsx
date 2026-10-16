@@ -29,6 +29,7 @@ import type {
 import { speak, isTTSSupported } from "@/lib/tts";
 import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
+import { shouldShowPronunciation } from "@/lib/exercises-ui";
 import type { Item, ExerciseType } from "@/types";
 
 /** Alıştırma durumları */
@@ -532,7 +533,7 @@ export default function PracticePage() {
 
         <div className="flashcard">
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{q.question}</div>
-          {ruQuestion && <PronunciationText item={q.item} />}
+          {ruQuestion && shouldShowPronunciation(mcRevealed) && <PronunciationText item={q.item} />}
           <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
 
@@ -562,7 +563,9 @@ export default function PracticePage() {
               <span className="feedback-meaning">
                 {" "} — {q.item.ru} {t.meaningEquals} {getMeaning(q.item, translationLang)}
               </span>
-              <PronunciationText item={q.item} className="pronunciation-inline" />
+              {shouldShowPronunciation(mcRevealed) && (
+                <PronunciationText item={q.item} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={handleMcNext}>
               {t.next}
@@ -591,7 +594,7 @@ export default function PracticePage() {
 
         <div className="flashcard">
           <div className="flashcard-ru">{q.sentenceWithBlank}</div>
-          <PronunciationText item={q.item} />
+          {shouldShowPronunciation(fbRevealed) && <PronunciationText item={q.item} />}
           <p className="practice-hint">{q.hint}</p>
         </div>
 
@@ -623,7 +626,9 @@ export default function PracticePage() {
               <span className="feedback-meaning">
                 {" "} — {q.item.ru} {t.meaningEquals} {getMeaning(q.item, translationLang)}
               </span>
-              <PronunciationText item={q.item} className="pronunciation-inline" />
+              {shouldShowPronunciation(fbRevealed) && (
+                <PronunciationText item={q.item} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={handleFbNext}>
               {t.next}
@@ -748,7 +753,9 @@ export default function PracticePage() {
               <span className="feedback-meaning">
                 {" "} — {listenQuestions[listenIndex].item.ru} {t.meaningEquals} {getMeaning(listenQuestions[listenIndex].item, translationLang)}
               </span>
-              <PronunciationText item={listenQuestions[listenIndex].item} className="pronunciation-inline" />
+              {shouldShowPronunciation(listenRevealed) && (
+                <PronunciationText item={listenQuestions[listenIndex].item} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={handleListenNext}>
               {t.next}

@@ -22,6 +22,7 @@ import type { MixedQuestion } from "@/lib/exercises";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
+import { shouldShowPronunciation } from "@/lib/exercises-ui";
 import type { Item } from "@/types";
 
 /** Oturumdaki soru sayısı */
@@ -233,7 +234,9 @@ export default function UnitPracticePage() {
             {" "} — {item.ru} {t.meaningEquals} {getMeaning(item)}
           </span>
         )}
-        {item && <PronunciationText item={item} className="pronunciation-inline" />}
+        {item && shouldShowPronunciation(revealed) && (
+          <PronunciationText item={item} className="pronunciation-inline" />
+        )}
       </div>
       <button className="practice-btn practice-btn-primary" onClick={next}>
         {t.next}
@@ -263,7 +266,7 @@ export default function UnitPracticePage() {
         {header}
         <div className="flashcard">
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{mc.question}</div>
-          {ruQuestion && <PronunciationText item={mc.item} />}
+          {ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={mc.item} />}
           <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
         <div className="mc-options">

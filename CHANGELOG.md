@@ -3,6 +3,11 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16 (Faz 4.6)
+- Alistirma ve testte telaffuz sizintisi giderildi (sadece cevap sonrasi gosteriliyor).
+- Alfabe unitisine Kiril alfabesinin 33 harfinin tamami eklendi.
+- Selamlasma unitisine 10+ yeni ifade eklendi.
+
 ## 2026-10-16 (Faz 4.5)
 - Alfabe unitisinde Alistirma/Test butonlari gizlendi.
 - Alistirma ve Test farki netlestirildi (esik + uniteyi tamamlama).

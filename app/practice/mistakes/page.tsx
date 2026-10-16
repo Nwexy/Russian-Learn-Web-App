@@ -14,6 +14,7 @@ import { getMessages } from "@/lib/i18n";
 import { getAllMistakes, removeMistake, recordMistake } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
+import { shouldShowPronunciation } from "@/lib/exercises-ui";
 import type { Mistake, Item } from "@/types";
 
 type Phase = "list" | "active" | "result";
@@ -244,7 +245,9 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{question}</div>
-          {ruQuestion && currentItem && <PronunciationText item={currentItem} />}
+          {ruQuestion && currentItem && shouldShowPronunciation(revealed) && (
+            <PronunciationText item={currentItem} />
+          )}
           <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
 
@@ -269,7 +272,9 @@ export default function MistakesPage() {
               <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {feedbackMsg}
               </span>
-              {currentItem && <PronunciationText item={currentItem} className="pronunciation-inline" />}
+              {currentItem && shouldShowPronunciation(revealed) && (
+                <PronunciationText item={currentItem} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
@@ -303,7 +308,7 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru">{sentence}</div>
-          {currentItem && <PronunciationText item={currentItem} />}
+          {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
           {hint && <p className="practice-hint">{hint}</p>}
         </div>
 
@@ -332,7 +337,9 @@ export default function MistakesPage() {
               <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {feedbackMsg}
               </span>
-              {currentItem && <PronunciationText item={currentItem} className="pronunciation-inline" />}
+              {currentItem && shouldShowPronunciation(revealed) && (
+                <PronunciationText item={currentItem} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
@@ -365,7 +372,7 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru">{ru}</div>
-          {currentItem && <PronunciationText item={currentItem} />}
+          {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
           <p className="practice-instruction">{t.matchPairs}</p>
         </div>
 
@@ -394,7 +401,9 @@ export default function MistakesPage() {
               <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {feedbackMsg}
               </span>
-              {currentItem && <PronunciationText item={currentItem} className="pronunciation-inline" />}
+              {currentItem && shouldShowPronunciation(revealed) && (
+                <PronunciationText item={currentItem} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
@@ -469,7 +478,9 @@ export default function MistakesPage() {
               <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {feedbackMsg}
               </span>
-              {currentItem && <PronunciationText item={currentItem} className="pronunciation-inline" />}
+              {currentItem && shouldShowPronunciation(revealed) && (
+                <PronunciationText item={currentItem} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}

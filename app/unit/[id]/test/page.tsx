@@ -19,6 +19,7 @@ import { setTestComplete } from "@/lib/progress";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
+import { shouldShowPronunciation } from "@/lib/exercises-ui";
 import type { Item } from "@/types";
 
 interface TestQuestion {
@@ -256,7 +257,7 @@ export default function TestPage() {
 
         <div className="flashcard">
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{q.question}</div>
-          {ruQuestion && <PronunciationText item={q.item} />}
+          {ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
           <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
 
@@ -282,7 +283,9 @@ export default function TestPage() {
                 {isCorrect ? t.correct : t.wrong}
               </span>
               <span className="feedback-meaning"> — {feedbackMeaning}</span>
-              <PronunciationText item={q.item} className="pronunciation-inline" />
+              {shouldShowPronunciation(revealed) && (
+                <PronunciationText item={q.item} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
@@ -312,7 +315,7 @@ export default function TestPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru">{q.sentenceWithBlank}</div>
-          <PronunciationText item={q.item} />
+          {shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
           {q.hint && <p className="practice-hint">{q.hint}</p>}
         </div>
 
@@ -342,7 +345,9 @@ export default function TestPage() {
                 {isCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
               </span>
               <span className="feedback-meaning"> — {feedbackMeaning}</span>
-              <PronunciationText item={q.item} className="pronunciation-inline" />
+              {shouldShowPronunciation(revealed) && (
+                <PronunciationText item={q.item} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
@@ -410,7 +415,9 @@ export default function TestPage() {
                 {isCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
               </span>
               <span className="feedback-meaning"> — {feedbackMeaning}</span>
-              <PronunciationText item={q.item} className="pronunciation-inline" />
+              {shouldShowPronunciation(revealed) && (
+                <PronunciationText item={q.item} className="pronunciation-inline" />
+              )}
             </div>
             <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
               {t.next}
