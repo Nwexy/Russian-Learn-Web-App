@@ -1243,11 +1243,11 @@ body {
 }
 
 .practice-hint {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
   margin-top: 0.75rem;
   margin-bottom: 0;
-  font-style: italic;
+  line-height: 1.4;
 }
 
 /* ========================================
@@ -1936,7 +1936,14 @@ body {
   font-weight: 600;
 }
 
-/* Faz 4.8 — Boşluk doldurma cevap vurgusu */
+/* Faz 4.8.1 — Boşluk doldurma ipucu vurguları */
+.fill-normal {
+  display: inline;
+  color: inherit;
+  font-weight: inherit;
+  text-decoration: none;
+}
+
 .fill-highlight {
   display: inline;
   color: #22c55e;

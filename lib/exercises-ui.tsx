@@ -33,18 +33,27 @@ export function shouldShowPronunciation(
 import React from "react";
 
 /**
- * "{kelime}" kalıplarını yeşil/vurgulu span olarak render eder.
- * Örn: "store opens at {nine}" -> "store opens at " + <span className="fill-highlight">nine</span>
+ * "{kelime}" kalıplarını soru aşamasında normal, cevap aşamasında yeşil/vurgulu render eder.
+ * Örn: "store opens at {nine}"
  */
-export function renderHighlightedText(text?: string | null): React.ReactNode {
+export function renderHighlightedText(
+  text?: string | null,
+  highlighted: boolean = true
+): React.ReactNode {
   if (!text) return null;
   const parts = text.split(/(\{.*?\})/g);
   return parts.map((part, i) => {
     if (part.startsWith("{") && part.endsWith("}")) {
-      const inner = part.slice(1, -1);
+      if (highlighted) {
+        return (
+          <span key={i} className="fill-highlight">
+            {part}
+          </span>
+        );
+      }
       return (
-        <span key={i} className="fill-highlight">
-          {inner}
+        <span key={i} className="fill-normal">
+          {part}
         </span>
       );
     }

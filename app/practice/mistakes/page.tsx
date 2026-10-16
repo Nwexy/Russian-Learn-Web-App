@@ -319,7 +319,11 @@ export default function MistakesPage() {
             <SpeakButton text={sentence} size="sm" />
           </div>
           {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
-          <p className="practice-instruction">{t.fillBlank}</p>
+          {fullTranslation && (
+            <p className="practice-hint">
+              {renderHighlightedText(fullTranslation, revealed)}
+            </p>
+          )}
         </div>
 
         <div className="practice-input-row">
@@ -347,11 +351,6 @@ export default function MistakesPage() {
               <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {feedbackMsg}
               </span>
-              {fullTranslation && (
-                <div className="feedback-sentence-translation">
-                  {renderHighlightedText(fullTranslation)}
-                </div>
-              )}
               {currentItem && shouldShowPronunciation(revealed) && (
                 <PronunciationText item={currentItem} className="pronunciation-inline" />
               )}

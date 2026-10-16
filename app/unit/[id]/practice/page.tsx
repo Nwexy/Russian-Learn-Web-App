@@ -306,7 +306,7 @@ export default function UnitPracticePage() {
         correct,
         "fillBlank",
         fb.item.id,
-        { sentenceWithBlank: fb.sentenceWithBlank, correctWord: fb.correctWord, hint: fb.hint },
+        { sentenceWithBlank: fb.sentenceWithBlank, correctWord: fb.correctWord, hint: fb.hint, fullTranslation: fb.fullTranslation },
         answer.trim(),
         fb.correctWord
       );
@@ -320,7 +320,12 @@ export default function UnitPracticePage() {
             <span>{fb.sentenceWithBlank}</span>
             <SpeakButton text={fb.sentenceWithBlank} size="sm" />
           </div>
-          <p className="practice-instruction">{t.fillBlank}</p>
+          {shouldShowPronunciation(revealed) && <PronunciationText item={fb.item} />}
+          {(fb.fullTranslation || fb.hintSentence) && (
+            <p className="practice-hint">
+              {renderHighlightedText(fb.fullTranslation || fb.hintSentence, revealed)}
+            </p>
+          )}
         </div>
         <div className="practice-input-row">
           <input
@@ -338,7 +343,7 @@ export default function UnitPracticePage() {
             <button className="practice-btn practice-btn-primary" onClick={handleCheck}>{t.check}</button>
           )}
         </div>
-        {revealed && feedback(fb.item, fb.correctWord, fb.fullTranslation)}
+        {revealed && feedback(fb.item, fb.correctWord)}
       </div>
     );
   }

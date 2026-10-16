@@ -627,7 +627,11 @@ export default function PracticePage() {
             <SpeakButton text={q.sentenceWithBlank} size="sm" />
           </div>
           {shouldShowPronunciation(fbRevealed) && <PronunciationText item={q.item} />}
-          <p className="practice-instruction">{t.fillBlank}</p>
+          {(q.fullTranslation || q.hintSentence) && (
+            <p className="practice-hint">
+              {renderHighlightedText(q.fullTranslation || q.hintSentence, fbRevealed)}
+            </p>
+          )}
         </div>
 
         <div className="practice-input-row">
@@ -655,11 +659,6 @@ export default function PracticePage() {
               <span className={fbCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {fbCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
               </span>
-              {q.fullTranslation && (
-                <div className="feedback-sentence-translation">
-                  {renderHighlightedText(q.fullTranslation)}
-                </div>
-              )}
               {shouldShowPronunciation(fbRevealed) && (
                 <PronunciationText item={q.item} className="pronunciation-inline" />
               )}

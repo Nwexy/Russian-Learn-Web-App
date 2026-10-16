@@ -3,6 +3,9 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16 (Faz 4.8.1)
+- Bosluk doldurmada ipucu cumlesi artik soru asamasinda da gosteriliyor.
+
 ## 2026-10-16 (Faz 4.8)
 - Eslestirmede Rusca kelimeye tiklayinca otomatik seslendirme duzeltildi.
 - Sayilar unitisi 0-100 arasi tam listeye genisletildi (101 sayi).

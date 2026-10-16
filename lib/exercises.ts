@@ -36,6 +36,7 @@ export interface FillBlankQuestion {
   correctWord: string;        // Boşluğa gelecek Rusça kelime
   hint: string;               // Çeviri dilinde ipucu
   fullTranslation?: string;   // Boşluğa denk gelen kelime { } ile vurgulanmış tam cümle çevirisi
+  hintSentence?: string;      // fullTranslation ile aynı (tam çeviri + {cevap})
 }
 
 /** Eşleştirme çifti */
@@ -196,12 +197,14 @@ export function generateFillBlank(
     const regex = new RegExp(escapeRegex(item.ru), "gi");
     const sentenceWithBlank = sentence.replace(regex, "____");
 
+    const fullTranslation = getHighlightedTranslation(item, lang);
     return {
       item,
       sentenceWithBlank,
       correctWord: item.ru,
       hint: getTranslationText(item, lang),
-      fullTranslation: getHighlightedTranslation(item, lang),
+      fullTranslation,
+      hintSentence: fullTranslation,
     };
   });
 }
