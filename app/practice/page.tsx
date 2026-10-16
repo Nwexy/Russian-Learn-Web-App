@@ -30,6 +30,7 @@ import { speak, isTTSSupported } from "@/lib/tts";
 import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { SpeakButton } from "@/components/SpeakButton";
 import type { Item, ExerciseType } from "@/types";
 
 /** Alıştırma durumları */
@@ -42,7 +43,7 @@ function getMeaning(item: Item, translationLang: string): string {
 }
 
 export default function PracticePage() {
-  const { uiLang, translationLang } = useLang();
+  const { uiLang, translationLang, showPronunciation } = useLang();
   const t = getMessages(uiLang);
   const units = getAllUnits();
 
@@ -260,6 +261,16 @@ export default function PracticePage() {
     if (matchedIds.has(id)) return;
     setMatchSelectedLeft(id);
     setMatchWrong(false);
+
+    // Eşleştirmede sol sütundaki Rusça kelimeye tıklanınca otomatik speak(ruText)
+    // Seslendirme ayarı (showPronunciation) kapalıysa ses çalmaz
+    if (showPronunciation) {
+      const pair = matchData?.pairs.find((p) => p.id === id);
+      if (pair) {
+        speak(pair.ru);
+      }
+    }
+
     if (matchSelectedRight !== null) {
       checkMatch(id, matchSelectedRight);
     }
@@ -352,25 +363,40 @@ export default function PracticePage() {
     }
   };
 
-  /** Üst ünite seçici bileşeni */
+  /** Üst ünite seçici bileşeni — oturum aktifken (phase === "active") gizlenip bilgi metni gösterilir */
+  const isSessionActive = phase === "active";
+  const selectedUnit = units.find((u) => u.id === selectedUnitId);
+  const activeUnitTitle =
+    selectedUnitId === "all"
+      ? t.practicingAllUnits
+      : selectedUnit
+        ? `${t.unit}: ${getUnitTitle(selectedUnit, uiLang)}`
+        : t.practicingAllUnits;
+
   const unitFilterSelector = (
     <div className="practice-unit-filter">
-      <label htmlFor="unit-filter-select" className="practice-unit-filter-label">
-        {t.selectUnit}:
-      </label>
-      <select
-        id="unit-filter-select"
-        className="practice-unit-select"
-        value={selectedUnitId}
-        onChange={(e) => handleUnitChange(e.target.value)}
-      >
-        <option value="all">{t.allUnits}</option>
-        {units.map((u) => (
-          <option key={u.id} value={u.id}>
-            {getUnitTitle(u, uiLang)} ({u.level})
-          </option>
-        ))}
-      </select>
+      {isSessionActive ? (
+        <span className="practice-unit-active-badge">{activeUnitTitle}</span>
+      ) : (
+        <>
+          <label htmlFor="unit-filter-select" className="practice-unit-filter-label">
+            {t.selectUnit}:
+          </label>
+          <select
+            id="unit-filter-select"
+            className="practice-unit-select"
+            value={selectedUnitId}
+            onChange={(e) => handleUnitChange(e.target.value)}
+          >
+            <option value="all">{t.allUnits}</option>
+            {units.map((u) => (
+              <option key={u.id} value={u.id}>
+                {getUnitTitle(u, uiLang)} ({u.level})
+              </option>
+            ))}
+          </select>
+        </>
+      )}
     </div>
   );
 
@@ -532,7 +558,10 @@ export default function PracticePage() {
         </div>
 
         <div className="flashcard">
-          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{q.question}</div>
+          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{q.question}</span>
+            {ruQuestion && <SpeakButton text={q.question} size="sm" />}
+          </div>
           {ruQuestion && shouldShowPronunciation(mcRevealed) && <PronunciationText item={q.item} />}
           <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
@@ -593,7 +622,10 @@ export default function PracticePage() {
         </div>
 
         <div className="flashcard">
-          <div className="flashcard-ru">{q.sentenceWithBlank}</div>
+          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{q.sentenceWithBlank}</span>
+            <SpeakButton text={q.sentenceWithBlank} size="sm" />
+          </div>
           {shouldShowPronunciation(fbRevealed) && <PronunciationText item={q.item} />}
           <p className="practice-hint">{q.hint}</p>
         </div>

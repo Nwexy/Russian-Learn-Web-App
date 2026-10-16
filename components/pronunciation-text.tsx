@@ -20,7 +20,11 @@ interface PronunciationTextProps {
 }
 
 export function PronunciationText({ item, showMissing = false, className = "" }: PronunciationTextProps) {
-  const { uiLang, translationLang } = useLang();
+  const { uiLang, translationLang, showPronunciation } = useLang();
+
+  // Telaffuz ayarı kapalıysa hiçbir yerde render etme
+  if (!showPronunciation) return null;
+
   const t = getMessages(uiLang);
   const text = getPronunciation(item, translationLang);
 

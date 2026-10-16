@@ -4,40 +4,565 @@
   "titleEn": "Numbers 0-100",
   "level": "A0",
   "items": [
-    { "id": "num-0", "type": "word", "ru": "ноль", "tr": "sıfır", "en": "zero", "pronunciationTr": "NOL", "pronunciationEn": "NOL", "exampleRu": "Температура — ноль градусов.", "exampleTr": "Sıcaklık sıfır derece.", "exampleEn": "The temperature is zero degrees.", "tags": ["number"] },
-    { "id": "num-1", "type": "word", "ru": "один", "tr": "bir", "en": "one", "pronunciationTr": "a-DİN", "pronunciationEn": "a-DIN", "exampleRu": "Один кофе, пожалуйста.", "exampleTr": "Bir kahve, lütfen.", "exampleEn": "One coffee, please.", "tags": ["number"] },
-    { "id": "num-2", "type": "word", "ru": "два", "tr": "iki", "en": "two", "pronunciationTr": "DVA", "pronunciationEn": "DVA", "exampleRu": "У меня два брата.", "exampleTr": "İki erkek kardeşim var.", "exampleEn": "I have two brothers.", "tags": ["number"] },
-    { "id": "num-3", "type": "word", "ru": "три", "tr": "üç", "en": "three", "pronunciationTr": "TRİ", "pronunciationEn": "TRI", "exampleRu": "Три дня назад.", "exampleTr": "Üç gün önce.", "exampleEn": "Three days ago.", "tags": ["number"] },
-    { "id": "num-4", "type": "word", "ru": "четыре", "tr": "dört", "en": "four", "pronunciationTr": "çi-TI-ri", "pronunciationEn": "chi-TY-ri", "exampleRu": "В комнате четыре стула.", "exampleTr": "Odada dört sandalye var.", "exampleEn": "There are four chairs in the room.", "tags": ["number"] },
-    { "id": "num-5", "type": "word", "ru": "пять", "tr": "beş", "en": "five", "pronunciationTr": "PYAT", "pronunciationEn": "PYAT", "exampleRu": "Мне пять лет.", "exampleTr": "Ben beş yaşındayım.", "exampleEn": "I am five years old.", "tags": ["number"] },
-    { "id": "num-6", "type": "word", "ru": "шесть", "tr": "altı", "en": "six", "pronunciationTr": "ŞEST", "pronunciationEn": "SHEST", "exampleRu": "Шесть часов утра.", "exampleTr": "Sabah altı.", "exampleEn": "Six o'clock in the morning.", "tags": ["number"] },
-    { "id": "num-7", "type": "word", "ru": "семь", "tr": "yedi", "en": "seven", "pronunciationTr": "SYEM", "pronunciationEn": "SYEM", "exampleRu": "В неделе семь дней.", "exampleTr": "Bir haftada yedi gün var.", "exampleEn": "There are seven days in a week.", "tags": ["number"] },
-    { "id": "num-8", "type": "word", "ru": "восемь", "tr": "sekiz", "en": "eight", "pronunciationTr": "VO-sim", "pronunciationEn": "VO-sim", "exampleRu": "Урок начинается в восемь.", "exampleTr": "Ders sekizde başlıyor.", "exampleEn": "The lesson starts at eight.", "tags": ["number"] },
-    { "id": "num-9", "type": "word", "ru": "девять", "tr": "dokuz", "en": "nine", "pronunciationTr": "DYE-vit", "pronunciationEn": "DYE-vit", "exampleRu": "Магазин открывается в девять.", "exampleTr": "Mağaza dokuzda açılıyor.", "exampleEn": "The store opens at nine.", "tags": ["number"] },
-    { "id": "num-10", "type": "word", "ru": "десять", "tr": "on", "en": "ten", "pronunciationTr": "DYE-sit", "pronunciationEn": "DYE-sit", "exampleRu": "Десять минут пешком.", "exampleTr": "Yürüyerek on dakika.", "exampleEn": "Ten minutes on foot.", "tags": ["number"] },
-    { "id": "num-11", "type": "word", "ru": "одиннадцать", "tr": "on bir", "en": "eleven", "pronunciationTr": "a-DİN-na-tsat", "pronunciationEn": "a-DIN-na-tsat", "exampleRu": "Мне одиннадцать лет.", "exampleTr": "On bir yaşındayım.", "exampleEn": "I am eleven years old.", "tags": ["number"] },
-    { "id": "num-12", "type": "word", "ru": "двенадцать", "tr": "on iki", "en": "twelve", "pronunciationTr": "dvi-NA-tsat", "pronunciationEn": "dvi-NA-tsat", "exampleRu": "Сейчас двенадцать часов.", "exampleTr": "Şimdi saat on iki.", "exampleEn": "It is twelve o'clock now.", "tags": ["number"] },
-    { "id": "num-13", "type": "word", "ru": "тринадцать", "tr": "on üç", "en": "thirteen", "pronunciationTr": "tri-NA-tsat", "pronunciationEn": "tri-NA-tsat", "exampleRu": "Тринадцать студентов в классе.", "exampleTr": "Sınıfta on üç öğrenci var.", "exampleEn": "Thirteen students in the class.", "tags": ["number"] },
-    { "id": "num-14", "type": "word", "ru": "четырнадцать", "tr": "on dört", "en": "fourteen", "pronunciationTr": "çi-TIR-na-tsat", "pronunciationEn": "chi-TYR-na-tsat", "exampleRu": "Ей четырнадцать лет.", "exampleTr": "O on dört yaşında.", "exampleEn": "She is fourteen years old.", "tags": ["number"] },
-    { "id": "num-15", "type": "word", "ru": "пятнадцать", "tr": "on beş", "en": "fifteen", "pronunciationTr": "pit-NA-tsat", "pronunciationEn": "pit-NA-tsat", "exampleRu": "Через пятнадцать минут.", "exampleTr": "On beş dakika sonra.", "exampleEn": "In fifteen minutes.", "tags": ["number"] },
-    { "id": "num-16", "type": "word", "ru": "шестнадцать", "tr": "on altı", "en": "sixteen", "pronunciationTr": "şis-NA-tsat [KONTROL]", "pronunciationEn": "shis-NA-tsat [KONTROL]", "exampleRu": "Ему шестнадцать лет.", "exampleTr": "O on altı yaşında.", "exampleEn": "He is sixteen years old.", "tags": ["number"] },
-    { "id": "num-17", "type": "word", "ru": "семнадцать", "tr": "on yedi", "en": "seventeen", "pronunciationTr": "sim-NA-tsat", "pronunciationEn": "sim-NA-tsat", "exampleRu": "Семнадцать страниц в книге.", "exampleTr": "Kitapta on yedi sayfa.", "exampleEn": "Seventeen pages in the book.", "tags": ["number"] },
-    { "id": "num-18", "type": "word", "ru": "восемнадцать", "tr": "on sekiz", "en": "eighteen", "pronunciationTr": "va-sim-NA-tsat", "pronunciationEn": "va-sim-NA-tsat", "exampleRu": "Мне восемнадцать лет.", "exampleTr": "On sekiz yaşındayım.", "exampleEn": "I am eighteen years old.", "tags": ["number"] },
-    { "id": "num-19", "type": "word", "ru": "девятнадцать", "tr": "on dokuz", "en": "nineteen", "pronunciationTr": "di-vit-NA-tsat", "pronunciationEn": "di-vit-NA-tsat", "exampleRu": "Девятнадцать градусов тепла.", "exampleTr": "On dokuz derece sıcaklık.", "exampleEn": "Nineteen degrees warm.", "tags": ["number"] },
-    { "id": "num-20", "type": "word", "ru": "двадцать", "tr": "yirmi", "en": "twenty", "pronunciationTr": "DVA-tsat", "pronunciationEn": "DVA-tsat", "exampleRu": "Ему двадцать лет.", "exampleTr": "O yirmi yaşında.", "exampleEn": "He is twenty years old.", "tags": ["number"] },
-    { "id": "num-21", "type": "word", "ru": "двадцать один", "tr": "yirmi bir", "en": "twenty-one", "pronunciationTr": "DVA-tsat a-DİN", "pronunciationEn": "DVA-tsat a-DIN", "exampleRu": "Двадцать один день.", "exampleTr": "Yirmi bir gün.", "exampleEn": "Twenty-one days.", "tags": ["number"] },
-    { "id": "num-25", "type": "word", "ru": "двадцать пять", "tr": "yirmi beş", "en": "twenty-five", "pronunciationTr": "DVA-tsat PYAT", "pronunciationEn": "DVA-tsat PYAT", "exampleRu": "Мне двадцать пять лет.", "exampleTr": "Yirmi beş yaşındayım.", "exampleEn": "I am twenty-five years old.", "tags": ["number"] },
-    { "id": "num-30", "type": "word", "ru": "тридцать", "tr": "otuz", "en": "thirty", "pronunciationTr": "TRİ-tsat", "pronunciationEn": "TRI-tsat", "exampleRu": "Тридцать рублей.", "exampleTr": "Otuz ruble.", "exampleEn": "Thirty rubles.", "tags": ["number"] },
-    { "id": "num-32", "type": "word", "ru": "тридцать два", "tr": "otuz iki", "en": "thirty-two", "pronunciationTr": "TRİ-tsat DVA", "pronunciationEn": "TRI-tsat DVA", "exampleRu": "Тридцать два зуба.", "exampleTr": "Otuz iki diş.", "exampleEn": "Thirty-two teeth.", "tags": ["number"] },
-    { "id": "num-40", "type": "word", "ru": "сорок", "tr": "kırk", "en": "forty", "pronunciationTr": "SO-rak", "pronunciationEn": "SO-rak", "exampleRu": "Ей сорок лет.", "exampleTr": "O kırk yaşında.", "exampleEn": "She is forty years old.", "tags": ["number"] },
-    { "id": "num-47", "type": "word", "ru": "сорок семь", "tr": "kırk yedi", "en": "forty-seven", "pronunciationTr": "SO-rak SYEM", "pronunciationEn": "SO-rak SYEM", "exampleRu": "Сорок семь килограммов.", "exampleTr": "Kırk yedi kilogram.", "exampleEn": "Forty-seven kilograms.", "tags": ["number"] },
-    { "id": "num-50", "type": "word", "ru": "пятьдесят", "tr": "elli", "en": "fifty", "pronunciationTr": "pi-di-SYAT", "pronunciationEn": "pi-di-SYAT", "exampleRu": "Пятьдесят процентов.", "exampleTr": "Yüzde elli.", "exampleEn": "Fifty percent.", "tags": ["number"] },
-    { "id": "num-56", "type": "word", "ru": "пятьдесят шесть", "tr": "elli altı", "en": "fifty-six", "pronunciationTr": "pi-di-SYAT ŞEST", "pronunciationEn": "pi-di-SYAT SHEST", "exampleRu": "Пятьдесят шесть страниц.", "exampleTr": "Elli altı sayfa.", "exampleEn": "Fifty-six pages.", "tags": ["number"] },
-    { "id": "num-60", "type": "word", "ru": "шестьдесят", "tr": "altmış", "en": "sixty", "pronunciationTr": "şiz-di-SYAT [KONTROL]", "pronunciationEn": "shiz-di-SYAT [KONTROL]", "exampleRu": "Шестьдесят секунд в минуте.", "exampleTr": "Bir dakikada altmış saniye.", "exampleEn": "Sixty seconds in a minute.", "tags": ["number"] },
-    { "id": "num-70", "type": "word", "ru": "семьдесят", "tr": "yetmiş", "en": "seventy", "pronunciationTr": "SYEM-di-sit", "pronunciationEn": "SYEM-di-sit", "exampleRu": "Семьдесят километров.", "exampleTr": "Yetmiş kilometre.", "exampleEn": "Seventy kilometers.", "tags": ["number"] },
-    { "id": "num-80", "type": "word", "ru": "восемьдесят", "tr": "seksen", "en": "eighty", "pronunciationTr": "VO-sim-di-sit", "pronunciationEn": "VO-sim-di-sit", "exampleRu": "Восемьдесят рублей.", "exampleTr": "Seksen ruble.", "exampleEn": "Eighty rubles.", "tags": ["number"] },
-    { "id": "num-90", "type": "word", "ru": "девяносто", "tr": "doksan", "en": "ninety", "pronunciationTr": "di-vi-NOS-ta", "pronunciationEn": "di-vi-NOS-ta", "exampleRu": "Девяносто дней.", "exampleTr": "Doksan gün.", "exampleEn": "Ninety days.", "tags": ["number"] },
-    { "id": "num-99", "type": "word", "ru": "девяносто девять", "tr": "doksan dokuz", "en": "ninety-nine", "pronunciationTr": "di-vi-NOS-ta DYE-vit", "pronunciationEn": "di-vi-NOS-ta DYE-vit", "exampleRu": "Девяносто девять процентов.", "exampleTr": "Yüzde doksan dokuz.", "exampleEn": "Ninety-nine percent.", "tags": ["number"] },
-    { "id": "num-100", "type": "word", "ru": "сто", "tr": "yüz", "en": "hundred", "pronunciationTr": "STO", "pronunciationEn": "STO", "exampleRu": "Сто рублей.", "exampleTr": "Yüz ruble.", "exampleEn": "A hundred rubles.", "tags": ["number"] }
+    {
+      "id": "num-0",
+      "type": "word",
+      "ru": "ноль",
+      "tr": "sıfır",
+      "en": "zero",
+      "pronunciationTr": "NOL",
+      "pronunciationEn": "NOL",
+      "exampleRu": "Температура — ноль градусов.",
+      "exampleTr": "Sıcaklık sıfır derece.",
+      "exampleEn": "The temperature is zero degrees.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 0
+    },
+    {
+      "id": "num-1",
+      "type": "word",
+      "ru": "один",
+      "tr": "bir",
+      "en": "one",
+      "pronunciationTr": "a-DİN",
+      "pronunciationEn": "a-DIN",
+      "exampleRu": "Один кофе, пожалуйста.",
+      "exampleTr": "Bir kahve, lütfen.",
+      "exampleEn": "One coffee, please.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 1
+    },
+    {
+      "id": "num-2",
+      "type": "word",
+      "ru": "два",
+      "tr": "iki",
+      "en": "two",
+      "pronunciationTr": "DVA",
+      "pronunciationEn": "DVA",
+      "exampleRu": "У меня два брата.",
+      "exampleTr": "İki erkek kardeşim var.",
+      "exampleEn": "I have two brothers.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 2
+    },
+    {
+      "id": "num-3",
+      "type": "word",
+      "ru": "три",
+      "tr": "üç",
+      "en": "three",
+      "pronunciationTr": "TRİ",
+      "pronunciationEn": "TRI",
+      "exampleRu": "Три дня назад.",
+      "exampleTr": "Üç gün önce.",
+      "exampleEn": "Three days ago.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 3
+    },
+    {
+      "id": "num-4",
+      "type": "word",
+      "ru": "четыре",
+      "tr": "dört",
+      "en": "four",
+      "pronunciationTr": "çi-TI-ri",
+      "pronunciationEn": "chi-TY-ri",
+      "exampleRu": "В комнате четыре стула.",
+      "exampleTr": "Odada dört sandalye var.",
+      "exampleEn": "There are four chairs in the room.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 4
+    },
+    {
+      "id": "num-5",
+      "type": "word",
+      "ru": "пять",
+      "tr": "beş",
+      "en": "five",
+      "pronunciationTr": "PYAT",
+      "pronunciationEn": "PYAT",
+      "exampleRu": "Мне пять лет.",
+      "exampleTr": "Ben beş yaşındayım.",
+      "exampleEn": "I am five years old.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 5
+    },
+    {
+      "id": "num-6",
+      "type": "word",
+      "ru": "шесть",
+      "tr": "altı",
+      "en": "six",
+      "pronunciationTr": "ŞEST",
+      "pronunciationEn": "SHEST",
+      "exampleRu": "Шесть часов утра.",
+      "exampleTr": "Sabah altı.",
+      "exampleEn": "Six o'clock in the morning.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 6
+    },
+    {
+      "id": "num-7",
+      "type": "word",
+      "ru": "семь",
+      "tr": "yedi",
+      "en": "seven",
+      "pronunciationTr": "SYEM",
+      "pronunciationEn": "SYEM",
+      "exampleRu": "В неделе семь дней.",
+      "exampleTr": "Bir haftada yedi gün var.",
+      "exampleEn": "There are seven days in a week.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 7
+    },
+    {
+      "id": "num-8",
+      "type": "word",
+      "ru": "восемь",
+      "tr": "sekiz",
+      "en": "eight",
+      "pronunciationTr": "VO-sim",
+      "pronunciationEn": "VO-sim",
+      "exampleRu": "Урок начинается в восемь.",
+      "exampleTr": "Ders sekizde başlıyor.",
+      "exampleEn": "The lesson starts at eight.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 8
+    },
+    {
+      "id": "num-9",
+      "type": "word",
+      "ru": "девять",
+      "tr": "dokuz",
+      "en": "nine",
+      "pronunciationTr": "DYE-vit",
+      "pronunciationEn": "DYE-vit",
+      "exampleRu": "Магазин открывается в девять.",
+      "exampleTr": "Mağaza dokuzda açılıyor.",
+      "exampleEn": "The store opens at nine.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 9
+    },
+    {
+      "id": "num-10",
+      "type": "word",
+      "ru": "десять",
+      "tr": "on",
+      "en": "ten",
+      "pronunciationTr": "DYE-sit",
+      "pronunciationEn": "DYE-sit",
+      "exampleRu": "Десять минут пешком.",
+      "exampleTr": "Yürüyerek on dakika.",
+      "exampleEn": "Ten minutes on foot.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 10
+    },
+    {
+      "id": "num-11",
+      "type": "word",
+      "ru": "одиннадцать",
+      "tr": "on bir",
+      "en": "eleven",
+      "pronunciationTr": "a-DİN-na-tsat",
+      "pronunciationEn": "a-DIN-na-tsat",
+      "exampleRu": "Мне одиннадцать лет.",
+      "exampleTr": "On bir yaşındayım.",
+      "exampleEn": "I am eleven years old.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 11
+    },
+    {
+      "id": "num-12",
+      "type": "word",
+      "ru": "двенадцать",
+      "tr": "on iki",
+      "en": "twelve",
+      "pronunciationTr": "dvi-NA-tsat",
+      "pronunciationEn": "dvi-NA-tsat",
+      "exampleRu": "Сейчас двенадцать часов.",
+      "exampleTr": "Şimdi saat on iki.",
+      "exampleEn": "It is twelve o'clock now.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 12
+    },
+    {
+      "id": "num-13",
+      "type": "word",
+      "ru": "тринадцать",
+      "tr": "on üç",
+      "en": "thirteen",
+      "pronunciationTr": "tri-NA-tsat",
+      "pronunciationEn": "tri-NA-tsat",
+      "exampleRu": "Тринадцать студентов в классе.",
+      "exampleTr": "Sınıfta on üç öğrenci var.",
+      "exampleEn": "Thirteen students in the class.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 13
+    },
+    {
+      "id": "num-14",
+      "type": "word",
+      "ru": "четырнадцать",
+      "tr": "on dört",
+      "en": "fourteen",
+      "pronunciationTr": "çi-TIR-na-tsat",
+      "pronunciationEn": "chi-TYR-na-tsat",
+      "exampleRu": "Ей четырнадцать лет.",
+      "exampleTr": "O on dört yaşında.",
+      "exampleEn": "She is fourteen years old.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 14
+    },
+    {
+      "id": "num-15",
+      "type": "word",
+      "ru": "пятнадцать",
+      "tr": "on beş",
+      "en": "fifteen",
+      "pronunciationTr": "pit-NA-tsat",
+      "pronunciationEn": "pit-NA-tsat",
+      "exampleRu": "Через пятнадцать минут.",
+      "exampleTr": "On beş dakika sonra.",
+      "exampleEn": "In fifteen minutes.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 15
+    },
+    {
+      "id": "num-16",
+      "type": "word",
+      "ru": "шестнадцать",
+      "tr": "on altı",
+      "en": "sixteen",
+      "pronunciationTr": "şis-NA-tsat [KONTROL]",
+      "pronunciationEn": "shis-NA-tsat [KONTROL]",
+      "exampleRu": "Ему шестнадцать лет.",
+      "exampleTr": "O on altı yaşında.",
+      "exampleEn": "He is sixteen years old.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 16
+    },
+    {
+      "id": "num-17",
+      "type": "word",
+      "ru": "семнадцать",
+      "tr": "on yedi",
+      "en": "seventeen",
+      "pronunciationTr": "sim-NA-tsat",
+      "pronunciationEn": "sim-NA-tsat",
+      "exampleRu": "Семнадцать страниц в книге.",
+      "exampleTr": "Kitapta on yedi sayfa.",
+      "exampleEn": "Seventeen pages in the book.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 17
+    },
+    {
+      "id": "num-18",
+      "type": "word",
+      "ru": "восемнадцать",
+      "tr": "on sekiz",
+      "en": "eighteen",
+      "pronunciationTr": "va-sim-NA-tsat",
+      "pronunciationEn": "va-sim-NA-tsat",
+      "exampleRu": "Мне восемнадцать лет.",
+      "exampleTr": "On sekiz yaşındayım.",
+      "exampleEn": "I am eighteen years old.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 18
+    },
+    {
+      "id": "num-19",
+      "type": "word",
+      "ru": "девятнадцать",
+      "tr": "on dokuz",
+      "en": "nineteen",
+      "pronunciationTr": "di-vit-NA-tsat",
+      "pronunciationEn": "di-vit-NA-tsat",
+      "exampleRu": "Девятнадцать градусов тепла.",
+      "exampleTr": "On dokuz derece sıcaklık.",
+      "exampleEn": "Nineteen degrees warm.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 19
+    },
+    {
+      "id": "num-20",
+      "type": "word",
+      "ru": "двадцать",
+      "tr": "yirmi",
+      "en": "twenty",
+      "pronunciationTr": "DVA-tsat",
+      "pronunciationEn": "DVA-tsat",
+      "exampleRu": "Ему двадцать лет.",
+      "exampleTr": "O yirmi yaşında.",
+      "exampleEn": "He is twenty years old.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 20
+    },
+    {
+      "id": "num-21",
+      "type": "word",
+      "ru": "двадцать один",
+      "tr": "yirmi bir",
+      "en": "twenty-one",
+      "pronunciationTr": "DVA-tsat a-DİN",
+      "pronunciationEn": "DVA-tsat a-DIN",
+      "exampleRu": "Двадцать один день.",
+      "exampleTr": "Yirmi bir gün.",
+      "exampleEn": "Twenty-one days.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 21
+    },
+    {
+      "id": "num-25",
+      "type": "word",
+      "ru": "двадцать пять",
+      "tr": "yirmi beş",
+      "en": "twenty-five",
+      "pronunciationTr": "DVA-tsat PYAT",
+      "pronunciationEn": "DVA-tsat PYAT",
+      "exampleRu": "Мне двадцать пять лет.",
+      "exampleTr": "Yirmi beş yaşındayım.",
+      "exampleEn": "I am twenty-five years old.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 25
+    },
+    {
+      "id": "num-30",
+      "type": "word",
+      "ru": "тридцать",
+      "tr": "otuz",
+      "en": "thirty",
+      "pronunciationTr": "TRİ-tsat",
+      "pronunciationEn": "TRI-tsat",
+      "exampleRu": "Тридцать рублей.",
+      "exampleTr": "Otuz ruble.",
+      "exampleEn": "Thirty rubles.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 30
+    },
+    {
+      "id": "num-32",
+      "type": "word",
+      "ru": "тридцать два",
+      "tr": "otuz iki",
+      "en": "thirty-two",
+      "pronunciationTr": "TRİ-tsat DVA",
+      "pronunciationEn": "TRI-tsat DVA",
+      "exampleRu": "Тридцать два зуба.",
+      "exampleTr": "Otuz iki diş.",
+      "exampleEn": "Thirty-two teeth.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 32
+    },
+    {
+      "id": "num-40",
+      "type": "word",
+      "ru": "сорок",
+      "tr": "kırk",
+      "en": "forty",
+      "pronunciationTr": "SO-rak",
+      "pronunciationEn": "SO-rak",
+      "exampleRu": "Ей сорок лет.",
+      "exampleTr": "O kırk yaşında.",
+      "exampleEn": "She is forty years old.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 40
+    },
+    {
+      "id": "num-47",
+      "type": "word",
+      "ru": "сорок семь",
+      "tr": "kırk yedi",
+      "en": "forty-seven",
+      "pronunciationTr": "SO-rak SYEM",
+      "pronunciationEn": "SO-rak SYEM",
+      "exampleRu": "Сорок семь килограммов.",
+      "exampleTr": "Kırk yedi kilogram.",
+      "exampleEn": "Forty-seven kilograms.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 47
+    },
+    {
+      "id": "num-50",
+      "type": "word",
+      "ru": "пятьдесят",
+      "tr": "elli",
+      "en": "fifty",
+      "pronunciationTr": "pi-di-SYAT",
+      "pronunciationEn": "pi-di-SYAT",
+      "exampleRu": "Пятьдесят процентов.",
+      "exampleTr": "Yüzde elli.",
+      "exampleEn": "Fifty percent.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 50
+    },
+    {
+      "id": "num-56",
+      "type": "word",
+      "ru": "пятьдесят шесть",
+      "tr": "elli altı",
+      "en": "fifty-six",
+      "pronunciationTr": "pi-di-SYAT ŞEST",
+      "pronunciationEn": "pi-di-SYAT SHEST",
+      "exampleRu": "Пятьдесят шесть страниц.",
+      "exampleTr": "Elli altı sayfa.",
+      "exampleEn": "Fifty-six pages.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 56
+    },
+    {
+      "id": "num-60",
+      "type": "word",
+      "ru": "шестьдесят",
+      "tr": "altmış",
+      "en": "sixty",
+      "pronunciationTr": "şiz-di-SYAT [KONTROL]",
+      "pronunciationEn": "shiz-di-SYAT [KONTROL]",
+      "exampleRu": "Шестьдесят секунд в минуте.",
+      "exampleTr": "Bir dakikada altmış saniye.",
+      "exampleEn": "Sixty seconds in a minute.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 60
+    },
+    {
+      "id": "num-70",
+      "type": "word",
+      "ru": "семьдесят",
+      "tr": "yetmiş",
+      "en": "seventy",
+      "pronunciationTr": "SYEM-di-sit",
+      "pronunciationEn": "SYEM-di-sit",
+      "exampleRu": "Семьдесят километров.",
+      "exampleTr": "Yetmiş kilometre.",
+      "exampleEn": "Seventy kilometers.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 70
+    },
+    {
+      "id": "num-80",
+      "type": "word",
+      "ru": "восемьдесят",
+      "tr": "seksen",
+      "en": "eighty",
+      "pronunciationTr": "VO-sim-di-sit",
+      "pronunciationEn": "VO-sim-di-sit",
+      "exampleRu": "Восемьдесят рублей.",
+      "exampleTr": "Seksen ruble.",
+      "exampleEn": "Eighty rubles.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 80
+    },
+    {
+      "id": "num-90",
+      "type": "word",
+      "ru": "девяносто",
+      "tr": "doksan",
+      "en": "ninety",
+      "pronunciationTr": "di-vi-NOS-ta",
+      "pronunciationEn": "di-vi-NOS-ta",
+      "exampleRu": "Девяносто дней.",
+      "exampleTr": "Doksan gün.",
+      "exampleEn": "Ninety days.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 90
+    },
+    {
+      "id": "num-99",
+      "type": "word",
+      "ru": "девяносто девять",
+      "tr": "doksan dokuz",
+      "en": "ninety-nine",
+      "pronunciationTr": "di-vi-NOS-ta DYE-vit",
+      "pronunciationEn": "di-vi-NOS-ta DYE-vit",
+      "exampleRu": "Девяносто девять процентов.",
+      "exampleTr": "Yüzde doksan dokuz.",
+      "exampleEn": "Ninety-nine percent.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 99
+    },
+    {
+      "id": "num-100",
+      "type": "word",
+      "ru": "сто",
+      "tr": "yüz",
+      "en": "hundred",
+      "pronunciationTr": "STO",
+      "pronunciationEn": "STO",
+      "exampleRu": "Сто рублей.",
+      "exampleTr": "Yüz ruble.",
+      "exampleEn": "A hundred rubles.",
+      "tags": [
+        "number"
+      ],
+      "numberValue": 100
+    }
   ]
 }

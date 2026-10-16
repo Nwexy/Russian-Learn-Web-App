@@ -135,6 +135,15 @@ export interface Messages {
   pronunciationNotAvailable: string;
   buUnitHasNoExercises: string;
   chooseRussian: string;
+
+  // Faz 4.7
+  showPronunciations: string;
+  display: string;
+  listen: string;
+  speak: string;
+  sessionActive: string;
+  practicingAllUnits: string;
+  practicingUnit: string;
 }
 
 /** Tüm çeviriler */
@@ -259,6 +268,15 @@ const messages: Record<Lang, Messages> = {
     pronunciationNotAvailable: "Okunuş bilgisi yok.",
     buUnitHasNoExercises: "Bu ünitede alıştırma yok. Harfler /review sayfasında tekrar edilir.",
     chooseRussian: "Rusça karşılığını seçin",
+
+    // Faz 4.7
+    showPronunciations: "Telaffuzları Göster",
+    display: "Görünüm",
+    listen: "Dinle",
+    speak: "Seslendir",
+    sessionActive: "Oturum aktif",
+    practicingAllUnits: "Alıştırma: Tüm Üniteler",
+    practicingUnit: "Alıştırma",
   },
   en: {
     appName: "Learn Russian",
@@ -380,6 +398,15 @@ const messages: Record<Lang, Messages> = {
     pronunciationNotAvailable: "No pronunciation available.",
     buUnitHasNoExercises: "This unit has no exercises. Letters are reviewed on the /review page.",
     chooseRussian: "Choose the Russian word",
+
+    // Faz 4.7
+    showPronunciations: "Show Pronunciations",
+    display: "Display",
+    listen: "Listen",
+    speak: "Speak",
+    sessionActive: "Session active",
+    practicingAllUnits: "Practice: All Units",
+    practicingUnit: "Practice",
   },
 };
 

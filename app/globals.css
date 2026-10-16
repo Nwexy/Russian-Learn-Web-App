@@ -378,6 +378,7 @@ body {
 }
 
 .item-card {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -1844,4 +1845,95 @@ body {
   color: var(--text-primary);
   margin: 0;
 }
+
+/* ========================================
+   Faz 4.7 — Speak Button & Number Badge & Active Unit
+   ======================================== */
+
+.speak-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: var(--text-primary);
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.speak-btn:hover {
+  background: rgba(59, 130, 246, 0.18);
+  border-color: var(--accent, #3b82f6);
+  transform: scale(1.05);
+}
+
+.speak-btn:active {
+  transform: scale(0.95);
+}
+
+.speak-btn-sm {
+  padding: 0.2rem 0.45rem;
+  font-size: 0.85rem;
+}
+
+.speak-btn-md {
+  padding: 0.35rem 0.65rem;
+  font-size: 1.05rem;
+}
+
+.speak-btn-block {
+  display: flex;
+  margin: 0.5rem auto;
+}
+
+.speak-btn-icon {
+  font-size: 0.9em;
+  line-height: 1;
+}
+
+.speak-btn-text {
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-left: 0.25rem;
+}
+
+/* Sayı rozeti (0-100 değerleri için sağ üst köşe) */
+.item-number-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  min-width: 1.65rem;
+  height: 1.65rem;
+  padding: 0 0.35rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--accent, #3b82f6);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Practice aktif oturum rozeti */
+.practice-unit-active-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 

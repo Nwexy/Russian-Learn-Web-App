@@ -94,6 +94,7 @@ export async function seedDatabase(): Promise<void> {
       exampleEn: raw.exampleEn,
       pronunciationTr: raw.pronunciationTr,
       pronunciationEn: raw.pronunciationEn,
+      numberValue: raw.numberValue,
       tags: raw.tags,
     }));
 

@@ -15,7 +15,7 @@ import type { Lang } from "@/types";
 
 export default function SettingsPage() {
   const { theme, toggleTheme } = useTheme();
-  const { uiLang, translationLang, setUiLang, setTranslationLang } = useLang();
+  const { uiLang, translationLang, showPronunciation, setUiLang, setTranslationLang, setShowPronunciation } = useLang();
   const t = getMessages(uiLang);
   const [cleared, setCleared] = useState(false);
 
@@ -84,9 +84,9 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Görünüm */}
+      {/* Görünüm / Display */}
       <div className="settings-section">
-        <h2 className="settings-section-title">{t.appearance}</h2>
+        <h2 className="settings-section-title">{t.display}</h2>
         <div className="settings-row">
           <div className="settings-label">
             <span className="settings-label-text">{t.darkTheme}</span>
@@ -99,6 +99,24 @@ export default function SettingsPage() {
               type="checkbox"
               checked={theme === "dark"}
               onChange={toggleTheme}
+            />
+            <span className="toggle-slider" />
+          </label>
+        </div>
+        <div className="settings-row">
+          <div className="settings-label">
+            <span className="settings-label-text">{t.showPronunciations}</span>
+            <span className="settings-label-desc">
+              {showPronunciation
+                ? (uiLang === "tr" ? "Telaffuzlar gösteriliyor." : "Pronunciations are shown.")
+                : (uiLang === "tr" ? "Telaffuzlar gizli." : "Pronunciations are hidden.")}
+            </span>
+          </div>
+          <label className="toggle-switch">
+            <input
+              type="checkbox"
+              checked={showPronunciation}
+              onChange={(e) => setShowPronunciation(e.target.checked)}
             />
             <span className="toggle-slider" />
           </label>

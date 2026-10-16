@@ -3,6 +3,15 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16 (Faz 4.7)
+- Ayarlara telaffuz goster/gizle secenegi eklendi.
+- Seslendirme butonu eklendi (ders, review, alistirma, test).
+- Seslendirme sadece sorularda gosteriliyor, cevaplarda yok.
+- Eslestirmede Rusca kelimeye tiklayinca otomatik seslendirme eklendi.
+- Practice sayfasinda oturum baslayinca unite secici gizleniyor.
+- Sayilar unitisi siralama duzeltildi (0-100 artan).
+- Sayi kartlarinin sag ust kosesine sayisal deger rozeti eklendi.
+
 ## 2026-10-16 (Faz 4.6)
 - Alistirma ve testte telaffuz sizintisi giderildi (sadece cevap sonrasi gosteriliyor).
 - Alfabe unitisine Kiril alfabesinin 33 harfinin tamami eklendi.

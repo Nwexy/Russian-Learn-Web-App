@@ -23,6 +23,7 @@ import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
 /** Oturumdaki soru sayısı */
@@ -41,7 +42,7 @@ function shuffled<T>(arr: T[]): T[] {
 export default function UnitPracticePage() {
   const params = useParams<{ id: string }>();
   const unit = getUnitById(params.id);
-  const { uiLang, translationLang } = useLang();
+  const { uiLang, translationLang, showPronunciation } = useLang();
   const t = getMessages(uiLang);
 
   const [items, setItems] = useState<Item[]>([]);
@@ -265,7 +266,10 @@ export default function UnitPracticePage() {
       <div className="page-container">
         {header}
         <div className="flashcard">
-          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{mc.question}</div>
+          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{mc.question}</span>
+            {ruQuestion && <SpeakButton text={mc.question} size="sm" />}
+          </div>
           {ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={mc.item} />}
           <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
@@ -308,7 +312,10 @@ export default function UnitPracticePage() {
       <div className="page-container">
         {header}
         <div className="flashcard">
-          <div className="flashcard-ru">{fb.sentenceWithBlank}</div>
+          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{fb.sentenceWithBlank}</span>
+            <SpeakButton text={fb.sentenceWithBlank} size="sm" />
+          </div>
           <p className="practice-hint">{fb.hint}</p>
         </div>
         <div className="practice-input-row">
@@ -376,6 +383,10 @@ export default function UnitPracticePage() {
       if (matchedIds.has(id) || revealed) return;
       setMatchLeft(id);
       setMatchWrong(false);
+      if (showPronunciation) {
+        const pair = pairs.find((p) => p.id === id);
+        if (pair) speak(pair.ru);
+      }
       if (matchRight !== null) tryMatch(id, matchRight);
     };
     const onRight = (id: string) => {

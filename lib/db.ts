@@ -13,7 +13,7 @@ import type { Item, Review, Progress, Setting, Mistake } from "@/types";
  *  - items: Öğrenme öğeleri (harf, kelime, kalıp vb.)
  *  - reviews: SRS tekrar kayıtları
  *  - progress: Ünite ilerleme durumları
- *  - settings: Uygulama ayarları (tema vb.)
+ *  - settings: Uygulama ayarları (tema, uiLang, translationLang, showPronunciation: "true"|"false")
  *  - mistakes: Yanlış yapılan sorular (Faz 3.5)
  */
 class RussianLearnDB extends Dexie {

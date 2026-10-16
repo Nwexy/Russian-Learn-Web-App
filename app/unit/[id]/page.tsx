@@ -14,6 +14,7 @@ import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getProgress, setLessonComplete } from "@/lib/progress";
 import { PronunciationText } from "@/components/pronunciation-text";
+import { SpeakButton } from "@/components/SpeakButton";
 import type { Lang, RawItem, Progress } from "@/types";
 
 /**
@@ -119,11 +120,20 @@ export default function UnitPage() {
           {unit.items.map((item) => {
             const translation = getTranslation(item, translationLang);
             const exampleTr = getExampleTranslation(item, translationLang);
+            const isNumber = (item.tags?.includes("number") || item.type === "word") && item.numberValue !== undefined;
 
             return (
               <div key={item.id} className="item-card">
+                {isNumber && (
+                  <span className="item-number-badge" title={`Sayı: ${item.numberValue}`}>
+                    {item.numberValue}
+                  </span>
+                )}
                 <span className="item-type-badge">{item.type}</span>
-                <div className="item-ru">{item.ru}</div>
+                <div className="item-ru" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <span>{item.ru}</span>
+                  <SpeakButton text={item.ru} size="sm" />
+                </div>
                 <div className="item-tr">
                   {translation.text}
                   {translation.fallbackLang && (
@@ -135,7 +145,10 @@ export default function UnitPage() {
                 {(item.exampleRu || exampleTr) && (
                   <div className="item-example">
                     {item.exampleRu && (
-                      <span className="item-example-ru">« {item.exampleRu} »</span>
+                      <span className="item-example-ru" style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        <span>« {item.exampleRu} »</span>
+                        <SpeakButton text={item.exampleRu} size="sm" />
+                      </span>
                     )}
                     {exampleTr && (
                       <span className="item-example-tr">

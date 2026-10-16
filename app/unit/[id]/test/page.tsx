@@ -20,6 +20,7 @@ import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
 interface TestQuestion {
@@ -256,7 +257,10 @@ export default function TestPage() {
         </div>
 
         <div className="flashcard">
-          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{q.question}</div>
+          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{q.question}</span>
+            {ruQuestion && q.question && <SpeakButton text={q.question} size="sm" />}
+          </div>
           {ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
           <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
         </div>
@@ -314,7 +318,10 @@ export default function TestPage() {
         </div>
 
         <div className="flashcard">
-          <div className="flashcard-ru">{q.sentenceWithBlank}</div>
+          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{q.sentenceWithBlank}</span>
+            {q.sentenceWithBlank && <SpeakButton text={q.sentenceWithBlank} size="sm" />}
+          </div>
           {shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
           {q.hint && <p className="practice-hint">{q.hint}</p>}
         </div>

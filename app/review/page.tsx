@@ -16,6 +16,7 @@ import { getMessages } from "@/lib/i18n";
 import { getDueCards, reviewCard } from "@/lib/srs";
 import { getReview, upsertReview, getAllReviews } from "@/lib/reviews";
 import { PronunciationText } from "@/components/pronunciation-text";
+import { SpeakButton } from "@/components/SpeakButton";
 import type { Item, Review, Lang } from "@/types";
 import type { Rating } from "@/lib/srs";
 
@@ -170,11 +171,15 @@ export default function ReviewPage() {
       <div className="flashcard">
         {/* Ön yüz — her zaman görünür */}
         <div className="flashcard-front">
-          <div className="flashcard-ru">{currentCard.ru}</div>
+          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{currentCard.ru}</span>
+            <SpeakButton text={currentCard.ru} size="md" />
+          </div>
           <PronunciationText item={currentCard} />
           {currentCard.exampleRu && (
-            <div className="flashcard-example-ru">
-              « {currentCard.exampleRu} »
+            <div className="flashcard-example-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}>
+              <span>« {currentCard.exampleRu} »</span>
+              <SpeakButton text={currentCard.exampleRu} size="sm" />
             </div>
           )}
         </div>

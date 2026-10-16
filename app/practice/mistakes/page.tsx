@@ -15,6 +15,7 @@ import { getAllMistakes, removeMistake, recordMistake } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { SpeakButton } from "@/components/SpeakButton";
 import type { Mistake, Item } from "@/types";
 
 type Phase = "list" | "active" | "result";
@@ -244,7 +245,10 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"}>{question}</div>
+          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{question}</span>
+            {ruQuestion && <SpeakButton text={question} size="sm" />}
+          </div>
           {ruQuestion && currentItem && shouldShowPronunciation(revealed) && (
             <PronunciationText item={currentItem} />
           )}
@@ -307,7 +311,10 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          <div className="flashcard-ru">{sentence}</div>
+          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{sentence}</span>
+            <SpeakButton text={sentence} size="sm" />
+          </div>
           {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
           {hint && <p className="practice-hint">{hint}</p>}
         </div>
@@ -371,7 +378,10 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          <div className="flashcard-ru">{ru}</div>
+          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{ru}</span>
+            <SpeakButton text={ru} size="sm" />
+          </div>
           {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
           <p className="practice-instruction">{t.matchPairs}</p>
         </div>
