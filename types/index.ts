@@ -34,13 +34,19 @@ export interface Review {
   lastReviewed?: Date;
 }
 
-/** Ünite ilerleme kaydı */
+/** Ünite ilerleme kaydı — 3 aşamalı (Ders, Alıştırma, Test) */
 export interface Progress {
   unitId: string;
-  completed: boolean;
-  score: number;       // 0-100 arası puan
+  lessonDone: boolean;       // Ders tamamlandı mı
+  practiceDone: boolean;     // Alıştırma geçildi mi (>= %80)
+  testDone: boolean;         // Test geçildi mi (>= %80)
+  practiceScore: number;     // Alıştırma puanı (0-100)
+  testScore: number;         // Test puanı (0-100)
   updatedAt: Date;
 }
+
+/** Ünite genel durum */
+export type UnitStatus = "notStarted" | "inProgress" | "completed";
 
 /** Uygulama ayarları (key-value) */
 export interface Setting {

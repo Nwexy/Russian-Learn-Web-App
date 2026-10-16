@@ -104,6 +104,28 @@ export interface Messages {
   confirmClear: string;
   mistakesCleared: string;
   dataSection: string;
+
+  // Unit flow
+  lesson: string;
+  test: string;
+  completeLesson: string;
+  lessonCompleted: string;
+  completed: string;
+  inProgress: string;
+  notStarted: string;
+  unitsCompleted: string;
+  passed: string;
+  failed: string;
+  testResult: string;
+  retry: string;
+  backToUnit: string;
+  startTest: string;
+  startPractice: string;
+  unitPractice: string;
+  unitTest: string;
+
+  // Meaning feedback
+  meaningEquals: string;
 }
 
 /** Tüm çeviriler */
@@ -199,6 +221,27 @@ const messages: Record<Lang, Messages> = {
     confirmClear: "Tüm yanlış kayıtları silinecek. Emin misiniz?",
     mistakesCleared: "Tüm yanlışlar temizlendi.",
     dataSection: "Veri",
+
+    // Unit flow
+    lesson: "Ders",
+    test: "Test",
+    completeLesson: "Dersi Tamamla",
+    lessonCompleted: "Ders tamamlandı.",
+    completed: "Tamamlandı",
+    inProgress: "Devam ediyor",
+    notStarted: "Başlanmadı",
+    unitsCompleted: "ünite tamamlandı",
+    passed: "Geçtin",
+    failed: "Kaldın",
+    testResult: "Test Sonucu",
+    retry: "Tekrar Dene",
+    backToUnit: "Üniteye Dön",
+    startTest: "Teste Başla",
+    startPractice: "Alıştırmaya Başla",
+    unitPractice: "Ünite Alıştırması",
+    unitTest: "Ünite Testi",
+
+    meaningEquals: "=",
   },
   en: {
     appName: "Learn Russian",
@@ -291,6 +334,27 @@ const messages: Record<Lang, Messages> = {
     confirmClear: "All mistake records will be deleted. Are you sure?",
     mistakesCleared: "All mistakes cleared.",
     dataSection: "Data",
+
+    // Unit flow
+    lesson: "Lesson",
+    test: "Test",
+    completeLesson: "Complete Lesson",
+    lessonCompleted: "Lesson completed.",
+    completed: "Completed",
+    inProgress: "In Progress",
+    notStarted: "Not Started",
+    unitsCompleted: "units completed",
+    passed: "Passed",
+    failed: "Failed",
+    testResult: "Test Result",
+    retry: "Retry",
+    backToUnit: "Back to Unit",
+    startTest: "Start Test",
+    startPractice: "Start Practice",
+    unitPractice: "Unit Practice",
+    unitTest: "Unit Test",
+
+    meaningEquals: "=",
   },
 };
 

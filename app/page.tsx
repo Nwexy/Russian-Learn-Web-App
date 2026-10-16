@@ -15,7 +15,8 @@ import { db } from "@/lib/db";
 import { getDueCards } from "@/lib/srs";
 import { getAllReviews } from "@/lib/reviews";
 import { getMistakeCount } from "@/lib/mistakes";
-import type { Item, Review } from "@/types";
+import { getUnitStatus } from "@/lib/progress";
+import type { Item, Review, UnitStatus } from "@/types";
 
 export default function HomePage() {
   const units = getAllUnits();
@@ -25,6 +26,7 @@ export default function HomePage() {
   /** Bugün tekrar edilecek kart sayısı */
   const [dueCount, setDueCount] = useState<number>(0);
   const [mistakeCount, setMistakeCount] = useState<number>(0);
+  const [unitStatuses, setUnitStatuses] = useState<Record<string, UnitStatus>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,6 +42,12 @@ export default function HomePage() {
         setDueCount(due.length);
         const mc = await getMistakeCount();
         setMistakeCount(mc);
+        // Ünite durumlarını çek
+        const statuses: Record<string, UnitStatus> = {};
+        for (const u of units) {
+          statuses[u.id] = await getUnitStatus(u.id);
+        }
+        setUnitStatuses(statuses);
       } catch {
         setDueCount(0);
       } finally {
@@ -137,33 +145,65 @@ export default function HomePage() {
           {t.units}
         </h2>
 
+        {/* Genel ilerleme çubuğu */}
+        {units.length > 0 && (() => {
+          const completedCount = Object.values(unitStatuses).filter((s) => s === "completed").length;
+          const totalCount = units.length;
+          const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+          return (
+            <div className="overall-progress">
+              <div className="overall-progress-text">
+                {completedCount} / {totalCount} {t.unitsCompleted}
+              </div>
+              <div className="review-progress-bar">
+                <div className="review-progress-fill" style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          );
+        })()}
+
         {units.length === 0 ? (
           <div className="empty-state">
-            <div className="empty-state-icon">📭</div>
+            <div className="empty-state-icon">--</div>
             <p className="empty-state-text">{t.noContent}</p>
           </div>
         ) : (
           <div className="units-list">
-            {units.map((unit) => (
-              <Link
-                key={unit.id}
-                href={`/unit/${unit.id}`}
-                className="card card-clickable"
-              >
-                <div className="unit-card-header">
-                  <span className="unit-card-level">{unit.level}</span>
-                  <span className="unit-card-count">
-                    {unit.itemCount} {t.items}
-                  </span>
-                </div>
-                <h3 className="unit-card-title">
-                  {getUnitTitle(unit, uiLang)}
-                </h3>
-                <div className="unit-card-arrow">
-                  {t.goToUnit} <span>→</span>
-                </div>
-              </Link>
-            ))}
+            {units.map((unit) => {
+              const status = unitStatuses[unit.id] || "notStarted";
+              const badgeCls = status === "completed"
+                ? "unit-status-completed"
+                : status === "inProgress"
+                  ? "unit-status-in-progress"
+                  : "unit-status-not-started";
+              const badgeText = status === "completed"
+                ? t.completed
+                : status === "inProgress"
+                  ? t.inProgress
+                  : t.notStarted;
+
+              return (
+                <Link
+                  key={unit.id}
+                  href={`/unit/${unit.id}`}
+                  className="card card-clickable"
+                >
+                  <div className="unit-card-header">
+                    <span className="unit-card-level">{unit.level}</span>
+                    <span className={`unit-status-badge ${badgeCls}`}>{badgeText}</span>
+                    <span className="unit-card-count">
+                      {unit.itemCount} {t.items}
+                    </span>
+                  </div>
+                  <h3 className="unit-card-title">
+                    {getUnitTitle(unit, uiLang)}
+                  </h3>
+                  <div className="unit-card-arrow">
+                    {t.goToUnit} <span>→</span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </section>

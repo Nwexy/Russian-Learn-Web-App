@@ -3,6 +3,16 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16 (Faz 4)
+- Unite akisi eklendi: Ders -> Alistirma -> Test.
+- Ilerleme takibi (progress tablosu aktif kullanima alindi).
+- Ana sayfaya genel ilerleme cubugu eklendi.
+- Unite kartlarina durum rozetleri eklendi.
+- Test modu eklendi (/unit/[id]/test), 10 soruluk, gecme esigi %80.
+- Unite alistirma sayfasi eklendi (/unit/[id]/practice).
+- Alistirma geri bildirimleri dogru/yanlis cevabin anlamini da gosteriyor.
+- Sayilar unitesi 0-100 araligina genisletildi (35 kelime).
+
 ## 2026-10-16 (Faz 3.5)
 - mistakes tablosu Dexie semasina eklendi.
 - Yanlis cevaplar kalici olarak kaydediliyor.

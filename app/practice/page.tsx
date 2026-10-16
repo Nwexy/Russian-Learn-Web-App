@@ -30,6 +30,12 @@ import type { Item, ExerciseType } from "@/types";
 /** Alıştırma durumları */
 type Phase = "select" | "active" | "result";
 
+/** Item'ın çeviri dilindeki anlamını döndürür */
+function getMeaning(item: Item, translationLang: string): string {
+  const tr = translationLang === "tr" ? item.tr : item.en;
+  return tr || item.tr || item.en || "";
+}
+
 export default function PracticePage() {
   const { uiLang, translationLang } = useLang();
   const t = getMessages(uiLang);
@@ -472,9 +478,14 @@ export default function PracticePage() {
 
         {mcRevealed && (
           <div className="practice-feedback">
-            <span className={mcSelected === q.correctIndex ? "feedback-correct" : "feedback-wrong"}>
-              {mcSelected === q.correctIndex ? t.correct : t.wrong}
-            </span>
+            <div>
+              <span className={mcSelected === q.correctIndex ? "feedback-correct" : "feedback-wrong"}>
+                {mcSelected === q.correctIndex ? t.correct : t.wrong}
+              </span>
+              <span className="feedback-meaning">
+                {" "} — {q.item.ru} {t.meaningEquals} {getMeaning(q.item, translationLang)}
+              </span>
+            </div>
             <button className="practice-btn practice-btn-primary" onClick={handleMcNext}>
               {t.next}
             </button>
@@ -525,9 +536,14 @@ export default function PracticePage() {
 
         {fbRevealed && (
           <div className="practice-feedback">
-            <span className={fbCorrect ? "feedback-correct" : "feedback-wrong"}>
-              {fbCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
-            </span>
+            <div>
+              <span className={fbCorrect ? "feedback-correct" : "feedback-wrong"}>
+                {fbCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
+              </span>
+              <span className="feedback-meaning">
+                {" "} — {q.item.ru} {t.meaningEquals} {getMeaning(q.item, translationLang)}
+              </span>
+            </div>
             <button className="practice-btn practice-btn-primary" onClick={handleFbNext}>
               {t.next}
             </button>
@@ -640,11 +656,16 @@ export default function PracticePage() {
 
         {listenRevealed && (
           <div className="practice-feedback">
-            <span className={listenCorrect ? "feedback-correct" : "feedback-wrong"}>
-              {listenCorrect
-                ? t.correct
-                : `${t.wrong} — ${t.showCorrect}: ${listenQuestions[listenIndex].correctWord}`}
-            </span>
+            <div>
+              <span className={listenCorrect ? "feedback-correct" : "feedback-wrong"}>
+                {listenCorrect
+                  ? t.correct
+                  : `${t.wrong} — ${t.showCorrect}: ${listenQuestions[listenIndex].correctWord}`}
+              </span>
+              <span className="feedback-meaning">
+                {" "} — {listenQuestions[listenIndex].item.ru} {t.meaningEquals} {getMeaning(listenQuestions[listenIndex].item, translationLang)}
+              </span>
+            </div>
             <button className="practice-btn practice-btn-primary" onClick={handleListenNext}>
               {t.next}
             </button>
