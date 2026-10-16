@@ -8,7 +8,7 @@
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { getUnitById } from "@/lib/content";
+import { getUnitById, getUnitTitle } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import type { Lang, RawItem } from "@/types";
@@ -88,7 +88,7 @@ export default function UnitPage() {
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
           <span className="unit-card-level">{unit.level}</span>
         </div>
-        <h1 className="page-title">{unit.title}</h1>
+        <h1 className="page-title">{getUnitTitle(unit, uiLang)}</h1>
         <p className="page-subtitle">{unit.items.length} {t.items}</p>
       </div>
 

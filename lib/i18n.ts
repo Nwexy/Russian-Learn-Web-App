@@ -50,6 +50,21 @@ export interface Messages {
 
   // Footer
   footerText: string;
+
+  // SRS / Review
+  todayReview: string;
+  dueCards: string;
+  study: string;
+  nothingDue: string;
+  showAnswer: string;
+  again: string;
+  hard: string;
+  good: string;
+  easy: string;
+  noCardsDue: string;
+  backToHome: string;
+  review: string;
+  progress: string;
 }
 
 /** Tüm çeviriler */
@@ -91,6 +106,21 @@ const messages: Record<Lang, Messages> = {
     settingsDesc: "Uygulama tercihlerini buradan yönetin.",
 
     footerText: "Rusça Öğren — Yerel uygulama, internet gerekmez.",
+
+    // SRS / Review
+    todayReview: "Bugünün Tekrarı",
+    dueCards: "kart tekrar bekliyor",
+    study: "Çalış",
+    nothingDue: "Bugün için tekrar yok.",
+    showAnswer: "Cevabı Göster",
+    again: "Tekrar",
+    hard: "Zor",
+    good: "İyi",
+    easy: "Kolay",
+    noCardsDue: "Bugün için tekrar edilecek kart yok.",
+    backToHome: "Ana Sayfaya Dön",
+    review: "Tekrar",
+    progress: "İlerleme",
   },
   en: {
     appName: "Learn Russian",
@@ -129,6 +159,21 @@ const messages: Record<Lang, Messages> = {
     settingsDesc: "Manage your app preferences here.",
 
     footerText: "Learn Russian — Local app, no internet required.",
+
+    // SRS / Review
+    todayReview: "Today's Review",
+    dueCards: "cards due for review",
+    study: "Study",
+    nothingDue: "Nothing due today.",
+    showAnswer: "Show Answer",
+    again: "Again",
+    hard: "Hard",
+    good: "Good",
+    easy: "Easy",
+    noCardsDue: "No cards due for review today.",
+    backToHome: "Back to Home",
+    review: "Review",
+    progress: "Progress",
   },
 };
 

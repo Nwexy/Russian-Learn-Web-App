@@ -1,0 +1,140 @@
+{
+  "id": "unit-01",
+  "titleTr": "Selamlaşma ve Tanışma",
+  "titleEn": "Greetings and Introductions",
+  "level": "A0",
+  "items": [
+    {
+      "id": "g01",
+      "type": "word",
+      "ru": "привет",
+      "tr": "merhaba",
+      "en": "hello",
+      "exampleRu": "Привет, как дела?",
+      "exampleTr": "Merhaba, nasılsın?",
+      "exampleEn": "Hello, how are you?",
+      "tags": ["selamlasma", "gunluk"]
+    },
+    {
+      "id": "g02",
+      "type": "word",
+      "ru": "здравствуйте",
+      "tr": "merhaba (resmi)",
+      "en": "hello (formal)",
+      "exampleRu": "Здравствуйте, меня зовут Анна.",
+      "exampleTr": "Merhaba, benim adım Anna.",
+      "exampleEn": "Hello, my name is Anna.",
+      "tags": ["selamlasma", "resmi"]
+    },
+    {
+      "id": "g03",
+      "type": "word",
+      "ru": "спасибо",
+      "tr": "teşekkürler",
+      "en": "thank you",
+      "exampleRu": "Спасибо за помощь.",
+      "exampleTr": "Yardımın için teşekkürler.",
+      "exampleEn": "Thank you for your help.",
+      "tags": ["nezaket"]
+    },
+    {
+      "id": "g04",
+      "type": "word",
+      "ru": "пожалуйста",
+      "tr": "lütfen / rica ederim",
+      "en": "please / you're welcome",
+      "exampleRu": "Скажите, пожалуйста, где метро?",
+      "exampleTr": "Lütfen söyleyin, metro nerede?",
+      "exampleEn": "Please tell me, where is the metro?",
+      "tags": ["nezaket"]
+    },
+    {
+      "id": "g05",
+      "type": "word",
+      "ru": "да",
+      "tr": "evet",
+      "en": "yes",
+      "exampleRu": "Да, я понимаю.",
+      "exampleTr": "Evet, anlıyorum.",
+      "exampleEn": "Yes, I understand.",
+      "tags": ["temel"]
+    },
+    {
+      "id": "g06",
+      "type": "word",
+      "ru": "нет",
+      "tr": "hayır",
+      "en": "no",
+      "exampleRu": "Нет, спасибо.",
+      "exampleTr": "Hayır, teşekkürler.",
+      "exampleEn": "No, thank you.",
+      "tags": ["temel"]
+    },
+    {
+      "id": "g07",
+      "type": "word",
+      "ru": "извините",
+      "tr": "özür dilerim / pardon",
+      "en": "excuse me / sorry",
+      "exampleRu": "Извините, я опоздал.",
+      "exampleTr": "Özür dilerim, geç kaldım.",
+      "exampleEn": "Sorry, I am late.",
+      "tags": ["nezaket"]
+    },
+    {
+      "id": "g08",
+      "type": "word",
+      "ru": "как дела",
+      "tr": "nasılsın",
+      "en": "how are you",
+      "exampleRu": "Привет! Как дела?",
+      "exampleTr": "Merhaba! Nasılsın?",
+      "exampleEn": "Hello! How are you?",
+      "tags": ["selamlasma", "gunluk"]
+    },
+    {
+      "id": "g09",
+      "type": "word",
+      "ru": "меня зовут",
+      "tr": "benim adım",
+      "en": "my name is",
+      "exampleRu": "Меня зовут Иван.",
+      "exampleTr": "Benim adım İvan.",
+      "exampleEn": "My name is Ivan.",
+      "tags": ["tanisma"]
+    },
+    {
+      "id": "g10",
+      "type": "word",
+      "ru": "до свидания",
+      "tr": "hoşça kalın",
+      "en": "goodbye",
+      "exampleRu": "До свидания, увидимся завтра.",
+      "exampleTr": "Hoşça kalın, yarın görüşürüz.",
+      "exampleEn": "Goodbye, see you tomorrow.",
+      "tags": ["selamlasma", "resmi"]
+    },
+    {
+      "id": "g11",
+      "type": "word",
+      "ru": "доброе утро",
+      "tr": "günaydın",
+      "en": "good morning",
+      "exampleRu": "Доброе утро! Как вы спали?",
+      "exampleTr": "Günaydın! Nasıl uyudunuz?",
+      "exampleEn": "Good morning! How did you sleep?",
+      "tags": ["selamlasma", "gunluk"]
+    },
+    {
+      "id": "g12",
+      "type": "word",
+      "ru": "добрый вечер",
+      "tr": "iyi akşamlar",
+      "en": "good evening",
+      "exampleRu": "Добрый вечер, рад вас видеть.",
+      "exampleTr": "İyi akşamlar, sizi görmekten memnunum.",
+      "exampleEn": "Good evening, glad to see you.",
+      "tags": ["selamlasma", "resmi"]
+    }
+  ]
+}

@@ -1,20 +1,49 @@
 /**
- * Ana sayfa — Ünite listesi ve hoş geldiniz bölümü.
+ * Ana sayfa — Ünite listesi, hoş geldiniz bölümü ve bugünün tekrarı kartı.
  * content/ klasöründeki tüm üniteleri listeler.
  * Arayüz dili uiLang'e göre gösterilir.
  */
 
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getAllUnits } from "@/lib/content";
+import { getAllUnits, getUnitTitle } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
+import { db } from "@/lib/db";
+import { getDueCards } from "@/lib/srs";
+import { getAllReviews } from "@/lib/reviews";
+import type { Item, Review } from "@/types";
 
 export default function HomePage() {
   const units = getAllUnits();
   const { uiLang } = useLang();
   const t = getMessages(uiLang);
+
+  /** Bugün tekrar edilecek kart sayısı */
+  const [dueCount, setDueCount] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchDueCount() {
+      try {
+        // Sadece word tipindeki kartlar
+        const allItems: Item[] = await db.items
+          .where("type")
+          .equals("word")
+          .toArray();
+        const reviews: Review[] = await getAllReviews();
+        const due = getDueCards(allItems, reviews, new Date());
+        setDueCount(due.length);
+      } catch {
+        setDueCount(0);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDueCount();
+  }, []);
 
   return (
     <div className="page-container">
@@ -23,6 +52,35 @@ export default function HomePage() {
         <span className="hero-emoji">🇷🇺</span>
         <h1 className="hero-title">{t.appName}</h1>
         <p className="hero-desc">{t.heroDesc}</p>
+      </section>
+
+      {/* Bugünün Tekrarı kartı */}
+      <section className="review-banner">
+        <div className="review-banner-content">
+          <div className="review-banner-left">
+            <h2 className="review-banner-title">
+              <span className="review-banner-icon">🔄</span>
+              {t.todayReview}
+            </h2>
+            <p className="review-banner-desc">
+              {loading
+                ? "..."
+                : dueCount > 0
+                  ? `${dueCount} ${t.dueCards}`
+                  : t.nothingDue}
+            </p>
+          </div>
+          <Link
+            href="/review"
+            className={`review-banner-btn ${dueCount === 0 && !loading ? "review-banner-btn-disabled" : ""}`}
+            aria-disabled={dueCount === 0 && !loading}
+            onClick={(e) => {
+              if (dueCount === 0 && !loading) e.preventDefault();
+            }}
+          >
+            {t.study}
+          </Link>
+        </div>
       </section>
 
       {/* Ünite listesi */}
@@ -51,7 +109,9 @@ export default function HomePage() {
                     {unit.itemCount} {t.items}
                   </span>
                 </div>
-                <h3 className="unit-card-title">{unit.title}</h3>
+                <h3 className="unit-card-title">
+                  {getUnitTitle(unit, uiLang)}
+                </h3>
                 <div className="unit-card-arrow">
                   {t.goToUnit} <span>→</span>
                 </div>

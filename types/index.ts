@@ -64,7 +64,8 @@ export interface RawItem {
 /** content/ klasöründeki ünite JSON yapısı */
 export interface UnitData {
   id: string;
-  title: string;
+  titleTr: string;
+  titleEn: string;
   level: string;
   items: RawItem[];
 }

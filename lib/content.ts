@@ -5,7 +5,7 @@
  */
 
 import { db } from "@/lib/db";
-import type { UnitData, Item } from "@/types";
+import type { UnitData, Item, Lang } from "@/types";
 
 /**
  * Tüm ünite verilerini içe aktarır.
@@ -19,19 +19,30 @@ import type { UnitData, Item } from "@/types";
 // Statik import — content/ altındaki tüm ünite dosyaları
 // Yeni ünite eklerken buraya bir satır eklemen yeterli.
 import unitAlphabet from "@/content/unit-00-alphabet.json";
+import unitGreetings from "@/content/unit-01-greetings.json";
 
 const UNIT_MODULES: UnitData[] = [
   unitAlphabet as UnitData,
+  unitGreetings as UnitData,
 ];
+
+/**
+ * Arayüz diline göre ünite başlığını döndürür.
+ * uiLang "tr" ise titleTr, "en" ise titleEn kullanılır.
+ */
+export function getUnitTitle(unit: { titleTr: string; titleEn: string }, uiLang: Lang): string {
+  return uiLang === "tr" ? unit.titleTr : unit.titleEn;
+}
 
 /**
  * Tüm üniteleri döndürür (başlık ve meta bilgi).
  * Sayfalar arası navigasyonda kullanılır.
  */
-export function getAllUnits(): { id: string; title: string; level: string; itemCount: number }[] {
+export function getAllUnits(): { id: string; titleTr: string; titleEn: string; level: string; itemCount: number }[] {
   return UNIT_MODULES.map((unit) => ({
     id: unit.id,
-    title: unit.title,
+    titleTr: unit.titleTr,
+    titleEn: unit.titleEn,
     level: unit.level,
     itemCount: unit.items.length,
   }));

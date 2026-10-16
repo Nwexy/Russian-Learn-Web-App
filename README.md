@@ -38,8 +38,10 @@ chmod +x start.sh   # Sadece ilk seferde gerekli
 ```
 ├── app/                    # Next.js App Router sayfaları
 │   ├── layout.tsx          # Kök layout (tema, navbar, db init)
-│   ├── page.tsx            # Ana sayfa (ünite listesi)
+│   ├── page.tsx            # Ana sayfa (ünite listesi + tekrar kartı)
 │   ├── globals.css         # Tasarım sistemi
+│   ├── review/
+│   │   └── page.tsx        # Kelime kartı tekrar sayfası (SRS)
 │   ├── settings/
 │   │   └── page.tsx        # Ayarlar sayfası
 │   └── unit/
@@ -47,15 +49,21 @@ chmod +x start.sh   # Sadece ilk seferde gerekli
 │           └── page.tsx    # Ünite detay sayfası
 ├── components/             # Yeniden kullanılabilir bileşenler
 │   ├── navbar.tsx          # Navigasyon çubuğu
+│   ├── footer.tsx          # Alt bilgi
 │   ├── theme-provider.tsx  # Tema yönetimi (açık/koyu)
 │   └── database-init.tsx   # Veritabanı başlatma
 ├── lib/                    # Yardımcı modüller
 │   ├── db.ts               # Dexie veritabanı tanımı
-│   └── content.ts          # İçerik yükleme ve seed
+│   ├── content.ts          # İçerik yükleme ve seed
+│   ├── i18n.ts             # Çoklu dil (tr/en) mesajları
+│   ├── lang-context.tsx    # Dil yönetimi context
+│   ├── srs.ts              # SM-2 tabanlı SRS motoru
+│   └── reviews.ts          # Dexie reviews tablosu yardımcıları
 ├── types/                  # TypeScript tip tanımları
 │   └── index.ts
 ├── content/                # Ünite JSON dosyaları
-│   └── unit-00-alphabet.json
+│   ├── unit-00-alphabet.json
+│   └── unit-01-greetings.json
 ├── start.bat               # Windows tek tıkla başlatma
 ├── start.sh                # Mac/Linux tek tıkla başlatma
 ├── CHANGELOG.md            # Değişiklik kaydı
@@ -71,16 +79,20 @@ JSON formatı:
 ```json
 {
   "id": "unit-01",
-  "title": "Selamlaşma",
-  "level": "A1",
+  "titleTr": "Selamlaşma ve Tanışma",
+  "titleEn": "Greetings and Introductions",
+  "level": "A0",
   "items": [
     {
       "id": "g1",
       "type": "word",
-      "ru": "Привет",
-      "tr": "Merhaba",
+      "ru": "привет",
+      "tr": "merhaba",
+      "en": "hello",
       "exampleRu": "Привет, как дела?",
-      "exampleTr": "Merhaba, nasılsın?"
+      "exampleTr": "Merhaba, nasılsın?",
+      "exampleEn": "Hello, how are you?",
+      "tags": ["selamlasma"]
     }
   ]
 }
@@ -96,6 +108,19 @@ Uygulama iki bağımsız dil ayarı destekler:
 İkisi birbirinden bağımsız olarak Ayarlar sayfasından seçilir. Seçimler Dexie (IndexedDB) settings tablosunda saklanır; sayfa yenilendiğinde korunur.
 
 Eğer seçili çeviri dilinde karşılık yoksa, diğer dile otomatik olarak düşülür (fallback) ve yanında dil etiketi gösterilir.
+
+Ünite başlıkları da arayüz diline göre gösterilir (titleTr / titleEn).
+
+## SRS (Aralıklı Tekrar)
+
+Uygulama basit bir SM-2 tabanlı SRS (Spaced Repetition System) motoru içerir.
+
+- Kelime kartları `/review` sayfasında çalışılır.
+- Her kart için 4 puan verilebilir: Tekrar (Again), Zor (Hard), İyi (Good), Kolay (Easy).
+- Verilen puana göre kartın tekrar aralığı ve kolaylık faktörü güncellenir.
+- Tekrar tarihleri Dexie `reviews` tablosunda saklanır.
+- Ana sayfadaki "Bugünün Tekrarı" kartı, kaç kartın tekrar zamanının geldiğini gösterir.
+- Sadece `type: "word"` olan öğeler tekrar havuzuna dahil edilir.
 
 ## Geliştirme Notları
 

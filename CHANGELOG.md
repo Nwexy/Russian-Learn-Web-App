@@ -3,6 +3,16 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16 (Faz 2)
+- Unite basliklari arayuz diline baglandi (titleTr / titleEn).
+- Selamlasma unitesi eklendi (unit-01-greetings.json, 12 kelime).
+- Basit SM-2 tabanli SRS motoru eklendi (lib/srs.ts).
+- Kelime karti tekrar ekrani eklendi (/review).
+- Ana sayfaya "Bugunun Tekrari" karti eklendi.
+- i18n anahtarlari genisletildi.
+- Navbar'a Tekrar linki eklendi.
+- Dexie reviews tablosu yardimci fonksiyonlari eklendi (lib/reviews.ts).
+
 ## 2026-10-16 (Faz 1.5)
 - Arayüz dili (tr/en) desteği eklendi.
 - Çeviri dili (tr/en) seçimi eklendi.
