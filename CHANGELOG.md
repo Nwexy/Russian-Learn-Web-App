@@ -3,6 +3,11 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-16 (Faz 4.8)
+- Eslestirmede Rusca kelimeye tiklayinca otomatik seslendirme duzeltildi.
+- Sayilar unitisi 0-100 arasi tam listeye genisletildi (101 sayi).
+- Bosluk doldurmada soru hint'i duzeltildi: tam cumle cevirisi ve {cevap} vurgusu.
+
 ## 2026-10-16 (Faz 4.7)
 - Ayarlara telaffuz goster/gizle secenegi eklendi.
 - Seslendirme butonu eklendi (ders, review, alistirma, test).

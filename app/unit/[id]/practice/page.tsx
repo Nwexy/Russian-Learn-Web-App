@@ -22,7 +22,7 @@ import type { MixedQuestion } from "@/lib/exercises";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
@@ -223,18 +223,22 @@ export default function UnitPracticePage() {
     </>
   );
 
-  /** Ortak geri bildirim: doğru/yanlış + anlam + okunuş */
-  const feedback = (item: Item | null, wrongText?: string) => (
+  /** Ortak geri bildirim: doğru/yanlış + anlam + okunuş + tam cümle çevirisi */
+  const feedback = (item: Item | null, wrongText?: string, fullTranslation?: string) => (
     <div className="practice-feedback">
       <div>
         <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
           {isCorrect ? t.correct : wrongText ? `${t.wrong} — ${t.showCorrect}: ${wrongText}` : t.wrong}
         </span>
-        {item && (
+        {fullTranslation ? (
+          <div className="feedback-sentence-translation">
+            {renderHighlightedText(fullTranslation)}
+          </div>
+        ) : item ? (
           <span className="feedback-meaning">
             {" "} — {item.ru} {t.meaningEquals} {getMeaning(item)}
           </span>
-        )}
+        ) : null}
         {item && shouldShowPronunciation(revealed) && (
           <PronunciationText item={item} className="pronunciation-inline" />
         )}
@@ -316,7 +320,7 @@ export default function UnitPracticePage() {
             <span>{fb.sentenceWithBlank}</span>
             <SpeakButton text={fb.sentenceWithBlank} size="sm" />
           </div>
-          <p className="practice-hint">{fb.hint}</p>
+          <p className="practice-instruction">{t.fillBlank}</p>
         </div>
         <div className="practice-input-row">
           <input
@@ -334,7 +338,7 @@ export default function UnitPracticePage() {
             <button className="practice-btn practice-btn-primary" onClick={handleCheck}>{t.check}</button>
           )}
         </div>
-        {revealed && feedback(fb.item, fb.correctWord)}
+        {revealed && feedback(fb.item, fb.correctWord, fb.fullTranslation)}
       </div>
     );
   }
@@ -383,9 +387,9 @@ export default function UnitPracticePage() {
       if (matchedIds.has(id) || revealed) return;
       setMatchLeft(id);
       setMatchWrong(false);
-      if (showPronunciation) {
+      if (Boolean(showPronunciation) && isTTSSupported()) {
         const pair = pairs.find((p) => p.id === id);
-        if (pair) speak(pair.ru);
+        if (pair?.ru) speak(pair.ru, "ru-RU");
       }
       if (matchRight !== null) tryMatch(id, matchRight);
     };

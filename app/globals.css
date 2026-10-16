@@ -1936,4 +1936,22 @@ body {
   font-weight: 600;
 }
 
+/* Faz 4.8 — Boşluk doldurma cevap vurgusu */
+.fill-highlight {
+  display: inline;
+  color: #22c55e;
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.feedback-sentence-translation {
+  margin-top: 0.45rem;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+
 

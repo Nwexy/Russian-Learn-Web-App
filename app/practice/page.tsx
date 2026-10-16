@@ -29,7 +29,7 @@ import type {
 import { speak, isTTSSupported } from "@/lib/tts";
 import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item, ExerciseType } from "@/types";
 
@@ -262,12 +262,12 @@ export default function PracticePage() {
     setMatchSelectedLeft(id);
     setMatchWrong(false);
 
-    // Eşleştirmede sol sütundaki Rusça kelimeye tıklanınca otomatik speak(ruText)
+    // Eşleştirmede sol sütundaki Rusça kelimeye tıklanınca otomatik speak(ruText, "ru-RU")
     // Seslendirme ayarı (showPronunciation) kapalıysa ses çalmaz
-    if (showPronunciation) {
+    if (Boolean(showPronunciation) && isTTSSupported()) {
       const pair = matchData?.pairs.find((p) => p.id === id);
-      if (pair) {
-        speak(pair.ru);
+      if (pair?.ru) {
+        speak(pair.ru, "ru-RU");
       }
     }
 
@@ -627,7 +627,7 @@ export default function PracticePage() {
             <SpeakButton text={q.sentenceWithBlank} size="sm" />
           </div>
           {shouldShowPronunciation(fbRevealed) && <PronunciationText item={q.item} />}
-          <p className="practice-hint">{q.hint}</p>
+          <p className="practice-instruction">{t.fillBlank}</p>
         </div>
 
         <div className="practice-input-row">
@@ -655,9 +655,11 @@ export default function PracticePage() {
               <span className={fbCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {fbCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
               </span>
-              <span className="feedback-meaning">
-                {" "} — {q.item.ru} {t.meaningEquals} {getMeaning(q.item, translationLang)}
-              </span>
+              {q.fullTranslation && (
+                <div className="feedback-sentence-translation">
+                  {renderHighlightedText(q.fullTranslation)}
+                </div>
+              )}
               {shouldShowPronunciation(fbRevealed) && (
                 <PronunciationText item={q.item} className="pronunciation-inline" />
               )}

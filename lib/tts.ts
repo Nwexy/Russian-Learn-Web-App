@@ -26,26 +26,37 @@ export function isTTSSupported(): boolean {
  *  - Tarayıcı TTS desteklemiyorsa sessizce döner.
  */
 export function speak(text: string, lang: string = "ru-RU"): void {
-  if (!isTTSSupported()) return;
+  if (!isTTSSupported() || !text) return;
 
-  // Önceki okumayı iptal et
-  window.speechSynthesis.cancel();
-
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  utterance.rate = 0.9;
-
-  // Uygun sesi bulmaya çalış
-  const voices = window.speechSynthesis.getVoices();
-  const exactMatch = voices.find((v) => v.lang === lang);
-  const partialMatch = voices.find((v) => v.lang.startsWith(lang.split("-")[0]));
-
-  if (exactMatch) {
-    utterance.voice = exactMatch;
-  } else if (partialMatch) {
-    utterance.voice = partialMatch;
+  // Tarayıcı duraklatılmışsa devam ettir
+  if (window.speechSynthesis.paused) {
+    window.speechSynthesis.resume();
   }
-  // Hiçbiri bulunamazsa tarayıcı varsayılanını kullanır
 
-  window.speechSynthesis.speak(utterance);
+  // Önceki okuma varsa iptal et
+  if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+    window.speechSynthesis.cancel();
+  }
+
+  // Chromium bug çözümü: cancel() hemen ardına senkron speak() çağrıldığında
+  // yeni okuma da bazen iptal edilir. 20ms'lik gecikme ile kuyruk güvenle başlatılır.
+  setTimeout(() => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = 0.9;
+
+    // Uygun sesi bulmaya çalış
+    const voices = window.speechSynthesis.getVoices();
+    const exactMatch = voices.find((v) => v.lang === lang);
+    const partialMatch = voices.find((v) => v.lang.startsWith(lang.split("-")[0]));
+
+    if (exactMatch) {
+      utterance.voice = exactMatch;
+    } else if (partialMatch) {
+      utterance.voice = partialMatch;
+    }
+    // Hiçbiri bulunamazsa tarayıcı varsayılanını kullanır
+
+    window.speechSynthesis.speak(utterance);
+  }, 20);
 }

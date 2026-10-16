@@ -35,6 +35,7 @@ export interface FillBlankQuestion {
   sentenceWithBlank: string;  // ____ ile boşluk bırakılmış cümle
   correctWord: string;        // Boşluğa gelecek Rusça kelime
   hint: string;               // Çeviri dilinde ipucu
+  fullTranslation?: string;   // Boşluğa denk gelen kelime { } ile vurgulanmış tam cümle çevirisi
 }
 
 /** Eşleştirme çifti */
@@ -200,8 +201,94 @@ export function generateFillBlank(
       sentenceWithBlank,
       correctWord: item.ru,
       hint: getTranslationText(item, lang),
+      fullTranslation: getHighlightedTranslation(item, lang),
     };
   });
+}
+
+/**
+ * Örnek cümlenin çevirisinde doğru kelimenin karşılığını bulup { } içine alır.
+ * Örn: "The store opens at nine." -> "The store opens at {nine}."
+ */
+export function getHighlightedTranslation(item: Item, lang: Lang): string {
+  const sentence =
+    (lang === "tr" ? item.exampleTr : item.exampleEn) ||
+    (lang === "tr" ? item.exampleEn : item.exampleTr) ||
+    "";
+  const word =
+    (lang === "tr" ? item.tr : item.en) ||
+    (lang === "tr" ? item.en : item.tr) ||
+    "";
+
+  if (!sentence || !word) return sentence || word;
+
+  const rawCandidates = word
+    .split("/")
+    .map((w) => w.replace(/\(.*?\)/g, "").trim())
+    .filter(Boolean);
+  const candidates = [...rawCandidates];
+
+  rawCandidates.forEach((cand) => {
+    if (cand.includes("'s")) candidates.push(cand.replace("'s", " is"));
+    if (cand.includes("’s")) candidates.push(cand.replace("’s", " is"));
+  });
+
+  // 1. Türkçe (İ/i, I/ı) ve İngilizce büyük/küçük harf duyarsız arama
+  for (const cand of candidates) {
+    const pattern = cand
+      .split("")
+      .map((ch) => {
+        if (ch === "i" || ch === "İ") return "[iİ]";
+        if (ch === "ı" || ch === "I") return "[ıI]";
+        return escapeRegex(ch);
+      })
+      .join("");
+
+    const rx = new RegExp("(" + pattern + ")", "i");
+    if (rx.test(sentence)) {
+      return sentence.replace(rx, "{$1}");
+    }
+  }
+
+  // 2. Çok kelimeli kalıplarda parçalı arama
+  for (const cand of candidates) {
+    const parts = cand.split(/\s+/).filter(Boolean);
+    if (parts.length > 1) {
+      const allFound = parts.every((p) => {
+        const pRx = p
+          .split("")
+          .map((ch) =>
+            ch === "i" || ch === "İ"
+              ? "[iİ]"
+              : ch === "ı" || ch === "I"
+                ? "[ıI]"
+                : escapeRegex(ch)
+          )
+          .join("");
+        return new RegExp(pRx, "i").test(sentence);
+      });
+      if (allFound) {
+        const mainPart = parts.slice(0, 3).join(" ");
+        const mRx = mainPart
+          .split("")
+          .map((ch) =>
+            ch === "i" || ch === "İ"
+              ? "[iİ]"
+              : ch === "ı" || ch === "I"
+                ? "[ıI]"
+                : escapeRegex(ch)
+          )
+          .join("");
+        const rx = new RegExp("(" + mRx + ")", "i");
+        if (rx.test(sentence)) {
+          return sentence.replace(rx, "{$1}");
+        }
+      }
+    }
+  }
+
+  // Fallback: tüm cümle çevirisini göster, boşluğu parantezle belirt
+  return `${sentence} ({${word}})`;
 }
 
 /**

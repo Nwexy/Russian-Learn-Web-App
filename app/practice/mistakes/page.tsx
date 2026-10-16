@@ -12,16 +12,17 @@ import { db } from "@/lib/db";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getAllMistakes, removeMistake, recordMistake } from "@/lib/mistakes";
+import { getHighlightedTranslation } from "@/lib/exercises";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Mistake, Item } from "@/types";
 
 type Phase = "list" | "active" | "result";
 
 export default function MistakesPage() {
-  const { uiLang } = useLang();
+  const { uiLang, translationLang, showPronunciation } = useLang();
   const t = getMessages(uiLang);
 
   const [mistakes, setMistakes] = useState<Mistake[]>([]);
@@ -293,7 +294,9 @@ export default function MistakesPage() {
   if (mistake.exerciseType === "fillBlank") {
     const sentence = (qd.sentenceWithBlank as string) || "";
     const correctWord = (qd.correctWord as string) || mistake.correctAnswer;
-    const hint = (qd.hint as string) || "";
+    const fullTranslation =
+      (qd.fullTranslation as string) ||
+      (currentItem ? getHighlightedTranslation(currentItem, translationLang) : (qd.hint as string ? `{${qd.hint}}` : ""));
 
     const handleCheck = async () => {
       if (revealed) return;
@@ -316,7 +319,7 @@ export default function MistakesPage() {
             <SpeakButton text={sentence} size="sm" />
           </div>
           {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
-          {hint && <p className="practice-hint">{hint}</p>}
+          <p className="practice-instruction">{t.fillBlank}</p>
         </div>
 
         <div className="practice-input-row">
@@ -344,6 +347,11 @@ export default function MistakesPage() {
               <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {feedbackMsg}
               </span>
+              {fullTranslation && (
+                <div className="feedback-sentence-translation">
+                  {renderHighlightedText(fullTranslation)}
+                </div>
+              )}
               {currentItem && shouldShowPronunciation(revealed) && (
                 <PronunciationText item={currentItem} className="pronunciation-inline" />
               )}
@@ -378,7 +386,16 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+          <div
+            className="flashcard-ru"
+            style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", cursor: "pointer" }}
+            onClick={() => {
+              if (Boolean(showPronunciation) && isTTSSupported()) {
+                speak(ru, "ru-RU");
+              }
+            }}
+            title="Dinle"
+          >
             <span>{ru}</span>
             <SpeakButton text={ru} size="sm" />
           </div>

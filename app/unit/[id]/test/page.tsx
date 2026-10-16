@@ -19,7 +19,7 @@ import { setTestComplete } from "@/lib/progress";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
@@ -35,6 +35,7 @@ interface TestQuestion {
   sentenceWithBlank?: string;
   correctWord?: string;
   hint?: string;
+  fullTranslation?: string;
   // Listen fields (correctWord reused)
 }
 
@@ -99,6 +100,7 @@ export default function TestPage() {
         sentenceWithBlank: q.sentenceWithBlank,
         correctWord: q.correctWord,
         hint: q.hint,
+        fullTranslation: q.fullTranslation,
       })),
       ...listenQs.map((q) => ({
         type: "listen" as const,
@@ -323,7 +325,7 @@ export default function TestPage() {
             {q.sentenceWithBlank && <SpeakButton text={q.sentenceWithBlank} size="sm" />}
           </div>
           {shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
-          {q.hint && <p className="practice-hint">{q.hint}</p>}
+          <p className="practice-instruction">{t.fillBlank}</p>
         </div>
 
         <div className="practice-input-row">
@@ -351,7 +353,13 @@ export default function TestPage() {
               <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {isCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
               </span>
-              <span className="feedback-meaning"> — {feedbackMeaning}</span>
+              {q.fullTranslation ? (
+                <div className="feedback-sentence-translation">
+                  {renderHighlightedText(q.fullTranslation)}
+                </div>
+              ) : (
+                <span className="feedback-meaning"> — {feedbackMeaning}</span>
+              )}
               {shouldShowPronunciation(revealed) && (
                 <PronunciationText item={q.item} className="pronunciation-inline" />
               )}

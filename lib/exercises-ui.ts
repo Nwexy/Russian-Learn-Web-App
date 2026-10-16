@@ -29,3 +29,22 @@ export function shouldShowPronunciation(
   if (state.answered !== undefined) return Boolean(state.answered);
   return false;
 }
+
+import React from "react";
+
+/**
+ * "{kelime}" kalıplarını yeşil/vurgulu span olarak render eder.
+ * Örn: "store opens at {nine}" -> "store opens at " + <span className="fill-highlight">nine</span>
+ */
+export function renderHighlightedText(text?: string | null): React.ReactNode {
+  if (!text) return null;
+  const parts = text.split(/(\{.*?\})/g);
+  return parts.map((part, i) => {
+    if (part.startsWith("{") && part.endsWith("}")) {
+      const inner = part.slice(1, -1);
+      return React.createElement("span", { key: i, className: "fill-highlight" }, inner);
+    }
+    return React.createElement(React.Fragment, { key: i }, part);
+  });
+}
+
