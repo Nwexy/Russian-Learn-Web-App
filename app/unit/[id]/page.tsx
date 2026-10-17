@@ -124,22 +124,35 @@ export default function UnitPage() {
             const translation = getTranslation(item, translationLang);
             const exampleTr = getExampleTranslation(item, translationLang);
             const isNumber = (item.tags?.includes("number") || item.type === "word") && item.numberValue !== undefined;
+            const hexColor = item.hexCode || getUnitById(unit.id)?.items.find((i) => i.id === item.id)?.hexCode;
 
             return (
               <div key={item.id} className="item-card">
-                {isNumber && (
-                  <span className="item-number-badge" title={`Sayı: ${item.numberValue}`}>
-                    {item.numberValue}
-                  </span>
-                )}
-                {item.hexCode && (
-                  <span
-                    className="item-color-badge"
-                    style={{ backgroundColor: item.hexCode }}
-                    title={item.hexCode}
-                  />
-                )}
-                <span className="item-type-badge">{item.type}</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.75rem" }}>
+                  <span className="item-type-badge" style={{ marginBottom: 0 }}>{item.type}</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                    {isNumber && (
+                      <span className="item-number-badge" style={{ position: "static" }} title={`Sayı: ${item.numberValue}`}>
+                        {item.numberValue}
+                      </span>
+                    )}
+                    {hexColor && (
+                      <div 
+                        className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
+                        style={{
+                          backgroundColor: hexColor,
+                          width: "2rem",
+                          height: "2rem",
+                          minWidth: "2rem",
+                          minHeight: "2rem",
+                          borderRadius: "0.375rem",
+                          border: "1px solid #9ca3af",
+                        }} 
+                        title={item.en || item.ru}
+                      />
+                    )}
+                  </div>
+                </div>
                 <div className="item-ru" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span>{item.ru}</span>
                   <SpeakButton text={item.ru} size="sm" />

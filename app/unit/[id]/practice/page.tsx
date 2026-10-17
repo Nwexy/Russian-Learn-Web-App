@@ -291,6 +291,23 @@ export default function UnitPracticePage() {
       <div className="page-container">
         {header}
         <div className="flashcard">
+          {(mc.item.hexCode || getUnitById(unit.id)?.items.find((i) => i.id === mc.item.id)?.hexCode) && (
+            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
+              <div 
+                className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
+                style={{
+                  backgroundColor: mc.item.hexCode || getUnitById(unit.id)?.items.find((i) => i.id === mc.item.id)?.hexCode,
+                  width: "2rem",
+                  height: "2rem",
+                  minWidth: "2rem",
+                  minHeight: "2rem",
+                  borderRadius: "0.375rem",
+                  border: "1px solid #9ca3af",
+                }} 
+                title={mc.item.en || mc.item.ru}
+              />
+            </div>
+          )}
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
             <span>{mc.question}</span>
             {ruQuestion && <SpeakButton text={mc.question} size="sm" />}
@@ -337,6 +354,23 @@ export default function UnitPracticePage() {
       <div className="page-container">
         {header}
         <div className="flashcard">
+          {(fb.item.hexCode || getUnitById(unit.id)?.items.find((i) => i.id === fb.item.id)?.hexCode) && (
+            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
+              <div 
+                className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
+                style={{
+                  backgroundColor: fb.item.hexCode || getUnitById(unit.id)?.items.find((i) => i.id === fb.item.id)?.hexCode,
+                  width: "2rem",
+                  height: "2rem",
+                  minWidth: "2rem",
+                  minHeight: "2rem",
+                  borderRadius: "0.375rem",
+                  border: "1px solid #9ca3af",
+                }} 
+                title={fb.item.en || fb.item.ru}
+              />
+            </div>
+          )}
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
             <span>{fb.sentenceWithBlank}</span>
             <SpeakButton text={fb.sentenceWithBlank} size="sm" />
@@ -476,6 +510,23 @@ export default function UnitPracticePage() {
     <div className="page-container">
       {header}
       <div className="flashcard">
+        {(ls.item.hexCode || getUnitById(unit.id)?.items.find((i) => i.id === ls.item.id)?.hexCode) && (
+          <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
+            <div 
+              className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
+              style={{
+                backgroundColor: ls.item.hexCode || getUnitById(unit.id)?.items.find((i) => i.id === ls.item.id)?.hexCode,
+                width: "2rem",
+                height: "2rem",
+                minWidth: "2rem",
+                minHeight: "2rem",
+                borderRadius: "0.375rem",
+                border: "1px solid #9ca3af",
+              }} 
+              title={ls.item.en || ls.item.ru}
+            />
+          </div>
+        )}
         <div className="listen-btns">
           <button className="listen-play-btn" onClick={handlePlay}>
             <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} width={28} height={28}>

@@ -3,6 +3,9 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-17 (Faz 6.5.1)
+- Renk unitisindeki kelime kartlarina gorsel renk kutulari eklendi.
+
 ## 2026-10-17 (Faz 6.5)
 - Yeni unitelerde Test ve Alistirma butonlarinin calismama hatasi giderildi.
 - Unite testleri artik sadece coktan secmeli (multipleChoice) sorulardan olusuyor.

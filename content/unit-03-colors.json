@@ -15,7 +15,9 @@
       "exampleRu": "Это красный автомобиль.",
       "exampleTr": "Bu kırmızı bir araba.",
       "exampleEn": "This is a red car.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col02",
@@ -28,7 +30,9 @@
       "exampleRu": "У меня синий костюм.",
       "exampleTr": "Benim mavi takım elbisem var.",
       "exampleEn": "I have a blue suit.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col03",
@@ -41,7 +45,9 @@
       "exampleRu": "Это зелёный чай.",
       "exampleTr": "Bu yeşil çay.",
       "exampleEn": "This is green tea.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col04",
@@ -54,7 +60,9 @@
       "exampleRu": "На столе лежит жёлтый лимон.",
       "exampleTr": "Masada sarı bir limon duruyor.",
       "exampleEn": "A yellow lemon is on the table.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col05",
@@ -67,7 +75,9 @@
       "exampleRu": "Я пью чёрный кофе без сахара.",
       "exampleTr": "Ben şekersiz siyah kahve içiyorum.",
       "exampleEn": "I drink black coffee without sugar.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col06",
@@ -80,7 +90,9 @@
       "exampleRu": "Зимой в парке белый снег.",
       "exampleTr": "Kışın parkta beyaz kar var.",
       "exampleEn": "In winter there is white snow in the park.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col07",
@@ -93,7 +105,9 @@
       "exampleRu": "Сегодня на улице серый день.",
       "exampleTr": "Bugün dışarıda gri bir gün var.",
       "exampleEn": "Today is a gray day outside.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col08",
@@ -106,7 +120,9 @@
       "exampleRu": "Дети любят оранжевый апельсин.",
       "exampleTr": "Çocuklar turuncu portakalı sever.",
       "exampleEn": "Children love the orange orange.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col09",
@@ -119,7 +135,9 @@
       "exampleRu": "Она купила розовый шарф.",
       "exampleTr": "O pembe bir atkı satın aldı.",
       "exampleEn": "She bought a pink scarf.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col10",
@@ -127,12 +145,14 @@
       "ru": "коричневый",
       "tr": "kahverengi",
       "en": "brown",
-      "hexCode": "#A52A2A",
+      "hexCode": "#69341f",
       "pronunciationEn": "ka-REECH-ni-viy",
       "exampleRu": "У нас в комнате коричневый диван.",
       "exampleTr": "Odamızda kahverengi bir kanepe var.",
       "exampleEn": "We have a brown sofa in our room.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col11",
@@ -145,7 +165,9 @@
       "exampleRu": "В вазе стоит красивый фиолетовый цветок.",
       "exampleTr": "Vazoda güzel bir mor çiçek duruyor.",
       "exampleEn": "A beautiful purple flower is in the vase.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     },
     {
       "id": "col12",
@@ -158,7 +180,9 @@
       "exampleRu": "Летом небо чистое и голубое.",
       "exampleTr": "Yazın gökyüzü temiz ve açık mavidir.",
       "exampleEn": "In summer the sky is clear and light blue.",
-      "tags": ["color"]
+      "tags": [
+        "color"
+      ]
     }
   ]
 }
