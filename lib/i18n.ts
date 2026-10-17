@@ -171,12 +171,17 @@ export interface Messages {
   selectUnits: string;
   allUnitsSelected: string;
   multipleUnitsSelected: string;
+
+  // Faz 7.6 — Doğrusal ilerleme ve ünite kilit sistemi
+  unitLocked: string;
+  completePreviousUnitToUnlock: string;
+  unitLockedMessage: string;
 }
 
 /** Tüm çeviriler */
 const messages: Record<Lang, Messages> = {
   tr: {
-    appName: "Rusça Öğren",
+    appName: "Rusça Öğreniyorum",
     home: "Ana Sayfa",
     settings: "Ayarlar",
     units: "Üniteler",
@@ -331,9 +336,14 @@ const messages: Record<Lang, Messages> = {
     selectUnits: "Üniteleri Seç",
     allUnitsSelected: "Tüm Üniteler",
     multipleUnitsSelected: "Seçili Üniteler",
+
+    // Faz 7.6 — Doğrusal ilerleme ve ünite kilit sistemi
+    unitLocked: "Ünite Kilitli",
+    completePreviousUnitToUnlock: "Devam etmek için önceki üniteyi tamamlayın.",
+    unitLockedMessage: "Bu ünite kilitli. Lütfen önceki üniteleri tamamlayın.",
   },
   en: {
-    appName: "Learn Russian",
+    appName: "Learning Russian",
     home: "Home",
     settings: "Settings",
     units: "Units",
@@ -488,6 +498,11 @@ const messages: Record<Lang, Messages> = {
     selectUnits: "Select Units",
     allUnitsSelected: "All Units",
     multipleUnitsSelected: "Selected Units",
+
+    // Faz 7.6 — Doğrusal ilerleme ve ünite kilit sistemi
+    unitLocked: "Unit Locked",
+    completePreviousUnitToUnlock: "Complete the previous unit to continue.",
+    unitLockedMessage: "This unit is locked. Please complete the previous units first.",
   },
 };
 

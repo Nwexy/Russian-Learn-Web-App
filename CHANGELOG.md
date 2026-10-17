@@ -4,6 +4,12 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-17
+- Uniteler arasi dogrusal ilerleme (linear progression) eklendi.
+- Bir unite bitmeden (testi gecilmeden) sonraki unite kilitli kaliyor.
+- Kilitli uniteler ana sayfada kilit ikonuyla ve soluk gosteriliyor.
+- Kilitli uniteye URL uzerinden girilmesi engellendi.
+
+## 2026-10-17
 - Practice sayfasindaki unite secicide, dersi tamamlanmamis kilitli uniteler de gorsel olarak listelendi.
 
 ## 2026-10-17

@@ -93,3 +93,56 @@ export async function getUnitStatus(unitId: string): Promise<UnitStatus> {
 export async function getAllProgress(): Promise<Progress[]> {
   return db.progress.toArray();
 }
+
+/**
+ * Bir ünitenin kilitli olup olmadığını doğrusal ilerleme kuralına göre hesaplar.
+ * - allUnits dizisi ID'lerine göre sıralanır (unit-00, unit-01, unit-02...).
+ * - İlk ünite (Alfabe / unit-00) HER ZAMAN açıktır.
+ * - Diğer üniteler için: Bir önceki ünitenin lessonDone ve testDone değerlerine bakılır.
+ *   (Alfabe ünitesi veya alıştırmasız ünite ise sadece lessonDone yeterlidir, çünkü testi yoktur).
+ * - Eğer bir önceki ünite tamamlanmamışsa sıradaki ünite KİLİTLİDİR (false).
+ * - Tamamlanmışsa açıktır (true).
+ */
+export function isUnitUnlocked(
+  unitId: string,
+  allUnits: { id: string; hasExercises?: boolean }[],
+  allProgress: Progress[] | Record<string, Progress>
+): boolean {
+  // allUnits dizisini ID'lerine göre sırala (örn: unit-00, unit-01, unit-02...)
+  const sortedUnits = [...allUnits].sort((a, b) => a.id.localeCompare(b.id));
+  const targetIndex = sortedUnits.findIndex((u) => u.id === unitId);
+
+  // İlk ünite (unit-00) veya bulunamayan ünite her zaman açıktır
+  if (targetIndex <= 0) {
+    return true;
+  }
+
+  const getProg = (id: string): Progress | undefined => {
+    if (Array.isArray(allProgress)) {
+      return allProgress.find((p) => p.unitId === id);
+    }
+    return allProgress[id];
+  };
+
+  // Doğrusal ilerleme: Hedef üniteye kadar olan tüm önceki ünitelerin tamamlanmış olması gerekir
+  for (let i = 0; i < targetIndex; i++) {
+    const prevUnit = sortedUnits[i];
+    const prevProg = getProg(prevUnit.id);
+    if (!prevProg) {
+      return false;
+    }
+
+    const prevHasNoExercises = prevUnit.id === "unit-00" || prevUnit.hasExercises === false;
+    if (prevHasNoExercises) {
+      if (!prevProg.lessonDone) {
+        return false;
+      }
+    } else {
+      if (!prevProg.lessonDone || !prevProg.testDone) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}

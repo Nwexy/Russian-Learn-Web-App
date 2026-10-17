@@ -18,7 +18,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { getProgress } from "@/lib/progress";
+import { getProgress, isUnitUnlocked } from "@/lib/progress";
+import { Lock } from "lucide-react";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getAllUnits, getUnitById, getUnitTitle } from "@/lib/content";
@@ -263,25 +264,29 @@ export default function PracticePage() {
   /** İlk veri yükleme */
   useEffect(() => {
     async function load() {
-      // Her ünite için getProgress ile lessonCompleted durumunu kontrol et
-      const progressEntries = await Promise.all(
-        units.map(async (u) => {
-          const prog = await getProgress(u.id);
-          return { unitId: u.id, lessonCompleted: Boolean(prog.lessonDone) };
-        })
+      const allProg = await db.progress.toArray();
+      // Ünitenin practice'de seçilebilir olması için:
+      // 1) isUnitUnlocked ile doğrusal olarak açık olmalı
+      // 2) hasExercises true olmalı
+      // 3) lessonDone true olmalı
+      const availableIds = new Set(
+        units
+          .filter((u) => {
+            const isUnlocked = isUnitUnlocked(u.id, units, allProg);
+            const prog = allProg.find((p) => p.unitId === u.id);
+            return isUnlocked && u.hasExercises && Boolean(prog?.lessonDone);
+          })
+          .map((u) => u.id)
       );
-      const compIds = new Set(
-        progressEntries.filter((p) => p.lessonCompleted).map((p) => p.unitId)
-      );
-      setCompletedUnitIds(compIds);
+      setCompletedUnitIds(availableIds);
 
       // Başlangıçta tüm tamamlanmış üniteleri seç
       const validCompletedIds = units
-        .filter((u) => compIds.has(u.id))
+        .filter((u) => availableIds.has(u.id))
         .map((u) => u.id);
       setSelectedUnits(validCompletedIds);
 
-      const loaded = await loadFilteredItems(true, validCompletedIds, compIds);
+      const loaded = await loadFilteredItems(true, validCompletedIds, availableIds);
       setItems(loaded);
       setTtsSupported(isTTSSupported());
       const mc = await getMistakeCount();
@@ -656,22 +661,7 @@ export default function PracticePage() {
                           </span>
                           {!isCompleted && (
                             <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground" title={t.locked}>
-                              <svg
-                                className="w-3.5 h-3.5 text-muted-foreground shrink-0"
-                                style={{ width: "14px", height: "14px" }}
-                                width={14}
-                                height={14}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                                strokeWidth={2}
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
-                                />
-                              </svg>
+                              <Lock className="w-3.5 h-3.5 text-muted-foreground shrink-0" />
                               <span className="text-[10px]">({t.locked})</span>
                             </span>
                           )}

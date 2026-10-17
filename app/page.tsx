@@ -18,7 +18,10 @@ import { getMistakeCount } from "@/lib/mistakes";
 import { getUnitStatus } from "@/lib/progress";
 import { loadGrammarNotes } from "@/lib/grammar";
 import { getAllGrammarProgress } from "@/lib/grammar-progress";
-import type { Item, Review, UnitStatus } from "@/types";
+import { FlagRu } from "@/components/icons/flag-icons";
+import { Lock } from "lucide-react";
+import { isUnitUnlocked } from "@/lib/progress";
+import type { Item, Review, UnitStatus, Progress } from "@/types";
 
 export default function HomePage() {
   const units = getAllUnits();
@@ -30,7 +33,16 @@ export default function HomePage() {
   const [mistakeCount, setMistakeCount] = useState<number>(0);
   const [grammarStats, setGrammarStats] = useState({ completed: 0, total: 0 });
   const [unitStatuses, setUnitStatuses] = useState<Record<string, UnitStatus>>({});
+  const [allProgress, setAllProgress] = useState<Progress[]>([]);
+  const [lockedNoticeUnitId, setLockedNoticeUnitId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+
+  const handleLockedClick = (unitId: string) => {
+    setLockedNoticeUnitId(unitId);
+    setTimeout(() => {
+      setLockedNoticeUnitId((curr) => (curr === unitId ? null : curr));
+    }, 3500);
+  };
 
   useEffect(() => {
     async function fetchDueCount() {
@@ -50,6 +62,10 @@ export default function HomePage() {
         const gProgress = await getAllGrammarProgress();
         const gCompleted = gProgress.filter((p) => p.completed).length;
         setGrammarStats({ completed: gCompleted, total: gNotes.length });
+        // Dexie progress kayıtlarını çek
+        const progs: Progress[] = await db.progress.toArray();
+        setAllProgress(progs);
+
         // Ünite durumlarını çek
         const statuses: Record<string, UnitStatus> = {};
         for (const u of units) {
@@ -69,7 +85,18 @@ export default function HomePage() {
     <div className="page-container">
       {/* Hero bölümü */}
       <section className="hero">
-        <span className="hero-emoji">🇷🇺</span>
+        <span className="hero-emoji" style={{ display: "inline-flex", justifyContent: "center", alignItems: "center" }}>
+          <FlagRu
+            width="84"
+            height="56"
+            style={{
+              width: "84px",
+              height: "56px",
+              borderRadius: "10px",
+              boxShadow: "0 10px 25px rgba(0, 0, 0, 0.35)",
+            }}
+          />
+        </span>
         <h1 className="hero-title">{t.appName}</h1>
         <p className="hero-desc">{t.heroDesc}</p>
       </section>
@@ -211,6 +238,8 @@ export default function HomePage() {
           <div className="units-list">
             {units.map((unit) => {
               const status = unitStatuses[unit.id] || "notStarted";
+              const isUnlocked = isUnitUnlocked(unit.id, units, allProgress);
+
               const badgeCls = status === "completed"
                 ? "unit-status-completed"
                 : status === "inProgress"
@@ -221,6 +250,42 @@ export default function HomePage() {
                 : status === "inProgress"
                   ? t.inProgress
                   : t.notStarted;
+
+              if (!isUnlocked) {
+                return (
+                  <div
+                    key={unit.id}
+                    role="button"
+                    tabIndex={0}
+                    className="card opacity-50 grayscale cursor-not-allowed select-none relative"
+                    onClick={() => handleLockedClick(unit.id)}
+                    title={t.completePreviousUnitToUnlock}
+                  >
+                    <div className="absolute top-4 right-4 text-muted-foreground p-1.5 rounded-full bg-secondary/80">
+                      <Lock className="w-4 h-4 text-muted-foreground" />
+                    </div>
+                    <div className="unit-card-header pr-8">
+                      <span className="unit-card-level">{unit.level}</span>
+                      <span className="unit-status-badge unit-status-locked">{t.unitLocked}</span>
+                      <span className="unit-card-count">
+                        {unit.itemCount} {t.items}
+                      </span>
+                    </div>
+                    <h3 className="unit-card-title text-muted-foreground">
+                      {getUnitTitle(unit, uiLang)}
+                    </h3>
+                    <div className="unit-card-arrow text-muted-foreground flex items-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>{t.unitLocked}</span>
+                    </div>
+                    {lockedNoticeUnitId === unit.id && (
+                      <div className="mt-3 py-1.5 px-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-500 dark:text-amber-400 text-xs font-medium text-center">
+                        {t.completePreviousUnitToUnlock}
+                      </div>
+                    )}
+                  </div>
+                );
+              }
 
               return (
                 <Link

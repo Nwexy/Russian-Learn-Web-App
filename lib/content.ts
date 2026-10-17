@@ -121,3 +121,6 @@ export async function seedDatabase(): Promise<void> {
     await db.items.bulkPut(items);
   }
 }
+
+// Faz 7.6: Doğrusal ilerleme kontrolü re-export
+export { isUnitUnlocked } from "@/lib/progress";

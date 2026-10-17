@@ -9,11 +9,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { getUnitById, getUnitTitle } from "@/lib/content";
+import { getUnitById, getUnitTitle, getAllUnits } from "@/lib/content";
 import { getGrammarByUnit } from "@/lib/grammar";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
-import { getProgress, setLessonComplete } from "@/lib/progress";
+import { getProgress, setLessonComplete, isUnitUnlocked } from "@/lib/progress";
+import { db } from "@/lib/db";
+import { Lock } from "lucide-react";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Lang, RawItem, Progress } from "@/types";
@@ -60,12 +62,21 @@ export default function UnitPage() {
   const t = getMessages(uiLang);
 
   const [progress, setProgress] = useState<Progress | null>(null);
+  const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("overview");
   const [lessonMarked, setLessonMarked] = useState(false);
 
   useEffect(() => {
     if (!unit) return;
-    getProgress(unit.id).then(setProgress);
+    async function checkLockAndProgress() {
+      const allUnits = getAllUnits();
+      const allProgress = await db.progress.toArray();
+      const isOk = isUnitUnlocked(unit!.id, allUnits, allProgress);
+      setUnlocked(isOk);
+      const prog = await getProgress(unit!.id);
+      setProgress(prog);
+    }
+    checkLockAndProgress();
   }, [unit]);
 
   const relatedGrammarNotes = unit ? getGrammarByUnit(unit.id) : [];
@@ -76,6 +87,44 @@ export default function UnitPage() {
         <div className="empty-state">
           <div className="empty-state-icon">--</div>
           <p className="empty-state-text">{t.noContent}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (unlocked === null) {
+    return (
+      <div className="page-container">
+        <div className="review-loading">...</div>
+      </div>
+    );
+  }
+
+  if (unlocked === false) {
+    return (
+      <div className="page-container">
+        <Link href="/" className="back-link">
+          <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          {t.backToHome}
+        </Link>
+        <div className="flex flex-col items-center justify-center text-center py-16 px-4">
+          <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center text-muted-foreground mb-6 shadow-inner">
+            <Lock className="w-10 h-10 text-muted-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            {t.unitLocked}
+          </h1>
+          <p className="text-muted-foreground text-sm max-w-md mb-8">
+            {t.unitLockedMessage}
+          </p>
+          <Link
+            href="/"
+            className="px-6 py-3 rounded-xl bg-accent text-white font-medium hover:opacity-90 transition-opacity shadow-md"
+          >
+            {t.backToHome}
+          </Link>
         </div>
       </div>
     );
