@@ -4,6 +4,9 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-17
+- Practice sayfasindaki unite secicide, dersi tamamlanmamis kilitli uniteler de gorsel olarak listelendi.
+
+## 2026-10-17
 - Practice sayfasindaki coklu unite secimi ve kart tasarimi (UI) duzeltildi.
 
 ## 2026-10-17 (Faz 7.5)

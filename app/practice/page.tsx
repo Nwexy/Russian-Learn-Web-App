@@ -18,6 +18,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { db } from "@/lib/db";
+import { getProgress } from "@/lib/progress";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getAllUnits, getUnitById, getUnitTitle } from "@/lib/content";
@@ -130,8 +131,8 @@ export default function PracticePage() {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  /** Dersi tamamlanmış ve alıştırması olan üniteler */
-  const availableUnits = units.filter((u) => u.hasExercises && completedUnitIds.has(u.id));
+  /** Dersi tamamlanmış üniteler */
+  const completedUnits = units.filter((u) => completedUnitIds.has(u.id));
 
   // Dropdown dışına tıklandığında kapat
   useEffect(() => {
@@ -262,15 +263,21 @@ export default function PracticePage() {
   /** İlk veri yükleme */
   useEffect(() => {
     async function load() {
-      const allProgress = await db.progress.toArray();
+      // Her ünite için getProgress ile lessonCompleted durumunu kontrol et
+      const progressEntries = await Promise.all(
+        units.map(async (u) => {
+          const prog = await getProgress(u.id);
+          return { unitId: u.id, lessonCompleted: Boolean(prog.lessonDone) };
+        })
+      );
       const compIds = new Set(
-        allProgress.filter((p) => Boolean(p.lessonDone)).map((p) => p.unitId)
+        progressEntries.filter((p) => p.lessonCompleted).map((p) => p.unitId)
       );
       setCompletedUnitIds(compIds);
 
       // Başlangıçta tüm tamamlanmış üniteleri seç
       const validCompletedIds = units
-        .filter((u) => u.hasExercises && compIds.has(u.id))
+        .filter((u) => compIds.has(u.id))
         .map((u) => u.id);
       setSelectedUnits(validCompletedIds);
 
@@ -285,19 +292,20 @@ export default function PracticePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** "Tüm Üniteler" seçeneğini değiştir */
+  /** "Tüm Üniteler" seçeneğini değiştir (sadece dersi tamamlanmış üniteleri seçer) */
   const handleToggleAllUnits = async (checked: boolean) => {
     setIsAllUnits(checked);
-    const validIds = availableUnits.map((u) => u.id);
-    const nextSelected = checked ? validIds : [];
+    const completedIds = completedUnits.map((u) => u.id);
+    const nextSelected = checked ? completedIds : [];
     setSelectedUnits(nextSelected);
 
     const loaded = await loadFilteredItems(checked, nextSelected, completedUnitIds);
     setItems(loaded);
   };
 
-  /** Tekil ünite seçimini değiştir */
+  /** Tekil ünite seçimini değiştir (kilitli üniteler seçilemez) */
   const handleToggleUnit = async (unitId: string) => {
+    if (!completedUnitIds.has(unitId)) return; // Kilitli ünite seçilemez
     if (isAllUnits) return; // Tüm üniteler aktifken kilitli
     let next: string[];
     if (selectedUnits.includes(unitId)) {
@@ -306,15 +314,17 @@ export default function PracticePage() {
       next = [...selectedUnits, unitId];
     }
 
-    // Eğer tamamlanmış tüm üniteler tek tek seçildiyse "Tüm Üniteler"e dön
-    const allAvailableSelected =
-      availableUnits.length > 0 &&
-      availableUnits.every((u) => next.includes(u.id));
+    const completedIds = completedUnits.map((u) => u.id);
 
-    if (allAvailableSelected) {
+    // Eğer tamamlanmış tüm üniteler tek tek seçildiyse "Tüm Üniteler"e dön
+    const allCompletedSelected =
+      completedIds.length > 0 &&
+      completedIds.every((id) => next.includes(id));
+
+    if (allCompletedSelected) {
       setIsAllUnits(true);
-      setSelectedUnits(availableUnits.map((u) => u.id));
-      const loaded = await loadFilteredItems(true, availableUnits.map((u) => u.id), completedUnitIds);
+      setSelectedUnits(completedIds);
+      const loaded = await loadFilteredItems(true, completedIds, completedUnitIds);
       setItems(loaded);
     } else {
       setSelectedUnits(next);
@@ -538,7 +548,7 @@ export default function PracticePage() {
   /** Çoklu ünite tetikleyici buton metni */
   let triggerButtonText = "";
   if (isAllUnits) {
-    triggerButtonText = uiLang === "tr" ? `Tüm Üniteler (${availableUnits.length} Ünite)` : `All Units (${availableUnits.length} Units)`;
+    triggerButtonText = uiLang === "tr" ? `Tüm Üniteler (${completedUnits.length} Ünite)` : `All Units (${completedUnits.length} Units)`;
   } else if (selectedUnits.length > 0) {
     triggerButtonText = uiLang === "tr" ? `${selectedUnits.length} Ünite Seçildi` : `${selectedUnits.length} Units Selected`;
   } else {
@@ -569,7 +579,7 @@ export default function PracticePage() {
             </span>
             <span className="text-xs text-muted-foreground mt-0.5">
               {isAllUnits
-                ? (uiLang === "tr" ? `Tüm tamamlanan üniteler aktif (${availableUnits.length} ünite)` : `All completed units active (${availableUnits.length} units)`)
+                ? (uiLang === "tr" ? `Tüm tamamlanan üniteler aktif (${completedUnits.length} / ${units.length} ünite)` : `All completed units active (${completedUnits.length} / ${units.length} units)`)
                 : (uiLang === "tr" ? `${selectedUnits.length} ünite seçildi` : `${selectedUnits.length} units selected`)}
             </span>
           </div>
@@ -609,45 +619,69 @@ export default function PracticePage() {
                     {uiLang === "tr" ? "Tüm Üniteler" : "All Units"}
                   </span>
                   <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
-                    {availableUnits.length} {t.unit}
+                    {completedUnits.length} {t.unit}
                   </span>
                 </label>
 
                 <div className="h-px bg-border my-2" />
 
-                {/* Ünite listesi */}
+                {/* Ünite listesi — Tüm üniteler listelenir, kilitliler belirtilir */}
                 <div className="max-h-60 overflow-y-auto space-y-1 pr-1">
-                  {availableUnits.length === 0 ? (
-                    <div className="p-2 text-xs text-muted-foreground text-center">
-                      {t.mustCompleteLessonFirst}
-                    </div>
-                  ) : (
-                    availableUnits.map((u) => {
-                      const checked = isAllUnits || selectedUnits.includes(u.id);
-                      return (
-                        <label
-                          key={u.id}
-                          className={`flex items-center gap-3 p-2 rounded-lg transition-colors text-sm ${
-                            isAllUnits
-                              ? "opacity-60 cursor-not-allowed bg-transparent"
-                              : "hover:bg-card-hover cursor-pointer text-foreground"
-                          }`}
-                        >
-                          <input
-                            type="checkbox"
-                            className="w-4 h-4 rounded border-border accent-accent cursor-pointer disabled:cursor-not-allowed"
-                            checked={checked}
-                            disabled={isAllUnits}
-                            onChange={() => handleToggleUnit(u.id)}
-                          />
-                          <span className="flex-1 truncate">{getUnitTitle(u, uiLang)}</span>
-                          <span className="text-[10px] text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
-                            {u.level}
+                  {units.map((u) => {
+                    const isCompleted = completedUnitIds.has(u.id);
+                    const checked = isCompleted && (isAllUnits || selectedUnits.includes(u.id));
+
+                    return (
+                      <label
+                        key={u.id}
+                        className={`flex items-center gap-3 p-2 rounded-lg transition-colors text-sm ${
+                          !isCompleted
+                            ? "opacity-60 cursor-not-allowed bg-transparent text-muted-foreground"
+                            : isAllUnits
+                            ? "opacity-75 cursor-not-allowed bg-transparent text-foreground"
+                            : "hover:bg-card-hover cursor-pointer text-foreground"
+                        }`}
+                        title={!isCompleted ? t.mustCompleteLessonFirst : undefined}
+                      >
+                        <input
+                          type="checkbox"
+                          className="w-4 h-4 rounded border-border accent-accent cursor-pointer disabled:cursor-not-allowed"
+                          checked={checked}
+                          disabled={!isCompleted || isAllUnits}
+                          onChange={() => isCompleted && handleToggleUnit(u.id)}
+                        />
+                        <span className="flex-1 truncate flex items-center gap-2">
+                          <span className={!isCompleted ? "text-muted-foreground" : "text-foreground"}>
+                            {getUnitTitle(u, uiLang)}
                           </span>
-                        </label>
-                      );
-                    })
-                  )}
+                          {!isCompleted && (
+                            <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground" title={t.locked}>
+                              <svg
+                                className="w-3.5 h-3.5 text-muted-foreground shrink-0"
+                                style={{ width: "14px", height: "14px" }}
+                                width={14}
+                                height={14}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                strokeWidth={2}
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                                />
+                              </svg>
+                              <span className="text-[10px]">({t.locked})</span>
+                            </span>
+                          )}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
+                          {u.level}
+                        </span>
+                      </label>
+                    );
+                  })}
                 </div>
 
                 <div className="mt-3 pt-2 border-t border-border flex justify-end">
