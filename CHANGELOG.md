@@ -3,6 +3,10 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-18
+- Gramer notlarindaki mini alistirmalarin sorulari ve siklar iki dilli hale getirildi.
+- Arayuz dili Ingilizce secildiginde gramer sorulari artik Ingilizce geliyor.
+
 ## 2026-10-17
 - Uniteler arasi dogrusal ilerleme (linear progression) eklendi.
 - Bir unite bitmeden (testi gecilmeden) sonraki unite kilitli kaliyor.

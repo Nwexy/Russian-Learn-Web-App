@@ -228,7 +228,7 @@ export default function GrammarDetailPage() {
                 margin: 0,
               }}
             >
-              {uiLang === "tr" ? "Mini Alıştırma" : "Mini Exercise"}
+              {t.miniExercise}
             </h3>
             {!exerciseFinished && (
               <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
@@ -239,10 +239,17 @@ export default function GrammarDetailPage() {
 
           {!exerciseFinished ? (
             <div>
-              <div className="grammar-exercise-question">{currentEx.question}</div>
+              <div className="grammar-exercise-question">
+                {uiLang === "en"
+                  ? (currentEx.questionEn || currentEx.question)
+                  : (currentEx.questionTr || currentEx.question)}
+              </div>
 
               <div className="grammar-options-grid">
-                {currentEx.options.map((opt, optIdx) => {
+                {(uiLang === "en"
+                  ? (currentEx.optionsEn || currentEx.options)
+                  : (currentEx.optionsTr || currentEx.options)
+                ).map((opt, optIdx) => {
                   let optCls = "grammar-option-btn";
                   if (hasAnswered) {
                     if (optIdx === currentEx.correctIndex) {

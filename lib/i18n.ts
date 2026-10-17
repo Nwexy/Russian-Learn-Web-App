@@ -50,6 +50,8 @@ export interface Messages {
 
   // Footer
   footerText: string;
+  footerTextExtra: string;
+  footerPortfolio: string;
 
   // SRS / Review
   todayReview: string;
@@ -160,6 +162,7 @@ export interface Messages {
   totalQuestions: string;
   reviewGrammar: string;
   noGrammarForUnit: string;
+  miniExercise: string;
 
   // Faz 6.6 — Ünite içi kilit
   mustCompleteLessonFirst: string;
@@ -217,6 +220,8 @@ const messages: Record<Lang, Messages> = {
     settingsDesc: "Uygulama tercihlerini buradan yönetin.",
 
     footerText: "Rusça Öğren — Eğlenerek Öğren",
+    footerTextExtra: "© 2026 Bu Proje Nwexy Tarafından Yapılmıştır. Tüm Hakları Saklıdır.",
+    footerPortfolio: "Portofolyom",
 
     // SRS / Review
     todayReview: "Bugünün Tekrarı",
@@ -325,6 +330,7 @@ const messages: Record<Lang, Messages> = {
     totalQuestions: "Toplam Soru",
     reviewGrammar: "Grameri İncele",
     noGrammarForUnit: "Bu ünite için ilgili gramer konusu bulunmuyor.",
+    miniExercise: "Mini Alıştırma",
 
     // Faz 6.6 — Ünite içi kilit
     mustCompleteLessonFirst: "Önce dersi tamamlamalısın.",
@@ -379,6 +385,8 @@ const messages: Record<Lang, Messages> = {
     settingsDesc: "Manage your app preferences here.",
 
     footerText: "Learn Russian — Learn & Enjoy",
+    footerTextExtra: "© 2026 This Project Was Made By Nwexy. All Rights Reserved.",
+    footerPortfolio: "My Portofolio",
 
     // SRS / Review
     todayReview: "Today's Review",
@@ -487,6 +495,7 @@ const messages: Record<Lang, Messages> = {
     totalQuestions: "Total Questions",
     reviewGrammar: "Review Grammar",
     noGrammarForUnit: "No related grammar notes for this unit.",
+    miniExercise: "Mini Exercise",
 
     // Faz 6.6 — Ünite içi kilit
     mustCompleteLessonFirst: "You must complete the lesson first.",

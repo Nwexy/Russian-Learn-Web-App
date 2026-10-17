@@ -123,12 +123,16 @@ export type GrammarSection =
 /** Gramer mini alıştırma sorusu */
 export interface MiniExercise {
   type: "multipleChoice";
-  question: string;
-  questionLang: "ru" | "tr" | "en";
-  options: string[];
+  questionTr: string;
+  questionEn: string;
+  optionsTr: string[];
+  optionsEn: string[];
   correctIndex: number;
   explanationTr: string;
   explanationEn: string;
+  question?: string;
+  options?: string[];
+  questionLang?: "ru" | "tr" | "en";
 }
 
 /** Gramer notu yapısı */
