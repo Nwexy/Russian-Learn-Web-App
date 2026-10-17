@@ -20,7 +20,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Rusça Öğren",
-  description: "Yerel çalışan, internet gerektirmeyen Rusça öğrenme uygulaması.",
+  description: "Yerel çalışan, Rusça öğrenme uygulaması.",
 };
 
 export default function RootLayout({

@@ -83,6 +83,7 @@ export default function UnitPage() {
 
   /** Ünitede kelime (type="word") var mı? Yoksa alıştırma/test gizlenir */
   const hasWordItems = unit.items.some((item) => item.type === "word");
+  const isLessonCompleted = Boolean(progress?.lessonDone);
 
   /** Ders tamamla */
   const handleCompleteLesson = async () => {
@@ -325,32 +326,92 @@ export default function UnitPage() {
           </div>
         ) : (
           <>
-            {/* Alıştırma (sadece kelime içeren ünitelerde) */}
-            <div className="unit-phase-card">
+            {/* 2. Alıştırma (sadece kelime içeren ünitelerde) */}
+            <div className={`unit-phase-card ${!isLessonCompleted ? "unit-phase-locked" : ""}`}>
               <div className="unit-phase-header">
                 <span className="unit-phase-number">2</span>
                 <span className="unit-phase-title">{t.practice}</span>
+                {!isLessonCompleted && (
+                  <span className="unit-status-badge unit-status-locked" title={t.mustCompleteLessonFirst}>
+                    {t.locked}
+                  </span>
+                )}
               </div>
-              <Link href={`/unit/${unit.id}/practice`} className="practice-btn practice-btn-primary">
-                {t.startPractice}
-              </Link>
+              {isLessonCompleted ? (
+                <Link href={`/unit/${unit.id}/practice`} className="practice-btn practice-btn-primary">
+                  {t.startPractice}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="practice-btn practice-btn-disabled"
+                  title={t.mustCompleteLessonFirst}
+                >
+                  {t.startPractice}
+                </button>
+              )}
             </div>
 
-            {/* Test (sadece kelime içeren ünitelerde) */}
-            <div className={`unit-phase-card ${progress?.testDone ? "unit-phase-done" : ""}`}>
+            {/* 3. Test (sadece kelime içeren ünitelerde) */}
+            <div className={`unit-phase-card ${progress?.testDone ? "unit-phase-done" : ""} ${!isLessonCompleted ? "unit-phase-locked" : ""}`}>
               <div className="unit-phase-header">
                 <span className="unit-phase-number">3</span>
                 <span className="unit-phase-title">{t.test}</span>
-                <span className={`unit-status-badge ${progress?.testDone ? "unit-status-completed" : progress?.testScore ? "unit-status-in-progress" : "unit-status-not-started"}`}>
-                  {progress?.testDone ? t.completed : progress?.testScore ? t.inProgress : t.notStarted}
-                </span>
+                {!isLessonCompleted ? (
+                  <span className="unit-status-badge unit-status-locked" title={t.mustCompleteLessonFirst}>
+                    {t.locked}
+                  </span>
+                ) : (
+                  <span className={`unit-status-badge ${progress?.testDone ? "unit-status-completed" : progress?.testScore ? "unit-status-in-progress" : "unit-status-not-started"}`}>
+                    {progress?.testDone ? t.completed : progress?.testScore ? t.inProgress : t.notStarted}
+                  </span>
+                )}
               </div>
-              {progress?.testScore ? (
+              {isLessonCompleted && progress?.testScore ? (
                 <p className="unit-phase-score">{t.yourScore}: {progress.testScore}%</p>
               ) : null}
-              <Link href={`/unit/${unit.id}/test`} className="practice-btn practice-btn-primary">
-                {t.startTest}
-              </Link>
+              {isLessonCompleted ? (
+                <Link href={`/unit/${unit.id}/test`} className="practice-btn practice-btn-primary">
+                  {t.startTest}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="practice-btn practice-btn-disabled"
+                  title={t.mustCompleteLessonFirst}
+                >
+                  {t.startTest}
+                </button>
+              )}
+            </div>
+
+            {/* 4. Tekrar / Review (sadece kelime içeren ünitelerde) */}
+            <div className={`unit-phase-card ${!isLessonCompleted ? "unit-phase-locked" : ""}`}>
+              <div className="unit-phase-header">
+                <span className="unit-phase-number">4</span>
+                <span className="unit-phase-title">{t.review}</span>
+                {!isLessonCompleted && (
+                  <span className="unit-status-badge unit-status-locked" title={t.mustCompleteLessonFirst}>
+                    {t.locked}
+                  </span>
+                )}
+              </div>
+              {isLessonCompleted ? (
+                <Link href={`/review?unit=${unit.id}`} className="practice-btn practice-btn-primary">
+                  {t.review}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="practice-btn practice-btn-disabled"
+                  title={t.mustCompleteLessonFirst}
+                >
+                  {t.review}
+                </button>
+              )}
             </div>
           </>
         )}

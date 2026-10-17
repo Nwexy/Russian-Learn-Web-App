@@ -1,12 +1,12 @@
 # Rusça Öğren
 
-Yerel çalışan, internet gerektirmeyen Rusça öğrenme uygulaması.
+Yerel çalışan, Rusça öğrenme uygulaması.  
 Tek kullanıcı. Auth, Supabase, Vercel, PWA yok.
 
 ## Gereksinimler
 
-- [Node.js](https://nodejs.org/) 18 veya üzeri
-- npm (Node.js ile birlikte gelir)
+*   [Node.js](https://nodejs.org/) 18 veya üzeri
+*   npm (Node.js ile birlikte gelir)
 
 ## Kurulum (Tek Seferlik)
 
@@ -25,9 +25,11 @@ Tarayıcıda [http://localhost:3000](http://localhost:3000) adresini açın.
 ## Tek Tıkla Başlatma
 
 ### Windows
+
 `start.bat` dosyasına çift tıklayın. Bağımlılıkları yükler, sunucuyu başlatır ve tarayıcıyı açar.
 
 ### Mac / Linux
+
 ```bash
 chmod +x start.sh   # Sadece ilk seferde gerekli
 ./start.sh
@@ -35,7 +37,7 @@ chmod +x start.sh   # Sadece ilk seferde gerekli
 
 ## Proje Yapısı
 
-```
+```python
 ├── app/                    # Next.js App Router sayfaları
 │   ├── layout.tsx          # Kök layout (tema, navbar, db init)
 │   ├── page.tsx            # Ana sayfa (ünite listesi + tekrar + alıştırma)
@@ -77,10 +79,11 @@ chmod +x start.sh   # Sadece ilk seferde gerekli
 
 ## Yeni Ünite Ekleme
 
-1. `content/` klasörüne JSON dosyası ekleyin (örnek: `unit-01-greetings.json`).
-2. `lib/content.ts` dosyasında yeni üniteyi import edin ve `UNIT_MODULES` dizisine ekleyin.
+1. content/ klasörüne JSON dosyası ekleyin (örnek: unit-01-greetings.json).
+2. lib/content.ts dosyasında yeni üniteyi import edin ve UNIT_MODULES dizisine ekleyin.
 
 JSON formatı:
+
 ```json
 {
   "id": "unit-01",
@@ -107,8 +110,8 @@ JSON formatı:
 
 Uygulama iki bağımsız dil ayarı destekler:
 
-- **Arayüz dili**: Menü, başlık ve buton metinlerinin dili. Türkçe (tr) veya İngilizce (en).
-- **Çeviri dili**: Rusça kelimelerin karşılıklarının gösterileceği dil. Türkçe (tr) veya İngilizce (en).
+*   **Arayüz dili**: Menü, başlık ve buton metinlerinin dili. Türkçe (tr) veya İngilizce (en).
+*   **Çeviri dili**: Rusça kelimelerin karşılıklarının gösterileceği dil. Türkçe (tr) veya İngilizce (en).
 
 İkisi birbirinden bağımsız olarak Ayarlar sayfasından seçilir. Seçimler Dexie (IndexedDB) settings tablosunda saklanır; sayfa yenilendiğinde korunur.
 
@@ -120,33 +123,33 @@ Eğer seçili çeviri dilinde karşılık yoksa, diğer dile otomatik olarak dü
 
 Uygulama basit bir SM-2 tabanlı SRS (Spaced Repetition System) motoru içerir.
 
-- Kelime kartları `/review` sayfasında çalışılır.
-- Her kart için 4 puan verilebilir: Tekrar (Again), Zor (Hard), İyi (Good), Kolay (Easy).
-- Verilen puana göre kartın tekrar aralığı ve kolaylık faktörü güncellenir.
-- Tekrar tarihleri Dexie `reviews` tablosunda saklanır.
-- Ana sayfadaki "Bugünün Tekrarı" kartı, kaç kartın tekrar zamanının geldiğini gösterir.
-- Sadece `type: "word"` olan öğeler tekrar havuzuna dahil edilir.
+*   Kelime kartları `/review` sayfasında çalışılır.
+*   Her kart için 4 puan verilebilir: Tekrar (Again), Zor (Hard), İyi (Good), Kolay (Easy).
+*   Verilen puana göre kartın tekrar aralığı ve kolaylık faktörü güncellenir.
+*   Tekrar tarihleri Dexie `reviews` tablosunda saklanır.
+*   Ana sayfadaki “Bugünün Tekrarı” kartı, kaç kartın tekrar zamanının geldiğini gösterir.
+*   Sadece `type: "word"` olan öğeler tekrar havuzuna dahil edilir.
 
 ## Alıştırmalar
 
 Uygulama 4 farklı alıştırma tipi sunar (`/practice` sayfası):
 
-- **Çoktan Seçmeli**: Rusça kelime gösterilir, 4 şıktan doğru çeviriyi seçin.
-- **Boşluk Doldurma**: Cümledeki boşluğa Rusça kelimeyi yazın.
-- **Eşleştirme**: Rusça kelimeleri çevirileriyle eşleştirin.
-- **Dinleme**: TTS ile kelimeleri dinleyip Rusça yazın (Web Speech API).
+*   **Çoktan Seçmeli**: Rusça kelime gösterilir, 4 şıktan doğru çeviriyi seçin.
+*   **Boşluk Doldurma**: Cümledeki boşluğa Rusça kelimeyi yazın.
+*   **Eşleştirme**: Rusça kelimeleri çevirileriyle eşleştirin.
+*   **Dinleme**: TTS ile kelimeleri dinleyip Rusça yazın (Web Speech API).
 
 Tüm alıştırmalarda ilerleme göstergesi ve sonuç ekranı vardır. Dinleme alıştırması tarayıcının TTS desteğine bağlıdır.
 
 ## Geliştirme Notları
 
-- Değişiklikler `CHANGELOG.md` dosyasında tutulur.
-- Commit mesajları sade ve açıklayıcıdır.
-- Proje tamamen yerel çalışır, internet bağlantısı gerekmez.
+*   Değişiklikler `CHANGELOG.md` dosyasında tutulur.
+*   Commit mesajları sade ve açıklayıcıdır.
+*   Proje tamamen yerel çalışır.
 
 ## Teknolojiler
 
-- Next.js 15+ (App Router)
-- TypeScript
-- Tailwind CSS v4
-- Dexie.js (IndexedDB)
+*   Next.js 15+ (App Router)
+*   TypeScript
+*   Tailwind CSS v4
+*   Dexie.js (IndexedDB)

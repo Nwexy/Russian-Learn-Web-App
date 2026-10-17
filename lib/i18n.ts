@@ -160,6 +160,11 @@ export interface Messages {
   totalQuestions: string;
   reviewGrammar: string;
   noGrammarForUnit: string;
+
+  // Faz 6.6 — Ünite içi kilit
+  mustCompleteLessonFirst: string;
+  locked: string;
+  completeLessonToUnlock: string;
 }
 
 /** Tüm çeviriler */
@@ -174,7 +179,7 @@ const messages: Record<Lang, Messages> = {
     level: "Seviye",
     back: "Ana Sayfaya Dön",
     goToUnit: "Üniteye git",
-    heroDesc: "Kiril alfabesinden başlayarak adım adım Rusça öğren. Tamamen yerel, internet gerekmez.",
+    heroDesc: "Kiril alfabesinden başlayarak adım adım Rusça öğren.",
 
     theme: "Tema",
     appearance: "Görünüm",
@@ -197,10 +202,10 @@ const messages: Record<Lang, Messages> = {
     about: "Hakkında",
     version: "Sürüm",
     dataStorage: "Veri Depolama",
-    dataStorageDesc: "Tüm veriler tarayıcınızda (IndexedDB) yerel olarak saklanır. İnternet bağlantısı gerekmez.",
+    dataStorageDesc: "Tüm veriler tarayıcınızda (IndexedDB) yerel olarak saklanır.",
     settingsDesc: "Uygulama tercihlerini buradan yönetin.",
 
-    footerText: "Rusça Öğren — Yerel uygulama, internet gerekmez.",
+    footerText: "Rusça Öğren — Eğlenerek Öğren",
 
     // SRS / Review
     todayReview: "Bugünün Tekrarı",
@@ -309,6 +314,11 @@ const messages: Record<Lang, Messages> = {
     totalQuestions: "Toplam Soru",
     reviewGrammar: "Grameri İncele",
     noGrammarForUnit: "Bu ünite için ilgili gramer konusu bulunmuyor.",
+
+    // Faz 6.6 — Ünite içi kilit
+    mustCompleteLessonFirst: "Önce dersi tamamlamalısın.",
+    locked: "Kilitli",
+    completeLessonToUnlock: "Kilidi açmak için dersi tamamlayın.",
   },
   en: {
     appName: "Learn Russian",
@@ -320,7 +330,7 @@ const messages: Record<Lang, Messages> = {
     level: "Level",
     back: "Back to Home",
     goToUnit: "Go to unit",
-    heroDesc: "Learn Russian step by step, starting with the Cyrillic alphabet. Fully local, no internet required.",
+    heroDesc: "Learn Russian step by step, starting with the Cyrillic alphabet.",
 
     theme: "Theme",
     appearance: "Appearance",
@@ -343,10 +353,10 @@ const messages: Record<Lang, Messages> = {
     about: "About",
     version: "Version",
     dataStorage: "Data Storage",
-    dataStorageDesc: "All data is stored locally in your browser (IndexedDB). No internet connection required.",
+    dataStorageDesc: "All data is stored locally in your browser (IndexedDB).",
     settingsDesc: "Manage your app preferences here.",
 
-    footerText: "Learn Russian — Local app, no internet required.",
+    footerText: "Learn Russian — Learn & Enjoy",
 
     // SRS / Review
     todayReview: "Today's Review",
@@ -455,6 +465,11 @@ const messages: Record<Lang, Messages> = {
     totalQuestions: "Total Questions",
     reviewGrammar: "Review Grammar",
     noGrammarForUnit: "No related grammar notes for this unit.",
+
+    // Faz 6.6 — Ünite içi kilit
+    mustCompleteLessonFirst: "You must complete the lesson first.",
+    locked: "Locked",
+    completeLessonToUnlock: "Complete the lesson to unlock.",
   },
 };
 

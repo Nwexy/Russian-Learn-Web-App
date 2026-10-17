@@ -14,7 +14,7 @@ import { getUnitById, getUnitTitle } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { generateMultipleChoice } from "@/lib/exercises";
-import { setTestComplete } from "@/lib/progress";
+import { setTestComplete, getProgress } from "@/lib/progress";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation } from "@/lib/exercises-ui";
@@ -44,6 +44,7 @@ export default function TestPage() {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isLocked, setIsLocked] = useState(false);
 
   // Answer state
   const [mcSelected, setMcSelected] = useState<number | null>(null);
@@ -77,6 +78,13 @@ export default function TestPage() {
             hexCode: raw.hexCode,
             tags: raw.tags,
           }));
+      }
+
+      const prog = await getProgress(unit!.id);
+      if (!prog.lessonDone) {
+        setIsLocked(true);
+        setLoading(false);
+        return;
       }
 
       setItems(unitItems);
@@ -161,6 +169,25 @@ export default function TestPage() {
     return (
       <div className="page-container">
         <div className="review-loading">...</div>
+      </div>
+    );
+  }
+
+  if (isLocked) {
+    return (
+      <div className="page-container">
+        <Link href={`/unit/${unit.id}`} className="back-link">
+          <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          {t.backToUnit}
+        </Link>
+        <div className="empty-state">
+          <p className="empty-state-text">{t.mustCompleteLessonFirst}</p>
+          <Link href={`/unit/${unit.id}`} className="practice-btn practice-btn-primary" style={{ marginTop: "1rem" }}>
+            {t.lesson}
+          </Link>
+        </div>
       </div>
     );
   }

@@ -48,6 +48,7 @@ export default function PracticePage() {
   const units = getAllUnits();
 
   const [selectedUnitId, setSelectedUnitId] = useState<string>("all");
+  const [completedUnitIds, setCompletedUnitIds] = useState<Set<string>>(new Set());
   const [items, setItems] = useState<Item[]>([]);
   const [exerciseType, setExerciseType] = useState<ExerciseType>("multipleChoice");
   const [phase, setPhase] = useState<Phase>("select");
@@ -170,6 +171,13 @@ export default function PracticePage() {
       setTtsSupported(isTTSSupported());
       const mc = await getMistakeCount();
       setMistakeCount(mc);
+
+      const allProgress = await db.progress.toArray();
+      const compIds = new Set(
+        allProgress.filter((p) => Boolean(p.lessonDone)).map((p) => p.unitId)
+      );
+      setCompletedUnitIds(compIds);
+
       setLoading(false);
     }
     load();
@@ -177,6 +185,7 @@ export default function PracticePage() {
 
   /** Ünite seçici değiştiğinde: mevcut oturum sıfırlanıp yeni sorular üretilir */
   const handleUnitChange = async (unitId: string) => {
+    if (unitId !== "all" && !completedUnitIds.has(unitId)) return;
     setSelectedUnitId(unitId);
     let loaded: Item[];
     if (unitId === "all") {
@@ -455,11 +464,14 @@ export default function PracticePage() {
             onChange={(e) => handleUnitChange(e.target.value)}
           >
             <option value="all">{t.allUnits}</option>
-            {units.map((u) => (
-              <option key={u.id} value={u.id}>
-                {getUnitTitle(u, uiLang)} ({u.level})
-              </option>
-            ))}
+            {units.map((u) => {
+              const isCompleted = completedUnitIds.has(u.id);
+              return (
+                <option key={u.id} value={u.id} disabled={!isCompleted}>
+                  {getUnitTitle(u, uiLang)} ({u.level}){!isCompleted ? ` — ${t.locked}` : ""}
+                </option>
+              );
+            })}
           </select>
         </>
       )}

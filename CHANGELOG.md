@@ -3,6 +3,12 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-17 (Faz 6.6)
+- Unite icinde Ders tamamlanmadan Alistirma, Test ve Tekrar kisimlarina gecis kilitlendi.
+- Unite icine "Tekrar" (Review) asamasi eklendi.
+- Genel Review sayfasi artik sadece dersi tamamlanmis unitelerin kelimelerini gosteriyor.
+- Practice sayfasindaki unite secici, sadece dersi tamamlanmis uniteleri listeliyor.
+
 ## 2026-10-17 (Faz 6.5.1)
 - Renk unitisindeki kelime kartlarina gorsel renk kutulari eklendi.
 

@@ -1,21 +1,22 @@
 /**
  * Kelime kartı tekrar sayfası — /review
  * Tekrar zamanı gelmiş kartları tek tek gösterir.
- * Ön yüz: Rusça metin + örnek cümle.
- * Arka yüz: Seçili çeviri dilinde karşılık + örnek cümle.
+ * URL'de ?unit=unit-01 varsa sadece o ünitenin kartlarını getirir.
+ * URL'de unit yoksa sadece lessonCompleted (lessonDone === true) olan ünitelerin kartlarını getirir.
  * SM-2 tabanlı SRS puanlaması.
  */
 
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { db } from "@/lib/db";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getDueCards, reviewCard } from "@/lib/srs";
 import { getReview, upsertReview, getAllReviews } from "@/lib/reviews";
-import { getUnitById } from "@/lib/content";
+import { getUnitById, getUnitTitle } from "@/lib/content";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item, Review, Lang } from "@/types";
@@ -53,7 +54,11 @@ function getExampleTranslation(
   return null;
 }
 
-export default function ReviewPage() {
+function ReviewContent() {
+  const searchParams = useSearchParams();
+  const unitParam = searchParams.get("unit");
+  const unitObj = unitParam ? getUnitById(unitParam) : null;
+
   const { uiLang, translationLang } = useLang();
   const t = getMessages(uiLang);
 
@@ -67,12 +72,52 @@ export default function ReviewPage() {
   useEffect(() => {
     async function load() {
       try {
-        const allItems: Item[] = await db.items
-          .where("type")
-          .equals("word")
-          .toArray();
+        let candidateItems: Item[] = [];
+
+        if (unitParam) {
+          // Belirli bir üniteye özel filtreli review
+          candidateItems = await db.items
+            .where("unitId")
+            .equals(unitParam)
+            .and((i) => i.type === "word")
+            .toArray();
+
+          if (candidateItems.length === 0 && unitObj?.items) {
+            candidateItems = unitObj.items
+              .filter((i) => i.type === "word")
+              .map((raw) => ({
+                id: raw.id,
+                unitId: unitObj.id,
+                type: raw.type,
+                ru: raw.ru,
+                tr: raw.tr,
+                en: raw.en,
+                exampleRu: raw.exampleRu,
+                exampleTr: raw.exampleTr,
+                exampleEn: raw.exampleEn,
+                pronunciationEn: raw.pronunciationEn,
+                numberValue: raw.numberValue,
+                hexCode: raw.hexCode,
+                tags: raw.tags,
+              }));
+          }
+        } else {
+          // Genel review: Sadece dersi tamamlanmış (lessonDone === true) ünitelerin kelimeleri
+          const allProgress = await db.progress.toArray();
+          const completedUnitIds = new Set(
+            allProgress.filter((p) => Boolean(p.lessonDone)).map((p) => p.unitId)
+          );
+
+          const allWords: Item[] = await db.items
+            .where("type")
+            .equals("word")
+            .toArray();
+
+          candidateItems = allWords.filter((i) => completedUnitIds.has(i.unitId));
+        }
+
         const reviews: Review[] = await getAllReviews();
-        const due = getDueCards(allItems, reviews, new Date());
+        const due = getDueCards(candidateItems, reviews, new Date());
         setDueCards(due);
         setTotalCards(due.length);
       } catch {
@@ -82,7 +127,7 @@ export default function ReviewPage() {
       }
     }
     load();
-  }, []);
+  }, [unitParam, unitObj]);
 
   /** Puanlama butonu */
   const handleRating = useCallback(
@@ -90,21 +135,16 @@ export default function ReviewPage() {
       const card = dueCards[currentIndex];
       if (!card) return;
 
-      // Mevcut review kaydını al (yoksa varsayılan oluşturulur)
       const currentReview = await getReview(card.id);
-      // SM-2 ile yeni değerleri hesapla
       const updatedReview = reviewCard(currentReview, rating);
-      // Dexie'ye kaydet
       await upsertReview(updatedReview);
 
-      // Sonraki karta geç
       setShowAnswer(false);
       setCurrentIndex((prev) => prev + 1);
     },
     [dueCards, currentIndex]
   );
 
-  // Yükleniyor
   if (loading) {
     return (
       <div className="page-container">
@@ -119,10 +159,9 @@ export default function ReviewPage() {
     return (
       <div className="page-container">
         <div className="review-done">
-          <div className="review-done-icon">✅</div>
           <p className="review-done-text">{t.noCardsDue}</p>
-          <Link href="/" className="review-done-link">
-            ← {t.backToHome}
+          <Link href={unitParam ? `/unit/${unitParam}` : "/"} className="review-done-link">
+            ← {unitParam ? t.backToUnit : t.backToHome}
           </Link>
         </div>
       </div>
@@ -131,11 +170,12 @@ export default function ReviewPage() {
 
   const translation = getTranslation(currentCard, translationLang);
   const exampleTr = getExampleTranslation(currentCard, translationLang);
+  const pageTitle = unitObj ? `${getUnitTitle(unitObj, uiLang)} — ${t.review}` : t.review;
 
   return (
     <div className="page-container">
       {/* Geri dön bağlantısı */}
-      <Link href="/" className="back-link">
+      <Link href={unitParam ? `/unit/${unitParam}` : "/"} className="back-link">
         <svg
           className="back-icon"
           fill="none"
@@ -149,12 +189,12 @@ export default function ReviewPage() {
             d="M15 19l-7-7 7-7"
           />
         </svg>
-        {t.backToHome}
+        {unitParam ? t.backToUnit : t.backToHome}
       </Link>
 
       {/* Başlık ve ilerleme */}
       <div className="review-header">
-        <h1 className="page-title">{t.review}</h1>
+        <h1 className="page-title">{pageTitle}</h1>
         <span className="review-progress">
           {currentIndex + 1} / {totalCards}
         </span>
@@ -268,5 +308,13 @@ export default function ReviewPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function ReviewPage() {
+  return (
+    <Suspense fallback={<div className="page-container"><div className="review-loading">...</div></div>}>
+      <ReviewContent />
+    </Suspense>
   );
 }

@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { db } from "@/lib/db";
 import { getUnitById, getUnitTitle } from "@/lib/content";
+import { getProgress } from "@/lib/progress";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { generateMixedPractice } from "@/lib/exercises";
@@ -48,6 +49,7 @@ export default function UnitPracticePage() {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [ttsOk, setTtsOk] = useState(true);
+  const [isLocked, setIsLocked] = useState(false);
 
   // Oturum durumu
   const [questions, setQuestions] = useState<MixedQuestion[]>([]);
@@ -98,6 +100,13 @@ export default function UnitPracticePage() {
             hexCode: raw.hexCode,
             tags: raw.tags,
           }));
+      }
+
+      const prog = await getProgress(unit!.id);
+      if (!prog.lessonDone) {
+        setIsLocked(true);
+        setLoading(false);
+        return;
       }
 
       setItems(unitItems);
@@ -179,6 +188,25 @@ export default function UnitPracticePage() {
   /* ---------- Yükleniyor / bulunamadı ---------- */
   if (!unit || loading) {
     return <div className="page-container"><div className="review-loading">...</div></div>;
+  }
+
+  if (isLocked) {
+    return (
+      <div className="page-container">
+        <Link href={`/unit/${unit.id}`} className="back-link">
+          <svg className="back-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          {t.backToUnit}
+        </Link>
+        <div className="empty-state">
+          <p className="empty-state-text">{t.mustCompleteLessonFirst}</p>
+          <Link href={`/unit/${unit.id}`} className="practice-btn practice-btn-primary" style={{ marginTop: "1rem" }}>
+            {t.lesson}
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const backLink = (
