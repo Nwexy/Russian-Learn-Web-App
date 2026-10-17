@@ -78,7 +78,10 @@ export function getAllUnits(): {
  * Belirli bir ünitenin verisini döndürür.
  */
 export function getUnitById(unitId: string): UnitData | undefined {
-  return UNIT_MODULES.find((u) => u.id === unitId);
+  if (!unitId) return undefined;
+  return UNIT_MODULES.find(
+    (u) => u.id === unitId || unitId.startsWith(u.id) || u.id.startsWith(unitId)
+  );
 }
 
 /**
@@ -102,6 +105,7 @@ export async function seedDatabase(): Promise<void> {
       exampleEn: raw.exampleEn,
       pronunciationEn: raw.pronunciationEn,
       numberValue: raw.numberValue,
+      hexCode: raw.hexCode,
       tags: raw.tags,
     }));
 

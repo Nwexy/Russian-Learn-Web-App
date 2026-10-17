@@ -75,10 +75,31 @@ export default function UnitPracticePage() {
   useEffect(() => {
     if (!unit) return;
     async function load() {
-      const unitItems = await db.items
+      let unitItems = await db.items
         .where("unitId").equals(unit!.id)
         .and((i) => i.type === "word")
         .toArray();
+
+      if (unitItems.length === 0 && unit?.items) {
+        unitItems = unit.items
+          .filter((i) => i.type === "word")
+          .map((raw) => ({
+            id: raw.id,
+            unitId: unit.id,
+            type: raw.type,
+            ru: raw.ru,
+            tr: raw.tr,
+            en: raw.en,
+            exampleRu: raw.exampleRu,
+            exampleTr: raw.exampleTr,
+            exampleEn: raw.exampleEn,
+            pronunciationEn: raw.pronunciationEn,
+            numberValue: raw.numberValue,
+            hexCode: raw.hexCode,
+            tags: raw.tags,
+          }));
+      }
+
       setItems(unitItems);
       setTtsOk(isTTSSupported());
       setLoading(false);

@@ -96,6 +96,42 @@
       "correctIndex": 1,
       "explanationTr": "II. grup fiillerde -ишь, -ит, -им, -ите ekleriyle 'и' harfi baskındır.",
       "explanationEn": "In Group II, 'и' is prominent (-ишь, -ит, -им, -ите)."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Они ... газету.» (читать fiili için onlar çekimi hangisidir?)",
+      "questionLang": "ru",
+      "options": ["читает", "читают", "читаем", "читаешь"],
+      "correctIndex": 1,
+      "explanationTr": "«они» zamiri için I. grup eki -ют/-ут'tur: «они читают».",
+      "explanationEn": "For «они», the 3rd person plural ending is -ют: «они читают»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Он ... по-русски.» (говорить fiilinin doğru çekimi hangisidir?)",
+      "questionLang": "ru",
+      "options": ["говорит", "говорю", "говоришь", "говорим"],
+      "correctIndex": 0,
+      "explanationTr": "«он» zamiri için II. grup eki -ит'tir: «он говорит».",
+      "explanationEn": "For «он», the 3rd person singular ending is -ит: «он говорит»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Вы ... по-турецки?» (говорить fiilinin siz çekimi hangisidir?)",
+      "questionLang": "ru",
+      "options": ["говоришь", "говорим", "говорите", "говорят"],
+      "correctIndex": 2,
+      "explanationTr": "«вы» zamiri için II. grup eki -ите'dir: «вы говорите».",
+      "explanationEn": "For «вы», the 2nd person plural ending is -ите: «вы говорите»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "I. grup fiillerin çekiminde (ты, он, мы, вы) hangi ünlü harf baskındır?",
+      "questionLang": "tr",
+      "options": ["е", "и", "у", "ы"],
+      "correctIndex": 0,
+      "explanationTr": "I. grup fiillerde -ешь, -ет, -ем, -ете ekleriyle 'е' harfi baskındır.",
+      "explanationEn": "In Group I, 'е' is prominent (-ешь, -ет, -ем, -ете)."
     }
   ]
 }

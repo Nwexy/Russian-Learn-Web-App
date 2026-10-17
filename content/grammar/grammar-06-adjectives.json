@@ -89,6 +89,42 @@
       "correctIndex": 1,
       "explanationTr": "Dişil isimler için soru kelimesi «Какая?» şeklindedir (örn: Какая машина?).",
       "explanationEn": "For feminine nouns, the question word is «Какая?» (e.g. Какая машина?)."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Это ... город.» (красивый sıfatının eril şekli hangisidir?)",
+      "questionLang": "ru",
+      "options": ["красивый", "красивая", "красивое", "красивые"],
+      "correctIndex": 0,
+      "explanationTr": "«город» eril bir isim olduğu için eril sıfat eki -ый alır: «красивый город».",
+      "explanationEn": "«город» is masculine, so it takes -ый: «красивый город»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«... это море?» (Nötr isim için hangi soru kelimesi kullanılır?)",
+      "questionLang": "ru",
+      "options": ["Какой", "Какая", "Какое", "Какие"],
+      "correctIndex": 2,
+      "explanationTr": "«море» nötr bir isim olduğu için «Какое?» sorusu kullanılır.",
+      "explanationEn": "«море» is neuter, so «Какое?» is used."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Это ... дома.» (новый sıfatının çoğul şekli hangisidir?)",
+      "questionLang": "ru",
+      "options": ["новый", "новая", "новое", "новые"],
+      "correctIndex": 3,
+      "explanationTr": "«дома» çoğul isim olduğu için çoğul sıfat eki -ые alır: «новые дома».",
+      "explanationEn": "«дома» is plural, so it takes the plural ending -ые: «новые дома»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Eril isimler için sıfatlar kural olarak hangi eklerle biter?",
+      "questionLang": "tr",
+      "options": ["-ая / -яя", "-ое / -ее", "-ый / -ий / -ой", "-ые / -ие"],
+      "correctIndex": 2,
+      "explanationTr": "Eril sıfatlar -ый, -ий veya vurgulu -ой ile biter.",
+      "explanationEn": "Masculine adjectives end in -ый, -ий, or stressed -ой."
     }
   ]
 }

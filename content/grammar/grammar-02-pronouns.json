@@ -106,6 +106,42 @@
       "correctIndex": 2,
       "explanationTr": "«они» = onlar demektir.",
       "explanationEn": "«они» means 'they'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Rusça'da 'Ben' anlamına gelen şahıs zamiri hangisidir?",
+      "questionLang": "tr",
+      "options": ["ты", "я", "мы", "он"],
+      "correctIndex": 1,
+      "explanationTr": "«я» = ben anlamına gelir.",
+      "explanationEn": "«я» means 'I'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«оно» zamiri ne tür isimlerin yerine kullanılır?",
+      "questionLang": "tr",
+      "options": ["Eril isimler", "Dişil isimler", "Nötr isimler", "Çoğul isimler"],
+      "correctIndex": 2,
+      "explanationTr": "«оно» 3. tekil şahıs nötr cins zamiridir.",
+      "explanationEn": "«оно» is the 3rd person singular neuter pronoun."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Samimi bir arkadaşınıza 'Sen' demek için hangi zamiri kullanırsınız?",
+      "questionLang": "tr",
+      "options": ["вы", "ты", "мы", "они"],
+      "correctIndex": 1,
+      "explanationTr": "«ты» arkadaş ve aile arasında samimi 'sen' hitabıdır.",
+      "explanationEn": "«ты» is the informal 'you'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Erkek bir kişi veya eril bir isim için 'O' zamiri hangisidir?",
+      "questionLang": "tr",
+      "options": ["он", "она", "оно", "они"],
+      "correctIndex": 0,
+      "explanationTr": "«он» eril 3. tekil şahıs zamiridir.",
+      "explanationEn": "«он» is the 3rd person singular masculine pronoun."
     }
   ]
 }

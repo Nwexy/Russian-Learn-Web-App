@@ -86,6 +86,42 @@
       "correctIndex": 0,
       "explanationTr": "-о ve -е ile biten isimler kural olarak nötrdür.",
       "explanationEn": "Nouns ending in -о and -е are typically neuter."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«чай» (çay) kelimesinin cinsiyeti nedir?",
+      "questionLang": "tr",
+      "options": ["Eril", "Dişil", "Nötr", "Çoğul"],
+      "correctIndex": 0,
+      "explanationTr": "-й ile biten isimler eril cinstedir.",
+      "explanationEn": "Nouns ending in -й are masculine."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Aşağıdakilerden hangisi dişil (feminine) bir isimdir?",
+      "questionLang": "tr",
+      "options": ["брат", "газета", "город", "дом"],
+      "correctIndex": 1,
+      "explanationTr": "«газета» -а ile bittiği için dişildir.",
+      "explanationEn": "«газета» ends with -а, so it is feminine."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«море» (deniz) kelimesinin cinsiyeti nedir?",
+      "questionLang": "tr",
+      "options": ["Eril", "Dişil", "Nötr", "Çoğul"],
+      "correctIndex": 2,
+      "explanationTr": "«море» -е ile bittiği için nötr cinstir.",
+      "explanationEn": "«море» ends with -е, so it is neuter."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Aşağıdaki kelimelerden hangisi nötr (neuter) cinstedir?",
+      "questionLang": "tr",
+      "options": ["письмо", "чай", "друг", "сестра"],
+      "correctIndex": 0,
+      "explanationTr": "«письмо» -о ile bittiği için nötr cinstir.",
+      "explanationEn": "«письмо» ends with -о, so it is neuter."
     }
   ]
 }

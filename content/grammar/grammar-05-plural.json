@@ -96,6 +96,42 @@
       "correctIndex": 1,
       "explanationTr": "«друг» düzensiz bir çoğula sahiptir: «друзья».",
       "explanationEn": "«друг» has an irregular plural form: «друзья»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«мама» (anne) kelimesinin çoğul hali hangisidir?",
+      "questionLang": "tr",
+      "options": ["мамы", "мами", "мама", "маме"],
+      "correctIndex": 0,
+      "explanationTr": "-а ile biten dişil isimler çoğulda -ы alır: «мамы».",
+      "explanationEn": "Feminine nouns ending in -а take -ы: «мамы»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«брат» (erkek kardeş) kelimesinin çoğul hali hangisidir?",
+      "questionLang": "tr",
+      "options": ["браты", "брати", "братья", "брата"],
+      "correctIndex": 2,
+      "explanationTr": "«брат» düzensiz çoğul yapar: «братья».",
+      "explanationEn": "«брат» is an irregular plural: «братья»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«человек» (insan/kişi) kelimesinin çoğul karşılığı hangisidir?",
+      "questionLang": "tr",
+      "options": ["человеки", "люди", "человека", "человецы"],
+      "correctIndex": 1,
+      "explanationTr": "«человек» çoğulda kök değiştirir: «люди» (insanlar).",
+      "explanationEn": "«человек» changes completely in plural: «люди» (people)."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«море» (deniz) nötr kelimesinin çoğul hali hangisidir?",
+      "questionLang": "tr",
+      "options": ["моры", "мори", "моря", "море"],
+      "correctIndex": 2,
+      "explanationTr": "-е ile biten nötr isimler çoğulda -я alır: «моря».",
+      "explanationEn": "Neuter nouns ending in -е take -я in plural: «моря»."
     }
   ]
 }

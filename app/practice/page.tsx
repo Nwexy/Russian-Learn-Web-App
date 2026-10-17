@@ -13,7 +13,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
-import { getAllUnits, getUnitTitle } from "@/lib/content";
+import { getAllUnits, getUnitById, getUnitTitle } from "@/lib/content";
 import {
   generateMultipleChoice,
   generateFillBlank,
@@ -143,7 +143,29 @@ export default function PracticePage() {
   /** İlk veri yükleme */
   useEffect(() => {
     async function load() {
-      const allItems = await db.items.where("type").equals("word").toArray();
+      let allItems = await db.items.where("type").equals("word").toArray();
+      if (allItems.length === 0) {
+        allItems = getAllUnits().flatMap((u) => {
+          const unitData = getUnitById(u.id);
+          return (unitData?.items || [])
+            .filter((i) => i.type === "word")
+            .map((raw) => ({
+              id: raw.id,
+              unitId: u.id,
+              type: raw.type,
+              ru: raw.ru,
+              tr: raw.tr,
+              en: raw.en,
+              exampleRu: raw.exampleRu,
+              exampleTr: raw.exampleTr,
+              exampleEn: raw.exampleEn,
+              pronunciationEn: raw.pronunciationEn,
+              numberValue: raw.numberValue,
+              hexCode: raw.hexCode,
+              tags: raw.tags,
+            }));
+        });
+      }
       setItems(allItems);
       setTtsSupported(isTTSSupported());
       const mc = await getMistakeCount();
@@ -159,11 +181,55 @@ export default function PracticePage() {
     let loaded: Item[];
     if (unitId === "all") {
       loaded = await db.items.where("type").equals("word").toArray();
+      if (loaded.length === 0) {
+        loaded = getAllUnits().flatMap((u) => {
+          const unitData = getUnitById(u.id);
+          return (unitData?.items || [])
+            .filter((i) => i.type === "word")
+            .map((raw) => ({
+              id: raw.id,
+              unitId: u.id,
+              type: raw.type,
+              ru: raw.ru,
+              tr: raw.tr,
+              en: raw.en,
+              exampleRu: raw.exampleRu,
+              exampleTr: raw.exampleTr,
+              exampleEn: raw.exampleEn,
+              pronunciationEn: raw.pronunciationEn,
+              numberValue: raw.numberValue,
+              hexCode: raw.hexCode,
+              tags: raw.tags,
+            }));
+        });
+      }
     } else {
       loaded = await db.items
         .where("unitId").equals(unitId)
         .and((i) => i.type === "word")
         .toArray();
+      if (loaded.length === 0) {
+        const unitData = getUnitById(unitId);
+        if (unitData) {
+          loaded = unitData.items
+            .filter((i) => i.type === "word")
+            .map((raw) => ({
+              id: raw.id,
+              unitId: unitData.id,
+              type: raw.type,
+              ru: raw.ru,
+              tr: raw.tr,
+              en: raw.en,
+              exampleRu: raw.exampleRu,
+              exampleTr: raw.exampleTr,
+              exampleEn: raw.exampleEn,
+              pronunciationEn: raw.pronunciationEn,
+              numberValue: raw.numberValue,
+              hexCode: raw.hexCode,
+              tags: raw.tags,
+            }));
+        }
+      }
     }
     setItems(loaded);
 

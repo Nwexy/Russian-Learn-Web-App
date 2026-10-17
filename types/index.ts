@@ -22,6 +22,7 @@ export interface Item {
   exampleEn?: string;  // İngilizce örnek cümle
   pronunciationEn?: string;  // İngilizce okunuş (vurgulu hece büyük harf)
   numberValue?: number;      // Sayısal değer (örn. 0-100)
+  hexCode?: string;          // Renk hex kodu (örn. #FF0000)
   tags?: string[];     // Etiketler (opsiyonel)
 }
 
@@ -68,6 +69,7 @@ export interface RawItem {
   exampleEn?: string;
   pronunciationEn?: string;
   numberValue?: number;
+  hexCode?: string;
   tags?: string[];
 }
 

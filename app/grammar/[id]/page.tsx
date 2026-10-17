@@ -86,8 +86,7 @@ export default function GrammarDetailPage() {
     } else {
       // Tüm sorular bitti
       setExerciseFinished(true);
-      const finalCorrect = selectedOption === currentEx.correctIndex ? correctCount : correctCount;
-      if (finalCorrect === exercises.length) {
+      if (correctCount >= 6) {
         await markCompleted(note.id);
         const updated = await getGrammarProgress(note.id);
         if (updated) setProgress(updated);
@@ -317,26 +316,32 @@ export default function GrammarDetailPage() {
                 style={{
                   fontSize: "1.1rem",
                   color: "var(--text-secondary)",
-                  marginBottom: "1.5rem",
+                  marginBottom: "1rem",
                 }}
               >
-                {t.correctAnswers}: {correctCount} / {exercises.length}
+                {t.correctAnswers}: {correctCount} / {exercises.length} ({exercises.length > 0 ? Math.round((correctCount / exercises.length) * 100) : 0}%)
               </p>
 
-              {correctCount === exercises.length ? (
+              {correctCount >= 6 ? (
                 <div style={{ marginBottom: "1.5rem" }}>
+                  <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--success, #16a34a)", marginBottom: "0.75rem" }}>
+                    {uiLang === "tr" ? "Tebrikler, geçtiniz" : "Congratulations, you passed"}
+                  </div>
                   <span className="unit-status-badge unit-status-completed" style={{ fontSize: "0.9rem", padding: "0.4rem 1rem" }}>
                     {t.lessonComplete}
                   </span>
                 </div>
               ) : (
                 <div style={{ marginBottom: "1.5rem" }}>
+                  <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--danger, #dc2626)", marginBottom: "0.75rem" }}>
+                    {uiLang === "tr" ? "Kaldınız, tekrar deneyin" : "Failed, try again"}
+                  </div>
                   <button
                     type="button"
                     className="practice-btn practice-btn-secondary"
                     onClick={handleRestartExercise}
                   >
-                    {t.tryAgain}
+                    {uiLang === "tr" ? "Tekrar Dene" : t.tryAgain}
                   </button>
                 </div>
               )}

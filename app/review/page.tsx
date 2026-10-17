@@ -169,6 +169,18 @@ export default function ReviewPage() {
 
       {/* Kart */}
       <div className="flashcard">
+        {currentCard.numberValue !== undefined && (
+          <span className="item-number-badge" title={`Sayı: ${currentCard.numberValue}`}>
+            {currentCard.numberValue}
+          </span>
+        )}
+        {currentCard.hexCode && (
+          <span
+            className="item-color-badge"
+            style={{ backgroundColor: currentCard.hexCode }}
+            title={currentCard.hexCode}
+          />
+        )}
         {/* Ön yüz — her zaman görünür */}
         <div className="flashcard-front">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>

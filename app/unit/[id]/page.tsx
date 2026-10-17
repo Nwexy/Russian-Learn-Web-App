@@ -132,6 +132,13 @@ export default function UnitPage() {
                     {item.numberValue}
                   </span>
                 )}
+                {item.hexCode && (
+                  <span
+                    className="item-color-badge"
+                    style={{ backgroundColor: item.hexCode }}
+                    title={item.hexCode}
+                  />
+                )}
                 <span className="item-type-badge">{item.type}</span>
                 <div className="item-ru" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                   <span>{item.ru}</span>

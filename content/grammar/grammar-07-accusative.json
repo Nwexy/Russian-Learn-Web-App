@@ -92,6 +92,42 @@
       "correctIndex": 2,
       "explanationTr": "Cansız eril ve tüm nötr isimler akuzatifte yalın hâlleriyle aynı kalır.",
       "explanationEn": "Inanimate masculine and all neuter nouns remain unchanged in the accusative."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Я люблю ... (мама).» Boşluğa hangi kelime gelmelidir?",
+      "questionLang": "ru",
+      "options": ["мама", "маму", "маме", "мамы"],
+      "correctIndex": 1,
+      "explanationTr": "«мама» dişil ismi akuzatifte -у alır: «Я люблю маму».",
+      "explanationEn": "«мама» is feminine and takes -у in the accusative: «Я люблю маму»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Мы слушаем ... (песня).» Boşluğa hangi kelime gelmelidir?",
+      "questionLang": "ru",
+      "options": ["песня", "песню", "песни", "песне"],
+      "correctIndex": 1,
+      "explanationTr": "-я ile biten dişil isim akuzatifte -ю alır: «песню».",
+      "explanationEn": "Feminine nouns ending in -я take -ю in the accusative: «песню»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Они видят ... (друг).» Canlı eril isim akuzatifte nasıl çekimlenir?",
+      "questionLang": "ru",
+      "options": ["друг", "друга", "другу", "другом"],
+      "correctIndex": 1,
+      "explanationTr": "Canlı eril isimler akuzatifte -а alır: «друга».",
+      "explanationEn": "Animate masculine nouns take -а in the accusative: «друга»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Nötr isimler (örn: окно, море) akuzatifte nasıl değişir?",
+      "questionLang": "tr",
+      "options": ["-у eki alır", "-а eki alır", "Değişmez (yalın hâl ile aynı kalır)", "-е eki düşer"],
+      "correctIndex": 2,
+      "explanationTr": "Nötr isimler akuzatifte yalın hâlleriyle tamamen aynı kalır.",
+      "explanationEn": "Neuter nouns remain identical to their nominative forms in the accusative."
     }
   ]
 }

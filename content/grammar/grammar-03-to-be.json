@@ -89,6 +89,42 @@
       "correctIndex": 1,
       "explanationTr": "Rusça'da şimdiki zamanda 'olmak' fiili (быть) kural olarak kullanılmaz.",
       "explanationEn": "In Russian present tense, the verb 'to be' is not used."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Кто это?» sorusunun anlamı nedir?",
+      "questionLang": "tr",
+      "options": ["Bu kim?", "Bu ne?", "O nerede?", "Kim geldi?"],
+      "correctIndex": 0,
+      "explanationTr": "«Кто это?» kişiler için 'Bu kim?' anlamına gelir.",
+      "explanationEn": "«Кто это?» means 'Who is this?'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "'Biz evdeyiz' cümlesi Rusça'da nasıl söylenir?",
+      "questionLang": "tr",
+      "options": ["Мы быть дома", "Мы дома", "Мы есть дом", "Дома мы есть"],
+      "correctIndex": 1,
+      "explanationTr": "Şimdiki zamanda ek fiil olmadan doğrudan «Мы дома» denir.",
+      "explanationEn": "In present tense without 'to be', it is simply «Мы дома»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Это» kalıbı hangi cinsiyetteki kelimelerle kullanılır?",
+      "questionLang": "tr",
+      "options": ["Sadece eril", "Sadece dişil", "Sadece nötr", "Eril, dişil ve nötr tüm kelimelerle"],
+      "correctIndex": 3,
+      "explanationTr": "«Это» kalıbı değişmez ve her cinsiyetten isimle kullanılır.",
+      "explanationEn": "«Это» is invariable and used with nouns of all genders."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "'O doktordur' (erkek) cümlesinin Rusça karşılığı hangisidir?",
+      "questionLang": "tr",
+      "options": ["Он врач", "Он есть врач", "Врач он есть", "Она врач"],
+      "correctIndex": 0,
+      "explanationTr": "«Он врач» = O doktordur (eril).",
+      "explanationEn": "«Он врач» = He is a doctor."
     }
   ]
 }

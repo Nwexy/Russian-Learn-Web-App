@@ -3,7 +3,13 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
-## 2026-10-17
+## 2026-10-17 (Faz 6.5)
+- Yeni unitelerde Test ve Alistirma butonlarinin calismama hatasi giderildi.
+- Unite testleri artik sadece coktan secmeli (multipleChoice) sorulardan olusuyor.
+- Gramer testleri 8 soruya cikarildi, gecme esigi %75 (6/8) olarak ayarlandi.
+- Renk unitisine hexCode alanlari eklendi, gorsel renk kutulari eklendi.
+
+## 2026-10-17 (Faz 6)
 - Renkler, Aile, Temel Fiiller ve Temel Sifatlar uniteleri eklendi.
 - Isimlerde Cogul, Sifat Uyumu, Belirtme Hali ve Gecmis Zaman gramer notlari eklendi.
 - Yeni uniteler ve gramer notlari birbirine baglandi.

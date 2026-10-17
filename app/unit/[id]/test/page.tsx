@@ -1,43 +1,33 @@
 /**
  * Ünite test sayfası — /unit/[id]/test
- * O ünitenin item'larından 10 soruluk karışık test.
- * Soru tipleri: 4 çoktan seçmeli, 3 boşluk doldurma, 3 dinleme.
- * >= %80 geçti, progress'e test=true yazılır.
+ * O ünitenin item'larından 10 soruluk SADECE çoktan seçmeli (multipleChoice) test.
+ * >= %80 geçti (en az 8/10), progress'e test=true yazılır.
  */
 
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { db } from "@/lib/db";
 import { getUnitById, getUnitTitle } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
-import { generateMultipleChoice, generateFillBlank, generateListening } from "@/lib/exercises";
+import { generateMultipleChoice } from "@/lib/exercises";
 import { setTestComplete } from "@/lib/progress";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
-import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
+import { shouldShowPronunciation } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
 interface TestQuestion {
-  type: "mc" | "fill" | "listen";
+  type: "mc";
   item: Item;
-  // MC fields
-  question?: string;
-  options?: string[];
-  correctIndex?: number;
-  direction?: "ru-to-target" | "target-to-ru";
-  // Fill fields
-  sentenceWithBlank?: string;
-  correctWord?: string;
-  hint?: string;
-  fullTranslation?: string;
-  hintSentence?: string;
-  // Listen fields (correctWord reused)
+  question: string;
+  options: string[];
+  correctIndex: number;
+  direction: "ru-to-target" | "target-to-ru";
 }
 
 type Phase = "intro" | "active" | "result";
@@ -54,62 +44,60 @@ export default function TestPage() {
   const [index, setIndex] = useState(0);
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [ttsOk, setTtsOk] = useState(true);
 
   // Answer state
-  const [answer, setAnswer] = useState("");
   const [mcSelected, setMcSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
     if (!unit) return;
     async function load() {
-      const unitItems = await db.items
+      let unitItems = await db.items
         .where("unitId").equals(unit!.id)
         .and((i) => i.type === "word")
         .toArray();
+
+      // IndexedDB henüz seed edilmediyse veya boşsa doğrudan ünite JSON içeriğini kullan
+      if (unitItems.length === 0 && unit?.items) {
+        unitItems = unit.items
+          .filter((i) => i.type === "word")
+          .map((raw) => ({
+            id: raw.id,
+            unitId: unit.id,
+            type: raw.type,
+            ru: raw.ru,
+            tr: raw.tr,
+            en: raw.en,
+            exampleRu: raw.exampleRu,
+            exampleTr: raw.exampleTr,
+            exampleEn: raw.exampleEn,
+            pronunciationEn: raw.pronunciationEn,
+            numberValue: raw.numberValue,
+            hexCode: raw.hexCode,
+            tags: raw.tags,
+          }));
+      }
+
       setItems(unitItems);
-      setTtsOk(isTTSSupported());
       setLoading(false);
     }
     load();
   }, [unit]);
 
-  /** Test sorularını üret */
+  /** Test sorularını üret (Sadece 10 çoktan seçmeli soru) */
   const startTest = () => {
-    if (items.length < 4) return;
+    if (items.length < 2) return;
 
-    const mcQs = generateMultipleChoice(items, translationLang, 4);
-    const fillQs = generateFillBlank(items, translationLang, 3);
-    const listenQs = generateListening(items, ttsOk ? 3 : 0);
-
-    const testQs: TestQuestion[] = [
-      ...mcQs.map((q) => ({
-        type: "mc" as const,
-        item: q.item,
-        question: q.question,
-        options: q.options,
-        correctIndex: q.correctIndex,
-        direction: q.direction,
-      })),
-      ...fillQs.map((q) => ({
-        type: "fill" as const,
-        item: q.item,
-        sentenceWithBlank: q.sentenceWithBlank,
-        correctWord: q.correctWord,
-        hint: q.hint,
-        fullTranslation: q.fullTranslation,
-        hintSentence: q.hintSentence,
-      })),
-      ...listenQs.map((q) => ({
-        type: "listen" as const,
-        item: q.item,
-        correctWord: q.correctWord,
-      })),
-    ];
+    const mcQs = generateMultipleChoice(items, translationLang, 10);
+    const testQs: TestQuestion[] = mcQs.map((q) => ({
+      type: "mc" as const,
+      item: q.item,
+      question: q.question,
+      options: q.options,
+      correctIndex: q.correctIndex,
+      direction: q.direction,
+    }));
 
     setQuestions(testQs);
     setIndex(0);
@@ -119,31 +107,33 @@ export default function TestPage() {
   };
 
   const resetQ = () => {
-    setAnswer("");
     setMcSelected(null);
     setRevealed(false);
     setIsCorrect(null);
   };
 
-  /** Cevabı kontrol et */
-  const checkAnswer = async (userAns: string, correctAns: string) => {
+  /** Çoktan seçmeli cevabı kontrol et */
+  const checkAnswer = async (selectedIdx: number) => {
     const q = questions[index];
-    const correct = userAns.trim().toLowerCase() === correctAns.trim().toLowerCase();
+    const correct = selectedIdx === q.correctIndex;
     setIsCorrect(correct);
     setRevealed(true);
 
-    const exType = q.type === "mc" ? "multipleChoice" : q.type === "fill" ? "fillBlank" : "listening";
-
     if (correct) {
       setScore((s) => s + 1);
-      await removeMistakeByKey(exType, q.item.id);
+      await removeMistakeByKey("multipleChoice", q.item.id);
     } else {
       await recordMistake({
-        exerciseType: exType,
+        exerciseType: "multipleChoice",
         itemId: q.item.id,
-        questionData: { correctWord: correctAns },
-        userAnswer: userAns.trim(),
-        correctAnswer: correctAns,
+        questionData: {
+          question: q.question,
+          options: q.options,
+          correctIndex: q.correctIndex,
+          direction: q.direction,
+        },
+        userAnswer: q.options[selectedIdx],
+        correctAnswer: q.options[q.correctIndex],
       });
     }
   };
@@ -152,15 +142,12 @@ export default function TestPage() {
   const nextQuestion = async () => {
     if (index + 1 >= questions.length) {
       // Test bitti — sonucu kaydet
-      const pct = Math.round((score + (isCorrect ? 0 : 0)) / questions.length * 100);
-      // score zaten güncellendi, pct tekrar hesapla
       const finalScore = Math.round((score / questions.length) * 100);
       await setTestComplete(unit!.id, finalScore);
       setPhase("result");
     } else {
       setIndex((i) => i + 1);
       resetQ();
-      setTimeout(() => inputRef.current?.focus(), 50);
     }
   };
 
@@ -227,7 +214,7 @@ export default function TestPage() {
         </div>
 
         <div className="practice-start-area">
-          <button className="practice-btn practice-btn-primary" onClick={startTest} disabled={items.length < 4}>
+          <button className="practice-btn practice-btn-primary" onClick={startTest} disabled={items.length < 2}>
             {t.startTest}
           </button>
         </div>
@@ -236,211 +223,68 @@ export default function TestPage() {
   }
 
   /* ========================================
-     AKTİF SORU
+     AKTİF SORU (SADECE ÇOKTAN SEÇMELİ)
      ======================================== */
   const q = questions[index];
   const feedbackMeaning = `${q.item.ru} ${t.meaningEquals} ${getMeaning(q.item)}`;
+  const ruQuestion = q.direction !== "target-to-ru";
 
-  /* --- Çoktan Seçmeli --- */
-  if (q.type === "mc" && q.options && q.correctIndex !== undefined) {
-    const ruQuestion = q.direction !== "target-to-ru";
-    const handleSelect = async (idx: number) => {
-      if (revealed) return;
-      setMcSelected(idx);
-      await checkAnswer(q.options![idx], q.options![q.correctIndex!]);
-    };
+  const handleSelect = async (idx: number) => {
+    if (revealed) return;
+    setMcSelected(idx);
+    await checkAnswer(idx);
+  };
 
-    return (
-      <div className="page-container">
-        <div className="practice-progress-row">
-          <span className="review-progress">{index + 1} / {questions.length}</span>
-          <span className="practice-type-badge">{t.unitTest}</span>
-        </div>
-        <div className="review-progress-bar">
-          <div className="review-progress-fill" style={{ width: `${(index / questions.length) * 100}%` }} />
-        </div>
-
-        <div className="flashcard">
-          <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{q.question}</span>
-            {ruQuestion && q.question && <SpeakButton text={q.question} size="sm" />}
-          </div>
-          {ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
-          <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
-        </div>
-
-        <div className="mc-options">
-          {q.options.map((opt, idx) => {
-            let cls = "mc-option";
-            if (revealed) {
-              if (idx === q.correctIndex) cls += " mc-option-correct";
-              else if (idx === mcSelected) cls += " mc-option-wrong";
-            }
-            return (
-              <button key={idx} className={cls} onClick={() => handleSelect(idx)} disabled={revealed}>
-                {opt}
-              </button>
-            );
-          })}
-        </div>
-
-        {revealed && (
-          <div className="practice-feedback">
-            <div>
-              <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-                {isCorrect ? t.correct : t.wrong}
-              </span>
-              <span className="feedback-meaning"> — {feedbackMeaning}</span>
-              {shouldShowPronunciation(revealed) && (
-                <PronunciationText item={q.item} className="pronunciation-inline" />
-              )}
-            </div>
-            <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
-              {t.next}
-            </button>
-          </div>
-        )}
+  return (
+    <div className="page-container">
+      <div className="practice-progress-row">
+        <span className="review-progress">{index + 1} / {questions.length}</span>
+        <span className="practice-type-badge">{t.unitTest}</span>
       </div>
-    );
-  }
-
-  /* --- Boşluk Doldurma --- */
-  if (q.type === "fill" && q.correctWord) {
-    const handleCheck = async () => {
-      if (revealed) return;
-      await checkAnswer(answer, q.correctWord!);
-    };
-
-    return (
-      <div className="page-container">
-        <div className="practice-progress-row">
-          <span className="review-progress">{index + 1} / {questions.length}</span>
-          <span className="practice-type-badge">{t.unitTest}</span>
-        </div>
-        <div className="review-progress-bar">
-          <div className="review-progress-fill" style={{ width: `${(index / questions.length) * 100}%` }} />
-        </div>
-
-        <div className="flashcard">
-          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{q.sentenceWithBlank}</span>
-            {q.sentenceWithBlank && <SpeakButton text={q.sentenceWithBlank} size="sm" />}
-          </div>
-          {shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
-          {(q.fullTranslation || q.hintSentence) && (
-            <p className="practice-hint">
-              {renderHighlightedText(q.fullTranslation || q.hintSentence, revealed)}
-            </p>
-          )}
-        </div>
-
-        <div className="practice-input-row">
-          <input
-            ref={inputRef}
-            type="text"
-            className="practice-input"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !revealed) handleCheck(); }}
-            placeholder={t.typeYourAnswer}
-            disabled={revealed}
-            autoFocus
-          />
-          {!revealed && (
-            <button className="practice-btn practice-btn-primary" onClick={handleCheck}>
-              {t.check}
-            </button>
-          )}
-        </div>
-
-        {revealed && (
-          <div className="practice-feedback">
-            <div>
-              <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-                {isCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
-              </span>
-              {shouldShowPronunciation(revealed) && (
-                <PronunciationText item={q.item} className="pronunciation-inline" />
-              )}
-            </div>
-            <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
-              {t.next}
-            </button>
-          </div>
-        )}
+      <div className="review-progress-bar">
+        <div className="review-progress-fill" style={{ width: `${(index / questions.length) * 100}%` }} />
       </div>
-    );
-  }
 
-  /* --- Dinleme --- */
-  if (q.type === "listen" && q.correctWord) {
-    const handlePlay = () => speak(q.correctWord!);
-    const handleCheck = async () => {
-      if (revealed) return;
-      await checkAnswer(answer, q.correctWord!);
-    };
-
-    return (
-      <div className="page-container">
-        <div className="practice-progress-row">
-          <span className="review-progress">{index + 1} / {questions.length}</span>
-          <span className="practice-type-badge">{t.unitTest}</span>
+      <div className="flashcard">
+        <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+          <span>{q.question}</span>
+          {ruQuestion && q.question && <SpeakButton text={q.question} size="sm" />}
         </div>
-        <div className="review-progress-bar">
-          <div className="review-progress-fill" style={{ width: `${(index / questions.length) * 100}%` }} />
-        </div>
-
-        <div className="flashcard">
-          <div className="listen-btns">
-            <button className="listen-play-btn" onClick={handlePlay}>
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} width={28} height={28}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.5l5-4v15l-5-4H4a1 1 0 01-1-1v-5a1 1 0 011-1h2.5z" />
-              </svg>
-              {t.play}
-            </button>
-            <button className="listen-replay-btn" onClick={handlePlay}>{t.replay}</button>
-          </div>
-          <p className="practice-instruction">{t.listenAndType}</p>
-        </div>
-
-        <div className="practice-input-row">
-          <input
-            ref={inputRef}
-            type="text"
-            className="practice-input"
-            value={answer}
-            onChange={(e) => setAnswer(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !revealed) handleCheck(); }}
-            placeholder={t.typeYourAnswer}
-            disabled={revealed}
-            autoFocus
-          />
-          {!revealed && (
-            <button className="practice-btn practice-btn-primary" onClick={handleCheck}>
-              {t.check}
-            </button>
-          )}
-        </div>
-
-        {revealed && (
-          <div className="practice-feedback">
-            <div>
-              <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-                {isCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
-              </span>
-              <span className="feedback-meaning"> — {feedbackMeaning}</span>
-              {shouldShowPronunciation(revealed) && (
-                <PronunciationText item={q.item} className="pronunciation-inline" />
-              )}
-            </div>
-            <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
-              {t.next}
-            </button>
-          </div>
-        )}
+        {ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
+        <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
       </div>
-    );
-  }
 
-  return null;
+      <div className="mc-options">
+        {q.options.map((opt, idx) => {
+          let cls = "mc-option";
+          if (revealed) {
+            if (idx === q.correctIndex) cls += " mc-option-correct";
+            else if (idx === mcSelected) cls += " mc-option-wrong";
+          }
+          return (
+            <button key={idx} className={cls} onClick={() => handleSelect(idx)} disabled={revealed}>
+              {opt}
+            </button>
+          );
+        })}
+      </div>
+
+      {revealed && (
+        <div className="practice-feedback">
+          <div>
+            <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
+              {isCorrect ? t.correct : t.wrong}
+            </span>
+            <span className="feedback-meaning"> — {feedbackMeaning}</span>
+            {shouldShowPronunciation(revealed) && (
+              <PronunciationText item={q.item} className="pronunciation-inline" />
+            )}
+          </div>
+          <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
+            {t.next}
+          </button>
+        </div>
+      )}
+    </div>
+  );
 }

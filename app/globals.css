@@ -849,6 +849,7 @@ body {
    ======================================== */
 
 .flashcard {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
@@ -1921,6 +1922,28 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
   line-height: 1;
   pointer-events: none;
+}
+
+/* Renk rozeti (hexCode için sağ üst köşe) */
+.item-color-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  display: inline-block;
+  z-index: 2;
+}
+
+.flashcard .item-color-badge {
+  top: 1rem;
+  right: 1rem;
+  width: 1.75rem;
+  height: 1.75rem;
 }
 
 /* Practice aktif oturum rozeti */

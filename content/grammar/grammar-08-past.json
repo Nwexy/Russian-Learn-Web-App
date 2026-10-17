@@ -88,6 +88,42 @@
       "correctIndex": 1,
       "explanationTr": "Kadın konuşmacı için geçmiş zaman eki -ла'dır: «Я знала».",
       "explanationEn": "A female speaker uses the feminine past tense ending -ла: «Я знала»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Bir erkek 'Ben konuştum' derken hangisini söylemelidir?",
+      "questionLang": "tr",
+      "options": ["Я говорил", "Я говорила", "Я говорило", "Я говорили"],
+      "correctIndex": 0,
+      "explanationTr": "Erkek konuşmacı için geçmiş zaman eki -л'dir: «Я говорил».",
+      "explanationEn": "A male speaker uses the masculine past tense ending -л: «Я говорил»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Они долго ... (думать).» Çoğul özne için geçmiş zaman formu hangisidir?",
+      "questionLang": "ru",
+      "options": ["думал", "думала", "думало", "думали"],
+      "correctIndex": 3,
+      "explanationTr": "Çoğul öznelerde geçmiş zaman eki -ли'dir: «Они думали».",
+      "explanationEn": "For plural subjects, the past tense ending is -ли: «Они думали»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Письмо ... (быть) на столе.» Nötr özne için 'быть' fiilinin geçmiş zaman formu hangisidir?",
+      "questionLang": "ru",
+      "options": ["был", "была", "было", "были"],
+      "correctIndex": 2,
+      "explanationTr": "«письмо» nötr bir isim olduğu için fiil -ло eki alır: «было».",
+      "explanationEn": "«письмо» is neuter, so the past tense ending is -ло: «было»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Rusça'da geçmiş zaman eki eril tekil özneler için hangisidir?",
+      "questionLang": "tr",
+      "options": ["-л", "-ла", "-ло", "-ли"],
+      "correctIndex": 0,
+      "explanationTr": "Eril tekil özneler için geçmiş zaman eki -л'dir.",
+      "explanationEn": "The masculine singular past tense ending is -л."
     }
   ]
 }
