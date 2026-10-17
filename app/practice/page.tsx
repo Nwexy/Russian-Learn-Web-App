@@ -535,42 +535,57 @@ export default function PracticePage() {
     }
   };
 
-  /** Çoklu ünite tetikleyici başlık metni */
-  let triggerTitle = t.allUnitsSelected;
+  /** Çoklu ünite tetikleyici buton metni */
+  let triggerButtonText = "";
   if (isAllUnits) {
-    triggerTitle = `${t.allUnitsSelected} (${availableUnits.length} ${t.unit})`;
-  } else if (selectedUnits.length === 1) {
-    const u = availableUnits.find((unit) => unit.id === selectedUnits[0]);
-    triggerTitle = u ? `${getUnitTitle(u, uiLang)} (${u.level})` : t.selectUnits;
-  } else if (selectedUnits.length > 1) {
-    triggerTitle = `${selectedUnits.length} ${t.unit} ${t.multipleUnitsSelected}`;
+    triggerButtonText = uiLang === "tr" ? `Tüm Üniteler (${availableUnits.length} Ünite)` : `All Units (${availableUnits.length} Units)`;
+  } else if (selectedUnits.length > 0) {
+    triggerButtonText = uiLang === "tr" ? `${selectedUnits.length} Ünite Seçildi` : `${selectedUnits.length} Units Selected`;
   } else {
-    triggerTitle = `${t.selectUnits} (0)`;
+    triggerButtonText = uiLang === "tr" ? "Üniteleri Seç" : "Select Units";
   }
 
   const isSessionActive = phase === "active";
 
   /** Çoklu Ünite Seçici Bileşeni */
   const unitFilterSelector = (
-    <div className="practice-unit-filter">
+    <div className="w-full max-w-3xl mx-auto mb-6">
       {isSessionActive ? (
-        <span className="practice-unit-active-badge">
-          {isAllUnits
-            ? t.practicingAllUnits
-            : `${selectedUnits.length} ${t.unit} (${t.practicingUnit})`}
-        </span>
+        <div className="px-4 py-2.5 rounded-xl border border-border bg-card/60 backdrop-blur-sm flex items-center justify-between text-xs text-muted-foreground shadow-sm">
+          <span className="font-medium text-foreground">
+            {isAllUnits
+              ? t.practicingAllUnits
+              : `${selectedUnits.length} ${t.unit} (${t.practicingUnit})`}
+          </span>
+          <span className="text-[11px] bg-secondary px-2.5 py-0.5 rounded-full text-foreground/80 font-medium">
+            {items.length} {uiLang === "tr" ? "kelime" : "words"}
+          </span>
+        </div>
       ) : (
-        <>
-          <span className="practice-unit-filter-label">{t.selectUnits}:</span>
-          <div className="practice-multi-container" ref={dropdownRef}>
+        <div className="p-4 rounded-xl border border-border bg-card/80 backdrop-blur-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm">
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-foreground">
+              {uiLang === "tr" ? "Çalışılacak Üniteler" : "Units to Practice"}
+            </span>
+            <span className="text-xs text-muted-foreground mt-0.5">
+              {isAllUnits
+                ? (uiLang === "tr" ? `Tüm tamamlanan üniteler aktif (${availableUnits.length} ünite)` : `All completed units active (${availableUnits.length} units)`)
+                : (uiLang === "tr" ? `${selectedUnits.length} ünite seçildi` : `${selectedUnits.length} units selected`)}
+            </span>
+          </div>
+
+          <div className="relative" ref={dropdownRef}>
             <button
               type="button"
-              className="practice-multi-trigger"
               onClick={() => setDropdownOpen((prev) => !prev)}
+              className="inline-flex items-center justify-between gap-3 px-4 py-2 text-sm font-medium rounded-lg bg-secondary text-foreground hover:bg-secondary/80 border border-border transition-colors cursor-pointer w-full sm:w-auto min-w-[210px]"
             >
-              <span className="practice-multi-trigger-text">{triggerTitle}</span>
+              <span className="truncate">{triggerButtonText}</span>
               <svg
-                className={`practice-multi-chevron ${dropdownOpen ? "practice-multi-chevron-open" : ""}`}
+                className={`transition-transform duration-200 shrink-0 text-muted-foreground ${dropdownOpen ? "rotate-180" : ""}`}
+                style={{ width: "16px", height: "16px" }}
+                width={16}
+                height={16}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -581,25 +596,29 @@ export default function PracticePage() {
             </button>
 
             {dropdownOpen && (
-              <div className="practice-multi-dropdown">
+              <div className="absolute right-0 left-0 sm:left-auto mt-2 sm:w-80 z-50 rounded-xl bg-card border border-border p-3 shadow-2xl backdrop-blur-md">
                 {/* Tüm Üniteler seçeneği */}
-                <label className="practice-multi-item practice-multi-item-all">
+                <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-card-hover cursor-pointer transition-colors text-sm font-semibold text-foreground">
                   <input
                     type="checkbox"
-                    className="practice-multi-checkbox"
+                    className="w-4 h-4 rounded border-border accent-accent cursor-pointer"
                     checked={isAllUnits}
                     onChange={(e) => handleToggleAllUnits(e.target.checked)}
                   />
-                  <span className="practice-multi-label">{t.allUnitsSelected}</span>
-                  <span className="practice-multi-badge">{availableUnits.length} {t.unit}</span>
+                  <span className="flex-1">
+                    {uiLang === "tr" ? "Tüm Üniteler" : "All Units"}
+                  </span>
+                  <span className="text-xs text-muted-foreground bg-secondary px-2 py-0.5 rounded-full">
+                    {availableUnits.length} {t.unit}
+                  </span>
                 </label>
 
-                <div className="practice-multi-divider" />
+                <div className="h-px bg-border my-2" />
 
                 {/* Ünite listesi */}
-                <div className="practice-multi-list">
+                <div className="max-h-60 overflow-y-auto space-y-1 pr-1">
                   {availableUnits.length === 0 ? (
-                    <div style={{ padding: "0.5rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                    <div className="p-2 text-xs text-muted-foreground text-center">
                       {t.mustCompleteLessonFirst}
                     </div>
                   ) : (
@@ -608,36 +627,42 @@ export default function PracticePage() {
                       return (
                         <label
                           key={u.id}
-                          className={`practice-multi-item ${isAllUnits ? "practice-multi-item-locked" : ""}`}
+                          className={`flex items-center gap-3 p-2 rounded-lg transition-colors text-sm ${
+                            isAllUnits
+                              ? "opacity-60 cursor-not-allowed bg-transparent"
+                              : "hover:bg-card-hover cursor-pointer text-foreground"
+                          }`}
                         >
                           <input
                             type="checkbox"
-                            className="practice-multi-checkbox"
+                            className="w-4 h-4 rounded border-border accent-accent cursor-pointer disabled:cursor-not-allowed"
                             checked={checked}
                             disabled={isAllUnits}
                             onChange={() => handleToggleUnit(u.id)}
                           />
-                          <span className="practice-multi-label">{getUnitTitle(u, uiLang)}</span>
-                          <span className="practice-multi-badge">{u.level}</span>
+                          <span className="flex-1 truncate">{getUnitTitle(u, uiLang)}</span>
+                          <span className="text-[10px] text-muted-foreground bg-secondary px-1.5 py-0.5 rounded">
+                            {u.level}
+                          </span>
                         </label>
                       );
                     })
                   )}
                 </div>
 
-                <div className="practice-multi-footer">
+                <div className="mt-3 pt-2 border-t border-border flex justify-end">
                   <button
                     type="button"
-                    className="practice-multi-done-btn"
+                    className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-accent text-white hover:opacity-90 transition-opacity cursor-pointer"
                     onClick={() => setDropdownOpen(false)}
                   >
-                    {t.save}
+                    {uiLang === "tr" ? "Tamam" : "Done"}
                   </button>
                 </div>
               </div>
             )}
           </div>
-        </>
+        </div>
       )}
     </div>
   );
@@ -723,7 +748,7 @@ export default function PracticePage() {
 
         {unitFilterSelector}
 
-        <div className="page-header">
+        <div className="page-header text-center sm:text-left mb-6">
           <h1 className="page-title">{t.practiceTitle}</h1>
           <p className="page-subtitle">{t.practiceDesc}</p>
         </div>
@@ -734,55 +759,82 @@ export default function PracticePage() {
           </div>
         ) : (
           <>
-            {/* Büyükçe Mixed Mode (Karışık Mod) Kartı */}
-            <div className="practice-mixed-container">
+            {/* Kartlar Izgarası (Grid Layout) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 w-full max-w-3xl mx-auto">
+              {/* Karışık Mod (Mixed Mode) Kartı — Tam Genişlik */}
+              <div
+                role="button"
+                tabIndex={0}
+                onClick={() => setExerciseType("mixed")}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") setExerciseType("mixed");
+                }}
+                className={`col-span-full p-6 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-2.5 ${
+                  exerciseType === "mixed"
+                    ? "border-accent bg-accent/10 shadow-lg ring-2 ring-accent/30"
+                    : "border-border bg-card hover:bg-card-hover hover:border-accent/40"
+                }`}
+              >
+                <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center text-3xl shadow-inner mb-0.5">
+                  🎲
+                </div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xl font-bold text-foreground">{t.mixedMode}</h3>
+                  <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-accent text-white">
+                    10 {uiLang === "tr" ? "Soru" : "Questions"}
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground max-w-lg">
+                  {uiLang === "tr"
+                    ? "Çoktan seçmeli, boşluk doldurma, eşleştirme ve dinleme sorularını rastgele harmanlar."
+                    : "Randomly blends multiple choice, fill in the blank, matching, and listening."}
+                </p>
+              </div>
+
+              {/* 4 Tekil Alıştırma Kartı */}
+              {types.map((tp) => {
+                const isSelected = exerciseType === tp.key;
+                const isDisabled = tp.key === "listening" && !ttsSupported;
+
+                return (
+                  <div
+                    key={tp.key}
+                    role="button"
+                    tabIndex={isDisabled ? -1 : 0}
+                    onClick={() => !isDisabled && setExerciseType(tp.key)}
+                    onKeyDown={(e) => {
+                      if (!isDisabled && (e.key === "Enter" || e.key === " ")) {
+                        setExerciseType(tp.key);
+                      }
+                    }}
+                    className={`col-span-1 p-6 rounded-2xl border-2 transition-all flex flex-col items-center text-center gap-2 ${
+                      isDisabled
+                        ? "opacity-50 cursor-not-allowed border-border bg-card/40"
+                        : isSelected
+                        ? "border-accent bg-accent/10 shadow-lg ring-2 ring-accent/30 cursor-pointer"
+                        : "border-border bg-card hover:bg-card-hover hover:border-accent/40 cursor-pointer"
+                    }`}
+                  >
+                    <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl mb-0.5">
+                      {tp.icon}
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground">{tp.label}</h3>
+                    <p className="text-xs text-muted-foreground">{tp.desc}</p>
+                    {isDisabled && (
+                      <span className="text-[11px] text-amber-500 font-medium mt-1">
+                        {t.ttsNotSupported}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Başlat Butonu Alanı */}
+            <div className="flex justify-center my-8">
               <button
                 type="button"
-                className={`practice-mixed-card ${exerciseType === "mixed" ? "practice-mixed-active" : ""}`}
-                onClick={() => setExerciseType("mixed")}
-              >
-                <div className="practice-mixed-left">
-                  <span className="practice-mixed-icon">🎲</span>
-                  <div className="practice-mixed-text">
-                    <div className="practice-mixed-title-row">
-                      <span className="practice-mixed-title">{t.mixedMode}</span>
-                      <span className="practice-mixed-badge">10 {uiLang === "tr" ? "Soru" : "Questions"}</span>
-                    </div>
-                    <span className="practice-mixed-desc">
-                      {uiLang === "tr"
-                        ? "Çoktan seçmeli, boşluk doldurma, eşleştirme ve dinleme sorularını rastgele harmanlar."
-                        : "Randomly blends multiple choice, fill in the blank, matching, and listening."}
-                    </span>
-                  </div>
-                </div>
-                <div className="practice-mixed-radio">
-                  <span className={`practice-radio-dot ${exerciseType === "mixed" ? "practice-radio-dot-active" : ""}`} />
-                </div>
-              </button>
-            </div>
-
-            {/* Tekil Modlar Izgarası */}
-            <div className="practice-type-grid">
-              {types.map((tp) => (
-                <button
-                  key={tp.key}
-                  className={`practice-type-card ${exerciseType === tp.key ? "practice-type-active" : ""}`}
-                  onClick={() => setExerciseType(tp.key)}
-                  disabled={tp.key === "listening" && !ttsSupported}
-                >
-                  <span className="practice-type-icon">{tp.icon}</span>
-                  <span className="practice-type-label">{tp.label}</span>
-                  <span className="practice-type-desc">{tp.desc}</span>
-                  {tp.key === "listening" && !ttsSupported && (
-                    <span className="practice-type-warning">{t.ttsNotSupported}</span>
-                  )}
-                </button>
-              ))}
-            </div>
-
-            <div className="practice-start-area">
-              <button
-                className="practice-btn practice-btn-primary"
+                className="px-8 py-3.5 text-base font-semibold rounded-xl bg-accent text-white hover:opacity-90 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed min-w-[220px] cursor-pointer"
                 onClick={startExercise}
                 disabled={!hasEnoughItems}
               >
@@ -792,22 +844,44 @@ export default function PracticePage() {
           </>
         )}
 
-        {/* Yanlışlarım butonu */}
-        <div className="mistakes-banner">
-          <Link
-            href="/practice/mistakes"
-            className={`mistakes-banner-link ${mistakeCount === 0 ? "mistakes-banner-disabled" : ""}`}
-            onClick={(e) => {
-              if (mistakeCount === 0) e.preventDefault();
-            }}
-          >
-            <span className="mistakes-banner-icon">📝</span>
-            <span className="mistakes-banner-text">
-              {mistakeCount > 0
-                ? `${t.myMistakes} (${mistakeCount})`
-                : t.noMistakes}
-            </span>
-          </Link>
+        {/* Yanlışlarım Banner */}
+        <div className="w-full max-w-sm mx-auto mb-10 flex justify-center">
+          {mistakeCount > 0 ? (
+            <Link
+              href="/practice/mistakes"
+              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition-colors text-sm font-medium"
+            >
+              <svg
+                className="w-4 h-4 shrink-0"
+                style={{ width: "16px", height: "16px" }}
+                width={16}
+                height={16}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+              </svg>
+              <span>{t.myMistakes} ({mistakeCount})</span>
+            </Link>
+          ) : (
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border bg-card/60 text-muted-foreground text-xs">
+              <svg
+                className="w-4 h-4 shrink-0 text-muted-foreground"
+                style={{ width: "16px", height: "16px" }}
+                width={16}
+                height={16}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>{t.noMistakes}</span>
+            </div>
+          )}
         </div>
       </div>
     );

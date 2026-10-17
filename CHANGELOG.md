@@ -3,6 +3,9 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-17
+- Practice sayfasindaki coklu unite secimi ve kart tasarimi (UI) duzeltildi.
+
 ## 2026-10-17 (Faz 7.5)
 - Practice sayfasindaki unite secici, coklu secim (multi-select) yapilabilir hale getirildi.
 - Karisik Mod (Mixed Mode) arayuzu eklendi ve 4 soru tipini rastgele harmanlayacak sekilde guncellendi.
