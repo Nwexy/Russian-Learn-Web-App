@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getAllUnits, getUnitTitle } from "@/lib/content";
+import { getAllUnits, getUnitTitle, getUnitById } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { db } from "@/lib/db";
@@ -18,7 +18,9 @@ import { getMistakeCount } from "@/lib/mistakes";
 import { getUnitStatus } from "@/lib/progress";
 import { loadGrammarNotes } from "@/lib/grammar";
 import { getAllGrammarProgress } from "@/lib/grammar-progress";
-import type { Item, Review, UnitStatus } from "@/types";
+import { getStats, getLocalDateString } from "@/lib/gamification";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import type { Item, Review, UnitStatus, UserStats } from "@/types";
 
 export default function HomePage() {
   const units = getAllUnits();
@@ -30,6 +32,13 @@ export default function HomePage() {
   const [mistakeCount, setMistakeCount] = useState<number>(0);
   const [grammarStats, setGrammarStats] = useState({ completed: 0, total: 0 });
   const [unitStatuses, setUnitStatuses] = useState<Record<string, UnitStatus>>({});
+  const [stats, setStats] = useState<UserStats>({
+    id: "main",
+    totalXp: 0,
+    currentStreak: 0,
+    dailyXp: {},
+  });
+  const [learnedWordsCount, setLearnedWordsCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -56,6 +65,18 @@ export default function HomePage() {
           statuses[u.id] = await getUnitStatus(u.id);
         }
         setUnitStatuses(statuses);
+
+        // Kullanıcı istatistikleri ve öğrenilen kelime sayısı
+        const userStats = await getStats();
+        setStats(userStats);
+        let wordCount = await db.items.where("type").equals("word").count();
+        if (wordCount === 0) {
+          wordCount = units
+            .map((u) => getUnitById(u.id))
+            .flatMap((u) => u?.items || [])
+            .filter((i) => i.type === "word").length;
+        }
+        setLearnedWordsCount(wordCount);
       } catch {
         setDueCount(0);
       } finally {
@@ -65,6 +86,27 @@ export default function HomePage() {
     fetchDueCount();
   }, []);
 
+  // Son 7 günün aktivite verisi
+  const todayStr = getLocalDateString();
+  const dayNamesTr = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
+  const dayNamesEn = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const dayNames = uiLang === "tr" ? dayNamesTr : dayNamesEn;
+
+  const last7Days = [];
+  const now = new Date();
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    const dateStr = getLocalDateString(d);
+    const xp = (stats.dailyXp && stats.dailyXp[dateStr]) || 0;
+    last7Days.push({
+      dateStr,
+      dayLabel: dayNames[d.getDay()],
+      xp,
+      isToday: dateStr === todayStr,
+    });
+  }
+  const maxDayXp = Math.max(...last7Days.map((d) => d.xp), 0);
+
   return (
     <div className="page-container">
       {/* Hero bölümü */}
@@ -72,6 +114,92 @@ export default function HomePage() {
         <span className="hero-emoji">🇷🇺</span>
         <h1 className="hero-title">{t.appName}</h1>
         <p className="hero-desc">{t.heroDesc}</p>
+      </section>
+
+      {/* İstatistik Paneli */}
+      <section className="stats-section">
+        <div className="stats-grid">
+          {/* 1. Sütun: Günlük Seri */}
+          <Card className="stat-card">
+            <div className="stat-icon-wrapper" aria-hidden="true">
+              🔥
+            </div>
+            <div className="stat-info">
+              <span className="stat-label">{t.streak}</span>
+              <span className="stat-value">
+                {stats.currentStreak} {t.days}
+              </span>
+            </div>
+          </Card>
+
+          {/* 2. Sütun: Toplam XP */}
+          <Card className="stat-card">
+            <div className="stat-icon-wrapper" aria-hidden="true">
+              ⭐
+            </div>
+            <div className="stat-info">
+              <span className="stat-label">{t.totalXp}</span>
+              <span className="stat-value">
+                {stats.totalXp} XP
+              </span>
+            </div>
+          </Card>
+
+          {/* 3. Sütun: Öğrenilen Kelime */}
+          <Card className="stat-card">
+            <div className="stat-icon-wrapper" aria-hidden="true">
+              📖
+            </div>
+            <div className="stat-info">
+              <span className="stat-label">{t.learnedWords}</span>
+              <span className="stat-value">
+                {learnedWordsCount}
+              </span>
+            </div>
+          </Card>
+        </div>
+
+        {/* Haftalık Aktivite Grafiği */}
+        <Card className="activity-card">
+          <CardHeader className="p-0 pb-3">
+            <CardTitle className="activity-title">
+              <span>📊</span>
+              {t.weeklyActivity}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            {maxDayXp === 0 ? (
+              <div className="activity-empty">
+                {t.noActivityYet}
+              </div>
+            ) : (
+              <div className="activity-chart">
+                {last7Days.map((d) => {
+                  const heightPct = maxDayXp > 0 ? Math.round((d.xp / maxDayXp) * 100) : 0;
+                  return (
+                    <div key={d.dateStr} className="activity-col">
+                      <span className="activity-xp-tooltip">
+                        {d.xp > 0 ? `${d.xp}` : ""}
+                      </span>
+                      <div className="activity-bar-container">
+                        <div
+                          className={`activity-bar-fill ${d.isToday ? "active-today" : ""}`}
+                          style={{
+                            height: d.xp > 0 ? `${Math.max(heightPct, 8)}%` : "0%",
+                          }}
+                          title={`${d.dateStr}: ${d.xp} XP`}
+                        />
+                      </div>
+                      <span className={`activity-day-label ${d.isToday ? "is-today" : ""}`}>
+                        {d.dayLabel}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </section>
 
       {/* Bugünün Tekrarı kartı */}

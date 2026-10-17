@@ -31,6 +31,7 @@ import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistak
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
+import { addXp, updateStreak } from "@/lib/gamification";
 import type { Item, ExerciseType } from "@/types";
 
 /** Alıştırma durumları */
@@ -284,9 +285,17 @@ export default function PracticePage() {
     }
   };
 
-  const handleMcNext = () => {
+  const finishExercise = async (finalScore: number) => {
+    if (finalScore > 0) {
+      await addXp(finalScore * 1);
+    }
+    await updateStreak();
+    setPhase("result");
+  };
+
+  const handleMcNext = async () => {
     if (mcIndex + 1 >= mcQuestions.length) {
-      setPhase("result");
+      await finishExercise(score);
     } else {
       setMcIndex((i) => i + 1);
       setMcSelected(null);
@@ -317,9 +326,9 @@ export default function PracticePage() {
     }
   };
 
-  const handleFbNext = () => {
+  const handleFbNext = async () => {
     if (fbIndex + 1 >= fbQuestions.length) {
-      setPhase("result");
+      await finishExercise(score);
     } else {
       setFbIndex((i) => i + 1);
       setFbAnswer("");
@@ -372,9 +381,10 @@ export default function PracticePage() {
       await removeMistakeByKey("matching", leftId);
 
       if (matchData && newMatched.size >= matchData.pairs.length) {
-        setTimeout(() => {
-          setScore(matchData!.pairs.length);
-          setPhase("result");
+        setTimeout(async () => {
+          const finalScore = matchData!.pairs.length;
+          setScore(finalScore);
+          await finishExercise(finalScore);
         }, 400);
       }
     } else {
@@ -426,9 +436,9 @@ export default function PracticePage() {
     }
   };
 
-  const handleListenNext = () => {
+  const handleListenNext = async () => {
     if (listenIndex + 1 >= listenQuestions.length) {
-      setPhase("result");
+      await finishExercise(score);
     } else {
       setListenIndex((i) => i + 1);
       setListenAnswer("");

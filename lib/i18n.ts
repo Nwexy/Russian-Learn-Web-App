@@ -165,6 +165,16 @@ export interface Messages {
   mustCompleteLessonFirst: string;
   locked: string;
   completeLessonToUnlock: string;
+
+  // Faz 7 — Oyunlaştırma ve İstatistikler
+  stats: string;
+  streak: string;
+  days: string;
+  totalXp: string;
+  learnedWords: string;
+  weeklyActivity: string;
+  noActivityYet: string;
+  xpEarned: string;
 }
 
 /** Tüm çeviriler */
@@ -319,6 +329,16 @@ const messages: Record<Lang, Messages> = {
     mustCompleteLessonFirst: "Önce dersi tamamlamalısın.",
     locked: "Kilitli",
     completeLessonToUnlock: "Kilidi açmak için dersi tamamlayın.",
+
+    // Faz 7 — Oyunlaştırma ve İstatistikler
+    stats: "İstatistikler",
+    streak: "Günlük Seri",
+    days: "Gün",
+    totalXp: "Toplam XP",
+    learnedWords: "Öğrenilen Kelime",
+    weeklyActivity: "Haftalık Aktivite",
+    noActivityYet: "Henüz aktivite yok.",
+    xpEarned: "XP Kazanıldı",
   },
   en: {
     appName: "Learn Russian",
@@ -470,6 +490,16 @@ const messages: Record<Lang, Messages> = {
     mustCompleteLessonFirst: "You must complete the lesson first.",
     locked: "Locked",
     completeLessonToUnlock: "Complete the lesson to unlock.",
+
+    // Faz 7 — Gamification and Stats
+    stats: "Statistics",
+    streak: "Daily Streak",
+    days: "Days",
+    totalXp: "Total XP",
+    learnedWords: "Learned Words",
+    weeklyActivity: "Weekly Activity",
+    noActivityYet: "No activity yet.",
+    xpEarned: "XP Earned",
   },
 };
 

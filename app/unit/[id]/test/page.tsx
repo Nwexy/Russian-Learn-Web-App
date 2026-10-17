@@ -19,6 +19,7 @@ import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
+import { addXp, updateStreak } from "@/lib/gamification";
 import type { Item } from "@/types";
 
 interface TestQuestion {
@@ -152,6 +153,10 @@ export default function TestPage() {
       // Test bitti — sonucu kaydet
       const finalScore = Math.round((score / questions.length) * 100);
       await setTestComplete(unit!.id, finalScore);
+      if (score > 0) {
+        await addXp(score * 2);
+      }
+      await updateStreak();
       setPhase("result");
     } else {
       setIndex((i) => i + 1);
