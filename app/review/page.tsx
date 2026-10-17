@@ -19,7 +19,6 @@ import { getReview, upsertReview, getAllReviews } from "@/lib/reviews";
 import { getUnitById, getUnitTitle } from "@/lib/content";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { SpeakButton } from "@/components/SpeakButton";
-import { addXp, updateStreak } from "@/lib/gamification";
 import type { Item, Review, Lang } from "@/types";
 import type { Rating } from "@/lib/srs";
 
@@ -139,8 +138,6 @@ function ReviewContent() {
       const currentReview = await getReview(card.id);
       const updatedReview = reviewCard(currentReview, rating);
       await upsertReview(updatedReview);
-      await addXp(1);
-      await updateStreak();
 
       setShowAnswer(false);
       setCurrentIndex((prev) => prev + 1);

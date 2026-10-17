@@ -1,0 +1,152 @@
+{
+  "id": "unit-07",
+  "titleTr": "Yiyecek ve İçecekler",
+  "titleEn": "Food and Drinks",
+  "level": "A1",
+  "items": [
+    {
+      "id": "food-01",
+      "type": "word",
+      "ru": "еда",
+      "tr": "yemek / yiyecek",
+      "en": "food",
+      "pronunciationEn": "ye-DA",
+      "exampleRu": "Здесь очень вкусная еда.",
+      "exampleTr": "Burada çok lezzetli yemek var.",
+      "exampleEn": "The food here is very tasty.",
+      "tags": ["food"]
+    },
+    {
+      "id": "food-02",
+      "type": "word",
+      "ru": "вода",
+      "tr": "su",
+      "en": "water",
+      "pronunciationEn": "va-DA",
+      "exampleRu": "Я пью холодную воду.",
+      "exampleTr": "Soğuk su içiyorum.",
+      "exampleEn": "I drink cold water.",
+      "tags": ["food", "drink"]
+    },
+    {
+      "id": "food-03",
+      "type": "word",
+      "ru": "хлеб",
+      "tr": "ekmek",
+      "en": "bread",
+      "pronunciationEn": "KHLEP",
+      "exampleRu": "Мы покупаем свежий хлеб.",
+      "exampleTr": "Taze ekmek satın alıyoruz.",
+      "exampleEn": "We buy fresh bread.",
+      "tags": ["food"]
+    },
+    {
+      "id": "food-04",
+      "type": "word",
+      "ru": "мясо",
+      "tr": "et",
+      "en": "meat",
+      "pronunciationEn": "MYA-sa",
+      "exampleRu": "Он не ест мясо.",
+      "exampleTr": "O et yemiyor.",
+      "exampleEn": "He does not eat meat.",
+      "tags": ["food"]
+    },
+    {
+      "id": "food-05",
+      "type": "word",
+      "ru": "рыба",
+      "tr": "balık",
+      "en": "fish",
+      "pronunciationEn": "RY-ba",
+      "exampleRu": "Сегодня на ужин вкусная рыба.",
+      "exampleTr": "Bugün akşam yemeğinde lezzetli balık var.",
+      "exampleEn": "There is delicious fish for dinner today.",
+      "tags": ["food"]
+    },
+    {
+      "id": "food-06",
+      "type": "word",
+      "ru": "яблоко",
+      "tr": "elma",
+      "en": "apple",
+      "pronunciationEn": "YAB-la-ka",
+      "exampleRu": "Это сладкое красное яблоко.",
+      "exampleTr": "Bu tatlı kırmızı bir elma.",
+      "exampleEn": "This is a sweet red apple.",
+      "tags": ["food"]
+    },
+    {
+      "id": "food-07",
+      "type": "word",
+      "ru": "кофе",
+      "tr": "kahve",
+      "en": "coffee",
+      "pronunciationEn": "KO-fye",
+      "exampleRu": "Утром я всегда пью кофе.",
+      "exampleTr": "Sabahları her zaman kahve içerim.",
+      "exampleEn": "In the morning I always drink coffee.",
+      "tags": ["food", "drink"]
+    },
+    {
+      "id": "food-08",
+      "type": "word",
+      "ru": "чай",
+      "tr": "çay",
+      "en": "tea",
+      "pronunciationEn": "CHAY",
+      "exampleRu": "Ты хочешь горячий чай?",
+      "exampleTr": "Sıcak çay ister misin?",
+      "exampleEn": "Do you want hot tea?",
+      "tags": ["food", "drink"]
+    },
+    {
+      "id": "food-09",
+      "type": "word",
+      "ru": "молоко",
+      "tr": "süt",
+      "en": "milk",
+      "pronunciationEn": "ma-la-KO",
+      "exampleRu": "Кошка пьёт тёплое молоко.",
+      "exampleTr": "Kedi ılık süt içiyor.",
+      "exampleEn": "The cat drinks warm milk.",
+      "tags": ["food", "drink"]
+    },
+    {
+      "id": "food-10",
+      "type": "word",
+      "ru": "сыр",
+      "tr": "peynir",
+      "en": "cheese",
+      "pronunciationEn": "SYR",
+      "exampleRu": "На завтрак мы едим сыр.",
+      "exampleTr": "Kahvaltıda peynir yeriz.",
+      "exampleEn": "We eat cheese for breakfast.",
+      "tags": ["food"]
+    },
+    {
+      "id": "food-11",
+      "type": "word",
+      "ru": "суп",
+      "tr": "çorba",
+      "en": "soup",
+      "pronunciationEn": "SUP",
+      "exampleRu": "Мама варит горячий суп.",
+      "exampleTr": "Annem sıcak çorba pişiriyor.",
+      "exampleEn": "Mom is cooking hot soup.",
+      "tags": ["food"]
+    },
+    {
+      "id": "food-12",
+      "type": "word",
+      "ru": "сахар",
+      "tr": "şeker",
+      "en": "sugar",
+      "pronunciationEn": "SA-khar",
+      "exampleRu": "Я пью чай без сахара.",
+      "exampleTr": "Çayı şekersiz içerim.",
+      "exampleEn": "I drink tea without sugar.",
+      "tags": ["food"]
+    }
+  ]
+}

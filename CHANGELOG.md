@@ -3,12 +3,10 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
-## 2026-10-17 (Faz 7)
-- userStats tablosu eklendi (Dexie semasi guncellendi).
-- XP ve Gunluk Seri (Streak) kazanma mantigi eklendi.
-- Ders, Test, Alistirma, Review ve Gramer tamamlamalarina XP eklendi.
-- Ana sayfaya Istatistik Paneli (Seri, XP, Kelime sayisi) eklendi.
-- Ana sayfaya Haftalik Aktivite grafigi eklendi.
+## 2026-10-17
+- Oyunlastirma (XP, Seri, Istatistik) tamamen kaldirildi.
+- Yiyecek, Hobiler, Hava Durumu ve Zaman uniteleri eklendi.
+- Bulunma Hali ve Gelecek Zaman gramer notlari eklendi.
 
 ## 2026-10-17 (Faz 6.6)
 - Unite icinde Ders tamamlanmadan Alistirma, Test ve Tekrar kisimlarina gecis kilitlendi.

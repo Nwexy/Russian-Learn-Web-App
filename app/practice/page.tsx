@@ -31,7 +31,6 @@ import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistak
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
-import { addXp, updateStreak } from "@/lib/gamification";
 import type { Item, ExerciseType } from "@/types";
 
 /** Alıştırma durumları */
@@ -285,17 +284,9 @@ export default function PracticePage() {
     }
   };
 
-  const finishExercise = async (finalScore: number) => {
-    if (finalScore > 0) {
-      await addXp(finalScore * 1);
-    }
-    await updateStreak();
-    setPhase("result");
-  };
-
-  const handleMcNext = async () => {
+  const handleMcNext = () => {
     if (mcIndex + 1 >= mcQuestions.length) {
-      await finishExercise(score);
+      setPhase("result");
     } else {
       setMcIndex((i) => i + 1);
       setMcSelected(null);
@@ -326,9 +317,9 @@ export default function PracticePage() {
     }
   };
 
-  const handleFbNext = async () => {
+  const handleFbNext = () => {
     if (fbIndex + 1 >= fbQuestions.length) {
-      await finishExercise(score);
+      setPhase("result");
     } else {
       setFbIndex((i) => i + 1);
       setFbAnswer("");
@@ -381,10 +372,9 @@ export default function PracticePage() {
       await removeMistakeByKey("matching", leftId);
 
       if (matchData && newMatched.size >= matchData.pairs.length) {
-        setTimeout(async () => {
-          const finalScore = matchData!.pairs.length;
-          setScore(finalScore);
-          await finishExercise(finalScore);
+        setTimeout(() => {
+          setScore(matchData!.pairs.length);
+          setPhase("result");
         }, 400);
       }
     } else {
@@ -436,9 +426,9 @@ export default function PracticePage() {
     }
   };
 
-  const handleListenNext = async () => {
+  const handleListenNext = () => {
     if (listenIndex + 1 >= listenQuestions.length) {
-      await finishExercise(score);
+      setPhase("result");
     } else {
       setListenIndex((i) => i + 1);
       setListenAnswer("");

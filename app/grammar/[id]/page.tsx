@@ -13,7 +13,6 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getGrammarNote } from "@/lib/grammar";
 import { markViewed, markCompleted, getGrammarProgress } from "@/lib/grammar-progress";
-import { addXp, updateStreak } from "@/lib/gamification";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { SpeakButton } from "@/components/SpeakButton";
@@ -91,8 +90,6 @@ export default function GrammarDetailPage() {
         await markCompleted(note.id);
         const updated = await getGrammarProgress(note.id);
         if (updated) setProgress(updated);
-        await addXp(15);
-        await updateStreak();
       }
     }
   };

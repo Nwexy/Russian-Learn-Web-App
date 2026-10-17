@@ -1,0 +1,152 @@
+{
+  "id": "unit-09",
+  "titleTr": "Hava Durumu ve Doğa",
+  "titleEn": "Weather and Nature",
+  "level": "A1",
+  "items": [
+    {
+      "id": "wth-01",
+      "type": "word",
+      "ru": "погода",
+      "tr": "hava durumu",
+      "en": "weather",
+      "pronunciationEn": "pa-GO-da",
+      "exampleRu": "Какая сегодня хорошая погода!",
+      "exampleTr": "Bugün ne güzel bir hava durumu!",
+      "exampleEn": "What good weather today!",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-02",
+      "type": "word",
+      "ru": "солнце",
+      "tr": "güneş",
+      "en": "sun",
+      "pronunciationEn": "SON-tse",
+      "exampleRu": "На небе ярко светит солнце.",
+      "exampleTr": "Gökyüzünde güneş parlak bir şekilde parlıyor.",
+      "exampleEn": "The sun is shining brightly in the sky.",
+      "tags": ["weather", "nature"]
+    },
+    {
+      "id": "wth-03",
+      "type": "word",
+      "ru": "дождь",
+      "tr": "yağmur",
+      "en": "rain",
+      "pronunciationEn": "DOZHD",
+      "exampleRu": "На улице идёт сильный дождь.",
+      "exampleTr": "Dışarıda şiddetli yağmur yağıyor.",
+      "exampleEn": "Heavy rain is falling outside.",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-04",
+      "type": "word",
+      "ru": "снег",
+      "tr": "kar",
+      "en": "snow",
+      "pronunciationEn": "SNYEK",
+      "exampleRu": "Зимой часто идёт белый снег.",
+      "exampleTr": "Kışın sık sık beyaz kar yağar.",
+      "exampleEn": "White snow often falls in winter.",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-05",
+      "type": "word",
+      "ru": "ветер",
+      "tr": "rüzgar",
+      "en": "wind",
+      "pronunciationEn": "VYE-tyer",
+      "exampleRu": "Сегодня дует холодный ветер.",
+      "exampleTr": "Bugün soğuk bir rüzgar esiyor.",
+      "exampleEn": "A cold wind is blowing today.",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-06",
+      "type": "word",
+      "ru": "облако",
+      "tr": "bulut",
+      "en": "cloud",
+      "pronunciationEn": "OB-la-ka",
+      "exampleRu": "В небе плывёт белое облако.",
+      "exampleTr": "Gökyüzünde beyaz bir bulut yüzüyor.",
+      "exampleEn": "A white cloud is floating in the sky.",
+      "tags": ["weather", "nature"]
+    },
+    {
+      "id": "wth-07",
+      "type": "word",
+      "ru": "тепло",
+      "tr": "ılık / sıcak",
+      "en": "warm",
+      "pronunciationEn": "tyep-LO",
+      "exampleRu": "Весной на улице очень тепло.",
+      "exampleTr": "İlkbaharda dışarısı çok ılık.",
+      "exampleEn": "It is very warm outside in spring.",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-08",
+      "type": "word",
+      "ru": "холодно",
+      "tr": "soğuk",
+      "en": "cold",
+      "pronunciationEn": "KHO-lad-na",
+      "exampleRu": "На улице сегодня очень холодно.",
+      "exampleTr": "Bugün dışarısı çok soğuk.",
+      "exampleEn": "It is very cold outside today.",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-09",
+      "type": "word",
+      "ru": "жарко",
+      "tr": "sıcak",
+      "en": "hot",
+      "pronunciationEn": "ZHAR-ka",
+      "exampleRu": "Летом в полдень бывает жарко.",
+      "exampleTr": "Yazın öğle vakti sıcak olur.",
+      "exampleEn": "In summer it is hot at noon.",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-10",
+      "type": "word",
+      "ru": "гроза",
+      "tr": "fırtına",
+      "en": "thunderstorm",
+      "pronunciationEn": "gra-ZA",
+      "exampleRu": "Вечером началась сильная гроза.",
+      "exampleTr": "Akşam şiddetli bir fırtına başladı.",
+      "exampleEn": "A heavy thunderstorm started in the evening.",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-11",
+      "type": "word",
+      "ru": "туман",
+      "tr": "sis",
+      "en": "fog",
+      "pronunciationEn": "tu-MAN",
+      "exampleRu": "Утром над рекой стоял густой туман.",
+      "exampleTr": "Sabah nehir üzerinde yoğun bir sis vardı.",
+      "exampleEn": "A thick fog stood over the river in the morning.",
+      "tags": ["weather"]
+    },
+    {
+      "id": "wth-12",
+      "type": "word",
+      "ru": "мороз",
+      "tr": "don / ayaz",
+      "en": "frost",
+      "pronunciationEn": "ma-ROS",
+      "exampleRu": "Зимой в лесу трещит сильный мороз.",
+      "exampleTr": "Kışın ormanda şiddetli bir ayaz var.",
+      "exampleEn": "In winter there is severe frost in the forest.",
+      "tags": ["weather"]
+    }
+  ]
+}

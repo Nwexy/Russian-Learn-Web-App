@@ -25,6 +25,10 @@ import unitColors from "@/content/unit-03-colors.json";
 import unitFamily from "@/content/unit-04-family.json";
 import unitVerbs from "@/content/unit-05-verbs.json";
 import unitAdjectives from "@/content/unit-06-adjectives.json";
+import unitFood from "@/content/unit-07-food.json";
+import unitHobbies from "@/content/unit-08-hobbies.json";
+import unitWeather from "@/content/unit-09-weather.json";
+import unitTime from "@/content/unit-10-time.json";
 
 const UNIT_MODULES: UnitData[] = [
   unitAlphabet as UnitData,
@@ -34,6 +38,10 @@ const UNIT_MODULES: UnitData[] = [
   unitFamily as UnitData,
   unitVerbs as UnitData,
   unitAdjectives as UnitData,
+  unitFood as UnitData,
+  unitHobbies as UnitData,
+  unitWeather as UnitData,
+  unitTime as UnitData,
 ];
 
 /**

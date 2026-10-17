@@ -1,0 +1,152 @@
+{
+  "id": "unit-08",
+  "titleTr": "Hobiler ve Boş Zaman",
+  "titleEn": "Hobbies and Free Time",
+  "level": "A1",
+  "items": [
+    {
+      "id": "hob-01",
+      "type": "word",
+      "ru": "спорт",
+      "tr": "spor",
+      "en": "sport / sports",
+      "pronunciationEn": "SPORT",
+      "exampleRu": "Спорт очень важен для здоровья.",
+      "exampleTr": "Spor sağlık için çok önemlidir.",
+      "exampleEn": "Sport is very important for health.",
+      "tags": ["hobby", "sport"]
+    },
+    {
+      "id": "hob-02",
+      "type": "word",
+      "ru": "музыка",
+      "tr": "müzik",
+      "en": "music",
+      "pronunciationEn": "MU-zy-ka",
+      "exampleRu": "Мне нравится классическая музыка.",
+      "exampleTr": "Klasik müzik hoşuma gidiyor.",
+      "exampleEn": "I like classical music.",
+      "tags": ["hobby"]
+    },
+    {
+      "id": "hob-03",
+      "type": "word",
+      "ru": "книга",
+      "tr": "kitap",
+      "en": "book",
+      "pronunciationEn": "KNI-ga",
+      "exampleRu": "Это очень интересная книга.",
+      "exampleTr": "Bu çok ilginç bir kitap.",
+      "exampleEn": "This is a very interesting book.",
+      "tags": ["hobby"]
+    },
+    {
+      "id": "hob-04",
+      "type": "word",
+      "ru": "фильм",
+      "tr": "film",
+      "en": "movie / film",
+      "pronunciationEn": "FILM",
+      "exampleRu": "Вечером мы смотрим новый фильм.",
+      "exampleTr": "Akşam yeni bir film izliyoruz.",
+      "exampleEn": "In the evening we watch a new movie.",
+      "tags": ["hobby"]
+    },
+    {
+      "id": "hob-05",
+      "type": "word",
+      "ru": "игра",
+      "tr": "oyun",
+      "en": "game",
+      "pronunciationEn": "ig-RA",
+      "exampleRu": "Это увлекательная компьютерная игра.",
+      "exampleTr": "Bu sürükleyici bir bilgisayar oyunu.",
+      "exampleEn": "This is an engaging computer game.",
+      "tags": ["hobby"]
+    },
+    {
+      "id": "hob-06",
+      "type": "word",
+      "ru": "футбол",
+      "tr": "futbol",
+      "en": "football / soccer",
+      "pronunciationEn": "fut-BOL",
+      "exampleRu": "Друзья играют в футбол во дворе.",
+      "exampleTr": "Arkadaşlar bahçede futbol oynuyor.",
+      "exampleEn": "Friends are playing football in the yard.",
+      "tags": ["hobby", "sport"]
+    },
+    {
+      "id": "hob-07",
+      "type": "word",
+      "ru": "рисование",
+      "tr": "resim yapma",
+      "en": "drawing / painting",
+      "pronunciationEn": "ri-sa-VA-ni-ye",
+      "exampleRu": "Рисование помогает мне расслабиться.",
+      "exampleTr": "Resim yapma rahatlamama yardımcı oluyor.",
+      "exampleEn": "Drawing helps me relax.",
+      "tags": ["hobby"]
+    },
+    {
+      "id": "hob-08",
+      "type": "word",
+      "ru": "плавание",
+      "tr": "yüzme",
+      "en": "swimming",
+      "pronunciationEn": "PLA-va-ni-ye",
+      "exampleRu": "Плавание — мой любимый вид спорта.",
+      "exampleTr": "Yüzme benim en sevdiğim spor türüdür.",
+      "exampleEn": "Swimming is my favorite sport.",
+      "tags": ["hobby", "sport"]
+    },
+    {
+      "id": "hob-09",
+      "type": "word",
+      "ru": "путешествие",
+      "tr": "seyahat / gezi",
+      "en": "travel / journey",
+      "pronunciationEn": "pu-tye-SHEST-vi-ye",
+      "exampleRu": "Путешествие в горы было прекрасным.",
+      "exampleTr": "Dağlara yapılan seyahat harikaydı.",
+      "exampleEn": "The journey to the mountains was wonderful.",
+      "tags": ["hobby"]
+    },
+    {
+      "id": "hob-10",
+      "type": "word",
+      "ru": "танцы",
+      "tr": "dans",
+      "en": "dancing / dances",
+      "pronunciationEn": "TAN-tsy",
+      "exampleRu": "Она ходит на современные танцы.",
+      "exampleTr": "O modern dans kursuna gidiyor.",
+      "exampleEn": "She attends modern dancing classes.",
+      "tags": ["hobby"]
+    },
+    {
+      "id": "hob-11",
+      "type": "word",
+      "ru": "фотография",
+      "tr": "fotoğrafçılık / fotoğraf",
+      "en": "photography / photo",
+      "pronunciationEn": "fa-ta-GRA-fi-ya",
+      "exampleRu": "Фотография стала его главной профессией.",
+      "exampleTr": "Fotoğrafçılık onun ana mesleği oldu.",
+      "exampleEn": "Photography became his main profession.",
+      "tags": ["hobby"]
+    },
+    {
+      "id": "hob-12",
+      "type": "word",
+      "ru": "готовка",
+      "tr": "yemek yapma",
+      "en": "cooking",
+      "pronunciationEn": "ga-TOF-ka",
+      "exampleRu": "Готовка приносит ей много радости.",
+      "exampleTr": "Yemek yapma ona çok neşe getiriyor.",
+      "exampleEn": "Cooking brings her much joy.",
+      "tags": ["hobby"]
+    }
+  ]
+}

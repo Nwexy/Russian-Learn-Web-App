@@ -25,7 +25,6 @@ import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
-import { addXp, updateStreak } from "@/lib/gamification";
 import type { Item } from "@/types";
 
 /** Oturumdaki soru sayısı */
@@ -175,12 +174,8 @@ export default function UnitPracticePage() {
   };
 
   /** Sonraki soru veya sonuç ekranı */
-  const next = async () => {
+  const next = () => {
     if (index + 1 >= questions.length) {
-      if (score > 0) {
-        await addXp(score * 1);
-      }
-      await updateStreak();
       setFinished(true);
     } else {
       const nextIdx = index + 1;

@@ -14,7 +14,6 @@ import { getGrammarByUnit } from "@/lib/grammar";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getProgress, setLessonComplete } from "@/lib/progress";
-import { addXp, updateStreak } from "@/lib/gamification";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Lang, RawItem, Progress } from "@/types";
@@ -92,8 +91,6 @@ export default function UnitPage() {
     const updated = await getProgress(unit.id);
     setProgress(updated);
     setLessonMarked(true);
-    await addXp(10);
-    await updateStreak();
     setTimeout(() => setLessonMarked(false), 3000);
   };
 

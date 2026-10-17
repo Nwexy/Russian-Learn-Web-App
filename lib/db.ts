@@ -5,7 +5,7 @@
  */
 
 import Dexie, { type Table } from "dexie";
-import type { Item, Review, Progress, Setting, Mistake, GrammarProgress, UserStats } from "@/types";
+import type { Item, Review, Progress, Setting, Mistake, GrammarProgress } from "@/types";
 
 /**
  * RussianLearnDB — IndexedDB üzerinde çalışan yerel veritabanı.
@@ -16,7 +16,6 @@ import type { Item, Review, Progress, Setting, Mistake, GrammarProgress, UserSta
  *  - settings: Uygulama ayarları (tema, uiLang, translationLang, showPronunciation: "true"|"false")
  *  - mistakes: Yanlış yapılan sorular (Faz 3.5)
  *  - grammarProgress: Gramer notları ilerleme durumları (Faz 5)
- *  - userStats: Kullanıcı XP, seri ve günlük istatistikleri (Faz 7)
  */
 class RussianLearnDB extends Dexie {
   items!: Table<Item, string>;
@@ -25,7 +24,6 @@ class RussianLearnDB extends Dexie {
   settings!: Table<Setting, string>;
   mistakes!: Table<Mistake, number>;
   grammarProgress!: Table<GrammarProgress, string>;
-  userStats!: Table<UserStats, string>;
 
   constructor() {
     super("RussianLearnDB");
@@ -60,7 +58,7 @@ class RussianLearnDB extends Dexie {
       grammarProgress: "noteId, completed, lastViewedAt, completedAt",
     });
 
-    // Sürüm 4: userStats tablosu eklendi (Faz 7)
+    // Sürüm 4: userStats tablosu eklendi (önceki adım)
     this.version(4).stores({
       items: "id, unitId, type, tags",
       reviews: "itemId, due",
@@ -69,6 +67,11 @@ class RussianLearnDB extends Dexie {
       mistakes: "++id, [exerciseType+itemId], exerciseType, itemId, createdAt",
       grammarProgress: "noteId, completed, lastViewedAt, completedAt",
       userStats: "id",
+    });
+
+    // Sürüm 5: userStats tablosu kaldırıldı (Faz 7)
+    this.version(5).stores({
+      userStats: null,
     });
   }
 }

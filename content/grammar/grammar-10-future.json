@@ -1,0 +1,137 @@
+{
+  "id": "grammar-10-future",
+  "level": "A1",
+  "titleTr": "Gelecek Zaman",
+  "titleEn": "Future Tense",
+  "summaryTr": "Rusça'da tamamlanmamış (imperfective) fiillerle bileşik gelecek zaman oluşturmak için 'быть' fiilinin şahıs çekimi ve ardından asıl fiilin mastar (infinitive) hâli kullanılır.",
+  "summaryEn": "In Russian, compound future tense for imperfective verbs is formed by conjugating the verb 'быть' (to be) followed by the infinitive form of the main verb.",
+  "relatedUnits": ["unit-05", "unit-05-verbs", "unit-10", "unit-10-time"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Rusça'da eylemin gelecekte bir süreç veya alışkanlık olarak yapılacağını ifade etmek için bileşik gelecek zaman (Сложное будущее время) kullanılır.\n\nFormül:\n[быть fiilinin şahıs çekimi] + [Asıl fiilin mastar hâli (Инфинитив -ть/-ти)]\n\nBu yapıda sadece 'быть' fiili şahsa göre çekimlenir, arkasından gelen asıl fiil her zaman mastar (sözlük) hâlinde kalır.\nÖrnek: Я буду читать (Okuyacağım), Ты будешь работать (Çalışacaksın).",
+      "bodyEn": "In Russian, compound future tense (Сложное будущее время) expresses future processes, recurring activities, or ongoing actions.\n\nFormula:\n[Future conjugation of 'быть'] + [Infinitive of main verb (-ть/-ти)]\n\nOnly the auxiliary verb 'быть' conjugates according to the grammatical person, while the main lexical verb stays in its dictionary infinitive form.\nExample: Я буду читать (I will read), Ты будешь работать (You will work)."
+    },
+    {
+      "type": "text",
+      "bodyTr": "Gelecek Zaman 'быть' Çekimi ve Kullanım Notları:\n\n• Tekil Şahıslar:\n  - Я буду (Ben yapacağım/olacağım)\n  - Ты будешь (Sen yapacaksın/olacaksın)\n  - Он / Она / Оно будет (O yapacak/olacak)\n\n• Çoğul Şahıslar:\n  - Мы будем (Biz yapacağız/olacağız)\n  - Вы будете (Siz yapacaksınız/olacaksınız)\n  - Они будут (Onlar yapacaklar/olacaklar)\n\nOlumsuz Cümleler:\nOlumsuzluk eki olan 'не', 'быть' fiilinin hemen önüne gelir:\nЯ не буду спать. (Uyumayacağım.)\nМы не будем спорить. (Tartışmayacağız.)",
+      "bodyEn": "Conjugation of 'быть' and Usage Notes:\n\n• Singular Persons:\n  - Я буду (I will)\n  - Ты будешь (You will)\n  - Он / Она / Оно будет (He / She / It will)\n\n• Plural Persons:\n  - Мы будем (We will)\n  - Вы будете (You [formal/plural] will)\n  - Они будут (They will)\n\nNegative Sentences:\nThe negative particle 'не' is placed right before the conjugated 'быть':\nЯ не буду спать. (I will not sleep.)\nМы не будем спорить. (We will not argue.)"
+    },
+    {
+      "type": "table",
+      "headersTr": ["Şahıs Zamiri", "'быть' Çekimi", "Örnek Mastar Fiil", "Tam Gelecek Cümlesi", "Anlamı"],
+      "headersEn": ["Pronoun", "'быть' Form", "Sample Infinitive", "Full Future Sentence", "Meaning"],
+      "rows": [
+        {
+          "cellsTr": ["Я (Ben)", "буду", "читать", "Я буду читать", "Okuyacağım"],
+          "cellsEn": ["Я (I)", "буду", "читать", "Я буду читать", "I will read"]
+        },
+        {
+          "cellsTr": ["Ты (Sen)", "будешь", "работать", "Ты будешь работать", "Çalışacaksın"],
+          "cellsEn": ["Ты (You)", "будешь", "работать", "Ты будешь работать", "You will work"]
+        },
+        {
+          "cellsTr": ["Он / Она (O)", "будет", "готовить", "Она будет готовить", "Yemek yapacak"],
+          "cellsEn": ["Он / Она (He/She)", "будет", "готовить", "Она будет готовить", "She will cook"]
+        },
+        {
+          "cellsTr": ["Мы (Biz)", "будем", "отдыхать", "Мы будем отдыхать", "Dinleneceğiz"],
+          "cellsEn": ["Мы (We)", "будем", "отдыхать", "Мы будем отдыхать", "We will rest"]
+        },
+        {
+          "cellsTr": ["Вы (Siz)", "будете", "слушать", "Вы будете слушать", "Dinleyeceksiniz"],
+          "cellsEn": ["Вы (You pl./form.)", "будете", "слушать", "Вы будете слушать", "You will listen"]
+        },
+        {
+          "cellsTr": ["Они (Onlar)", "будут", "играть", "Они будут играть", "Oynayacaklar"],
+          "cellsEn": ["Они (They)", "будут", "играть", "Они будут играть", "They will play"]
+        }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "Завtra я буду читать интересную книгу.", "tr": "Yarın ilginç bir kitap okuyacağım.", "en": "Tomorrow I will read an interesting book.", "note": "я + буду + читать (mastar)" },
+        { "ru": "Ты будешь работать завтра утром?", "tr": "Yarın sabah çalışacak mısın?", "en": "Will you work tomorrow morning?", "note": "ты + будешь + работать (mastar)" },
+        { "ru": "Вечером она будет готовить суп.", "tr": "Akşam o çorba yapacak.", "en": "In the evening she will cook soup.", "note": "она + будет + готовить (mastar)" },
+        { "ru": "Летом мы будем отдыхать на море.", "tr": "Yazın denizde dinleneceğiz.", "en": "In summer we will relax at the sea.", "note": "мы + будем + отдыхать (mastar)" },
+        { "ru": "Что вы будете делать сегодня вечером?", "tr": "Bu akşam ne yapacaksınız?", "en": "What will you do this evening?", "note": "вы + будете + делать (mastar)" },
+        { "ru": "Друзья будут играть в футбол в парке.", "tr": "Arkadaşlar parkta futbol oynayacaklar.", "en": "Friends will play football in the park.", "note": "друзья (они) + будут + играть (mastar)" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "«Завтра я ... читать новую книгу.» Boşluğa 'быть' fiilinin hangi çekimi gelmelidir?",
+      "questionLang": "ru",
+      "options": ["буду", "будешь", "будет", "будем"],
+      "correctIndex": 0,
+      "explanationTr": "'Я' (ben) zamiri için gelecek zaman çekimi 'буду' olur: «Я буду читать».",
+      "explanationEn": "For 'Я' (I), the future tense form is 'буду': «Я буду читать»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Ты ... работать завтра вечером?» Boşluğa hangisi gelmelidir?",
+      "questionLang": "ru",
+      "options": ["буду", "будешь", "будет", "будете"],
+      "correctIndex": 1,
+      "explanationTr": "'Ты' (sen) zamiri için gelecek zaman çekimi 'будешь' şeklindedir.",
+      "explanationEn": "For 'Ты' (you sing.), the future tense form is 'будешь'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Анна ... готовить вкусный ужин.» Boşluğa hangisi gelmelidir?",
+      "questionLang": "ru",
+      "options": ["будет", "будут", "будешь", "будем"],
+      "correctIndex": 0,
+      "explanationTr": "Анна (она) için 3. tekil şahıs çekimi 'будет' kullanılır.",
+      "explanationEn": "For Anna (she, 3rd person sing.), the form is 'будет'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Мы ... отдыхать на море летом.» Boşluğa hangisi gelmelidir?",
+      "questionLang": "ru",
+      "options": ["будете", "будем", "будут", "буду"],
+      "correctIndex": 1,
+      "explanationTr": "'Мы' (biz) zamiri için 'будем' çekimi kullanılır: «Мы будем отдыхать».",
+      "explanationEn": "For 'Мы' (we), the future form is 'будем': «Мы будем отдыхать»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Вы ... смотреть этот фильм сегодня?» Boşluğa hangisi gelmelidir?",
+      "questionLang": "ru",
+      "options": ["будешь", "будем", "будете", "будут"],
+      "correctIndex": 2,
+      "explanationTr": "'Вы' (siz) zamiri için doğru çekim 'будете'dir.",
+      "explanationEn": "For 'Вы' (you pl./formal), the correct form is 'будете'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Они ... играть в футбол в парке.» Boşluğa hangisi gelmelidir?",
+      "questionLang": "ru",
+      "options": ["будет", "будут", "будем", "буду"],
+      "correctIndex": 1,
+      "explanationTr": "'Они' (onlar) için 3. çoğul şahıs çekimi 'будут' kullanılır.",
+      "explanationEn": "For 'Они' (they), the 3rd person plural form is 'будут'."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Rusça bileşik gelecek zamanda 'быть' çekiminden sonra gelen asıl fiil hangi biçimde olmalıdır?",
+      "questionLang": "tr",
+      "options": ["Geçmiş zaman çekiminde", "Mastar (infinitive) şeklinde", "Şimdiki zaman çekiminde", "Emir kipinde"],
+      "correctIndex": 1,
+      "explanationTr": "'Быть' fiilinden sonra asıl fiil mastar (infinitive, -ть/-ти) biçiminde kalır.",
+      "explanationEn": "Following the auxiliary 'быть', the main verb must remain in its infinitive form."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Я буду ... (читать).» Boşluğa fiilin hangi hâli gelmelidir?",
+      "questionLang": "ru",
+      "options": ["читаю", "читал", "читать", "читает"],
+      "correctIndex": 2,
+      "explanationTr": "Doğru yapı 'буду' + mastar 'читать' şeklindedir: «Я буду читать».",
+      "explanationEn": "The correct structure is 'буду' + infinitive 'читать': «Я буду читать»."
+    }
+  ]
+}

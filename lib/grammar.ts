@@ -14,6 +14,8 @@ import grammar05Plural from "@/content/grammar/grammar-05-plural.json";
 import grammar06Adjectives from "@/content/grammar/grammar-06-adjectives.json";
 import grammar07Accusative from "@/content/grammar/grammar-07-accusative.json";
 import grammar08Past from "@/content/grammar/grammar-08-past.json";
+import grammar09Prepositional from "@/content/grammar/grammar-09-prepositional.json";
+import grammar10Future from "@/content/grammar/grammar-10-future.json";
 
 /** Tüm gramer notları listesi */
 const GRAMMAR_NOTES: GrammarNote[] = [
@@ -25,6 +27,8 @@ const GRAMMAR_NOTES: GrammarNote[] = [
   grammar06Adjectives as GrammarNote,
   grammar07Accusative as GrammarNote,
   grammar08Past as GrammarNote,
+  grammar09Prepositional as GrammarNote,
+  grammar10Future as GrammarNote,
 ];
 
 /**

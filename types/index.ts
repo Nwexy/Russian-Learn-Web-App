@@ -144,12 +144,3 @@ export interface GrammarNote {
   miniExercises: MiniExercise[];
 }
 
-/** Kullanıcı oyunlaştırma ve istatistik verileri (Dexie userStats tablosu - Faz 7) */
-export interface UserStats {
-  id: string; // her zaman "main"
-  totalXp: number;
-  currentStreak: number;
-  lastActiveDate?: string; // YYYY-MM-DD
-  dailyXp: Record<string, number>; // { "2026-10-17": 50 }
-}
-
