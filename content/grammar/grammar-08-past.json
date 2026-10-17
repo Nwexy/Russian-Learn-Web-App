@@ -1,0 +1,93 @@
+{
+  "id": "grammar-08-past",
+  "level": "A1",
+  "titleTr": "Geçmiş Zaman",
+  "titleEn": "Past Tense",
+  "summaryTr": "Rusça'da geçmiş zaman fiilin mastar ekini (-ть) atıp yerine cinsiyete göre ek getirilmesiyle yapılır: -л (eril), -ла (dişil), -ло (nötr), -ли (çoğul).",
+  "summaryEn": "In Russian, the past tense is formed by replacing the infinitive suffix (-ть) with gender/number endings: -л (masc.), -ла (fem.), -ло (neut.), -ли (plural).",
+  "relatedUnits": ["unit-05", "unit-05-verbs"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Rusça'da geçmiş zaman oluşturmak oldukça düzenli ve basittir. Fiiller şahsa göre değil, cümlenin öznesinin cinsiyetine (eril, dişil, nötr) ve sayısına (tekil, çoğul) göre ek alır:\n\nAdımlar:\n1. Mastar ekini (-ть) atarak kökü bulun (örnek: чита-ть -> чита-, говори-ть -> говори-).\n2. Cinsiyete veya çoğulluğa göre eki ekleyin:\n   • Eril (Мужской): -л (Он читал, Иван говорил)\n   • Dişil (Женский): -ла (Она читала, Анна говорила)\n   • Nötr (Средний): -ло (Письмо было)\n   • Çoğul (Все роды): -ли (Мы читали, Они говорили)",
+      "bodyEn": "The past tense in Russian is formed cleanly and regularly. Verbs agree not with grammatical person, but with the subject's gender and number:\n\nSteps:\n1. Remove the infinitive ending -ть to find the stem (e.g. чита-ть -> чита-, говори-ть -> говори-).\n2. Attach the appropriate ending:\n   • Masculine: -л (Он читал, Иван говорил)\n   • Feminine: -ла (Она читала, Анна говорила)\n   • Neuter: -ло (Письмо было)\n   • Plural: -ли (Мы читали, Они говорили)"
+    },
+    {
+      "type": "text",
+      "bodyTr": "1. ve 2. Tekil Şahıslarda Cinsiyet:\n'Я' (ben) ve 'Ты' (sen) zamirlerinde fiilin sonu konuşan veya hitap edilen kişinin cinsiyetine göre belirlenir:\n• Erkek konuşuyorsa: «Я читал», «Я работал»\n• Kadın konuşuyorsa: «Я читала», «Я работала»\n• Çoğulda (мы, вы, они) cinsiyet farkı olmaksızın daima -ли eki kullanılır (Мы знали, Вы говорили).",
+      "bodyEn": "Gender with 1st and 2nd Person Singular:\nWith 'Я' (I) and 'Ты' (you), the verb ending matches the speaker's or listener's natural gender:\n• Male speaker: «Я читал», «Я работал»\n• Female speaker: «Я читала», «Я работала»\n• Plural forms (мы, вы, они) always take -ли regardless of gender."
+    },
+    {
+      "type": "table",
+      "headersTr": ["Cinsiyet / Sayı", "Ek", "читать (okumak)", "говорить (konuşmak)", "Anlam"],
+      "headersEn": ["Gender / Number", "Ending", "читать (to read)", "говорить (to speak)", "Meaning"],
+      "rows": [
+        {
+          "cellsTr": ["Eril (Мужской)", "-л", "читал", "говорил", "okudu / konuştu"],
+          "cellsEn": ["Masculine (Мужской)", "-л", "читал", "говорил", "read / spoke"]
+        },
+        {
+          "cellsTr": ["Dişil (Женский)", "-ла", "читала", "говорила", "okudu / konuştu"],
+          "cellsEn": ["Feminine (Женский)", "-ла", "читала", "говорила", "read / spoke"]
+        },
+        {
+          "cellsTr": ["Nötr (Средний)", "-ло", "читало", "говорило", "okudu / konuştu"],
+          "cellsEn": ["Neuter (Средний)", "-ло", "читало", "говорило", "read / spoke"]
+        },
+        {
+          "cellsTr": ["Çoğul (Все роды)", "-ли", "читали", "говорили", "okudular / konuştular"],
+          "cellsEn": ["Plural (All genders)", "-ли", "читали", "говорили", "read / spoke"]
+        }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "Вчера я читал книгу.", "tr": "Dün kitap okudum (erkek).", "en": "Yesterday I read a book (male).", "note": "Eril özne (-л)" },
+        { "ru": "Анна вчера читала журнал.", "tr": "Anna dün dergi okudu.", "en": "Anna read a magazine yesterday.", "note": "Dişil özne (-ла)" },
+        { "ru": "Мы вчера долго говорили.", "tr": "Dün uzun süre konuştuk.", "en": "Yesterday we talked for a long time.", "note": "Çoğul özne (-ли)" },
+        { "ru": "Мой брат работал в Москве.", "tr": "Erkek kardeşim Moskova'da çalıştı.", "en": "My brother worked in Moscow.", "note": "Eril özne (-л)" },
+        { "ru": "Где ты жила раньше?", "tr": "Eskiden nerede yaşıyordun (kadına)?", "en": "Where did you live before (to a female)?", "note": "Dişil özne (-ла)" },
+        { "ru": "Они не знали об этом.", "tr": "Bunu bilmiyorlardı.", "en": "They did not know about this.", "note": "Çoğul özne (-ли)" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "«Анна вчера весь день ... (читать).» Boşluğa hangi form gelmelidir?",
+      "questionLang": "ru",
+      "options": ["читал", "читала", "читало", "читали"],
+      "correctIndex": 1,
+      "explanationTr": "Özne Anna (dişil) olduğu için fiil -ла eki alır: «читала».",
+      "explanationEn": "The subject Anna is feminine, so the past tense ending is -ла: «читала»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Иван вчера ... (работать) в офисе.» Boşluğa hangi form gelmelidir?",
+      "questionLang": "ru",
+      "options": ["работал", "работала", "работало", "работали"],
+      "correctIndex": 0,
+      "explanationTr": "Özne İvan (eril) olduğu için fiil -л eki alır: «работал».",
+      "explanationEn": "The subject Ivan is masculine, so the past tense ending is -л: «работал»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Мы вчера ... (видеть) старого друга.» Çoğul özne için hangi ek gelir?",
+      "questionLang": "ru",
+      "options": ["видел", "видела", "видело", "видели"],
+      "correctIndex": 3,
+      "explanationTr": "Çoğul öznelerle (мы, вы, они) geçmiş zamanda -ли eki kullanılır: «видели».",
+      "explanationEn": "With plural subjects (мы, вы, они), the past tense ending is -ли: «видели»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Bir kadın 'Ben biliyordum' derken hangisini söylemelidir?",
+      "questionLang": "tr",
+      "options": ["Я знал", "Я знала", "Я знало", "Я знали"],
+      "correctIndex": 1,
+      "explanationTr": "Kadın konuşmacı için geçmiş zaman eki -ла'dır: «Я знала».",
+      "explanationEn": "A female speaker uses the feminine past tense ending -ла: «Я знала»."
+    }
+  ]
+}

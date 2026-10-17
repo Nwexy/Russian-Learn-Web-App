@@ -1,0 +1,97 @@
+{
+  "id": "grammar-07-accusative",
+  "level": "A1",
+  "titleTr": "Belirtme Hâli (Akuzatif)",
+  "titleEn": "Accusative Case",
+  "summaryTr": "Rusça'da geçişli fiillerin doğrudan nesnesi belirtme hâlinde (Винительный падеж) kullanılır. Dişil isimlerde -а -> -у, -я -> -ю değişimi olur.",
+  "summaryEn": "In Russian, direct objects of transitive verbs take the Accusative case (Винительный падеж). Feminine nouns change -а -> -у, -я -> -ю.",
+  "relatedUnits": ["unit-05", "unit-05-verbs"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Belirtme Hâli (Винительный падеж), bir eylemin doğrudan nesnesini ifade ederken kullanılır (Kimi? / Кого?, Neyi? / Что?).\n\nTemel Değişim Kuralları:\n1. Dişil İsimler (Женский род):\n   • -а ile bitenler -у olur (книга -> книгу, мама -> маму)\n   • -я ile bitenler -ю olur (песня -> песню)\n   • -ь ile bitenler değişmez (ночь -> ночь)\n2. Eril Cansız ve Nötr İsimler (Неодушевлённые):\n   • Yalın hâlleriyle tamamen aynı kalır (стол -> стол, окно -> окно)\n3. Eril Canlı İsimler (Одушевлённые - insanlar ve hayvanlar):\n   • Sert ünsüzle bitenler -а alır (брат -> брата, друг -> друга)",
+      "bodyEn": "The Accusative Case (Винительный падеж) indicates the direct object of an action, answering Whom? (Кого?) or What? (Что?).\n\nCore Ending Rules:\n1. Feminine Nouns:\n   • Nouns in -а change to -у (книга -> книгу, мама -> маму)\n   • Nouns in -я change to -ю (песня -> песню)\n   • Nouns in -ь do not change (ночь -> ночь)\n2. Inanimate Masculine & All Neuter Nouns:\n   • Remain identical to the Nominative form (стол -> стол, окно -> окно)\n3. Animate Masculine Nouns (people and animals):\n   • Take -а (брат -> брата, друг -> друга)"
+    },
+    {
+      "type": "text",
+      "bodyTr": "Akuzatif Alan Temel Fiiller:\n• читать (okumak): Я читаю книгу. (Kitap okuyorum.)\n• видеть (görmek): Я вижу брата. (Erkek kardeşimi görüyorum.)\n• знать (bilmek): Мы знаем этот город. (Bu şehri biliyoruz.)\n• любить (sevmek): Я люблю маму. (Annemi seviyorum.)\n• делать (yapmak): Мы делаем работу. (İşi yapıyoruz.)",
+      "bodyEn": "Common Verbs Taking Accusative:\n• читать (to read): Я читаю книгу. (I am reading a book.)\n• видеть (to see): Я вижу брата. (I see my brother.)\n• знать (to know): Мы знаем этот город. (We know this city.)\n• любить (to love): Я люблю маму. (I love mom.)\n• делать (to do): Мы делаем работу. (We are doing the work.)"
+    },
+    {
+      "type": "table",
+      "headersTr": ["Kategori", "Yalın Hâl (Kim? / Ne?)", "Belirtme Hâli (Kimi? / Neyi?)", "Kural"],
+      "headersEn": ["Category", "Nominative (Who? / What?)", "Accusative (Whom? / What?)", "Rule"],
+      "rows": [
+        {
+          "cellsTr": ["Dişil (-а)", "мама, книга", "маму, книгу", "-а -> -у"],
+          "cellsEn": ["Feminine (-а)", "мама, книга", "маму, книгу", "-а -> -у"]
+        },
+        {
+          "cellsTr": ["Dişil (-я)", "песня, неделя", "песню, неделю", "-я -> -ю"],
+          "cellsEn": ["Feminine (-я)", "песня, неделя", "песню, неделю", "-я -> -ю"]
+        },
+        {
+          "cellsTr": ["Eril Cansız", "стол, город", "стол, город", "Değişmez (Yalın ile aynı)"],
+          "cellsEn": ["Inanimate Masculine", "стол, город", "стол, город", "Unchanged (Same as Nom.)"]
+        },
+        {
+          "cellsTr": ["Eril Canlı", "брат, друг", "брата, друга", "Ünsüz + а"],
+          "cellsEn": ["Animate Masculine", "брат, друг", "брата, друга", "Consonant + а"]
+        },
+        {
+          "cellsTr": ["Nötr", "окно, море", "окно, море", "Değişmez (Yalın ile aynı)"],
+          "cellsEn": ["Neuter", "окно, море", "окно, море", "Unchanged (Same as Nom.)"]
+        }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "Я читаю книгу.", "tr": "Kitap okuyorum.", "en": "I am reading a book.", "note": "книга -> книгу (dişil -у)" },
+        { "ru": "Я вижу брата.", "tr": "Erkek kardeşimi görüyorum.", "en": "I see my brother.", "note": "брат -> брата (eril canlı -а)" },
+        { "ru": "Он купил новый стол.", "tr": "Yeni bir masa satın aldı.", "en": "He bought a new table.", "note": "стол -> стол (eril cansız değişmez)" },
+        { "ru": "Мы очень любим маму.", "tr": "Annemizi çok seviyoruz.", "en": "We love mom very much.", "note": "мама -> маму (dişil -у)" },
+        { "ru": "Она слушает песню.", "tr": "Şarkıyı dinliyor.", "en": "She is listening to the song.", "note": "песня -> песню (dişil -ю)" },
+        { "ru": "Вы видите это окно?", "tr": "Bu pencereyi görüyor musunuz?", "en": "Do you see this window?", "note": "окно -> окно (nötr değişmez)" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "«Я читаю ... (книга).» Cümlesindeki doğru hâl hangisidir?",
+      "questionLang": "ru",
+      "options": ["книга", "книгу", "книги", "книге"],
+      "correctIndex": 1,
+      "explanationTr": "«книга» dişil bir kelimedir ve akuzatifte -у alır: «Я читаю книгу».",
+      "explanationEn": "«книга» is feminine and takes -у in the accusative: «Я читаю книгу»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Я вижу ... (брат).» Canlı eril isim akuzatifte hangi eki alır?",
+      "questionLang": "ru",
+      "options": ["брат", "брата", "брату", "братом"],
+      "correctIndex": 1,
+      "explanationTr": "Canlı eril isimler akuzatifte -а eki alır: «Я вижу брата».",
+      "explanationEn": "Animate masculine nouns take -а in the accusative: «Я вижу брата»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Он делает ... (работа).» Cümlesinde boşluğa hangisi gelmelidir?",
+      "questionLang": "ru",
+      "options": ["работу", "работа", "работы", "работе"],
+      "correctIndex": 0,
+      "explanationTr": "-а ile biten dişil isim akuzatifte -у alır: «работу».",
+      "explanationEn": "Feminine nouns in -а change to -у in the accusative: «работу»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Cansız eril isimler (örn: стол, город) akuzatifte nasıl değişir?",
+      "questionLang": "tr",
+      "options": ["-а eki alır", "-у eki alır", "Hiç değişmez (yalın hâl ile aynı kalır)", "-е eki alır"],
+      "correctIndex": 2,
+      "explanationTr": "Cansız eril ve tüm nötr isimler akuzatifte yalın hâlleriyle aynı kalır.",
+      "explanationEn": "Inanimate masculine and all neuter nouns remain unchanged in the accusative."
+    }
+  ]
+}

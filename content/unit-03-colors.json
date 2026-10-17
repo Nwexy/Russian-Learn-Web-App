@@ -1,0 +1,152 @@
+{
+  "id": "unit-03",
+  "titleTr": "Renkler",
+  "titleEn": "Colors",
+  "level": "A1",
+  "items": [
+    {
+      "id": "col01",
+      "type": "word",
+      "ru": "красный",
+      "tr": "kırmızı",
+      "en": "red",
+      "pronunciationEn": "KRA-sniy",
+      "exampleRu": "Это красный автомобиль.",
+      "exampleTr": "Bu kırmızı bir araba.",
+      "exampleEn": "This is a red car.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col02",
+      "type": "word",
+      "ru": "синий",
+      "tr": "mavi",
+      "en": "blue",
+      "pronunciationEn": "SEE-niy",
+      "exampleRu": "У меня синий костюм.",
+      "exampleTr": "Benim mavi takım elbisem var.",
+      "exampleEn": "I have a blue suit.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col03",
+      "type": "word",
+      "ru": "зеленый",
+      "tr": "yeşil",
+      "en": "green",
+      "pronunciationEn": "zi-LYO-niy",
+      "exampleRu": "Это зелёный чай.",
+      "exampleTr": "Bu yeşil çay.",
+      "exampleEn": "This is green tea.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col04",
+      "type": "word",
+      "ru": "желтый",
+      "tr": "sarı",
+      "en": "yellow",
+      "pronunciationEn": "ZHOL-tiy",
+      "exampleRu": "На столе лежит жёлтый лимон.",
+      "exampleTr": "Masada sarı bir limon duruyor.",
+      "exampleEn": "A yellow lemon is on the table.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col05",
+      "type": "word",
+      "ru": "черный",
+      "tr": "siyah",
+      "en": "black",
+      "pronunciationEn": "CHOR-niy",
+      "exampleRu": "Я пью чёрный кофе без сахара.",
+      "exampleTr": "Ben şekersiz siyah kahve içiyorum.",
+      "exampleEn": "I drink black coffee without sugar.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col06",
+      "type": "word",
+      "ru": "белый",
+      "tr": "beyaz",
+      "en": "white",
+      "pronunciationEn": "BYE-liy",
+      "exampleRu": "Зимой в парке белый снег.",
+      "exampleTr": "Kışın parkta beyaz kar var.",
+      "exampleEn": "In winter there is white snow in the park.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col07",
+      "type": "word",
+      "ru": "серый",
+      "tr": "gri",
+      "en": "gray",
+      "pronunciationEn": "SYE-riy",
+      "exampleRu": "Сегодня на улице серый день.",
+      "exampleTr": "Bugün dışarıda gri bir gün var.",
+      "exampleEn": "Today is a gray day outside.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col08",
+      "type": "word",
+      "ru": "оранжевый",
+      "tr": "turuncu",
+      "en": "orange",
+      "pronunciationEn": "a-RAN-zhe-viy",
+      "exampleRu": "Дети любят оранжевый апельсин.",
+      "exampleTr": "Çocuklar turuncu portakalı sever.",
+      "exampleEn": "Children love the orange orange.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col09",
+      "type": "word",
+      "ru": "розовый",
+      "tr": "pembe",
+      "en": "pink",
+      "pronunciationEn": "RO-za-viy",
+      "exampleRu": "Она купила розовый шарф.",
+      "exampleTr": "O pembe bir atkı satın aldı.",
+      "exampleEn": "She bought a pink scarf.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col10",
+      "type": "word",
+      "ru": "коричневый",
+      "tr": "kahverengi",
+      "en": "brown",
+      "pronunciationEn": "ka-REECH-ni-viy",
+      "exampleRu": "У нас в комнате коричневый диван.",
+      "exampleTr": "Odamızda kahverengi bir kanepe var.",
+      "exampleEn": "We have a brown sofa in our room.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col11",
+      "type": "word",
+      "ru": "фиолетовый",
+      "tr": "mor",
+      "en": "purple",
+      "pronunciationEn": "fee-a-LYE-ta-viy",
+      "exampleRu": "В вазе стоит красивый фиолетовый цветок.",
+      "exampleTr": "Vazoda güzel bir mor çiçek duruyor.",
+      "exampleEn": "A beautiful purple flower is in the vase.",
+      "tags": ["color"]
+    },
+    {
+      "id": "col12",
+      "type": "word",
+      "ru": "голубой",
+      "tr": "açık mavi",
+      "en": "light blue",
+      "pronunciationEn": "ga-lu-BOY",
+      "exampleRu": "Летом небо чистое и голубое.",
+      "exampleTr": "Yazın gökyüzü temiz ve açık mavidir.",
+      "exampleEn": "In summer the sky is clear and light blue.",
+      "tags": ["color"]
+    }
+  ]
+}

@@ -10,6 +10,10 @@ import grammar01Gender from "@/content/grammar/grammar-01-gender.json";
 import grammar02Pronouns from "@/content/grammar/grammar-02-pronouns.json";
 import grammar03ToBe from "@/content/grammar/grammar-03-to-be.json";
 import grammar04PresentTense from "@/content/grammar/grammar-04-present-tense.json";
+import grammar05Plural from "@/content/grammar/grammar-05-plural.json";
+import grammar06Adjectives from "@/content/grammar/grammar-06-adjectives.json";
+import grammar07Accusative from "@/content/grammar/grammar-07-accusative.json";
+import grammar08Past from "@/content/grammar/grammar-08-past.json";
 
 /** Tüm gramer notları listesi */
 const GRAMMAR_NOTES: GrammarNote[] = [
@@ -17,6 +21,10 @@ const GRAMMAR_NOTES: GrammarNote[] = [
   grammar02Pronouns as GrammarNote,
   grammar03ToBe as GrammarNote,
   grammar04PresentTense as GrammarNote,
+  grammar05Plural as GrammarNote,
+  grammar06Adjectives as GrammarNote,
+  grammar07Accusative as GrammarNote,
+  grammar08Past as GrammarNote,
 ];
 
 /**
@@ -35,9 +43,13 @@ export function getGrammarNote(id: string): GrammarNote | undefined {
 
 /**
  * relatedUnits dizisi içinde unitId bulunan tüm gramer notlarını döner.
+ * Hem "unit-03" hem de "unit-03-colors" gibi formatları eşleştirir.
  */
 export function getGrammarByUnit(unitId: string): GrammarNote[] {
   return GRAMMAR_NOTES.filter((note) =>
-    note.relatedUnits && note.relatedUnits.includes(unitId)
+    note.relatedUnits &&
+    note.relatedUnits.some(
+      (u) => u === unitId || unitId.startsWith(u) || u.startsWith(unitId)
+    )
   );
 }

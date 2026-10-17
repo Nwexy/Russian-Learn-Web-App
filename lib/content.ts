@@ -21,11 +21,19 @@ import type { UnitData, Item, Lang } from "@/types";
 import unitAlphabet from "@/content/unit-00-alphabet.json";
 import unitGreetings from "@/content/unit-01-greetings.json";
 import unitNumbers from "@/content/unit-02-numbers.json";
+import unitColors from "@/content/unit-03-colors.json";
+import unitFamily from "@/content/unit-04-family.json";
+import unitVerbs from "@/content/unit-05-verbs.json";
+import unitAdjectives from "@/content/unit-06-adjectives.json";
 
 const UNIT_MODULES: UnitData[] = [
   unitAlphabet as UnitData,
   unitGreetings as UnitData,
   unitNumbers as UnitData,
+  unitColors as UnitData,
+  unitFamily as UnitData,
+  unitVerbs as UnitData,
+  unitAdjectives as UnitData,
 ];
 
 /**

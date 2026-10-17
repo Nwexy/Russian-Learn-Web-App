@@ -1,0 +1,152 @@
+{
+  "id": "unit-06",
+  "titleTr": "Temel Sıfatlar",
+  "titleEn": "Basic Adjectives",
+  "level": "A1",
+  "items": [
+    {
+      "id": "adj01",
+      "type": "word",
+      "ru": "хороший",
+      "tr": "iyi",
+      "en": "good",
+      "pronunciationEn": "ha-RO-shiy",
+      "exampleRu": "Сегодня очень хороший день.",
+      "exampleTr": "Bugün çok iyi bir gün.",
+      "exampleEn": "Today is a very good day.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj02",
+      "type": "word",
+      "ru": "плохой",
+      "tr": "kötü",
+      "en": "bad",
+      "pronunciationEn": "pla-HOY",
+      "exampleRu": "У него сегодня плохой аппетит.",
+      "exampleTr": "Onun bugün iştahı kötü.",
+      "exampleEn": "He has a poor appetite today.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj03",
+      "type": "word",
+      "ru": "большой",
+      "tr": "büyük",
+      "en": "big",
+      "pronunciationEn": "bal-SHOY",
+      "exampleRu": "В гостиной стоит большой стол.",
+      "exampleTr": "Oturma odasında büyük bir masa duruyor.",
+      "exampleEn": "A large table stands in the living room.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj04",
+      "type": "word",
+      "ru": "маленький",
+      "tr": "küçük",
+      "en": "small",
+      "pronunciationEn": "MA-lyen-kiy",
+      "exampleRu": "У нас есть маленький сад около дома.",
+      "exampleTr": "Evin yanında küçük bir bahçemiz var.",
+      "exampleEn": "We have a small garden near the house.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj05",
+      "type": "word",
+      "ru": "новый",
+      "tr": "yeni",
+      "en": "new",
+      "pronunciationEn": "NO-viy",
+      "exampleRu": "Мой папа купил новый компьютер.",
+      "exampleTr": "Babam yeni bir bilgisayar aldı.",
+      "exampleEn": "My dad bought a new computer.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj06",
+      "type": "word",
+      "ru": "старый",
+      "tr": "eski / yaşlı",
+      "en": "old",
+      "pronunciationEn": "STA-riy",
+      "exampleRu": "Мы любим гулять по старому городу.",
+      "exampleTr": "Eski şehirde yürümeyi seviyoruz.",
+      "exampleEn": "We like walking around the old town.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj07",
+      "type": "word",
+      "ru": "молодой",
+      "tr": "genç",
+      "en": "young",
+      "pronunciationEn": "ma-la-DOY",
+      "exampleRu": "В нашей фирме работает молодой специалист.",
+      "exampleTr": "Şirketimizde genç bir uzman çalışıyor.",
+      "exampleEn": "A young specialist works at our company.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj08",
+      "type": "word",
+      "ru": "красивый",
+      "tr": "güzel / yakışıklı",
+      "en": "beautiful",
+      "pronunciationEn": "kra-SEE-viy",
+      "exampleRu": "Она подарила мне красивый подарок.",
+      "exampleTr": "O bana güzel bir hediye verdi.",
+      "exampleEn": "She gave me a beautiful gift.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj09",
+      "type": "word",
+      "ru": "интересный",
+      "tr": "ilginç",
+      "en": "interesting",
+      "pronunciationEn": "een-ti-RYES-niy",
+      "exampleRu": "Это очень интересный рассказ.",
+      "exampleTr": "Bu çok ilginç bir hikaye.",
+      "exampleEn": "This is a very interesting story.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj10",
+      "type": "word",
+      "ru": "вкусный",
+      "tr": "lezzetli",
+      "en": "delicious",
+      "pronunciationEn": "VKUS-niy",
+      "exampleRu": "Мама приготовила вкусный обед.",
+      "exampleTr": "Annem lezzetli bir öğle yemeği hazırladı.",
+      "exampleEn": "Mom cooked a delicious lunch.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj11",
+      "type": "word",
+      "ru": "быстрый",
+      "tr": "hızlı",
+      "en": "fast",
+      "pronunciationEn": "BIS-triy",
+      "exampleRu": "Этот быстрый поезд едет без остановок.",
+      "exampleTr": "Bu hızlı tren duraksız gidiyor.",
+      "exampleEn": "This fast train runs without stops.",
+      "tags": ["adjective"]
+    },
+    {
+      "id": "adj12",
+      "type": "word",
+      "ru": "медленный",
+      "tr": "yavaş",
+      "en": "slow",
+      "pronunciationEn": "MYED-lyen-niy",
+      "exampleRu": "У нас сегодня очень медленный интернет.",
+      "exampleTr": "Bugün internetimiz çok yavaş.",
+      "exampleEn": "We have very slow internet today.",
+      "tags": ["adjective"]
+    }
+  ]
+}

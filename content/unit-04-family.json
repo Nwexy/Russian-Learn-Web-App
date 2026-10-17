@@ -1,0 +1,152 @@
+{
+  "id": "unit-04",
+  "titleTr": "Aile ve İnsanlar",
+  "titleEn": "Family and People",
+  "level": "A1",
+  "items": [
+    {
+      "id": "fam01",
+      "type": "word",
+      "ru": "мама",
+      "tr": "anne",
+      "en": "mom",
+      "pronunciationEn": "MA-ma",
+      "exampleRu": "Моя мама готовит вкусный суп.",
+      "exampleTr": "Annem lezzetli çorba pişiriyor.",
+      "exampleEn": "My mom cooks delicious soup.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam02",
+      "type": "word",
+      "ru": "папа",
+      "tr": "baba",
+      "en": "dad",
+      "pronunciationEn": "PA-pa",
+      "exampleRu": "Мой папа работает инженером.",
+      "exampleTr": "Babam mühendis olarak çalışıyor.",
+      "exampleEn": "My dad works as an engineer.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam03",
+      "type": "word",
+      "ru": "брат",
+      "tr": "erkek kardeş",
+      "en": "brother",
+      "pronunciationEn": "BRAT",
+      "exampleRu": "Мой старший брат учится в университете.",
+      "exampleTr": "Ağabeyim üniversitede okuyor.",
+      "exampleEn": "My older brother studies at the university.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam04",
+      "type": "word",
+      "ru": "сестра",
+      "tr": "kız kardeş",
+      "en": "sister",
+      "pronunciationEn": "si-STRA",
+      "exampleRu": "Моя сестра любит читать книги.",
+      "exampleTr": "Kız kardeşim kitap okumayı sever.",
+      "exampleEn": "My sister likes to read books.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam05",
+      "type": "word",
+      "ru": "сын",
+      "tr": "oğul",
+      "en": "son",
+      "pronunciationEn": "SIN",
+      "exampleRu": "Их сын ходит в школу.",
+      "exampleTr": "Onların oğlu okula gidiyor.",
+      "exampleEn": "Their son goes to school.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam06",
+      "type": "word",
+      "ru": "дочь",
+      "tr": "kız evlat",
+      "en": "daughter",
+      "pronunciationEn": "DOCH",
+      "exampleRu": "Наша дочь хорошо рисует.",
+      "exampleTr": "Kızımız güzel resim yapıyor.",
+      "exampleEn": "Our daughter draws well.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam07",
+      "type": "word",
+      "ru": "бабушка",
+      "tr": "büyükanne",
+      "en": "grandmother",
+      "pronunciationEn": "BA-bush-ka",
+      "exampleRu": "Бабушка печёт вкусные пироги.",
+      "exampleTr": "Büyükanne lezzetli turtalar pişiriyor.",
+      "exampleEn": "Grandmother bakes delicious pies.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam08",
+      "type": "word",
+      "ru": "дедушка",
+      "tr": "büyükbaba",
+      "en": "grandfather",
+      "pronunciationEn": "DYE-dush-ka",
+      "exampleRu": "Дедушка читает утреннюю газету.",
+      "exampleTr": "Büyükbaba sabah gazetesini okuyor.",
+      "exampleEn": "Grandfather reads the morning newspaper.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam09",
+      "type": "word",
+      "ru": "друг",
+      "tr": "arkadaş",
+      "en": "friend",
+      "pronunciationEn": "DRUK",
+      "exampleRu": "Мой лучший друг живёт в Москве.",
+      "exampleTr": "Benim en iyi arkadaşım Moskova'da yaşıyor.",
+      "exampleEn": "My best friend lives in Moscow.",
+      "tags": ["people"]
+    },
+    {
+      "id": "fam10",
+      "type": "word",
+      "ru": "подруга",
+      "tr": "kız arkadaş",
+      "en": "female friend",
+      "pronunciationEn": "pad-RU-ga",
+      "exampleRu": "Анна — моя школьная подруга.",
+      "exampleTr": "Anna benim okul arkadaşımdır.",
+      "exampleEn": "Anna is my school friend.",
+      "tags": ["people"]
+    },
+    {
+      "id": "fam11",
+      "type": "word",
+      "ru": "семья",
+      "tr": "aile",
+      "en": "family",
+      "pronunciationEn": "sim-YA",
+      "exampleRu": "У нас большая и дружная семья.",
+      "exampleTr": "Bizim büyük ve sıcak bir ailemiz var.",
+      "exampleEn": "We have a big and friendly family.",
+      "tags": ["family"]
+    },
+    {
+      "id": "fam12",
+      "type": "word",
+      "ru": "человек",
+      "tr": "insan",
+      "en": "person",
+      "pronunciationEn": "chi-la-VYEK",
+      "exampleRu": "Он очень добрый и честный человек.",
+      "exampleTr": "O çok iyi kalpli ve dürüst bir insandır.",
+      "exampleEn": "He is a very kind and honest person.",
+      "tags": ["people"]
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "id": "grammar-06-adjectives",
+  "level": "A1",
+  "titleTr": "Sıfatlar ve İsim Uyumu",
+  "titleEn": "Adjective Agreement",
+  "summaryTr": "Rusça'da sıfatlar niteledikleri ismin cinsiyetine (eril, dişil, nötr) ve sayısına (tekil, çoğul) göre çekimlenir.",
+  "summaryEn": "In Russian, adjectives agree with the noun they modify in gender (masculine, feminine, neuter) and number (singular, plural).",
+  "relatedUnits": ["unit-03", "unit-03-colors", "unit-06", "unit-06-adjectives"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Rusça'da sıfatlar niteledikleri ismin cinsiyetine ve tekil/çoğul durumuna tam uyum sağlar. Sıfatların son ekleri bu kurala göre değişir:\n• Eril (Мужской род): -ый / -ий / -ой (новый дом, синий костюм, большой стол)\n• Dişil (Женский род): -ая / -яя (новая книга, синяя машина, большая комната)\n• Nötr (Средний род): -ое / -ее (новое окно, синее море, большое яблоко)\n• Çoğul (Tüm cinsler): -ые / -ие (новые дома, синие костюмы, большие окна)",
+      "bodyEn": "In Russian, adjectives must agree with the nouns they modify in gender and number. The adjective endings adapt accordingly:\n• Masculine: -ый / -ий / -ой (новый дом, синий костюм, большой стол)\n• Feminine: -ая / -яя (новая книга, синяя машина, большая комната)\n• Neuter: -ое / -ее (новое окно, синее море, большое яблоко)\n• Plural (all genders): -ые / -ие (новые дома, синие костюмы, большие окна)"
+    },
+    {
+      "type": "text",
+      "bodyTr": "Sıfat Soru Kelimeleri:\nBir ismin nasıl olduğunu sorarken o ismin cinsiyetine ve sayısına uygun soru zamiri kullanılır:\n• Какой? (Eril): Какой это город? (Bu nasıl bir şehir?)\n• Какая? (Dişil): Какая это книга? (Bu nasıl bir kitap?)\n• Какое? (Nötr): Какое это окно? (Bu nasıl bir pencere?)\n• Какие? (Çoğul): Какие это книги? (Bunlar nasıl kitaplar?)",
+      "bodyEn": "Adjective Question Words:\nTo ask 'what kind of' or 'which', choose the pronoun matching the noun:\n• Какой? (Masculine): Какой это город? (What kind of city is this?)\n• Какая? (Feminine): Какая это книга? (What kind of book is this?)\n• Какое? (Neuter): Какое это окно? (What kind of window is this?)\n• Какие? (Plural): Какие это книги? (What kind of books are these?)"
+    },
+    {
+      "type": "table",
+      "headersTr": ["Cinsiyet / Sayı", "Ekler", "Soru Kelimesi", "Örnek", "Anlam"],
+      "headersEn": ["Gender / Number", "Endings", "Question Word", "Example", "Meaning"],
+      "rows": [
+        {
+          "cellsTr": ["Eril (Мужской)", "-ый, -ий, -ой", "Какой?", "новый дом", "yeni ev"],
+          "cellsEn": ["Masculine (Мужской)", "-ый, -ий, -ой", "Какой?", "новый дом", "new house"]
+        },
+        {
+          "cellsTr": ["Dişil (Женский)", "-ая, -яя", "Какая?", "новая книга", "yeni kitap"],
+          "cellsEn": ["Feminine (Женский)", "-ая, -яя", "Какая?", "новая книга", "new book"]
+        },
+        {
+          "cellsTr": ["Nötr (Средний)", "-ое, -ее", "Какое?", "новое окно", "yeni pencere"],
+          "cellsEn": ["Neuter (Средний)", "-ое, -ее", "Какое?", "новое окно", "new window"]
+        },
+        {
+          "cellsTr": ["Çoğul (Все роды)", "-ые, -ие", "Какие?", "новые книги", "yeni kitaplar"],
+          "cellsEn": ["Plural (All genders)", "-ые, -ие", "Какие?", "новые книги", "new books"]
+        }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "новый дом", "tr": "yeni ev", "en": "new house", "note": "Eril sıfat uyumu (-ый)" },
+        { "ru": "новая книга", "tr": "yeni kitap", "en": "new book", "note": "Dişil sıfat uyumu (-ая)" },
+        { "ru": "новое окно", "tr": "yeni pencere", "en": "new window", "note": "Nötr sıfat uyumu (-ое)" },
+        { "ru": "новые дома", "tr": "yeni evler", "en": "new houses", "note": "Çoğul sıfat uyumu (-ые)" },
+        { "ru": "красивый город", "tr": "güzel şehir", "en": "beautiful city", "note": "Eril sıfat" },
+        { "ru": "красивая девушка", "tr": "güzel kız", "en": "beautiful girl", "note": "Dişil sıfat" },
+        { "ru": "синее море", "tr": "mavi deniz", "en": "blue sea", "note": "Nötr sıfat (-ее)" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "«Это ... книга.» (новый sıfatının dişil şekli hangisidir?)",
+      "questionLang": "ru",
+      "options": ["новый", "новая", "новое", "новые"],
+      "correctIndex": 1,
+      "explanationTr": "«книга» dişil bir isim olduğu için sıfat -ая ekini alır: «новая книга».",
+      "explanationEn": "«книга» is feminine, so the adjective takes -ая: «новая книга»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Это ... окно.» (большой sıfatının nötr şekli hangisidir?)",
+      "questionLang": "ru",
+      "options": ["большой", "большая", "большое", "большие"],
+      "correctIndex": 2,
+      "explanationTr": "«окно» nötr bir isim olduğu için sıfat -ое ekini alır: «большое окно».",
+      "explanationEn": "«окно» is neuter, so the adjective takes -ое: «большое окно»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«Это ... друзья.» (хороший sıfatının çoğul şekli hangisidir?)",
+      "questionLang": "ru",
+      "options": ["хороший", "хорошая", "хорошее", "хорошие"],
+      "correctIndex": 3,
+      "explanationTr": "Çoğul isimlerle sıfatlar -ые veya 7 harf kuralıyla -ие alır: «хорошие друзья».",
+      "explanationEn": "With plural nouns, adjectives take -ые or -ие (spelling rule): «хорошие друзья»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "Dişil bir isim için 'Nasıl / Hangi?' sorusu hangisidir?",
+      "questionLang": "tr",
+      "options": ["Какой?", "Какая?", "Какое?", "Какие?"],
+      "correctIndex": 1,
+      "explanationTr": "Dişil isimler için soru kelimesi «Какая?» şeklindedir (örn: Какая машина?).",
+      "explanationEn": "For feminine nouns, the question word is «Какая?» (e.g. Какая машина?)."
+    }
+  ]
+}

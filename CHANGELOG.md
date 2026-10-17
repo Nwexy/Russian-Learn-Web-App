@@ -3,7 +3,12 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
-## 2026-10-16
+## 2026-10-17
+- Renkler, Aile, Temel Fiiller ve Temel Sifatlar uniteleri eklendi.
+- Isimlerde Cogul, Sifat Uyumu, Belirtme Hali ve Gecmis Zaman gramer notlari eklendi.
+- Yeni uniteler ve gramer notlari birbirine baglandi.
+
+## 2026-10-16 (Faz 5.1)
 - Turkce telaffuz alanlari (pronunciationTr) kaldirildi.
 - Telaffuz artik her zaman Ingilizce gosteriliyor (arayuz ve ceviri dilinden bagimsiz).
 - пожалуйста ve повторите пожалуйста telaffuzlari duzeltildi.

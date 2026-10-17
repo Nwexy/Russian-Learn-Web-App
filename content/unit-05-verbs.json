@@ -1,0 +1,152 @@
+{
+  "id": "unit-05",
+  "titleTr": "Temel Fiiller",
+  "titleEn": "Basic Verbs",
+  "level": "A1",
+  "items": [
+    {
+      "id": "v01",
+      "type": "word",
+      "ru": "знать",
+      "tr": "bilmek",
+      "en": "to know",
+      "pronunciationEn": "ZNAT",
+      "exampleRu": "Я хорошо знаю этот город.",
+      "exampleTr": "Bu şehri iyi biliyorum.",
+      "exampleEn": "I know this city well.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v02",
+      "type": "word",
+      "ru": "думать",
+      "tr": "düşünmek",
+      "en": "to think",
+      "pronunciationEn": "DU-mat",
+      "exampleRu": "Что ты думаешь об этом фильме?",
+      "exampleTr": "Bu film hakkında ne düşünüyorsun?",
+      "exampleEn": "What do you think about this movie?",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v03",
+      "type": "word",
+      "ru": "делать",
+      "tr": "yapmak",
+      "en": "to do / to make",
+      "pronunciationEn": "DYE-lat",
+      "exampleRu": "Мы сейчас делаем домашнее задание.",
+      "exampleTr": "Biz şu an ev ödevimizi yapıyoruz.",
+      "exampleEn": "We are doing our homework right now.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v04",
+      "type": "word",
+      "ru": "говорить",
+      "tr": "konuşmak",
+      "en": "to speak / to talk",
+      "pronunciationEn": "ga-va-REET",
+      "exampleRu": "Они свободно говорят по-русски.",
+      "exampleTr": "Onlar akıcı bir şekilde Rusça konuşuyorlar.",
+      "exampleEn": "They speak Russian fluently.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v05",
+      "type": "word",
+      "ru": "читать",
+      "tr": "okumak",
+      "en": "to read",
+      "pronunciationEn": "chi-TAT",
+      "exampleRu": "Я читаю интересную книгу.",
+      "exampleTr": "Ben ilginç bir kitap okuyorum.",
+      "exampleEn": "I am reading an interesting book.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v06",
+      "type": "word",
+      "ru": "писать",
+      "tr": "yazmak",
+      "en": "to write",
+      "pronunciationEn": "pee-SAT",
+      "exampleRu": "Студент пишет письмо родителям.",
+      "exampleTr": "Öğrenci ailesine mektup yazıyor.",
+      "exampleEn": "The student is writing a letter to parents.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v07",
+      "type": "word",
+      "ru": "идти",
+      "tr": "gitmek",
+      "en": "to go / to walk",
+      "pronunciationEn": "eet-TEE",
+      "exampleRu": "Куда вы сейчас идёте?",
+      "exampleTr": "Şimdi nereye gidiyorsunuz?",
+      "exampleEn": "Where are you going right now?",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v08",
+      "type": "word",
+      "ru": "видеть",
+      "tr": "görmek",
+      "en": "to see",
+      "pronunciationEn": "VEE-dyet",
+      "exampleRu": "Я вижу старый парк из окна.",
+      "exampleTr": "Pencereden eski parkı görüyorum.",
+      "exampleEn": "I see the old park from the window.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v09",
+      "type": "word",
+      "ru": "слушать",
+      "tr": "dinlemek",
+      "en": "to listen",
+      "pronunciationEn": "SLU-shat",
+      "exampleRu": "Она слушает классическую музыку.",
+      "exampleTr": "O klasik müzik dinliyor.",
+      "exampleEn": "She listens to classical music.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v10",
+      "type": "word",
+      "ru": "работать",
+      "tr": "çalışmak",
+      "en": "to work",
+      "pronunciationEn": "ra-BO-tat",
+      "exampleRu": "Мой брат работает в центре города.",
+      "exampleTr": "Kardeşim şehir merkezinde çalışıyor.",
+      "exampleEn": "My brother works in the city center.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v11",
+      "type": "word",
+      "ru": "жить",
+      "tr": "yaşamak",
+      "en": "to live",
+      "pronunciationEn": "ZHIT",
+      "exampleRu": "Мы живём в красивом новом доме.",
+      "exampleTr": "Biz güzel ve yeni bir evde yaşıyoruz.",
+      "exampleEn": "We live in a beautiful new house.",
+      "tags": ["verb"]
+    },
+    {
+      "id": "v12",
+      "type": "word",
+      "ru": "хотеть",
+      "tr": "istemek",
+      "en": "to want",
+      "pronunciationEn": "ha-TYET",
+      "exampleRu": "Я хочу пить чай с лимоном.",
+      "exampleTr": "Limonlu çay içmek istiyorum.",
+      "exampleEn": "I want to drink tea with lemon.",
+      "tags": ["verb"]
+    }
+  ]
+}

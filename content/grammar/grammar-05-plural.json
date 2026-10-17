@@ -1,0 +1,101 @@
+{
+  "id": "grammar-05-plural",
+  "level": "A1",
+  "titleTr": "İsimlerde Çoğul",
+  "titleEn": "Plural of Nouns",
+  "summaryTr": "Rusça'da isimleri çoğul yapma kuralları: Eril ve dişiller için -ы/-и, nötrler için -а/-я ekleri ve 7 harf kuralı.",
+  "summaryEn": "Rules for forming plural nouns in Russian: -ы/-и for masculine and feminine, -а/-я for neuter, and the 7-letter spelling rule.",
+  "relatedUnits": ["unit-04", "unit-04-family"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Rusça'da isimleri çoğul yapmak için kelimenin cinsiyetine ve son sesine göre ekler getirilir:\n• Eril (Мужской) ve Dişil (Женский) isimler çoğulda genellikle -ы veya -и ekini alır.\n• Nötr (Средний) isimler çoğulda -а veya -я ekini alır.",
+      "bodyEn": "In Russian, plural nouns are formed based on gender and the final letter of the word:\n• Masculine and Feminine nouns take -ы or -и in the plural.\n• Neuter nouns take -а or -я in the plural."
+    },
+    {
+      "type": "text",
+      "bodyTr": "7 Harf Kuralı (Temel İmla Kuralı):\nг, к, х, ж, ч, ш, щ harflerinden sonra asla -ы yazılmaz, daima -и yazılır!\nÖrnek: книга -> книги (-ы yerine -и gelir).\n\nÖnemli Düzensiz Çoğullar:\n• друг -> друзья (arkadaşlar)\n• брат -> братья (erkek kardeşler)\n• человек -> люди (insanlar)\n• сын -> сыновья (oğullar)",
+      "bodyEn": "The 7-Letter Spelling Rule:\nAfter the consonants г, к, х, ж, ч, ш, щ, never write -ы, always write -и!\nExample: книга -> книги (takes -и instead of -ы).\n\nKey Irregular Plurals:\n• друг -> друзья (friends)\n• брат -> братья (brothers)\n• человек -> люди (people)\n• сын -> сыновья (sons)"
+    },
+    {
+      "type": "table",
+      "headersTr": ["Cinsiyet", "Tekil Sonu", "Çoğul Eki", "Örnek", "Çoğul Hali"],
+      "headersEn": ["Gender", "Singular Ending", "Plural Ending", "Example", "Plural Form"],
+      "rows": [
+        {
+          "cellsTr": ["Eril (Sert ünsüz)", "Sert ünsüz", "-ы", "стол (masa)", "столы (masalar)"],
+          "cellsEn": ["Masculine (Hard)", "Hard consonant", "-ы", "стол (table)", "столы (tables)"]
+        },
+        {
+          "cellsTr": ["Eril (7 Harf / -й / -ь)", "г, к, х, ж, ч, ш, щ, -й, -ь", "-и", "парк (park)", "парки (parklar)"],
+          "cellsEn": ["Masculine (7-letter / soft)", "г, к, х, ж, ч, ш, щ, -й, -ь", "-и", "парк (park)", "парки (parks)"]
+        },
+        {
+          "cellsTr": ["Dişil (-а)", "-а", "-ы", "мама (anne)", "мамы (anneler)"],
+          "cellsEn": ["Feminine (-а)", "-а", "-ы", "мама (mom)", "мамы (moms)"]
+        },
+        {
+          "cellsTr": ["Dişil (7 Harf / -я / -ь)", "г/к/х/ж/ч/ш/щ + а, -я, -ь", "-и", "книга (kitap)", "книги (kitaplar)"],
+          "cellsEn": ["Feminine (7-letter / soft)", "7-consonants + а, -я, -ь", "-и", "книга (book)", "книги (books)"]
+        },
+        {
+          "cellsTr": ["Nötr (-о)", "-о", "-а", "окно (pencere)", "окна (pencereler)"],
+          "cellsEn": ["Neuter (-о)", "-о", "-а", "окно (window)", "окна (windows)"]
+        },
+        {
+          "cellsTr": ["Nötr (-е)", "-е", "-я", "море (deniz)", "моря (denizler)"],
+          "cellsEn": ["Neuter (-е)", "-е", "-я", "море (sea)", "моря (seas)"]
+        }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "столы", "tr": "masalar", "en": "tables", "note": "стол -> столы (-ы eki)" },
+        { "ru": "книги", "tr": "kitaplar", "en": "books", "note": "книга -> книги (7 harf kuralı)" },
+        { "ru": "окна", "tr": "pencereler", "en": "windows", "note": "окно -> окна (-а eki)" },
+        { "ru": "друзья", "tr": "arkadaşlar", "en": "friends", "note": "друг -> друзья (düzensiz)" },
+        { "ru": "братья", "tr": "erkek kardeşler", "en": "brothers", "note": "брат -> братья (düzensiz)" },
+        { "ru": "люди", "tr": "insanlar", "en": "people", "note": "человек -> люди (düzensiz)" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "question": "«стол» (masa) kelimesinin çoğul hali hangisidir?",
+      "questionLang": "tr",
+      "options": ["столы", "столи", "стола", "столе"],
+      "correctIndex": 0,
+      "explanationTr": "Sert bir ünsüzle biten eril isimler çoğulda -ы alır: «столы».",
+      "explanationEn": "Masculine nouns ending in a hard consonant take -ы in plural: «столы»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«книга» kelimesinin çoğul hali neden «книгы» yerine «книги» olarak yazılır?",
+      "questionLang": "tr",
+      "options": ["Nötr olduğu için", "7 harf kuralı: к harfinden sonra -ы yazılamaz", "Düzensiz bir kelimedir", "Çoğul eki almaz"],
+      "correctIndex": 1,
+      "explanationTr": "г, к, х, ж, ч, ш, щ harflerinden sonra asla -ы gelmez, -и gelir: «книги».",
+      "explanationEn": "By the 7-letter spelling rule, after к you must write -и instead of -ы: «книги»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«окно» (pencere) nötr isminin çoğul hali hangisidir?",
+      "questionLang": "tr",
+      "options": ["окны", "окни", "окна", "окне"],
+      "correctIndex": 2,
+      "explanationTr": "-о ile biten nötr isimler çoğulda -а alır: «окна».",
+      "explanationEn": "Neuter nouns ending in -о take -а in plural: «окна»."
+    },
+    {
+      "type": "multipleChoice",
+      "question": "«друг» (arkadaş) kelimesinin çoğul hali hangisidir?",
+      "questionLang": "tr",
+      "options": ["други", "друзья", "другы", "друга"],
+      "correctIndex": 1,
+      "explanationTr": "«друг» düzensiz bir çoğula sahiptir: «друзья».",
+      "explanationEn": "«друг» has an irregular plural form: «друзья»."
+    }
+  ]
+}
