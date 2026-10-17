@@ -11,6 +11,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { clearAllMistakes } from "@/lib/mistakes";
+import { FlagTr, FlagUs } from "@/components/icons/flag-icons";
 import type { Lang } from "@/types";
 
 export default function SettingsPage() {
@@ -44,16 +45,22 @@ export default function SettingsPage() {
           </div>
           <div className="lang-selector">
             <button
+              type="button"
               className={`lang-option ${uiLang === "tr" ? "lang-option-active" : ""}`}
               onClick={() => setUiLang("tr" as Lang)}
+              title={t.turkish}
+              aria-label={t.turkish}
             >
-              {t.turkish}
+              <FlagTr className="flag-icon" />
             </button>
             <button
+              type="button"
               className={`lang-option ${uiLang === "en" ? "lang-option-active" : ""}`}
               onClick={() => setUiLang("en" as Lang)}
+              title={t.english}
+              aria-label={t.english}
             >
-              {t.english}
+              <FlagUs className="flag-icon" />
             </button>
           </div>
         </div>
@@ -69,16 +76,22 @@ export default function SettingsPage() {
           </div>
           <div className="lang-selector">
             <button
+              type="button"
               className={`lang-option ${translationLang === "tr" ? "lang-option-active" : ""}`}
               onClick={() => setTranslationLang("tr" as Lang)}
+              title={t.turkish}
+              aria-label={t.turkish}
             >
-              {t.turkish}
+              <FlagTr className="flag-icon" />
             </button>
             <button
+              type="button"
               className={`lang-option ${translationLang === "en" ? "lang-option-active" : ""}`}
               onClick={() => setTranslationLang("en" as Lang)}
+              title={t.english}
+              aria-label={t.english}
             >
-              {t.english}
+              <FlagUs className="flag-icon" />
             </button>
           </div>
         </div>

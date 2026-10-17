@@ -165,6 +165,12 @@ export interface Messages {
   mustCompleteLessonFirst: string;
   locked: string;
   completeLessonToUnlock: string;
+
+  // Faz 7.5 — Çoklu ünite ve karışık mod
+  mixedMode: string;
+  selectUnits: string;
+  allUnitsSelected: string;
+  multipleUnitsSelected: string;
 }
 
 /** Tüm çeviriler */
@@ -319,6 +325,12 @@ const messages: Record<Lang, Messages> = {
     mustCompleteLessonFirst: "Önce dersi tamamlamalısın.",
     locked: "Kilitli",
     completeLessonToUnlock: "Kilidi açmak için dersi tamamlayın.",
+
+    // Faz 7.5 — Çoklu ünite ve karışık mod
+    mixedMode: "Karışık Mod",
+    selectUnits: "Üniteleri Seç",
+    allUnitsSelected: "Tüm Üniteler",
+    multipleUnitsSelected: "Seçili Üniteler",
   },
   en: {
     appName: "Learn Russian",
@@ -470,6 +482,12 @@ const messages: Record<Lang, Messages> = {
     mustCompleteLessonFirst: "You must complete the lesson first.",
     locked: "Locked",
     completeLessonToUnlock: "Complete the lesson to unlock.",
+
+    // Faz 7.5 — Çoklu ünite ve karışık mod
+    mixedMode: "Mixed Mode",
+    selectUnits: "Select Units",
+    allUnitsSelected: "All Units",
+    multipleUnitsSelected: "Selected Units",
   },
 };
 

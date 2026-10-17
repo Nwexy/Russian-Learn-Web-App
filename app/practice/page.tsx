@@ -1,9 +1,16 @@
 /**
  * Alıştırma sayfası — /practice
- * 4 alıştırma tipi: Çoktan Seçmeli, Boşluk Doldurma, Eşleştirme, Dinleme.
- * Üstte ünite seçici: "Tüm üniteler" veya belirli bir ünite.
- * Çoktan seçmeli sorular çift yönlü (%70 RU->EN/TR, %30 EN/TR->RU).
- * Telaffuz gösterimi: Rusça soruda ve cevap açıklamasında.
+ * Faz 7.5: Çoklu Ünite Seçimi (Multi-select) ve Karışık Mod (Mixed Mode).
+ * 
+ * 1. Ünite Seçimi:
+ *    - Çoklu seçim desteği (checkbox listesi).
+ *    - "Tüm Üniteler" seçildiğinde tüm tamamlanmış üniteler seçilir ve kilitlenir.
+ *    - Kullanıcı "Tüm Üniteler"i kaldırıp belirli üniteleri seçebilir.
+ *    - Sadece dersi tamamlanmış üniteler listelenir (Faz 6.6 kuralı).
+ * 
+ * 2. Karışık Mod (Mixed Mode):
+ *    - 4 soru tipini (Çoktan seçmeli, Boşluk doldurma, Eşleştirme, Dinleme) rastgele harmanlayan 10 soruluk alıştırma.
+ *    - İstenirse tekil modlar da seçilebilir.
  */
 
 "use client";
@@ -19,12 +26,14 @@ import {
   generateFillBlank,
   generateMatching,
   generateListening,
+  generateMixedPractice,
 } from "@/lib/exercises";
 import type {
   MultipleChoiceQuestion,
   FillBlankQuestion,
   MatchingQuestion,
   ListeningQuestion,
+  MixedQuestion,
 } from "@/lib/exercises";
 import { speak, isTTSSupported } from "@/lib/tts";
 import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
@@ -33,8 +42,21 @@ import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item, ExerciseType } from "@/types";
 
+/** Alıştırma modu: 4 tekil tür veya Karışık Mod */
+export type PracticeMode = "mixed" | ExerciseType;
+
 /** Alıştırma durumları */
 type Phase = "select" | "active" | "result";
+
+/** Fisher-Yates ile kopya karıştırma (eşleştirme sağ sütunu için) */
+function shuffledPairs<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 /** Item'ın çeviri dilindeki anlamını döndürür */
 function getMeaning(item: Item, translationLang: string): string {
@@ -47,29 +69,49 @@ export default function PracticePage() {
   const t = getMessages(uiLang);
   const units = getAllUnits();
 
-  const [selectedUnitId, setSelectedUnitId] = useState<string>("all");
+  // Çoklu ünite seçimi durumu
   const [completedUnitIds, setCompletedUnitIds] = useState<Set<string>>(new Set());
+  const [isAllUnits, setIsAllUnits] = useState(true);
+  const [selectedUnits, setSelectedUnits] = useState<string[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
   const [items, setItems] = useState<Item[]>([]);
-  const [exerciseType, setExerciseType] = useState<ExerciseType>("multipleChoice");
+  const [exerciseType, setExerciseType] = useState<PracticeMode>("mixed");
   const [phase, setPhase] = useState<Phase>("select");
   const [score, setScore] = useState(0);
   const [loading, setLoading] = useState(true);
   const [mistakeCount, setMistakeCount] = useState(0);
+  const [ttsSupported, setTtsSupported] = useState(true);
 
-  // Çoktan seçmeli state
+  // Karışık mod (Mixed) state
+  const [mixedQuestions, setMixedQuestions] = useState<MixedQuestion[]>([]);
+  const [mixedIndex, setMixedIndex] = useState(0);
+  const [mixedRevealed, setMixedRevealed] = useState(false);
+  const [mixedIsCorrect, setMixedIsCorrect] = useState<boolean | null>(null);
+  const [mixedAnswer, setMixedAnswer] = useState("");
+  const [mixedMcSelected, setMixedMcSelected] = useState<number | null>(null);
+  const [mixedMatchLeft, setMixedMatchLeft] = useState<string | null>(null);
+  const [mixedMatchRight, setMixedMatchRight] = useState<string | null>(null);
+  const [mixedMatchedIds, setMixedMatchedIds] = useState<Set<string>>(new Set());
+  const [mixedMatchWrong, setMixedMatchWrong] = useState(false);
+  const [mixedMatchHadError, setMixedMatchHadError] = useState(false);
+  const [mixedMatchRightOrder, setMixedMatchRightOrder] = useState<{ id: string; translation: string }[]>([]);
+
+  // Çoktan seçmeli state (Tekil mod)
   const [mcQuestions, setMcQuestions] = useState<MultipleChoiceQuestion[]>([]);
   const [mcIndex, setMcIndex] = useState(0);
   const [mcSelected, setMcSelected] = useState<number | null>(null);
   const [mcRevealed, setMcRevealed] = useState(false);
 
-  // Boşluk doldurma state
+  // Boşluk doldurma state (Tekil mod)
   const [fbQuestions, setFbQuestions] = useState<FillBlankQuestion[]>([]);
   const [fbIndex, setFbIndex] = useState(0);
   const [fbAnswer, setFbAnswer] = useState("");
   const [fbRevealed, setFbRevealed] = useState(false);
   const [fbCorrect, setFbCorrect] = useState<boolean | null>(null);
 
-  // Eşleştirme state
+  // Eşleştirme state (Tekil mod)
   const [matchData, setMatchData] = useState<MatchingQuestion | null>(null);
   const [matchSelectedLeft, setMatchSelectedLeft] = useState<string | null>(null);
   const [matchSelectedRight, setMatchSelectedRight] = useState<string | null>(null);
@@ -79,74 +121,59 @@ export default function PracticePage() {
   const [matchAttempts, setMatchAttempts] = useState(0);
   const [matchCorrectCount, setMatchCorrectCount] = useState(0);
 
-  // Dinleme state
+  // Dinleme state (Tekil mod)
   const [listenQuestions, setListenQuestions] = useState<ListeningQuestion[]>([]);
   const [listenIndex, setListenIndex] = useState(0);
   const [listenAnswer, setListenAnswer] = useState("");
   const [listenRevealed, setListenRevealed] = useState(false);
   const [listenCorrect, setListenCorrect] = useState<boolean | null>(null);
-  const [ttsSupported, setTtsSupported] = useState(true);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  /** Belirli bir havuzla alıştırma oturumunu başlatır */
-  const initExerciseWith = useCallback((pool: Item[], type: ExerciseType) => {
-    setScore(0);
-    setPhase("active");
+  /** Dersi tamamlanmış ve alıştırması olan üniteler */
+  const availableUnits = units.filter((u) => u.hasExercises && completedUnitIds.has(u.id));
 
-    switch (type) {
-      case "multipleChoice": {
-        const q = generateMultipleChoice(pool, translationLang, 10);
-        setMcQuestions(q);
-        setMcIndex(0);
-        setMcSelected(null);
-        setMcRevealed(false);
-        break;
-      }
-      case "fillBlank": {
-        const q = generateFillBlank(pool, translationLang, 10);
-        setFbQuestions(q);
-        setFbIndex(0);
-        setFbAnswer("");
-        setFbRevealed(false);
-        setFbCorrect(null);
-        break;
-      }
-      case "matching": {
-        const q = generateMatching(pool, translationLang, 6);
-        setMatchData(q);
-        setMatchSelectedLeft(null);
-        setMatchSelectedRight(null);
-        setMatchedIds(new Set());
-        setMatchWrong(false);
-        setMatchAttempts(0);
-        setMatchCorrectCount(0);
-        const shuffled = [...q.pairs.map((p) => ({ id: p.id, translation: p.translation }))];
-        for (let i = shuffled.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-        }
-        setMatchShuffledRight(shuffled);
-        break;
-      }
-      case "listening": {
-        const q = generateListening(pool, 10);
-        setListenQuestions(q);
-        setListenIndex(0);
-        setListenAnswer("");
-        setListenRevealed(false);
-        setListenCorrect(null);
-        break;
+  // Dropdown dışına tıklandığında kapat
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
       }
     }
-  }, [translationLang]);
+    if (dropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownOpen]);
 
-  /** İlk veri yükleme */
-  useEffect(() => {
-    async function load() {
-      let allItems = await db.items.where("type").equals("word").toArray();
-      if (allItems.length === 0) {
-        allItems = getAllUnits().flatMap((u) => {
+  /** Karışık mod sorusunu hazırla */
+  const prepareMixedQuestion = useCallback((q: MixedQuestion) => {
+    setMixedRevealed(false);
+    setMixedIsCorrect(null);
+    setMixedAnswer("");
+    setMixedMcSelected(null);
+    setMixedMatchLeft(null);
+    setMixedMatchRight(null);
+    setMixedMatchedIds(new Set());
+    setMixedMatchWrong(false);
+    setMixedMatchHadError(false);
+
+    if (q.kind === "matching") {
+      setMixedMatchRightOrder(shuffledPairs(q.data.pairs.map((p) => ({ id: p.id, translation: p.translation }))));
+    }
+    if (q.kind === "listening" && isTTSSupported()) {
+      speak(q.data.correctWord);
+    }
+  }, []);
+
+  /** Seçilen filtrelere göre kelimeleri yükler */
+  const loadFilteredItems = useCallback(
+    async (all: boolean, selected: string[], compIds: Set<string>): Promise<Item[]> => {
+      let allWordItems = await db.items.where("type").equals("word").toArray();
+      if (allWordItems.length === 0) {
+        allWordItems = getAllUnits().flatMap((u) => {
           const unitData = getUnitById(u.id);
           return (unitData?.items || [])
             .filter((i) => i.type === "word")
@@ -167,92 +194,132 @@ export default function PracticePage() {
             }));
         });
       }
-      setItems(allItems);
-      setTtsSupported(isTTSSupported());
-      const mc = await getMistakeCount();
-      setMistakeCount(mc);
 
+      const activeUnitSet = all ? compIds : new Set(selected);
+      return allWordItems.filter((item) => activeUnitSet.has(item.unitId));
+    },
+    []
+  );
+
+  /** Alıştırma oturumunu başlatır */
+  const initExerciseWith = useCallback(
+    (pool: Item[], type: PracticeMode) => {
+      setScore(0);
+      setPhase("active");
+
+      switch (type) {
+        case "mixed": {
+          const qs = generateMixedPractice(pool, translationLang, 10, ttsSupported);
+          setMixedQuestions(qs);
+          setMixedIndex(0);
+          if (qs.length > 0) prepareMixedQuestion(qs[0]);
+          break;
+        }
+        case "multipleChoice": {
+          const q = generateMultipleChoice(pool, translationLang, 10);
+          setMcQuestions(q);
+          setMcIndex(0);
+          setMcSelected(null);
+          setMcRevealed(false);
+          break;
+        }
+        case "fillBlank": {
+          const q = generateFillBlank(pool, translationLang, 10);
+          setFbQuestions(q);
+          setFbIndex(0);
+          setFbAnswer("");
+          setFbRevealed(false);
+          setFbCorrect(null);
+          break;
+        }
+        case "matching": {
+          const q = generateMatching(pool, translationLang, 6);
+          setMatchData(q);
+          setMatchSelectedLeft(null);
+          setMatchSelectedRight(null);
+          setMatchedIds(new Set());
+          setMatchWrong(false);
+          setMatchAttempts(0);
+          setMatchCorrectCount(0);
+          const shuffled = shuffledPairs(q.pairs.map((p) => ({ id: p.id, translation: p.translation })));
+          setMatchShuffledRight(shuffled);
+          break;
+        }
+        case "listening": {
+          const q = generateListening(pool, 10);
+          setListenQuestions(q);
+          setListenIndex(0);
+          setListenAnswer("");
+          setListenRevealed(false);
+          setListenCorrect(null);
+          break;
+        }
+      }
+    },
+    [translationLang, ttsSupported, prepareMixedQuestion]
+  );
+
+  /** İlk veri yükleme */
+  useEffect(() => {
+    async function load() {
       const allProgress = await db.progress.toArray();
       const compIds = new Set(
         allProgress.filter((p) => Boolean(p.lessonDone)).map((p) => p.unitId)
       );
       setCompletedUnitIds(compIds);
 
+      // Başlangıçta tüm tamamlanmış üniteleri seç
+      const validCompletedIds = units
+        .filter((u) => u.hasExercises && compIds.has(u.id))
+        .map((u) => u.id);
+      setSelectedUnits(validCompletedIds);
+
+      const loaded = await loadFilteredItems(true, validCompletedIds, compIds);
+      setItems(loaded);
+      setTtsSupported(isTTSSupported());
+      const mc = await getMistakeCount();
+      setMistakeCount(mc);
       setLoading(false);
     }
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** Ünite seçici değiştiğinde: mevcut oturum sıfırlanıp yeni sorular üretilir */
-  const handleUnitChange = async (unitId: string) => {
-    if (unitId !== "all" && !completedUnitIds.has(unitId)) return;
-    setSelectedUnitId(unitId);
-    let loaded: Item[];
-    if (unitId === "all") {
-      loaded = await db.items.where("type").equals("word").toArray();
-      if (loaded.length === 0) {
-        loaded = getAllUnits().flatMap((u) => {
-          const unitData = getUnitById(u.id);
-          return (unitData?.items || [])
-            .filter((i) => i.type === "word")
-            .map((raw) => ({
-              id: raw.id,
-              unitId: u.id,
-              type: raw.type,
-              ru: raw.ru,
-              tr: raw.tr,
-              en: raw.en,
-              exampleRu: raw.exampleRu,
-              exampleTr: raw.exampleTr,
-              exampleEn: raw.exampleEn,
-              pronunciationEn: raw.pronunciationEn,
-              numberValue: raw.numberValue,
-              hexCode: raw.hexCode,
-              tags: raw.tags,
-            }));
-        });
-      }
-    } else {
-      loaded = await db.items
-        .where("unitId").equals(unitId)
-        .and((i) => i.type === "word")
-        .toArray();
-      if (loaded.length === 0) {
-        const unitData = getUnitById(unitId);
-        if (unitData) {
-          loaded = unitData.items
-            .filter((i) => i.type === "word")
-            .map((raw) => ({
-              id: raw.id,
-              unitId: unitData.id,
-              type: raw.type,
-              ru: raw.ru,
-              tr: raw.tr,
-              en: raw.en,
-              exampleRu: raw.exampleRu,
-              exampleTr: raw.exampleTr,
-              exampleEn: raw.exampleEn,
-              pronunciationEn: raw.pronunciationEn,
-              numberValue: raw.numberValue,
-              hexCode: raw.hexCode,
-              tags: raw.tags,
-            }));
-        }
-      }
-    }
+  /** "Tüm Üniteler" seçeneğini değiştir */
+  const handleToggleAllUnits = async (checked: boolean) => {
+    setIsAllUnits(checked);
+    const validIds = availableUnits.map((u) => u.id);
+    const nextSelected = checked ? validIds : [];
+    setSelectedUnits(nextSelected);
+
+    const loaded = await loadFilteredItems(checked, nextSelected, completedUnitIds);
     setItems(loaded);
+  };
 
-    if (loaded.length === 0) {
-      setPhase("select");
-      setScore(0);
-      return;
+  /** Tekil ünite seçimini değiştir */
+  const handleToggleUnit = async (unitId: string) => {
+    if (isAllUnits) return; // Tüm üniteler aktifken kilitli
+    let next: string[];
+    if (selectedUnits.includes(unitId)) {
+      next = selectedUnits.filter((id) => id !== unitId);
+    } else {
+      next = [...selectedUnits, unitId];
     }
 
-    if (phase === "active") {
-      initExerciseWith(loaded, exerciseType);
-    } else if (phase === "result") {
-      setPhase("select");
-      setScore(0);
+    // Eğer tamamlanmış tüm üniteler tek tek seçildiyse "Tüm Üniteler"e dön
+    const allAvailableSelected =
+      availableUnits.length > 0 &&
+      availableUnits.every((u) => next.includes(u.id));
+
+    if (allAvailableSelected) {
+      setIsAllUnits(true);
+      setSelectedUnits(availableUnits.map((u) => u.id));
+      const loaded = await loadFilteredItems(true, availableUnits.map((u) => u.id), completedUnitIds);
+      setItems(loaded);
+    } else {
+      setSelectedUnits(next);
+      const loaded = await loadFilteredItems(false, next, completedUnitIds);
+      setItems(loaded);
     }
   };
 
@@ -263,7 +330,39 @@ export default function PracticePage() {
   }, [items, exerciseType, initExerciseWith]);
 
   /* ========================================
-     ÇOKTAN SEÇMELİ
+     KARIŞIK MOD (MIXED) HANDLERLARI
+     ======================================== */
+  const settleMixed = async (
+    correct: boolean,
+    type: "multipleChoice" | "fillBlank" | "listening",
+    itemId: string,
+    questionData: Record<string, unknown>,
+    userAnswer: string,
+    correctAnswer: string
+  ) => {
+    setMixedIsCorrect(correct);
+    setMixedRevealed(true);
+    if (correct) {
+      setScore((s) => s + 1);
+      await removeMistakeByKey(type, itemId);
+    } else {
+      await recordMistake({ exerciseType: type, itemId, questionData, userAnswer, correctAnswer });
+    }
+  };
+
+  const handleMixedNext = () => {
+    if (mixedIndex + 1 >= mixedQuestions.length) {
+      setPhase("result");
+    } else {
+      const nextIdx = mixedIndex + 1;
+      setMixedIndex(nextIdx);
+      prepareMixedQuestion(mixedQuestions[nextIdx]);
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  };
+
+  /* ========================================
+     TEKİL ÇOKTAN SEÇMELİ HANDLERLARI
      ======================================== */
   const handleMcSelect = async (idx: number) => {
     if (mcRevealed) return;
@@ -295,7 +394,7 @@ export default function PracticePage() {
   };
 
   /* ========================================
-     BOŞLUK DOLDURMA
+     TEKİL BOŞLUK DOLDURMA HANDLERLARI
      ======================================== */
   const handleFbCheck = async () => {
     if (fbRevealed) return;
@@ -330,15 +429,13 @@ export default function PracticePage() {
   };
 
   /* ========================================
-     EŞLEŞTİRME
+     TEKİL EŞLEŞTİRME HANDLERLARI
      ======================================== */
   const handleMatchLeft = (id: string) => {
     if (matchedIds.has(id)) return;
     setMatchSelectedLeft(id);
     setMatchWrong(false);
 
-    // Eşleştirmede sol sütundaki Rusça kelimeye tıklanınca otomatik speak(ruText, "ru-RU")
-    // Seslendirme ayarı (showPronunciation) kapalıysa ses çalmaz
     if (Boolean(showPronunciation) && isTTSSupported()) {
       const pair = matchData?.pairs.find((p) => p.id === id);
       if (pair?.ru) {
@@ -399,7 +496,7 @@ export default function PracticePage() {
   };
 
   /* ========================================
-     DİNLEME
+     TEKİL DİNLEME HANDLERLARI
      ======================================== */
   const handleListenPlay = () => {
     const q = listenQuestions[listenIndex];
@@ -438,41 +535,108 @@ export default function PracticePage() {
     }
   };
 
-  /** Üst ünite seçici bileşeni — oturum aktifken (phase === "active") gizlenip bilgi metni gösterilir */
-  const isSessionActive = phase === "active";
-  const selectedUnit = units.find((u) => u.id === selectedUnitId);
-  const activeUnitTitle =
-    selectedUnitId === "all"
-      ? t.practicingAllUnits
-      : selectedUnit
-        ? `${t.unit}: ${getUnitTitle(selectedUnit, uiLang)}`
-        : t.practicingAllUnits;
+  /** Çoklu ünite tetikleyici başlık metni */
+  let triggerTitle = t.allUnitsSelected;
+  if (isAllUnits) {
+    triggerTitle = `${t.allUnitsSelected} (${availableUnits.length} ${t.unit})`;
+  } else if (selectedUnits.length === 1) {
+    const u = availableUnits.find((unit) => unit.id === selectedUnits[0]);
+    triggerTitle = u ? `${getUnitTitle(u, uiLang)} (${u.level})` : t.selectUnits;
+  } else if (selectedUnits.length > 1) {
+    triggerTitle = `${selectedUnits.length} ${t.unit} ${t.multipleUnitsSelected}`;
+  } else {
+    triggerTitle = `${t.selectUnits} (0)`;
+  }
 
+  const isSessionActive = phase === "active";
+
+  /** Çoklu Ünite Seçici Bileşeni */
   const unitFilterSelector = (
     <div className="practice-unit-filter">
       {isSessionActive ? (
-        <span className="practice-unit-active-badge">{activeUnitTitle}</span>
+        <span className="practice-unit-active-badge">
+          {isAllUnits
+            ? t.practicingAllUnits
+            : `${selectedUnits.length} ${t.unit} (${t.practicingUnit})`}
+        </span>
       ) : (
         <>
-          <label htmlFor="unit-filter-select" className="practice-unit-filter-label">
-            {t.selectUnit}:
-          </label>
-          <select
-            id="unit-filter-select"
-            className="practice-unit-select"
-            value={selectedUnitId}
-            onChange={(e) => handleUnitChange(e.target.value)}
-          >
-            <option value="all">{t.allUnits}</option>
-            {units.map((u) => {
-              const isCompleted = completedUnitIds.has(u.id);
-              return (
-                <option key={u.id} value={u.id} disabled={!isCompleted}>
-                  {getUnitTitle(u, uiLang)} ({u.level}){!isCompleted ? ` — ${t.locked}` : ""}
-                </option>
-              );
-            })}
-          </select>
+          <span className="practice-unit-filter-label">{t.selectUnits}:</span>
+          <div className="practice-multi-container" ref={dropdownRef}>
+            <button
+              type="button"
+              className="practice-multi-trigger"
+              onClick={() => setDropdownOpen((prev) => !prev)}
+            >
+              <span className="practice-multi-trigger-text">{triggerTitle}</span>
+              <svg
+                className={`practice-multi-chevron ${dropdownOpen ? "practice-multi-chevron-open" : ""}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            {dropdownOpen && (
+              <div className="practice-multi-dropdown">
+                {/* Tüm Üniteler seçeneği */}
+                <label className="practice-multi-item practice-multi-item-all">
+                  <input
+                    type="checkbox"
+                    className="practice-multi-checkbox"
+                    checked={isAllUnits}
+                    onChange={(e) => handleToggleAllUnits(e.target.checked)}
+                  />
+                  <span className="practice-multi-label">{t.allUnitsSelected}</span>
+                  <span className="practice-multi-badge">{availableUnits.length} {t.unit}</span>
+                </label>
+
+                <div className="practice-multi-divider" />
+
+                {/* Ünite listesi */}
+                <div className="practice-multi-list">
+                  {availableUnits.length === 0 ? (
+                    <div style={{ padding: "0.5rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>
+                      {t.mustCompleteLessonFirst}
+                    </div>
+                  ) : (
+                    availableUnits.map((u) => {
+                      const checked = isAllUnits || selectedUnits.includes(u.id);
+                      return (
+                        <label
+                          key={u.id}
+                          className={`practice-multi-item ${isAllUnits ? "practice-multi-item-locked" : ""}`}
+                        >
+                          <input
+                            type="checkbox"
+                            className="practice-multi-checkbox"
+                            checked={checked}
+                            disabled={isAllUnits}
+                            onChange={() => handleToggleUnit(u.id)}
+                          />
+                          <span className="practice-multi-label">{getUnitTitle(u, uiLang)}</span>
+                          <span className="practice-multi-badge">{u.level}</span>
+                        </label>
+                      );
+                    })
+                  )}
+                </div>
+
+                <div className="practice-multi-footer">
+                  <button
+                    type="button"
+                    className="practice-multi-done-btn"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    {t.save}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>
@@ -494,13 +658,15 @@ export default function PracticePage() {
      ======================================== */
   if (phase === "result") {
     const total =
-      exerciseType === "multipleChoice"
-        ? mcQuestions.length
-        : exerciseType === "fillBlank"
-          ? fbQuestions.length
-          : exerciseType === "matching"
-            ? (matchData?.pairs.length ?? 0)
-            : listenQuestions.length;
+      exerciseType === "mixed"
+        ? mixedQuestions.length
+        : exerciseType === "multipleChoice"
+          ? mcQuestions.length
+          : exerciseType === "fillBlank"
+            ? fbQuestions.length
+            : exerciseType === "matching"
+              ? (matchData?.pairs.length ?? 0)
+              : listenQuestions.length;
     const pct = total > 0 ? Math.round((score / total) * 100) : 0;
 
     return (
@@ -568,6 +734,34 @@ export default function PracticePage() {
           </div>
         ) : (
           <>
+            {/* Büyükçe Mixed Mode (Karışık Mod) Kartı */}
+            <div className="practice-mixed-container">
+              <button
+                type="button"
+                className={`practice-mixed-card ${exerciseType === "mixed" ? "practice-mixed-active" : ""}`}
+                onClick={() => setExerciseType("mixed")}
+              >
+                <div className="practice-mixed-left">
+                  <span className="practice-mixed-icon">🎲</span>
+                  <div className="practice-mixed-text">
+                    <div className="practice-mixed-title-row">
+                      <span className="practice-mixed-title">{t.mixedMode}</span>
+                      <span className="practice-mixed-badge">10 {uiLang === "tr" ? "Soru" : "Questions"}</span>
+                    </div>
+                    <span className="practice-mixed-desc">
+                      {uiLang === "tr"
+                        ? "Çoktan seçmeli, boşluk doldurma, eşleştirme ve dinleme sorularını rastgele harmanlar."
+                        : "Randomly blends multiple choice, fill in the blank, matching, and listening."}
+                    </span>
+                  </div>
+                </div>
+                <div className="practice-mixed-radio">
+                  <span className={`practice-radio-dot ${exerciseType === "mixed" ? "practice-radio-dot-active" : ""}`} />
+                </div>
+              </button>
+            </div>
+
+            {/* Tekil Modlar Izgarası */}
             <div className="practice-type-grid">
               {types.map((tp) => (
                 <button
@@ -603,7 +797,9 @@ export default function PracticePage() {
           <Link
             href="/practice/mistakes"
             className={`mistakes-banner-link ${mistakeCount === 0 ? "mistakes-banner-disabled" : ""}`}
-            onClick={(e) => { if (mistakeCount === 0) e.preventDefault(); }}
+            onClick={(e) => {
+              if (mistakeCount === 0) e.preventDefault();
+            }}
           >
             <span className="mistakes-banner-icon">📝</span>
             <span className="mistakes-banner-text">
@@ -618,7 +814,351 @@ export default function PracticePage() {
   }
 
   /* ========================================
-     RENDER — Çoktan Seçmeli
+     RENDER — KARIŞIK MOD (MIXED)
+     ======================================== */
+  if (exerciseType === "mixed" && mixedQuestions.length > 0) {
+    const q = mixedQuestions[mixedIndex];
+
+    const typeLabel =
+      q.kind === "multipleChoice"
+        ? t.multipleChoice
+        : q.kind === "fillBlank"
+          ? t.fillBlank
+          : q.kind === "matching"
+            ? t.matching
+            : t.listening;
+
+    const mixedHeader = (
+      <>
+        {unitFilterSelector}
+        <div className="practice-progress-row">
+          <span className="review-progress">{mixedIndex + 1} / {mixedQuestions.length}</span>
+          <span className="practice-type-badge">{t.mixedMode} — {typeLabel}</span>
+        </div>
+        <div className="review-progress-bar">
+          <div className="review-progress-fill" style={{ width: `${(mixedIndex / mixedQuestions.length) * 100}%` }} />
+        </div>
+      </>
+    );
+
+    const mixedFeedback = (item: Item | null, wrongText?: string) => (
+      <div className="practice-feedback">
+        <div>
+          <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
+            {mixedIsCorrect ? t.correct : wrongText ? `${t.wrong} — ${t.showCorrect}: ${wrongText}` : t.wrong}
+          </span>
+          {item && (
+            <span className="feedback-meaning">
+              {" "} — {item.ru} {t.meaningEquals} {getMeaning(item, translationLang)}
+            </span>
+          )}
+          {item && shouldShowPronunciation(mixedRevealed) && (
+            <PronunciationText item={item} className="pronunciation-inline" />
+          )}
+        </div>
+        <button className="practice-btn practice-btn-primary" onClick={handleMixedNext}>
+          {t.next}
+        </button>
+      </div>
+    );
+
+    // Mixed — Çoktan Seçmeli
+    if (q.kind === "multipleChoice") {
+      const mc = q.data;
+      const ruQuestion = mc.direction !== "target-to-ru";
+
+      const handleSelect = async (idx: number) => {
+        if (mixedRevealed) return;
+        setMixedMcSelected(idx);
+        await settleMixed(
+          idx === mc.correctIndex,
+          "multipleChoice",
+          mc.item.id,
+          { question: mc.question, options: mc.options, correctIndex: mc.correctIndex, direction: mc.direction },
+          mc.options[idx],
+          mc.options[mc.correctIndex]
+        );
+      };
+
+      return (
+        <div className="page-container">
+          {mixedHeader}
+          <div className="flashcard">
+            {(mc.item.hexCode || getUnitById(mc.item.unitId)?.items.find((i) => i.id === mc.item.id)?.hexCode) && (
+              <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
+                <div 
+                  className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
+                  style={{
+                    backgroundColor: mc.item.hexCode || getUnitById(mc.item.unitId)?.items.find((i) => i.id === mc.item.id)?.hexCode,
+                    width: "2rem",
+                    height: "2rem",
+                    minWidth: "2rem",
+                    minHeight: "2rem",
+                    borderRadius: "0.375rem",
+                    border: "1px solid #9ca3af",
+                  }} 
+                  title={mc.item.en || mc.item.ru}
+                />
+              </div>
+            )}
+            <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+              <span>{mc.question}</span>
+              {ruQuestion && <SpeakButton text={mc.question} size="sm" />}
+            </div>
+            {ruQuestion && shouldShowPronunciation(mixedRevealed) && <PronunciationText item={mc.item} />}
+            <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
+          </div>
+          <div className="mc-options">
+            {mc.options.map((opt, idx) => {
+              let cls = "mc-option";
+              if (mixedRevealed) {
+                if (idx === mc.correctIndex) cls += " mc-option-correct";
+                else if (idx === mixedMcSelected) cls += " mc-option-wrong";
+              } else if (idx === mixedMcSelected) {
+                cls += " mc-option-selected";
+              }
+              return (
+                <button key={idx} className={cls} onClick={() => handleSelect(idx)} disabled={mixedRevealed}>
+                  {opt}
+                </button>
+              );
+            })}
+          </div>
+          {mixedRevealed && mixedFeedback(mc.item)}
+        </div>
+      );
+    }
+
+    // Mixed — Boşluk Doldurma
+    if (q.kind === "fillBlank") {
+      const fb = q.data;
+      const handleCheck = async () => {
+        if (mixedRevealed) return;
+        const correct = mixedAnswer.trim().toLowerCase() === fb.correctWord.toLowerCase();
+        await settleMixed(
+          correct,
+          "fillBlank",
+          fb.item.id,
+          { sentenceWithBlank: fb.sentenceWithBlank, correctWord: fb.correctWord, hint: fb.hint, fullTranslation: fb.fullTranslation },
+          mixedAnswer.trim(),
+          fb.correctWord
+        );
+      };
+
+      return (
+        <div className="page-container">
+          {mixedHeader}
+          <div className="flashcard">
+            {(fb.item.hexCode || getUnitById(fb.item.unitId)?.items.find((i) => i.id === fb.item.id)?.hexCode) && (
+              <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
+                <div 
+                  className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
+                  style={{
+                    backgroundColor: fb.item.hexCode || getUnitById(fb.item.unitId)?.items.find((i) => i.id === fb.item.id)?.hexCode,
+                    width: "2rem",
+                    height: "2rem",
+                    minWidth: "2rem",
+                    minHeight: "2rem",
+                    borderRadius: "0.375rem",
+                    border: "1px solid #9ca3af",
+                  }} 
+                  title={fb.item.en || fb.item.ru}
+                />
+              </div>
+            )}
+            <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+              <span>{fb.sentenceWithBlank}</span>
+              <SpeakButton text={fb.sentenceWithBlank} size="sm" />
+            </div>
+            {shouldShowPronunciation(mixedRevealed) && <PronunciationText item={fb.item} />}
+            {(fb.fullTranslation || fb.hintSentence) && (
+              <p className="practice-hint">
+                {renderHighlightedText(fb.fullTranslation || fb.hintSentence, mixedRevealed)}
+              </p>
+            )}
+          </div>
+          <div className="practice-input-row">
+            <input
+              ref={inputRef}
+              type="text"
+              className="practice-input"
+              value={mixedAnswer}
+              onChange={(e) => setMixedAnswer(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && !mixedRevealed) handleCheck(); }}
+              placeholder={t.typeYourAnswer}
+              disabled={mixedRevealed}
+              autoFocus
+            />
+            {!mixedRevealed && (
+              <button className="practice-btn practice-btn-primary" onClick={handleCheck}>{t.check}</button>
+            )}
+          </div>
+          {mixedRevealed && mixedFeedback(fb.item, fb.correctWord)}
+        </div>
+      );
+    }
+
+    // Mixed — Eşleştirme
+    if (q.kind === "matching") {
+      const pairs = q.data.pairs;
+
+      const tryMatch = async (leftId: string, rightId: string) => {
+        if (leftId === rightId) {
+          const updated = new Set(mixedMatchedIds);
+          updated.add(leftId);
+          setMixedMatchedIds(updated);
+          setMixedMatchLeft(null);
+          setMixedMatchRight(null);
+          await removeMistakeByKey("matching", leftId);
+
+          if (updated.size >= pairs.length) {
+            const correct = !mixedMatchHadError;
+            setMixedIsCorrect(correct);
+            setMixedRevealed(true);
+            if (correct) setScore((s) => s + 1);
+          }
+        } else {
+          setMixedMatchWrong(true);
+          setMixedMatchHadError(true);
+          const leftPair = pairs.find((p) => p.id === leftId);
+          const rightPair = pairs.find((p) => p.id === rightId);
+          if (leftPair) {
+            await recordMistake({
+              exerciseType: "matching",
+              itemId: leftPair.id,
+              questionData: { ru: leftPair.ru, translation: leftPair.translation },
+              userAnswer: rightPair?.translation || "",
+              correctAnswer: leftPair.translation,
+            });
+          }
+          setTimeout(() => {
+            setMixedMatchLeft(null);
+            setMixedMatchRight(null);
+            setMixedMatchWrong(false);
+          }, 600);
+        }
+      };
+
+      const handleLeft = (id: string) => {
+        if (mixedMatchedIds.has(id)) return;
+        setMixedMatchLeft(id);
+        setMixedMatchWrong(false);
+        if (Boolean(showPronunciation) && isTTSSupported()) {
+          const pair = pairs.find((p) => p.id === id);
+          if (pair?.ru) speak(pair.ru, "ru-RU");
+        }
+        if (mixedMatchRight !== null) tryMatch(id, mixedMatchRight);
+      };
+
+      const handleRight = (id: string) => {
+        if (mixedMatchedIds.has(id)) return;
+        setMixedMatchRight(id);
+        setMixedMatchWrong(false);
+        if (mixedMatchLeft !== null) tryMatch(mixedMatchLeft, id);
+      };
+
+      return (
+        <div className="page-container">
+          {mixedHeader}
+          <p className="practice-instruction" style={{ textAlign: "center", marginBottom: "1.5rem" }}>{t.matchPairs}</p>
+          <div className="match-grid">
+            <div className="match-column">
+              {pairs.map((p) => {
+                const done = mixedMatchedIds.has(p.id);
+                let cls = "match-item";
+                if (done) cls += " match-item-matched";
+                else if (mixedMatchLeft === p.id) cls += mixedMatchWrong ? " match-item-wrong" : " match-item-selected";
+                return (
+                  <button key={p.id} className={cls} onClick={() => handleLeft(p.id)} disabled={done}>
+                    {p.ru}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="match-column">
+              {mixedMatchRightOrder.map((it) => {
+                const done = mixedMatchedIds.has(it.id);
+                let cls = "match-item";
+                if (done) cls += " match-item-matched";
+                else if (mixedMatchRight === it.id) cls += mixedMatchWrong ? " match-item-wrong" : " match-item-selected";
+                return (
+                  <button key={`r-${it.id}`} className={cls} onClick={() => handleRight(it.id)} disabled={done}>
+                    {it.translation}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          {mixedRevealed && (
+            <div className="practice-feedback" style={{ marginTop: "1.5rem" }}>
+              <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
+                {mixedIsCorrect ? t.correct : t.wrong}
+              </span>
+              <button className="practice-btn practice-btn-primary" onClick={handleMixedNext}>
+                {t.next}
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Mixed — Dinleme
+    if (q.kind === "listening") {
+      const lis = q.data;
+      const handlePlay = () => speak(lis.correctWord);
+      const handleCheck = async () => {
+        if (mixedRevealed) return;
+        const correct = mixedAnswer.trim().toLowerCase() === lis.correctWord.toLowerCase();
+        await settleMixed(
+          correct,
+          "listening",
+          lis.item.id,
+          { correctWord: lis.correctWord },
+          mixedAnswer.trim(),
+          lis.correctWord
+        );
+      };
+
+      return (
+        <div className="page-container">
+          {mixedHeader}
+          <div className="flashcard">
+            <div className="listen-btns">
+              <button className="listen-play-btn" onClick={handlePlay}>
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} width={28} height={28}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.5l5-4v15l-5-4H4a1 1 0 01-1-1v-5a1 1 0 011-1h2.5z" />
+                </svg>
+                {t.play}
+              </button>
+              <button className="listen-replay-btn" onClick={handlePlay}>{t.replay}</button>
+            </div>
+            <p className="practice-instruction">{t.listenAndType}</p>
+          </div>
+          <div className="practice-input-row">
+            <input
+              ref={inputRef}
+              type="text"
+              className="practice-input"
+              value={mixedAnswer}
+              onChange={(e) => setMixedAnswer(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter" && !mixedRevealed) handleCheck(); }}
+              placeholder={t.typeYourAnswer}
+              disabled={mixedRevealed}
+              autoFocus
+            />
+            {!mixedRevealed && (
+              <button className="practice-btn practice-btn-primary" onClick={handleCheck}>{t.check}</button>
+            )}
+          </div>
+          {mixedRevealed && mixedFeedback(lis.item, lis.correctWord)}
+        </div>
+      );
+    }
+  }
+
+  /* ========================================
+     RENDER — Tekil Çoktan Seçmeli
      ======================================== */
   if (exerciseType === "multipleChoice" && mcQuestions.length > 0) {
     const q = mcQuestions[mcIndex];
@@ -701,7 +1241,7 @@ export default function PracticePage() {
   }
 
   /* ========================================
-     RENDER — Boşluk Doldurma
+     RENDER — Tekil Boşluk Doldurma
      ======================================== */
   if (exerciseType === "fillBlank" && fbQuestions.length > 0) {
     const q = fbQuestions[fbIndex];
@@ -785,7 +1325,7 @@ export default function PracticePage() {
   }
 
   /* ========================================
-     RENDER — Eşleştirme
+     RENDER — Tekil Eşleştirme
      ======================================== */
   if (exerciseType === "matching" && matchData) {
     return (
@@ -839,7 +1379,7 @@ export default function PracticePage() {
   }
 
   /* ========================================
-     RENDER — Dinleme
+     RENDER — Tekil Dinleme
      ======================================== */
   if (exerciseType === "listening" && listenQuestions.length > 0) {
     return (
