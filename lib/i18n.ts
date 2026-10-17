@@ -122,8 +122,6 @@ export interface Messages {
   retry: string;
   backToUnit: string;
   startTest: string;
-  startPractice: string;
-  unitPractice: string;
   unitTest: string;
 
   // Meaning feedback
@@ -292,8 +290,6 @@ const messages: Record<Lang, Messages> = {
     retry: "Tekrar Dene",
     backToUnit: "Üniteye Dön",
     startTest: "Teste Başla",
-    startPractice: "Alıştırmaya Başla",
-    unitPractice: "Ünite Alıştırması",
     unitTest: "Ünite Testi",
 
     meaningEquals: "=",
@@ -457,8 +453,6 @@ const messages: Record<Lang, Messages> = {
     retry: "Retry",
     backToUnit: "Back to Unit",
     startTest: "Start Test",
-    startPractice: "Start Practice",
-    unitPractice: "Unit Practice",
     unitTest: "Unit Test",
 
     meaningEquals: "=",

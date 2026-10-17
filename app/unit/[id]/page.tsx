@@ -375,37 +375,10 @@ export default function UnitPage() {
           </div>
         ) : (
           <>
-            {/* 2. Alıştırma (sadece kelime içeren ünitelerde) */}
-            <div className={`unit-phase-card ${!isLessonCompleted ? "unit-phase-locked" : ""}`}>
-              <div className="unit-phase-header">
-                <span className="unit-phase-number">2</span>
-                <span className="unit-phase-title">{t.practice}</span>
-                {!isLessonCompleted && (
-                  <span className="unit-status-badge unit-status-locked" title={t.mustCompleteLessonFirst}>
-                    {t.locked}
-                  </span>
-                )}
-              </div>
-              {isLessonCompleted ? (
-                <Link href={`/unit/${unit.id}/practice`} className="practice-btn practice-btn-primary">
-                  {t.startPractice}
-                </Link>
-              ) : (
-                <button
-                  type="button"
-                  disabled
-                  className="practice-btn practice-btn-disabled"
-                  title={t.mustCompleteLessonFirst}
-                >
-                  {t.startPractice}
-                </button>
-              )}
-            </div>
-
-            {/* 3. Test (sadece kelime içeren ünitelerde) */}
+            {/* 2. Test (sadece kelime içeren ünitelerde) */}
             <div className={`unit-phase-card ${progress?.testDone ? "unit-phase-done" : ""} ${!isLessonCompleted ? "unit-phase-locked" : ""}`}>
               <div className="unit-phase-header">
-                <span className="unit-phase-number">3</span>
+                <span className="unit-phase-number">2</span>
                 <span className="unit-phase-title">{t.test}</span>
                 {!isLessonCompleted ? (
                   <span className="unit-status-badge unit-status-locked" title={t.mustCompleteLessonFirst}>
@@ -436,10 +409,10 @@ export default function UnitPage() {
               )}
             </div>
 
-            {/* 4. Tekrar / Review (sadece kelime içeren ünitelerde) */}
+            {/* 3. Tekrar / Review (sadece kelime içeren ünitelerde) */}
             <div className={`unit-phase-card ${!isLessonCompleted ? "unit-phase-locked" : ""}`}>
               <div className="unit-phase-header">
-                <span className="unit-phase-number">4</span>
+                <span className="unit-phase-number">3</span>
                 <span className="unit-phase-title">{t.review}</span>
                 {!isLessonCompleted && (
                   <span className="unit-status-badge unit-status-locked" title={t.mustCompleteLessonFirst}>

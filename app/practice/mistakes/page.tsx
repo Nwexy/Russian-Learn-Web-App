@@ -27,6 +27,7 @@ export default function MistakesPage() {
   const t = getMessages(uiLang);
 
   const [mistakes, setMistakes] = useState<Mistake[]>([]);
+  const [initialMistakes, setInitialMistakes] = useState<Mistake[]>([]);
   const [itemsMap, setItemsMap] = useState<Map<string, Item>>(new Map());
   const [loading, setLoading] = useState(true);
   const [phase, setPhase] = useState<Phase>("list");
@@ -50,6 +51,7 @@ export default function MistakesPage() {
     async function load() {
       const all = await getAllMistakes();
       setMistakes(all);
+      setInitialMistakes(all);
       const allItems = await db.items.toArray();
       const map = new Map<string, Item>();
       allItems.forEach((i) => map.set(i.id, i));
@@ -62,10 +64,10 @@ export default function MistakesPage() {
 
   /** Tekrarı başlat */
   const startReview = () => {
-    if (mistakes.length === 0) return;
+    if (initialMistakes.length === 0) return;
     setCurrentIndex(0);
     setScore(0);
-    setTotalAsked(mistakes.length);
+    setTotalAsked(initialMistakes.length);
     setPhase("active");
     resetQuestion();
   };
@@ -80,11 +82,11 @@ export default function MistakesPage() {
 
   /** Sonraki soruya geç */
   const nextQuestion = async () => {
-    // Mevcut listeyi yeniden çek (silinmiş olabilir)
+    // Veritabanındaki güncel kalan yanlışları al (sonuç ekranında kalan yanlış sayısını göstermek için)
     const fresh = await getAllMistakes();
     setMistakes(fresh);
 
-    if (currentIndex + 1 >= totalAsked || fresh.length === 0) {
+    if (currentIndex + 1 >= initialMistakes.length) {
       setPhase("result");
     } else {
       setCurrentIndex((i) => i + 1);
@@ -151,9 +153,13 @@ export default function MistakesPage() {
             {remaining > 0 && (
               <button
                 className="practice-btn practice-btn-primary"
-                onClick={() => {
+                onClick={async () => {
+                  const fresh = await getAllMistakes();
+                  setMistakes(fresh);
+                  setInitialMistakes(fresh);
                   setPhase("list");
                   setScore(0);
+                  setCurrentIndex(0);
                 }}
               >
                 {t.tryAgain}
@@ -213,13 +219,12 @@ export default function MistakesPage() {
      RENDER — Aktif soru
      ======================================== */
   // Güvenlik: index aşımını kontrol et
-  if (currentIndex >= mistakes.length) {
-    // Tüm sorular silinmiş olabilir
+  if (currentIndex >= initialMistakes.length) {
     setPhase("result");
     return null;
   }
 
-  const mistake = mistakes[currentIndex];
+  const mistake = initialMistakes[currentIndex];
   const qd = mistake.questionData;
   const currentItem = itemsMap.get(mistake.itemId);
   const itemHex = currentItem?.hexCode || (currentItem ? getUnitById(currentItem.unitId)?.items.find((i) => i.id === currentItem.id)?.hexCode : undefined);

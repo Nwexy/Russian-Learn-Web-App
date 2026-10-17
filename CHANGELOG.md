@@ -4,6 +4,11 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-18
+- Mistakes (Yanlislar) sayfasinda erken bitme hatasi duzeltildi.
+- Unite detay sayfasindaki "Alistirma" butonu kaldirildi (ana menudeki Practice sayfasi yeterli oldugu icin).
+- Unite akisi Ders -> Test -> Tekrar olarak guncellendi.
+
+## 2026-10-18
 - Gramer notlarindaki mini alistirmalarin sorulari ve siklar iki dilli hale getirildi.
 - Arayuz dili Ingilizce secildiginde gramer sorulari artik Ingilizce geliyor.
 
