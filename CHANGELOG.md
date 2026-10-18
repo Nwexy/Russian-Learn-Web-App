@@ -4,6 +4,10 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-18
+- Veri yedekleme (JSON export) ve geri yukleme (JSON import) ozelligi eklendi.
+- Ayarlar sayfasina "Veri Yonetimi" bolumu eklendi.
+
+## 2026-10-18
 - Ev, Sehir, Kiyafetler ve Vucut uniteleri eklendi.
 - Genitif, Datif, Enstrumantal ve Fiil Aspekti gramer notlari eklendi.
 - A1 seviyesi icerik genisletmesi tamamlandi.

@@ -177,6 +177,16 @@ export interface Messages {
   unitLocked: string;
   completePreviousUnitToUnlock: string;
   unitLockedMessage: string;
+
+  // Faz 9 — Veri Yedekleme ve Geri Yukleme
+  dataManagement: string;
+  exportData: string;
+  importData: string;
+  exportSuccess: string;
+  importSuccess: string;
+  importError: string;
+  confirmImportWarning: string;
+  backupVersion: string;
 }
 
 /** Tüm çeviriler */
@@ -343,6 +353,16 @@ const messages: Record<Lang, Messages> = {
     unitLocked: "Ünite Kilitli",
     completePreviousUnitToUnlock: "Devam etmek için önceki üniteyi tamamlayın.",
     unitLockedMessage: "Bu ünite kilitli. Lütfen önceki üniteleri tamamlayın.",
+
+    // Faz 9 — Veri Yedekleme ve Geri Yukleme
+    dataManagement: "Veri Yönetimi",
+    exportData: "Verileri Yedekle (İndir)",
+    importData: "Yedekten Geri Yükle",
+    exportSuccess: "Yedek dosyası başarıyla indirildi.",
+    importSuccess: "Veriler başarıyla geri yüklendi. Sayfa yenileniyor...",
+    importError: "Geçersiz yedek dosyası veya yükleme hatası.",
+    confirmImportWarning: "Dikkat! Mevcut tüm ilerlemeniz silinecek ve seçtiğiniz dosyadaki veriler yüklenecektir. Onaylıyor musunuz?",
+    backupVersion: "Yedek Sürümü",
   },
   en: {
     appName: "Learning Russian",
@@ -506,6 +526,16 @@ const messages: Record<Lang, Messages> = {
     unitLocked: "Unit Locked",
     completePreviousUnitToUnlock: "Complete the previous unit to continue.",
     unitLockedMessage: "This unit is locked. Please complete the previous units first.",
+
+    // Faz 9 — Data Backup & Restore
+    dataManagement: "Data Management",
+    exportData: "Export Data",
+    importData: "Import Data",
+    exportSuccess: "Backup file downloaded successfully.",
+    importSuccess: "Data restored successfully. Reloading page...",
+    importError: "Invalid backup file or restore failed.",
+    confirmImportWarning: "Warning! All your current progress will be deleted and data from the selected file will be restored. Do you want to continue?",
+    backupVersion: "Backup Version",
   },
 };
 

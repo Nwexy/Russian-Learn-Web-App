@@ -6,11 +6,12 @@
 
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { clearAllMistakes } from "@/lib/mistakes";
+import { exportData, importData } from "@/lib/backup";
 import { FlagTr, FlagUs } from "@/components/icons/flag-icons";
 import type { Lang } from "@/types";
 
@@ -20,12 +21,85 @@ export default function SettingsPage() {
   const t = getMessages(uiLang);
   const [cleared, setCleared] = useState(false);
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isImporting, setIsImporting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
+
   const handleClearMistakes = async () => {
     const confirmed = window.confirm(t.confirmClear);
     if (!confirmed) return;
     await clearAllMistakes();
     setCleared(true);
     setTimeout(() => setCleared(false), 3000);
+  };
+
+  const handleExport = async () => {
+    try {
+      setIsExporting(true);
+      await exportData();
+      setStatusMessage({ type: "success", text: t.exportSuccess });
+      setTimeout(() => setStatusMessage(null), 4000);
+    } catch (err: unknown) {
+      console.error("Export error:", err);
+      setStatusMessage({
+        type: "error",
+        text: err instanceof Error ? err.message : t.importError,
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleImportClick = () => {
+    const confirmed = window.confirm(t.confirmImportWarning);
+    if (!confirmed) return;
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+      fileInputRef.current.click();
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsImporting(true);
+    setStatusMessage(null);
+
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      try {
+        const content = event.target?.result as string;
+        if (!content) {
+          throw new Error(t.importError);
+        }
+        await importData(content);
+        setStatusMessage({ type: "success", text: t.importSuccess });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
+      } catch (err: unknown) {
+        console.error("Import error:", err);
+        const errMsg = err instanceof Error ? err.message : t.importError;
+        setStatusMessage({
+          type: "error",
+          text: `${t.importError} (${errMsg})`,
+        });
+        setIsImporting(false);
+      }
+    };
+
+    reader.onerror = () => {
+      setStatusMessage({ type: "error", text: t.importError });
+      setIsImporting(false);
+    };
+
+    reader.readAsText(file);
   };
 
   return (
@@ -154,6 +228,68 @@ export default function SettingsPage() {
             {cleared ? t.mistakesCleared : t.clearMistakes}
           </button>
         </div>
+      </div>
+
+      {/* Veri Yonetimi / Data Management */}
+      <div className="settings-section">
+        <h2 className="settings-section-title">{t.dataManagement}</h2>
+        <div className="settings-row">
+          <div className="settings-label">
+            <span className="settings-label-text">{t.exportData}</span>
+            <span className="settings-label-desc">
+              {uiLang === "tr"
+                ? "Tüm ilerlemenizi, kelime geçmişinizi ve ayarlarınızı JSON dosyası olarak indirin."
+                : "Download all your progress, vocabulary history, and settings as a JSON file."}
+            </span>
+          </div>
+          <button
+            type="button"
+            className="settings-action-btn"
+            onClick={handleExport}
+            disabled={isExporting}
+          >
+            {t.exportData}
+          </button>
+        </div>
+        <div className="settings-row">
+          <div className="settings-label">
+            <span className="settings-label-text">{t.importData}</span>
+            <span className="settings-label-desc">
+              {uiLang === "tr"
+                ? "Daha önce indirdiğiniz JSON yedek dosyasını yükleyerek tüm verilerinizi geri getirin."
+                : "Upload a previously downloaded JSON backup file to restore all your data."}
+            </span>
+          </div>
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              style={{ display: "none" }}
+              onChange={handleFileChange}
+            />
+            <button
+              type="button"
+              className="settings-action-btn"
+              onClick={handleImportClick}
+              disabled={isImporting}
+            >
+              {t.importData}
+            </button>
+          </div>
+        </div>
+
+        {statusMessage && (
+          <div
+            className={`settings-feedback ${
+              statusMessage.type === "error"
+                ? "settings-feedback-error"
+                : "settings-feedback-success"
+            }`}
+          >
+            {statusMessage.text}
+          </div>
+        )}
       </div>
 
       {/* Hakkında */}
