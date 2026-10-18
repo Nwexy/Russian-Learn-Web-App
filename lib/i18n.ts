@@ -544,7 +544,7 @@ const messages: Record<Lang, Messages> = {
  * Anahtar bulunamazsa anahtarın kendisini döndürür.
  */
 export function getMessage(lang: Lang, key: keyof Messages): string {
-  return messages[lang]?.[key] ?? messages.tr[key] ?? key;
+  return messages[lang]?.[key] ?? messages.en[key] ?? messages.tr[key] ?? key;
 }
 
 /**
@@ -552,5 +552,5 @@ export function getMessage(lang: Lang, key: keyof Messages): string {
  * Bileşen içinde birden fazla mesaj gerektiğinde kullanılır.
  */
 export function getMessages(lang: Lang): Messages {
-  return messages[lang] ?? messages.tr;
+  return messages[lang] ?? messages.en ?? messages.tr;
 }

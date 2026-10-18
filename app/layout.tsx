@@ -20,13 +20,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Rusça Öğren",
-  description: "Yerel çalışan, Rusça öğrenme uygulaması.",
+  title: "Learn Russian",
+  description: "A1-A2 Russian learning app with SRS and grammar.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Rusça",
+    title: "Learn Russian",
   },
 };
 
@@ -37,7 +37,7 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="tr"
+      lang="en"
       className={`${inter.variable} dark`}
       data-scroll-behavior="smooth"
       suppressHydrationWarning

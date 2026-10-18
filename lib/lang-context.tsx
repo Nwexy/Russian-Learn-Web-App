@@ -33,8 +33,8 @@ interface LangContextValue {
 const LangContext = createContext<LangContextValue | undefined>(undefined);
 
 /** Varsayılan diller ve ayarlar */
-const DEFAULT_UI_LANG: Lang = "tr";
-const DEFAULT_TRANSLATION_LANG: Lang = "tr";
+const DEFAULT_UI_LANG: Lang = "en";
+const DEFAULT_TRANSLATION_LANG: Lang = "en";
 const DEFAULT_SHOW_PRONUNCIATION: boolean = true;
 
 export function LangProvider({ children }: { children: ReactNode }) {
