@@ -4,6 +4,11 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-18
+- PWA (Progressive Web App) destegi eklendi (manifest.json ve Service Worker).
+- Uygulama artik mobil cihazlara uygulama olarak eklenebilir.
+- README.md Ingilizce olarak yeniden yazildi ve canli demo linki eklendi.
+
+## 2026-10-18
 - Veri yedekleme (JSON export) ve geri yukleme (JSON import) ozelligi eklendi.
 - Ayarlar sayfasina "Veri Yonetimi" bolumu eklendi.
 

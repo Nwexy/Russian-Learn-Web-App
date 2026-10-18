@@ -16,7 +16,50 @@ import { markViewed, markCompleted, getGrammarProgress } from "@/lib/grammar-pro
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { SpeakButton } from "@/components/SpeakButton";
-import type { GrammarProgress } from "@/types";
+import type { GrammarProgress, MiniExercise } from "@/types";
+
+/** Fisher-Yates karistirma algoritmasi */
+function shuffleArray<T>(array: T[]): T[] {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+/** Sorulari ve her sorunun seceneklerini karistirir, dogru indeksi esler */
+function prepareShuffledExercises(exercises: MiniExercise[]): MiniExercise[] {
+  // 1. Sorularin sirasini karistir
+  const shuffledQuestions = shuffleArray(exercises);
+
+  // 2. Her sorunun seceneklerini karistir ve correctIndex'i guncelle
+  return shuffledQuestions.map((ex) => {
+    const optionsTr = ex.optionsTr || ex.options || [];
+    const optionsEn = ex.optionsEn || ex.options || [];
+    const legacyOptions = ex.options || [];
+
+    const optionCount = Math.max(optionsTr.length, optionsEn.length, legacyOptions.length);
+    if (optionCount <= 1) return ex;
+
+    const indices = Array.from({ length: optionCount }, (_, i) => i);
+    const shuffledIndices = shuffleArray(indices);
+
+    const newOptionsTr = shuffledIndices.map((i) => optionsTr[i] ?? "");
+    const newOptionsEn = shuffledIndices.map((i) => optionsEn[i] ?? "");
+    const newLegacyOptions = legacyOptions.length > 0 ? shuffledIndices.map((i) => legacyOptions[i] ?? "") : undefined;
+
+    const newCorrectIndex = shuffledIndices.indexOf(ex.correctIndex);
+
+    return {
+      ...ex,
+      optionsTr: newOptionsTr,
+      optionsEn: newOptionsEn,
+      options: newLegacyOptions,
+      correctIndex: newCorrectIndex !== -1 ? newCorrectIndex : 0,
+    };
+  });
+}
 
 export default function GrammarDetailPage() {
   const params = useParams<{ id: string }>();
@@ -27,13 +70,14 @@ export default function GrammarDetailPage() {
   const [progress, setProgress] = useState<GrammarProgress | null>(null);
 
   // Mini alıştırma durumları
+  const [activeExercises, setActiveExercises] = useState<MiniExercise[]>([]);
   const [exerciseIndex, setExerciseIndex] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [hasAnswered, setHasAnswered] = useState<boolean>(false);
   const [correctCount, setCorrectCount] = useState<number>(0);
   const [exerciseFinished, setExerciseFinished] = useState<boolean>(false);
 
-  // Sayfa açıldığında görüntülendi olarak işaretle
+  // Sayfa açıldığında görüntülendi olarak işaretle ve sorulari karistir
   useEffect(() => {
     if (!note) return;
     markViewed(note.id).then(() => {
@@ -41,6 +85,17 @@ export default function GrammarDetailPage() {
         if (p) setProgress(p);
       });
     });
+
+    if (note.miniExercises && note.miniExercises.length > 0) {
+      setActiveExercises(prepareShuffledExercises(note.miniExercises));
+    } else {
+      setActiveExercises([]);
+    }
+    setExerciseIndex(0);
+    setSelectedOption(null);
+    setHasAnswered(false);
+    setCorrectCount(0);
+    setExerciseFinished(false);
   }, [note]);
 
   if (!note) {
@@ -62,7 +117,7 @@ export default function GrammarDetailPage() {
   }
 
   const title = uiLang === "tr" ? note.titleTr : note.titleEn;
-  const exercises = note.miniExercises || [];
+  const exercises = activeExercises.length > 0 ? activeExercises : (note.miniExercises || []);
   const currentEx = exercises[exerciseIndex];
 
   // Seçenek tıklama
@@ -94,8 +149,11 @@ export default function GrammarDetailPage() {
     }
   };
 
-  // Alıştırmayı sıfırla
+  // Alıştırmayı sıfırla ve yeniden karistir
   const handleRestartExercise = () => {
+    if (note?.miniExercises && note.miniExercises.length > 0) {
+      setActiveExercises(prepareShuffledExercises(note.miniExercises));
+    }
     setExerciseIndex(0);
     setSelectedOption(null);
     setHasAnswered(false);

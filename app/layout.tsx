@@ -12,6 +12,7 @@ import { LangProvider } from "@/lib/lang-context";
 import { DatabaseInit } from "@/components/database-init";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { PwaRegister } from "@/components/pwa-register";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -21,6 +22,12 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Rusça Öğren",
   description: "Yerel çalışan, Rusça öğrenme uygulaması.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Rusça",
+  },
 };
 
 export default function RootLayout({
@@ -35,7 +42,15 @@ export default function RootLayout({
       data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#6d28d9" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+      </head>
       <body className="min-h-screen flex flex-col antialiased">
+        <PwaRegister />
         <ThemeProvider>
           <LangProvider>
             <DatabaseInit />
