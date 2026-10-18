@@ -1,0 +1,152 @@
+{
+  "id": "unit-13",
+  "titleTr": "Kıyafetler",
+  "titleEn": "Clothes",
+  "level": "A1",
+  "items": [
+    {
+      "id": "clothes-01",
+      "type": "word",
+      "ru": "одежда",
+      "tr": "kıyafet",
+      "en": "clothes",
+      "pronunciationEn": "ah-DYEZH-da",
+      "exampleRu": "В этом магазине продаётся стильная одежда.",
+      "exampleTr": "Bu mağazada şık kıyafetler satılıyor.",
+      "exampleEn": "Stylish clothes are sold in this store.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-02",
+      "type": "word",
+      "ru": "футболка",
+      "tr": "tişört",
+      "en": "T-shirt",
+      "pronunciationEn": "foot-BOHL-ka",
+      "exampleRu": "Летом я ношу белую хлопковую футболку.",
+      "exampleTr": "Yazın beyaz pamuklu bir tişört giyerim.",
+      "exampleEn": "In summer I wear a white cotton T-shirt.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-03",
+      "type": "word",
+      "ru": "рубашка",
+      "tr": "gömlek",
+      "en": "shirt",
+      "pronunciationEn": "roo-BAHSH-ka",
+      "exampleRu": "Для работы мне нужна чистая рубашка.",
+      "exampleTr": "İş için bana temiz bir gömlek lazım.",
+      "exampleEn": "I need a clean shirt for work.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-04",
+      "type": "word",
+      "ru": "штаны",
+      "tr": "pantolon",
+      "en": "pants/trousers",
+      "pronunciationEn": "shta-NIH",
+      "exampleRu": "Эти тёмные штаны очень удобные.",
+      "exampleTr": "Bu koyu renk pantolon çok rahat.",
+      "exampleEn": "These dark pants are very comfortable.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-05",
+      "type": "word",
+      "ru": "обувь",
+      "tr": "ayakkabı",
+      "en": "footwear/shoes",
+      "pronunciationEn": "OH-boof'",
+      "exampleRu": "Здесь продаётся удобная зимняя обувь.",
+      "exampleTr": "Burada rahat kışlık ayakkabılar satılıyor.",
+      "exampleEn": "Comfortable winter footwear is sold here.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-06",
+      "type": "word",
+      "ru": "куртка",
+      "tr": "ceket/mont",
+      "en": "jacket",
+      "pronunciationEn": "KOOR-tka",
+      "exampleRu": "Осенью мне нужна тёплая куртка.",
+      "exampleTr": "Sonbaharda bana sıcak bir mont lazım.",
+      "exampleEn": "In autumn I need a warm jacket.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-07",
+      "type": "word",
+      "ru": "шапка",
+      "tr": "şapka/bere",
+      "en": "beanie/hat",
+      "pronunciationEn": "SHAHP-ka",
+      "exampleRu": "Зимой обязательно надень тёплую шапку.",
+      "exampleTr": "Kışın mutlaka sıcak bir bere tak.",
+      "exampleEn": "In winter, be sure to put on a warm hat.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-08",
+      "type": "word",
+      "ru": "пальто",
+      "tr": "palto",
+      "en": "coat",
+      "pronunciationEn": "pahl'-TOH",
+      "exampleRu": "Она надела красивое чёрное пальто.",
+      "exampleTr": "O, güzel siyah bir palto giydi.",
+      "exampleEn": "She put on a beautiful black coat.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-09",
+      "type": "word",
+      "ru": "платье",
+      "tr": "elbise",
+      "en": "dress",
+      "pronunciationEn": "PLAHT'-ye",
+      "exampleRu": "Это вечернее платье сидит идеально.",
+      "exampleTr": "Bu gece elbisesi harika oturuyor.",
+      "exampleEn": "This evening dress fits perfectly.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-10",
+      "type": "word",
+      "ru": "юбка",
+      "tr": "etek",
+      "en": "skirt",
+      "pronunciationEn": "YOOB-ka",
+      "exampleRu": "Анна купила длинную синюю юбку.",
+      "exampleTr": "Anna uzun mavi bir etek satın aldı.",
+      "exampleEn": "Anna bought a long blue skirt.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-11",
+      "type": "word",
+      "ru": "носки",
+      "tr": "çoraplar",
+      "en": "socks",
+      "pronunciationEn": "nahs-KEE",
+      "exampleRu": "Шерстяные носки согревают ноги в мороз.",
+      "exampleTr": "Yün çoraplar ayazda ayakları ısıtır.",
+      "exampleEn": "Woolen socks warm feet in the freezing cold.",
+      "tags": ["clothes"]
+    },
+    {
+      "id": "clothes-12",
+      "type": "word",
+      "ru": "перчатки",
+      "tr": "eldivenler",
+      "en": "gloves",
+      "pronunciationEn": "pyer-CHAHT-kee",
+      "exampleRu": "Я ношу кожаные перчатки в холодную погоду.",
+      "exampleTr": "Soğuk havada deri eldiven takarım.",
+      "exampleEn": "I wear leather gloves in cold weather.",
+      "tags": ["clothes"]
+    }
+  ]
+}

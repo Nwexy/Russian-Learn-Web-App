@@ -1,0 +1,152 @@
+{
+  "id": "unit-11",
+  "titleTr": "Ev ve Eşyalar",
+  "titleEn": "House and Furniture",
+  "level": "A1",
+  "items": [
+    {
+      "id": "house-01",
+      "type": "word",
+      "ru": "дом",
+      "tr": "ev",
+      "en": "house",
+      "pronunciationEn": "DOHM",
+      "exampleRu": "Это наш новый дом.",
+      "exampleTr": "Bu bizim yeni evimiz.",
+      "exampleEn": "This is our new house.",
+      "tags": ["house"]
+    },
+    {
+      "id": "house-02",
+      "type": "word",
+      "ru": "комната",
+      "tr": "oda",
+      "en": "room",
+      "pronunciationEn": "KOHM-na-ta",
+      "exampleRu": "Это моя комната.",
+      "exampleTr": "Bu benim odam.",
+      "exampleEn": "This is my room.",
+      "tags": ["house"]
+    },
+    {
+      "id": "house-03",
+      "type": "word",
+      "ru": "кухня",
+      "tr": "mutfak",
+      "en": "kitchen",
+      "pronunciationEn": "KOOKH-nya",
+      "exampleRu": "Мама готовит обед на кухне.",
+      "exampleTr": "Annem mutfakta öğle yemeği pişiriyor.",
+      "exampleEn": "Mom is cooking lunch in the kitchen.",
+      "tags": ["house"]
+    },
+    {
+      "id": "house-04",
+      "type": "word",
+      "ru": "стол",
+      "tr": "masa",
+      "en": "table",
+      "pronunciationEn": "STOHL",
+      "exampleRu": "Книга лежит на столе.",
+      "exampleTr": "Kitap masanın üzerinde duruyor.",
+      "exampleEn": "The book is lying on the table.",
+      "tags": ["house", "furniture"]
+    },
+    {
+      "id": "house-05",
+      "type": "word",
+      "ru": "стул",
+      "tr": "sandalye",
+      "en": "chair",
+      "pronunciationEn": "STOOL",
+      "exampleRu": "Это удобный стул.",
+      "exampleTr": "Bu rahat bir sandalye.",
+      "exampleEn": "This is a comfortable chair.",
+      "tags": ["house", "furniture"]
+    },
+    {
+      "id": "house-06",
+      "type": "word",
+      "ru": "кровать",
+      "tr": "yatak",
+      "en": "bed",
+      "pronunciationEn": "kra-VAHT'",
+      "exampleRu": "В спальне стоит большая кровать.",
+      "exampleTr": "Yatak odasında büyük bir yatak var.",
+      "exampleEn": "There is a large bed in the bedroom.",
+      "tags": ["house", "furniture"]
+    },
+    {
+      "id": "house-07",
+      "type": "word",
+      "ru": "окно",
+      "tr": "pencere",
+      "en": "window",
+      "pronunciationEn": "ahk-NOH",
+      "exampleRu": "Откройте окно, пожалуйста.",
+      "exampleTr": "Lütfen pencereyi açın.",
+      "exampleEn": "Please open the window.",
+      "tags": ["house"]
+    },
+    {
+      "id": "house-08",
+      "type": "word",
+      "ru": "дверь",
+      "tr": "kapı",
+      "en": "door",
+      "pronunciationEn": "DVYER'",
+      "exampleRu": "Закройте дверь, пожалуйста.",
+      "exampleTr": "Lütfen kapıyı kapatın.",
+      "exampleEn": "Please close the door.",
+      "tags": ["house"]
+    },
+    {
+      "id": "house-09",
+      "type": "word",
+      "ru": "телевизор",
+      "tr": "televizyon",
+      "en": "television",
+      "pronunciationEn": "tye-lye-VEE-zahr",
+      "exampleRu": "Вечером мы смотрим телевизор.",
+      "exampleTr": "Akşam televizyon izliyoruz.",
+      "exampleEn": "In the evening we watch television.",
+      "tags": ["house", "electronics"]
+    },
+    {
+      "id": "house-10",
+      "type": "word",
+      "ru": "холодильник",
+      "tr": "buzdolabı",
+      "en": "refrigerator",
+      "pronunciationEn": "kha-la-DEEL'-neek",
+      "exampleRu": "Свежее молоко стоит в холодильнике.",
+      "exampleTr": "Taze süt buzdolabında duruyor.",
+      "exampleEn": "Fresh milk is in the refrigerator.",
+      "tags": ["house", "appliances"]
+    },
+    {
+      "id": "house-11",
+      "type": "word",
+      "ru": "ключ",
+      "tr": "anahtar",
+      "en": "key",
+      "pronunciationEn": "KLYOOCH",
+      "exampleRu": "Где мой ключ от квартиры?",
+      "exampleTr": "Dairemin anahtarı nerede?",
+      "exampleEn": "Where is my apartment key?",
+      "tags": ["house"]
+    },
+    {
+      "id": "house-12",
+      "type": "word",
+      "ru": "квартира",
+      "tr": "daire",
+      "en": "apartment",
+      "pronunciationEn": "kvahr-TEE-ra",
+      "exampleRu": "У них очень светлая и уютная квартира.",
+      "exampleTr": "Onların çok aydınlık ve ferah bir dairesi var.",
+      "exampleEn": "They have a very bright and cozy apartment.",
+      "tags": ["house"]
+    }
+  ]
+}

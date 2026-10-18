@@ -1,0 +1,141 @@
+{
+  "id": "grammar-11-genitive",
+  "level": "A1",
+  "titleTr": "İyelik ve Yokluk Hâli (Genitif)",
+  "titleEn": "Genitive Case",
+  "summaryTr": "Rusça'da genitif hâli (Родительный падеж) sahiplik ('Kimin?'), yokluk ('нет' kalıbı) ve miktar belirtmede kullanılır. İsimler -а, -я, -ы, -и eklerini alır.",
+  "summaryEn": "In Russian, the Genitive case (Родительный падеж) expresses possession ('Whose?'), absence with 'нет' (there is no...), and quantity. Nouns take endings -а, -я, -ы, -и.",
+  "relatedUnits": ["unit-04", "unit-04-family", "unit-11", "unit-11-house"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Genitif Hâli (Родительный падеж), Rusça'da en sık kullanılan hâllerden biridir. Temel işlevleri:\n\n1. Sahiplik ve Aitlik (Чей? Чья? Чьё? Чьи? - Kimin?):\n   Bir şeyin kime ait olduğunu belirtirken iyelik ekleri yerine ait olunan isim genitif hâle sokulur.\n   Örnek: книга брата (erkek kardeşin kitabı), комната Анны (Anna'nın odası).\n\n2. Yokluk Bildirme ('нет' ile):\n   Şimdiki zamanda bir şeyin veya bir kimsenin 'yok' olduğunu belirtmek için 'нет' sözcüğü ardından genitif kullanılır.\n   Örnek: У меня нет времени (Vaktim yok), В классе нет учителя (Sınıfta öğretmen yok).\n\n3. Miktar ve Ölçü:\n   Sayılar (2, 3, 4'ten sonra tekil genitif) ve 'много' (çok), 'мало' (az), 'сколько' (kaç/ne kadar) sözcüklerinden sonra genitif kullanılır.\n   Örnek: много работы (çok iş), два брата (iki erkek kardeş).",
+      "bodyEn": "The Genitive Case (Родительный падеж) is one of the most essential cases in Russian. Its main functions include:\n\n1. Possession ('Whose?' - Чей? Чья? Чьё? Чьи?):\n   Indicates that an object belongs to someone by putting the possessor noun in the genitive.\n   Example: книга брата (the brother's book), комната Анны (Anna's room).\n\n2. Absence (with 'нет'):\n   To express the absence of something or someone, use 'нет' followed by the genitive case.\n   Example: У меня нет времени (I have no time), В классе нет учителя (There is no teacher in the classroom).\n\n3. Quantity and Numbers:\n   Used after numbers (2, 3, 4 take genitive singular) and quantity adverbs like 'много' (many/much), 'мало' (few/little), 'сколько' (how much).\n   Example: много работы (a lot of work), два брата (two brothers)."
+    },
+    {
+      "type": "text",
+      "bodyTr": "Tekil İsimlerde Genitif Ek Kuralları:\n\n1. Eril İsimler (Мужской род):\n   • Sert ünsüzle bitenler sonuna -а alır (брат -> брата, стол -> стола, дом -> дома).\n   • -й veya -ь ile bitenler -я alır (музей -> музея, словарь -> словаря).\n\n2. Nötr İsimler (Средний род):\n   • -о ile bitenler -а alır (окно -> окна, письмо -> письма).\n   • -е ile bitenler -я alır (море -> моря, здание -> здания).\n\n3. Dişil İsimler (Женский род):\n   • -а ile bitenler -ы alır (мама -> мамы, сестра -> сестры).\n   • 7 Harf Kuralı: г, к, х, ж, ч, ш, щ harflerinden sonra -ы yazılamaz, yerine -и yazılır (книга -> книги, ручка -> ручки).\n   • -я ve -ь ile bitenler -и alır (неделя -> недели, тетрадь -> тетради).",
+      "bodyEn": "Singular Genitive Ending Rules:\n\n1. Masculine Nouns:\n   • Ending in a hard consonant add -а (брат -> брата, стол -> стола, дом -> дома).\n   • Ending in -й or -ь change to -я (музей -> музея, словарь -> словаря).\n\n2. Neuter Nouns:\n   • Ending in -о change to -а (окно -> окна, письмо -> письма).\n   • Ending in -е change to -я (море -> моря, здание -> здания).\n\n3. Feminine Nouns:\n   • Ending in -а change to -ы (мама -> мамы, сестра -> сестры).\n   • 7-Letter Spelling Rule: After г, к, х, ж, ч, ш, щ, write -и instead of -ы (книга -> книги, ручка -> ручки).\n   • Ending in -я or -ь change to -и (неделя -> недели, тетрадь -> тетради)."
+    },
+    {
+      "type": "table",
+      "headersTr": ["Cinsiyet", "Yalın Hâl (Именительный)", "Genitif Hâli (Родительный)", "Ek Kuralı"],
+      "headersEn": ["Gender", "Nominative (Именительный)", "Genitive (Родительный)", "Ending Rule"],
+      "rows": [
+        {
+          "cellsTr": ["Eril (Sert ünsüz)", "брат, дом", "брата, дома", "+ а"],
+          "cellsEn": ["Masculine (Hard consonant)", "брат, дом", "брата, дома", "+ а"]
+        },
+        {
+          "cellsTr": ["Eril (-й / -ь)", "музей, словарь", "музея, словаря", "-й / -ь -> -я"],
+          "cellsEn": ["Masculine (-й / -ь)", "музей, словарь", "музея, словаря", "-й / -ь -> -я"]
+        },
+        {
+          "cellsTr": ["Dişil (-а)", "мама, машина", "мамы, машины", "-а -> -ы"],
+          "cellsEn": ["Feminine (-а)", "мама, машина", "мамы, машины", "-а -> -ы"]
+        },
+        {
+          "cellsTr": ["Dişil (7 Harf / -я / -ь)", "книга, неделя", "книги, недели", "-> -и"],
+          "cellsEn": ["Feminine (7-Letter / -я / -ь)", "книга, неделя", "книги, недели", "-> -и"]
+        },
+        {
+          "cellsTr": ["Nötr (-о / -е)", "окно, море", "окна, моря", "-о -> -а, -е -> -я"],
+          "cellsEn": ["Neuter (-о / -е)", "окно, море", "окна, моря", "-о -> -а, -е -> -я"]
+        }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "У меня нет времени.", "tr": "Benim vaktim yok.", "en": "I have no time.", "note": "время -> времени (düzensiz yokluk)" },
+        { "ru": "Это новая комната брата.", "tr": "Bu erkek kardeşimin yeni odasıdır.", "en": "This is my brother's new room.", "note": "брат -> брата (eril tekil sahiplik)" },
+        { "ru": "Это синяя машина Анны.", "tr": "Bu Anna'nın mavi arabasıdır.", "en": "This is Anna's blue car.", "note": "Анна -> Анны (dişil tekil sahiplik)" },
+        { "ru": "В чае нет сахара.", "tr": "Çayda şeker yok.", "en": "There is no sugar in the tea.", "note": "сахар -> сахара (eril yokluk)" },
+        { "ru": "На столе лежит тетрадь студента.", "tr": "Masanın üzerinde öğrencinin defteri duruyor.", "en": "The student's notebook is lying on the table.", "note": "студент -> студента (eril sahiplik)" },
+        { "ru": "У нас сегодня много работы.", "tr": "Bugün çok işimiz var.", "en": "We have a lot of work today.", "note": "работа -> работы (много sonrası genitif)" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "questionTr": "«У меня нет ... (время).» Cümlesindeki doğru genitif form hangisidir?",
+      "questionEn": "«У меня нет ... (время).» What is the correct genitive form in this sentence?",
+      "optionsTr": ["время", "времени", "времям", "временем"],
+      "optionsEn": ["время", "времени", "времям", "временем"],
+      "correctIndex": 1,
+      "explanationTr": "'время' kelimesi düzensiz bir nötr isimdir ve genitif hâlde 'времени' olur.",
+      "explanationEn": "'время' is an irregular neuter noun that takes 'времени' in the genitive case."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«Это книга ... (брат).» Boşluğa hangi kelime gelmelidir?",
+      "questionEn": "«Это книга ... (брат).» Which word should fill the blank?",
+      "optionsTr": ["брата", "брату", "братом", "брате"],
+      "optionsEn": ["брата", "брату", "братом", "брате"],
+      "correctIndex": 0,
+      "explanationTr": "Eril 'брат' ismi sahiplik bildiren genitif hâlde -а eki alır: «книга брата».",
+      "explanationEn": "The masculine noun 'брат' takes -а in the genitive to show possession: «книга брата»."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«У нас сегодня нет ... (хлеб).» Cümlesinde boşluğa hangisi gelmelidir?",
+      "questionEn": "«У нас сегодня нет ... (хлеб).» Which form should fill the blank?",
+      "optionsTr": ["хлебом", "хлебе", "хлеба", "хлебу"],
+      "optionsEn": ["хлебом", "хлебе", "хлеба", "хлебу"],
+      "correctIndex": 2,
+      "explanationTr": "'нет' sözcüğünden sonra eril 'хлеб' ismi genitif olarak -а alır: «нет хлеба».",
+      "explanationEn": "After 'нет', the masculine noun 'хлеб' takes -а in the genitive: «нет хлеба»."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«Это сумка ... (Анна).» Cümlesinde boşluğa hangisi gelmelidir?",
+      "questionEn": "«Это сумка ... (Анна).» Which form should fill the blank?",
+      "optionsTr": ["Анну", "Анны", "Анне", "Анной"],
+      "optionsEn": ["Анну", "Анны", "Анне", "Анной"],
+      "correctIndex": 1,
+      "explanationTr": "Dişil -а ile biten isim genitif hâlde -ы alır: «сумка Анны».",
+      "explanationEn": "A feminine noun ending in -а takes -ы in the genitive: «сумка Анны»."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«книга» kelimesi genitifte neden «книгы» yerine «книги» olur?",
+      "questionEn": "Why does «книга» become «книги» instead of «книгы» in the genitive?",
+      "optionsTr": ["Nötr bir isim olduğu için", "7 harf kuralı: к harfinden sonra -ы gelemez", "Düzensiz bir kelime olduğu için", "Çoğul bir isim olduğu için"],
+      "optionsEn": ["Because it is a neuter noun", "7-letter spelling rule: -ы cannot follow к", "Because it is an irregular word", "Because it is a plural noun"],
+      "correctIndex": 1,
+      "explanationTr": "7 harf kuralına göre г, к, х, ж, ч, ш, щ harflerinden sonra -ы değil, -и yazılır.",
+      "explanationEn": "According to the 7-letter spelling rule, -и is written instead of -ы after г, к, х, ж, ч, ш, щ."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«В городе сегодня много ... (работа).» Cümlesindeki doğru biçim hangisidir?",
+      "questionEn": "«В городе сегодня много ... (работа).» Which is the correct form in this sentence?",
+      "optionsTr": ["работу", "работой", "работе", "работы"],
+      "optionsEn": ["работу", "работой", "работе", "работы"],
+      "correctIndex": 3,
+      "explanationTr": "'много' sözcüğünden sonra isim tekil genitifte gelir: «много работы».",
+      "explanationEn": "After the quantity word 'много', nouns take the singular genitive: «много работы»."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "Genitif hâli temel olarak hangi soruya cevap verir?",
+      "questionEn": "Which question does the Genitive case primarily answer?",
+      "optionsTr": ["Куда? (Nereye?)", "Кого? / Чего? / Чей? (Kimin? / Neyin?)", "Кому? / Чему? (Kime?)", "Кем? / Чем? (Kiminle?)"],
+      "optionsEn": ["Куда? (Where to?)", "Кого? / Чего? / Чей? (Whose? / Of what?)", "Кому? / Чему? (To whom?)", "Кем? / Чем? (With whom?)"],
+      "correctIndex": 1,
+      "explanationTr": "Genitif hâli sahiplik ve yokluk belirterek 'Кого? Чего? Чей?' sorularına cevap verir.",
+      "explanationEn": "The Genitive case expresses possession and absence, answering 'Кого? Чего? Чей?'."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«окно» (pencere) nötr isminin genitif biçimi hangisidir?",
+      "questionEn": "What is the genitive form of the neuter noun «окно» (window)?",
+      "optionsTr": ["окна", "окне", "окну", "окном"],
+      "optionsEn": ["окна", "окне", "окну", "окном"],
+      "correctIndex": 0,
+      "explanationTr": "-о ile biten nötr isimler genitif hâlde -а eki alır: «окна».",
+      "explanationEn": "Neuter nouns ending in -о take -а in the genitive case: «окна»."
+    }
+  ]
+}

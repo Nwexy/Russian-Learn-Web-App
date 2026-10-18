@@ -1,0 +1,137 @@
+{
+  "id": "grammar-14-aspect",
+  "level": "A1",
+  "titleTr": "Fiil Aspekti (Giriş)",
+  "titleEn": "Verb Aspect (Intro)",
+  "summaryTr": "Rusça'da fiiller iki aspekttir: Imperfective (Tamamlanmamış - süreç/tekrar) ve Perfective (Tamamlanmış - sonuç/tek seferlik). Şimdiki zamanda sadece Imperfective fiiller kullanılır.",
+  "summaryEn": "Russian verbs exist in two aspects: Imperfective (process/habitual/repeated) and Perfective (result/completed/single action). Only Imperfective verbs exist in the present tense.",
+  "relatedUnits": ["unit-05", "unit-05-verbs"],
+  "sections": [
+    {
+      "type": "text",
+      "bodyTr": "Rusça'da neredeyse her eylem iki farklı fiil ile temsil edilir. Buna 'Fiil Aspekti' (Вид глагола) denir:\n\n1. Imperfective (Несовершенный вид - НСВ / Tamamlanmamış Görünüş):\n   • Eylemin sürecini vurgular ('Ne yapıyordu?').\n   • Düzenli tekrarlanan veya alışkanlık olan eylemleri anlatır (каждый день - her gün, часто - sık sık, всегда - her zaman).\n   • Eylemin tamamlanıp tamamlanmadığı değil, yapılıyor olması önemlidir.\n   • Şimdiki zamanda SADECE bu aspekt kullanılır!\n\n2. Perfective (Совершенный вид - СВ / Tamamlanmış Görünüş):\n   • Eylemin sonucunu ve başarıyla tamamlandığını vurgular ('Ne yaptı ve bitirdi?').\n   • Tek seferlik, anlık veya sınırlandırılmış eylemleri anlatır (уже - çoktan/zaten, наконец - nihayet).\n   • Şimdiki zamanı YOKTUR! Şimdiki zaman çekimi aldığında doğrudan Gelecek Zaman (Basit Gelecek) anlamı taşır.",
+      "bodyEn": "In Russian, almost every verb belongs to an aspectual pair. This system is called 'Verb Aspect' (Вид глагола):\n\n1. Imperfective Aspect (НСВ):\n   • Focuses on the process or duration of the action ('What was someone doing?').\n   • Describes repeated, habitual, or regular actions (каждый день - every day, часто - often, обычно - usually).\n   • The outcome is irrelevant; only the action itself matters.\n   • ONLY imperfective verbs can be used in the present tense!\n\n2. Perfective Aspect (СВ):\n   • Focuses on the result and successful completion ('What did someone accomplish?').\n   • Describes a single, completed action with a clear outcome (уже - already, наконец - at last).\n   • Has NO present tense! When conjugated with present tense endings, it expresses the future tense (Simple Future)."
+    },
+    {
+      "type": "text",
+      "bodyTr": "Yaygın Fiil Çiftleri ve Oluşum Yolları:\n\nÇoğu zaman Perfective fiil, Imperfective fiilin başına bir önek (префикс) gelmesiyle oluşur:\n• читать (okumak - süreç) -> прочитать (okuyup bitirmek - sonuç)\n• писать (yazmak - süreç) -> написать (yazıp bitirmek - sonuç)\n• делать (yapmak - süreç) -> сделать (yapıp bitirmek - sonuç)\n• учить (öğrenmek/ezberlemek) -> выучить (öğrenip tamamlamak)\n• смотреть (izlemek) -> посмотреть (izleyip bitirmek / göz atmak)\n• пить (içmek) -> выпить (içip bitirmek)\n\nZamanlara Göre Kullanım Özeti:\n• Şimdiki Zaman (Настоящее время): Sadece НСВ (Я читаю, я пишу).\n• Geçmiş Zaman (Прошедшее время): Hem НСВ (süreç: я долго читал) hem СВ (sonuç: я прочитал книгу).\n• Gelecek Zaman (Будущее время): НСВ için 'быть + mastar' (я буду читать), СВ için tek kelime (я прочитаю).",
+      "bodyEn": "Common Aspectual Pairs and Formation:\n\nMost often, a perfective verb is formed by adding a prefix to the imperfective verb:\n• читать (to read - process) -> прочитать (to read completely - result)\n• писать (to write - process) -> написать (to write down - result)\n• делать (to do - process) -> сделать (to accomplish/finish doing)\n• учить (to learn) -> выучить (to master/memorize completely)\n• смотреть (to watch) -> посмотреть (to take a look / watch through)\n• пить (to drink) -> выпить (to drink up)\n\nTense Usage Summary:\n• Present Tense: Imperfective ONLY (Я читаю, я пишу).\n• Past Tense: Both aspects (Process: я долго читал; Result: я прочитал книгу).\n• Future Tense: Compound for Imperfective (я буду читать), Simple for Perfective (я прочитаю)."
+    },
+    {
+      "type": "table",
+      "headersTr": ["İşlev / Özellik", "Imperfective (НСВ)", "Perfective (СВ)", "Örnek"],
+      "headersEn": ["Function / Feature", "Imperfective (НСВ)", "Perfective (СВ)", "Example"],
+      "rows": [
+        {
+          "cellsTr": ["Süreç vs. Sonuç", "читать (okumak - süreç)", "прочитать (okuyup bitirmek)", "Я долго читал / Я прочитал"],
+          "cellsEn": ["Process vs. Result", "читать (reading process)", "прочитать (finished reading)", "Я долго читал / Я прочитал"]
+        },
+        {
+          "cellsTr": ["Tekrar vs. Tek sefer", "делать (her gün yapmak)", "сделать (bir kez bitirmek)", "Каждый день делаю / Уже сделал"],
+          "cellsEn": ["Repeated vs. Single", "делать (do habitually)", "сделать (do completely)", "Каждый день делаю / Уже сделал"]
+        },
+        {
+          "cellsTr": ["Şimdiki Zaman", "Mevcuttur (я пишу)", "YOKTUR (Şimdiki zamanı yoktur)", "Сейчас я пишу письмо"],
+          "cellsEn": ["Present Tense", "Available (я пишу)", "NONE (No present tense)", "Сейчас я пишу письмо"]
+        },
+        {
+          "cellsTr": ["Gelecek Zaman", "буду делать (bileşik)", "сделаю (basit tek kelime)", "Я буду читать / Я прочитаю"],
+          "cellsEn": ["Future Tense", "буду делать (compound)", "сделаю (simple future)", "Я буду читать / Я прочитаю"]
+        }
+      ]
+    },
+    {
+      "type": "examples",
+      "items": [
+        { "ru": "Вчера я долго читал эту книгу.", "tr": "Dün uzun süre bu kitabı okudum.", "en": "Yesterday I was reading this book for a long time.", "note": "долго -> читал (süreç / Imperfective)" },
+        { "ru": "Я прочитал эту книгу за два дня.", "tr": "Bu kitabı iki günde okuyup bitirdim.", "en": "I finished reading this book in two days.", "note": "прочитал (tamamlanmış sonuç / Perfective)" },
+        { "ru": "Каждый день он делает зарядку.", "tr": "Her gün sabah egzersizi yapar.", "en": "Every day he does morning exercises.", "note": "каждый день -> делает (tekrarlanan eylem / Imperfective)" },
+        { "ru": "Студент уже сделал домашнее задание.", "tr": "Öğrenci ödevini çoktan bitirdi.", "en": "The student has already done his homework.", "note": "уже -> сделал (başarılı sonuç / Perfective)" },
+        { "ru": "Сейчас Анна пишет письмо подруге.", "tr": "Anna şu anda arkadaşına mektup yazıyor.", "en": "Anna is writing a letter to her friend right now.", "note": "сейчас -> пишет (şimdiki zaman süreci / Imperfective)" },
+        { "ru": "Завтра я обязательно напишу ответ.", "tr": "Yarın mutlaka cevabı yazacağım.", "en": "Tomorrow I will definitely write the reply.", "note": "напишу (tamamlanacak gelecek sonuç / Perfective)" }
+      ]
+    }
+  ],
+  "miniExercises": [
+    {
+      "type": "multipleChoice",
+      "questionTr": "«Вчера я весь вечер ... (читать / прочитать) книгу.» Boşluğa hangi fiil gelmelidir?",
+      "questionEn": "«Вчера я весь вечер ... (читать / прочитать) книгу.» Which verb should fill the blank?",
+      "optionsTr": ["читал", "прочитал", "прочитаю", "будет читать"],
+      "optionsEn": ["читал", "прочитал", "прочитаю", "будет читать"],
+      "correctIndex": 0,
+      "explanationTr": "'весь вечер' (bütün akşam) bir süreç belirttiği için Imperfective 'читал' kullanılır.",
+      "explanationEn": "'весь вечер' (all evening) indicates a continuous process, so the imperfective 'читал' is used."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«Я уже ... (делать / сделать) всё домашнее задание.» Boşluğa hangi fiil gelmelidir?",
+      "questionEn": "«Я уже ... (делать / сделать) всё домашнее задание.» Which verb should fill the blank?",
+      "optionsTr": ["делал", "сделал", "делаю", "буду делать"],
+      "optionsEn": ["делал", "сделал", "делаю", "буду делать"],
+      "correctIndex": 1,
+      "explanationTr": "'уже' (çoktan/zaten) tamamlanmış bir sonucu bildirdiği için Perfective 'сделал' kullanılır.",
+      "explanationEn": "'уже' (already) indicates a completed result, so the perfective 'сделал' is used."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "Şimdiki zamanda (Настоящее время) hangi fiil aspekti kullanılır?",
+      "questionEn": "Which verb aspect is used in the Present Tense (Настоящее время)?",
+      "optionsTr": ["Sadece Imperfective (НСВ)", "Sadece Perfective (СВ)", "Her iki aspekt de serbestçe kullanılır", "Hiçbiri kullanılmaz"],
+      "optionsEn": ["Only Imperfective (НСВ)", "Only Perfective (СВ)", "Both aspects are used freely", "Neither is used"],
+      "correctIndex": 0,
+      "explanationTr": "Rusça'da şimdiki zaman anlamı sadece Imperfective (НСВ) fiillerde bulunur.",
+      "explanationEn": "In Russian, the present tense only exists for Imperfective (НСВ) verbs."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«Он каждый день ... (писать / написать) письма.» Boşluğa hangisi gelmelidir?",
+      "questionEn": "«Он каждый день ... (писать / написать) письма.» Which form should fill the blank?",
+      "optionsTr": ["напишет", "написал", "пишет", "сделает"],
+      "optionsEn": ["напишет", "написал", "пишет", "сделает"],
+      "correctIndex": 2,
+      "explanationTr": "'каждый день' (her gün) tekrarlanan alışkanlık bildirdiği için Imperfective 'пишет' kullanılır.",
+      "explanationEn": "'каждый день' (every day) expresses a repeated action, so the imperfective 'пишет' is used."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«читать» fiilinin tamamlanmış (Perfective) çifti hangisidir?",
+      "questionEn": "What is the perfective counterpart of the verb «читать»?",
+      "optionsTr": ["дочитать", "прочитать", "вычитать", "перечитать"],
+      "optionsEn": ["дочитать", "прочитать", "вычитать", "перечитать"],
+      "correctIndex": 1,
+      "explanationTr": "'читать' fiilinin temel tamamlanmış (perfective) eşi 'прочитать' fiilidir.",
+      "explanationEn": "The primary perfective partner of 'читать' is 'прочитать'."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«Завтра я обязательно ... (написать) тебе ответ.» Boşluğa hangi gelecek form gelmelidir?",
+      "questionEn": "«Завтра я обязательно ... (написать) тебе ответ.» Which future form should fill the blank?",
+      "optionsTr": ["напишу", "буду написать", "написал", "пишу"],
+      "optionsEn": ["напишу", "буду написать", "написал", "пишу"],
+      "correctIndex": 0,
+      "explanationTr": "Perfective fiiller şimdiki zaman gibi çekimlendiğinde doğrudan Gelecek Zaman (СВ) olur: «напишу».",
+      "explanationEn": "Perfective verbs conjugated with present endings express the simple future: «напишу»."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "Perfective (Совершенный вид) fiillerin temel özelliği nedir?",
+      "questionEn": "What is the primary characteristic of Perfective (Совершенный вид) verbs?",
+      "optionsTr": ["Eylemin sürecini vurgular", "Eylemin sonucunu ve tamamlanmışlığını vurgular", "Her zaman şimdiki zamanda kullanılır", "Yalnızca olumsuz cümlelerde kullanılır"],
+      "optionsEn": ["Emphasizes the duration of action", "Emphasizes the result and completion of action", "Always used in present tense", "Used only in negative sentences"],
+      "correctIndex": 1,
+      "explanationTr": "Perfective fiiller eylemin tamamlanmış sonucunu ve başarısını vurgular.",
+      "explanationEn": "Perfective verbs emphasize the completed result and outcome of an action."
+    },
+    {
+      "type": "multipleChoice",
+      "questionTr": "«делать» (yapmak) fiilinin Perfective çifti hangisidir?",
+      "questionEn": "What is the perfective counterpart of the verb «делать» (to do)?",
+      "optionsTr": ["поделать", "сделать", "переделать", "отделать"],
+      "optionsEn": ["поделать", "сделать", "переделать", "отделать"],
+      "correctIndex": 1,
+      "explanationTr": "'делать' (yapmak - süreç) fiilinin temel tamamlanmış eşi 'сделать' (yapıp bitirmek) fiilidir.",
+      "explanationEn": "The basic perfective partner of 'делать' is 'сделать'."
+    }
+  ]
+}

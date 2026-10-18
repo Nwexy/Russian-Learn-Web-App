@@ -29,6 +29,10 @@ import unitFood from "@/content/unit-07-food.json";
 import unitHobbies from "@/content/unit-08-hobbies.json";
 import unitWeather from "@/content/unit-09-weather.json";
 import unitTime from "@/content/unit-10-time.json";
+import unitHouse from "@/content/unit-11-house.json";
+import unitCity from "@/content/unit-12-city.json";
+import unitClothes from "@/content/unit-13-clothes.json";
+import unitBody from "@/content/unit-14-body.json";
 
 const UNIT_MODULES: UnitData[] = [
   unitAlphabet as UnitData,
@@ -42,6 +46,10 @@ const UNIT_MODULES: UnitData[] = [
   unitHobbies as UnitData,
   unitWeather as UnitData,
   unitTime as UnitData,
+  unitHouse as UnitData,
+  unitCity as UnitData,
+  unitClothes as UnitData,
+  unitBody as UnitData,
 ];
 
 /**

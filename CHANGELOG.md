@@ -4,6 +4,11 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-18
+- Ev, Sehir, Kiyafetler ve Vucut uniteleri eklendi.
+- Genitif, Datif, Enstrumantal ve Fiil Aspekti gramer notlari eklendi.
+- A1 seviyesi icerik genisletmesi tamamlandi.
+
+## 2026-10-18
 - Mistakes (Yanlislar) sayfasinda erken bitme hatasi duzeltildi.
 - Unite detay sayfasindaki "Alistirma" butonu kaldirildi (ana menudeki Practice sayfasi yeterli oldugu icin).
 - Unite akisi Ders -> Test -> Tekrar olarak guncellendi.

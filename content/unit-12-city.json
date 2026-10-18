@@ -1,0 +1,152 @@
+{
+  "id": "unit-12",
+  "titleTr": "Şehir ve Yerler",
+  "titleEn": "City and Places",
+  "level": "A1",
+  "items": [
+    {
+      "id": "city-01",
+      "type": "word",
+      "ru": "город",
+      "tr": "şehir",
+      "en": "city",
+      "pronunciationEn": "GOH-raht",
+      "exampleRu": "Москва — очень большой и красивый город.",
+      "exampleTr": "Moskova çok büyük ve güzel bir şehirdir.",
+      "exampleEn": "Moscow is a very large and beautiful city.",
+      "tags": ["city"]
+    },
+    {
+      "id": "city-02",
+      "type": "word",
+      "ru": "улица",
+      "tr": "sokak",
+      "en": "street",
+      "pronunciationEn": "OO-lee-tsa",
+      "exampleRu": "Мы медленно гуляем по старой улице.",
+      "exampleTr": "Eski sokakta yavaşça yürüyoruz.",
+      "exampleEn": "We are walking slowly along the old street.",
+      "tags": ["city"]
+    },
+    {
+      "id": "city-03",
+      "type": "word",
+      "ru": "магазин",
+      "tr": "dükkan/mağaza",
+      "en": "shop/store",
+      "pronunciationEn": "ma-ga-ZEEN",
+      "exampleRu": "Я иду в продуктовый магазин за хлебом.",
+      "exampleTr": "Ekmek almak için markete gidiyorum.",
+      "exampleEn": "I am going to the grocery store for bread.",
+      "tags": ["city", "places"]
+    },
+    {
+      "id": "city-04",
+      "type": "word",
+      "ru": "аптека",
+      "tr": "eczane",
+      "en": "pharmacy",
+      "pronunciationEn": "ap-TYE-ka",
+      "exampleRu": "Круглосуточная аптека находится рядом с метро.",
+      "exampleTr": "Nöbetçi eczane metronun yanında bulunuyor.",
+      "exampleEn": "The 24-hour pharmacy is located next to the metro.",
+      "tags": ["city", "places"]
+    },
+    {
+      "id": "city-05",
+      "type": "word",
+      "ru": "банк",
+      "tr": "banka",
+      "en": "bank",
+      "pronunciationEn": "BAHNK",
+      "exampleRu": "Центральный банк открыт до шести часов вечера.",
+      "exampleTr": "Merkez bankası akşam saat altıya kadar açık.",
+      "exampleEn": "The central bank is open until six o'clock in the evening.",
+      "tags": ["city", "places"]
+    },
+    {
+      "id": "city-06",
+      "type": "word",
+      "ru": "ресторан",
+      "tr": "restoran",
+      "en": "restaurant",
+      "pronunciationEn": "ryes-ta-RAHN",
+      "exampleRu": "Сегодня вечером мы идём в русский ресторан.",
+      "exampleTr": "Bu akşam bir Rus restoranına gidiyoruz.",
+      "exampleEn": "Tonight we are going to a Russian restaurant.",
+      "tags": ["city", "places"]
+    },
+    {
+      "id": "city-07",
+      "type": "word",
+      "ru": "парк",
+      "tr": "park",
+      "en": "park",
+      "pronunciationEn": "PAHRK",
+      "exampleRu": "Летом дети весело играют в городском парке.",
+      "exampleTr": "Yazın çocuklar şehir parkında neşeyle oynuyorlar.",
+      "exampleEn": "In summer, children play merrily in the city park.",
+      "tags": ["city", "places"]
+    },
+    {
+      "id": "city-08",
+      "type": "word",
+      "ru": "метро",
+      "tr": "metro",
+      "en": "metro/subway",
+      "pronunciationEn": "mye-TROH",
+      "exampleRu": "Станция метро находится прямо здесь.",
+      "exampleTr": "Metro istasyonu tam burada bulunuyor.",
+      "exampleEn": "The metro station is located right here.",
+      "tags": ["city", "transport"]
+    },
+    {
+      "id": "city-09",
+      "type": "word",
+      "ru": "вокзал",
+      "tr": "tren garı",
+      "en": "train station",
+      "pronunciationEn": "vahk-ZAHL",
+      "exampleRu": "Скорый поезд прибывает на главный вокзал.",
+      "exampleTr": "Hızlı tren ana gara varıyor.",
+      "exampleEn": "The express train arrives at the main station.",
+      "tags": ["city", "transport"]
+    },
+    {
+      "id": "city-10",
+      "type": "word",
+      "ru": "больница",
+      "tr": "hastane",
+      "en": "hospital",
+      "pronunciationEn": "bahl'-NEE-tsa",
+      "exampleRu": "Опытный врач работает в городской больнице.",
+      "exampleTr": "Deneyimli doktor şehir hastanesinde çalışıyor.",
+      "exampleEn": "An experienced doctor works at the city hospital.",
+      "tags": ["city", "places"]
+    },
+    {
+      "id": "city-11",
+      "type": "word",
+      "ru": "школа",
+      "tr": "okul",
+      "en": "school",
+      "pronunciationEn": "SHKOH-la",
+      "exampleRu": "Ученики каждое утро ходят в школу.",
+      "exampleTr": "Öğrenciler her sabah okula gidiyorlar.",
+      "exampleEn": "Students go to school every morning.",
+      "tags": ["city", "places"]
+    },
+    {
+      "id": "city-12",
+      "type": "word",
+      "ru": "работа",
+      "tr": "iş",
+      "en": "work/job",
+      "pronunciationEn": "ra-BOH-ta",
+      "exampleRu": "Мой старший брат сейчас на работе.",
+      "exampleTr": "Ağabeyim şu anda işte.",
+      "exampleEn": "My older brother is at work right now.",
+      "tags": ["city"]
+    }
+  ]
+}

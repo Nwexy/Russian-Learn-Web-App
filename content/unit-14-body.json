@@ -1,0 +1,152 @@
+{
+  "id": "unit-14",
+  "titleTr": "Vücut ve Sağlık",
+  "titleEn": "Body and Health",
+  "level": "A1",
+  "items": [
+    {
+      "id": "body-01",
+      "type": "word",
+      "ru": "тело",
+      "tr": "vücut",
+      "en": "body",
+      "pronunciationEn": "TYE-la",
+      "exampleRu": "Утренняя зарядка полезна для всего тела.",
+      "exampleTr": "Sabah egzersizi tüm vücut için faydalıdır.",
+      "exampleEn": "Morning exercise is good for the whole body.",
+      "tags": ["body", "health"]
+    },
+    {
+      "id": "body-02",
+      "type": "word",
+      "ru": "голова",
+      "tr": "kafa/baş",
+      "en": "head",
+      "pronunciationEn": "ga-la-VAH",
+      "exampleRu": "У меня сегодня сильно болит голова.",
+      "exampleTr": "Bugün başım çok ağrıyor.",
+      "exampleEn": "My head hurts badly today.",
+      "tags": ["body"]
+    },
+    {
+      "id": "body-03",
+      "type": "word",
+      "ru": "рука",
+      "tr": "el/kol",
+      "en": "hand/arm",
+      "pronunciationEn": "roo-KAH",
+      "exampleRu": "Он поднял правую руку и поздоровался.",
+      "exampleTr": "Sağ elini kaldırdı ve selam verdi.",
+      "exampleEn": "He raised his right hand and said hello.",
+      "tags": ["body"]
+    },
+    {
+      "id": "body-04",
+      "type": "word",
+      "ru": "нога",
+      "tr": "bacak/ayak",
+      "en": "leg/foot",
+      "pronunciationEn": "na-GAH",
+      "exampleRu": "После долгой прогулки у меня устала нога.",
+      "exampleTr": "Uzun yürüyüşten sonra bacağım yoruldu.",
+      "exampleEn": "My leg got tired after a long walk.",
+      "tags": ["body"]
+    },
+    {
+      "id": "body-05",
+      "type": "word",
+      "ru": "глаз",
+      "tr": "göz",
+      "en": "eye",
+      "pronunciationEn": "GLAHS",
+      "exampleRu": "У этой девочки красивые карие глаза.",
+      "exampleTr": "Bu kızın güzel kahverengi gözleri var.",
+      "exampleEn": "This girl has beautiful brown eyes.",
+      "tags": ["body"]
+    },
+    {
+      "id": "body-06",
+      "type": "word",
+      "ru": "ухо",
+      "tr": "kulak",
+      "en": "ear",
+      "pronunciationEn": "OO-kha",
+      "exampleRu": "Врач внимательно осмотрел больное ухо.",
+      "exampleTr": "Doktor ağrıyan kulağı dikkatle muayene etti.",
+      "exampleEn": "The doctor carefully examined the painful ear.",
+      "tags": ["body"]
+    },
+    {
+      "id": "body-07",
+      "type": "word",
+      "ru": "рот",
+      "tr": "ağız",
+      "en": "mouth",
+      "pronunciationEn": "ROHT",
+      "exampleRu": "Откройте рот и скажите «а-а».",
+      "exampleTr": "Ağzınızı açın ve «a-a» deyin.",
+      "exampleEn": "Open your mouth and say 'ah'.",
+      "tags": ["body"]
+    },
+    {
+      "id": "body-08",
+      "type": "word",
+      "ru": "нос",
+      "tr": "burun",
+      "en": "nose",
+      "pronunciationEn": "NOHS",
+      "exampleRu": "На сильном морозе у него замёрз нос.",
+      "exampleTr": "Şiddetli ayazda burnu dondu.",
+      "exampleEn": "His nose froze in the severe cold.",
+      "tags": ["body"]
+    },
+    {
+      "id": "body-09",
+      "type": "word",
+      "ru": "врач",
+      "tr": "doktor",
+      "en": "doctor",
+      "pronunciationEn": "VRAHCH",
+      "exampleRu": "Опытный врач выписал больному рецепт.",
+      "exampleTr": "Deneyimli doktor hastaya reçete yazdı.",
+      "exampleEn": "The experienced doctor wrote a prescription for the patient.",
+      "tags": ["health", "profession"]
+    },
+    {
+      "id": "body-10",
+      "type": "word",
+      "ru": "здоровье",
+      "tr": "sağlık",
+      "en": "health",
+      "pronunciationEn": "zda-ROHV'-ye",
+      "exampleRu": "Крепкое здоровье — это самое главное богатство.",
+      "exampleTr": "Sağlam sağlık, en büyük zenginliktir.",
+      "exampleEn": "Good health is the most important wealth.",
+      "tags": ["health"]
+    },
+    {
+      "id": "body-11",
+      "type": "word",
+      "ru": "болит",
+      "tr": "ağrıyor",
+      "en": "hurts/aches",
+      "pronunciationEn": "ba-LEET",
+      "exampleRu": "Скажите, пожалуйста, где у вас болит?",
+      "exampleTr": "Lütfen söyleyin, nereniz ağrıyor?",
+      "exampleEn": "Please tell me, where does it hurt?",
+      "tags": ["health"]
+    },
+    {
+      "id": "body-12",
+      "type": "word",
+      "ru": "таблетка",
+      "tr": "tablet/ilaç",
+      "en": "pill/tablet",
+      "pronunciationEn": "tahb-LYE-tka",
+      "exampleRu": "Примите эту таблетку после еды.",
+      "exampleTr": "Bu tableti yemekten sonra alın.",
+      "exampleEn": "Take this pill after eating.",
+      "tags": ["health"]
+    }
+  ]
+}

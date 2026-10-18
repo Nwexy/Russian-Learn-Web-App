@@ -5,7 +5,7 @@
   "titleEn": "Adjective Agreement",
   "summaryTr": "Rusça'da sıfatlar niteledikleri ismin cinsiyetine (eril, dişil, nötr) ve sayısına (tekil, çoğul) göre çekimlenir.",
   "summaryEn": "In Russian, adjectives agree with the noun they modify in gender (masculine, feminine, neuter) and number (singular, plural).",
-  "relatedUnits": ["unit-03", "unit-03-colors", "unit-06", "unit-06-adjectives"],
+  "relatedUnits": ["unit-03", "unit-03-colors", "unit-06", "unit-06-adjectives", "unit-11", "unit-11-house"],
   "sections": [
     {
       "type": "text",

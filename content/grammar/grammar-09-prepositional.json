@@ -5,7 +5,7 @@
   "titleEn": "Prepositional Case",
   "summaryTr": "Rusça'da bulunma hâli (Предложный падеж), nerede (Где?) ve ne hakkında (О ком? / О чём?) sorularına cevap verir. İsimler genellikle -е eki alır ve 'в' veya 'на' edatlarıyla kullanılır.",
   "summaryEn": "In Russian, the Prepositional case (Предложный падеж) answers 'Where?' (Где?) and 'About whom/what?' (О ком? / О чём?). Nouns usually take the ending -е and are used with prepositions 'в' and 'на'.",
-  "relatedUnits": ["unit-10", "unit-10-time"],
+  "relatedUnits": ["unit-10", "unit-10-time", "unit-11", "unit-11-house", "unit-12", "unit-12-city"],
   "sections": [
     {
       "type": "text",
