@@ -159,29 +159,95 @@ export function getPronunciation(
 }
 
 /**
- * Rusça örnek cümlede kelimeyi bularak ____ ile değiştirir.
- * Büyük/küçük harf duyarsızdır ve е/ё esnekliğini destekler.
- * Eğer cümle içinde aranan kelime bulunamazsa null döner (boşluksuz soru oluşmasını engeller).
+ * Rusça metni karşılaştırma için normalize eder (küçük harf, е/ё denkliği).
  */
-export function makeSentenceWithBlank(sentence: string, targetWord: string): string | null {
-  if (!sentence || !targetWord) return null;
+function normalizeRu(str: string): string {
+  return str.toLowerCase().replace(/ё/g, "е");
+}
 
-  // е ve ё harflerini birbirinin yerine geçebilir yap
-  const pattern = targetWord
-    .split("")
-    .map((ch) => {
-      if (ch === "е" || ch === "ё") return "[её]";
-      if (ch === "Е" || ch === "Ё") return "[ЕЁ]";
-      return escapeRegex(ch);
-    })
-    .join("");
+/**
+ * Rusça örnek cümlede kelimeyi bularak ___ ile değiştirir.
+ * Büyük/küçük harf duyarsızdır ve е/ё esnekliğini destekler.
+ * Çekimli Rusça kelimeleri ve bulunamama durumlarını 3 aşamalı mantıkla çözer:
+ *  1. Tam eşleşme (exact match): Cümle içindeki hedef kelime veya kelime öbeğini bularak ___ yapar.
+ *  2. Kök eşleşmesi (stem match): Kelime çekimlenmişse (örn. ilk 4 veya 3 harf kökü), o kelimeyi ___ ile değiştirir.
+ *  3. Bulunamazsa: Hata vermemesi için cümlenin son kelimesini silip ___ koyar (veya cümlenin sonuna ___ ekler).
+ */
+export function makeSentenceWithBlank(sentence: string, targetWord: string): string {
+  if (!sentence) return "___";
+  if (!targetWord) return sentence.trimEnd() + " ___";
 
-  const rx = new RegExp(pattern, "gi");
-  if (rx.test(sentence)) {
-    return sentence.replace(rx, "____");
+  // Hedef kelime varyantlarını ayıkla (örn: "друг / подруга" -> ["друг", "подруга"])
+  // Parantez içi açıklamaları temizle: "(он) читает" -> "читает"
+  const candidates = targetWord
+    .split("/")
+    .map((w) => w.replace(/\(.*?\)/g, "").trim())
+    .filter(Boolean);
+
+  if (candidates.length === 0) candidates.push(targetWord.trim());
+
+  // 1. Tam Eşleşme (Exact Match) — tek kelime veya kelime öbeği
+  for (const cand of candidates) {
+    const pattern = cand
+      .split("")
+      .map((ch) => {
+        if (ch === "е" || ch === "ё") return "[её]";
+        if (ch === "Е" || ch === "Ё") return "[ЕЁ]";
+        return escapeRegex(ch);
+      })
+      .join("");
+
+    const rxExact = new RegExp(`(?<![а-яёА-ЯЁa-zA-Z0-9])${pattern}(?![а-яёА-ЯЁa-zA-Z0-9])`, "iu");
+    if (rxExact.test(sentence)) {
+      return sentence.replace(rxExact, "___");
+    }
   }
 
-  return null;
+  // Cümleyi kelimelere ve aradaki işaretlere/boşluklara ayır
+  const tokens = sentence.split(/([а-яёА-ЯЁa-zA-Z0-9-]+)/);
+
+  // 2. Kök Eşleşmesi (Stem Match) — çekimli formlar (örn: зелёный -> зелёная, вода -> воду)
+  for (const cand of candidates) {
+    const normCand = normalizeRu(cand);
+    const stemLengths: number[] = [];
+    if (normCand.length >= 4) stemLengths.push(4);
+    if (normCand.length >= 3) stemLengths.push(3);
+
+    for (const len of stemLengths) {
+      const stem = normCand.slice(0, len);
+      let foundIndex = -1;
+      for (let i = 0; i < tokens.length; i++) {
+        if (/[а-яёА-ЯЁa-zA-Z]/.test(tokens[i])) {
+          if (normalizeRu(tokens[i]).startsWith(stem)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex !== -1) {
+        const res = [...tokens];
+        res[foundIndex] = "___";
+        return res.join("");
+      }
+    }
+  }
+
+  // 3. Fallback: Kelime hiç bulunamazsa cümlenin son kelimesini silip ___ koy
+  let lastWordIndex = -1;
+  for (let i = tokens.length - 1; i >= 0; i--) {
+    if (/[а-яёА-ЯЁa-zA-Z]/.test(tokens[i])) {
+      lastWordIndex = i;
+      break;
+    }
+  }
+
+  if (lastWordIndex !== -1) {
+    const res = [...tokens];
+    res[lastWordIndex] = "___";
+    return res.join("");
+  }
+
+  return sentence.trimEnd() + " ___";
 }
 
 /* ========================================
@@ -250,8 +316,7 @@ export function generateMultipleChoice(
 
 /**
  * Boşluk doldurma soruları üretir.
- * exampleRu içindeki Rusça kelimeyi boşlukla (____) değiştirir.
- * Sadece gerçekten boşluk oluşturulabilen geçerli cümleleri seçer.
+ * exampleRu içindeki Rusça kelimeyi boşlukla (___) değiştirir.
  *
  * @param items - Tüm kelime öğeleri
  * @param lang  - Çeviri dili (ipucu için)
@@ -262,30 +327,15 @@ export function generateFillBlank(
   lang: Lang,
   count: number = 10
 ): FillBlankQuestion[] {
-  // Sadece örnek cümlesinde kelime geçen ve başarıyla boşluk (____) oluşturulabilen öğeler
-  const eligibleWithBlank: { item: Item; sentenceWithBlank: string }[] = [];
+  // Sadece örnek cümlesi ve Rusça kelimesi olan öğeler
+  const eligible = items.filter((i) => i.exampleRu && i.ru);
+  if (eligible.length === 0) return [];
 
-  for (const item of items) {
-    if (!item.exampleRu || !item.ru) continue;
-    const sentenceWithBlank = makeSentenceWithBlank(item.exampleRu, item.ru);
-    if (sentenceWithBlank && sentenceWithBlank.includes("____")) {
-      eligibleWithBlank.push({ item, sentenceWithBlank });
-    }
-  }
-
-  if (eligibleWithBlank.length === 0) return [];
-
-  const questionCount = Math.min(count, eligibleWithBlank.length);
-  const eligibleItems = eligibleWithBlank.map((e) => e.item);
-  const selectedItems = selectBalancedItems(eligibleItems, questionCount);
-
-  const blankMap = new Map<string, string>();
-  for (const eb of eligibleWithBlank) {
-    blankMap.set(eb.item.id, eb.sentenceWithBlank);
-  }
+  const questionCount = Math.min(count, eligible.length);
+  const selectedItems = selectBalancedItems(eligible, questionCount);
 
   return selectedItems.map((item) => {
-    const sentenceWithBlank = blankMap.get(item.id)!;
+    const sentenceWithBlank = makeSentenceWithBlank(item.exampleRu!, item.ru);
     const fullTranslation = getHighlightedTranslation(item, lang);
     return {
       item,
