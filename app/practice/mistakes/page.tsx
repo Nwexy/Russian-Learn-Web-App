@@ -321,8 +321,8 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{revealed ? sentence.replace("____", `{${correctWord}}`) : sentence}</span>
-            <SpeakButton text={revealed ? ((currentItem?.exampleRu) || sentence) : sentence} size="sm" />
+            <span>{sentence}</span>
+            <SpeakButton text={sentence} size="sm" />
           </div>
           {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
           {fullTranslation && (

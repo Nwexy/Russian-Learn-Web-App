@@ -1031,8 +1031,8 @@ export default function PracticePage() {
           {mixedHeader}
           <div className="flashcard">
             <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-              <span>{mixedRevealed ? fb.sentenceWithBlank.replace("____", `{${fb.correctWord}}`) : fb.sentenceWithBlank}</span>
-              <SpeakButton text={mixedRevealed ? (fb.item.exampleRu || fb.sentenceWithBlank) : fb.sentenceWithBlank} size="sm" />
+              <span>{fb.sentenceWithBlank}</span>
+              <SpeakButton text={fb.sentenceWithBlank} size="sm" />
             </div>
             {shouldShowPronunciation(mixedRevealed) && <PronunciationText item={fb.item} />}
             {(fb.fullTranslation || fb.hintSentence) && (
@@ -1305,8 +1305,8 @@ export default function PracticePage() {
 
         <div className="flashcard">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{fbRevealed ? q.sentenceWithBlank.replace("____", `{${q.correctWord}}`) : q.sentenceWithBlank}</span>
-            <SpeakButton text={fbRevealed ? (q.item.exampleRu || q.sentenceWithBlank) : q.sentenceWithBlank} size="sm" />
+            <span>{q.sentenceWithBlank}</span>
+            <SpeakButton text={q.sentenceWithBlank} size="sm" />
           </div>
           {shouldShowPronunciation(fbRevealed) && <PronunciationText item={q.item} />}
           {(q.fullTranslation || q.hintSentence) && (

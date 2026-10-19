@@ -58,32 +58,8 @@ export interface ListeningQuestion {
 }
 
 /* ========================================
-   Fisher-Yates Shuffle & Regex
+   Fisher-Yates Shuffle & Adil Dağıtım
    ======================================== */
-
-/**
- * Regex özel karakterlerini escape eder.
- */
-export function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-/**
- * Rusça kelimeler için regex oluşturur (е ve ё varyasyonlarını kapsar).
- */
-export function createRussianRegex(ruWord: string): RegExp {
-  const clean = ruWord.split("/")[0].replace(/\(.*?\)/g, "").trim();
-  const pattern = clean
-    .split("")
-    .map((ch) => {
-      if (ch === "е" || ch === "ё" || ch === "Е" || ch === "Ё") {
-        return "[еёЕЁ]";
-      }
-      return escapeRegex(ch);
-    })
-    .join("");
-  return new RegExp(pattern, "i");
-}
 
 /**
  * Diziyi yerinde karıştırır (Fisher-Yates algoritması).
@@ -98,61 +74,54 @@ function shuffle<T>(array: T[]): T[] {
 }
 
 /**
- * Üniteler arası adil (dengeli) öğe seçimi (Faz 10.1).
- * Gelen öğeleri unitId'ye göre gruplar.
- * Her üniteden eşit (veya 4-3-3 gibi birbirine en yakın) sayıda öğe seçer.
- * Kelime sayısı fazla olan ünitelerin (örn: 101 kelimeli sayılar) havuzu domine etmesini engeller.
+ * Üniteler arası adil (dengeli) soru seçimi.
+ * Gelen item listesini üniteye (unitId) göre gruplar.
+ * Seçilen üniteler arasında Round-Robin mantığıyla eşit (veya en yakın) sayıda item seçer.
+ * Sonucu karıştırarak döndürür.
+ *
+ * @param items       - Uygun kelime öğeleri
+ * @param targetCount - İstenen soru / öğe sayısı
  */
-export function selectBalancedItems(items: Item[], totalNeeded: number): Item[] {
-  if (items.length <= totalNeeded) {
+export function selectBalancedItems(items: Item[], targetCount: number): Item[] {
+  if (items.length <= targetCount) {
     return shuffle([...items]);
   }
 
-  // 1. unitId'ye göre grupla
-  const groups = new Map<string, Item[]>();
+  // 1. Üniteye (unitId) göre grupla
+  const unitMap = new Map<string, Item[]>();
   for (const item of items) {
-    const uid = item.unitId || "default";
-    const list = groups.get(uid);
-    if (list) {
-      list.push(item);
-    } else {
-      groups.set(uid, [item]);
+    const key = item.unitId || "default";
+    if (!unitMap.has(key)) {
+      unitMap.set(key, []);
     }
+    unitMap.get(key)!.push(item);
   }
 
-  // Her ünitenin kendi kelimelerini karıştır
-  for (const [uid, groupItems] of groups.entries()) {
-    groups.set(uid, shuffle([...groupItems]));
+  // Tek ünite varsa doğrudan karıştır ve al
+  if (unitMap.size <= 1) {
+    return shuffle([...items]).slice(0, targetCount);
   }
 
-  const unitIds = shuffle(Array.from(groups.keys()));
-  if (unitIds.length <= 1) {
-    return shuffle([...items]).slice(0, totalNeeded);
-  }
+  // 2. Her ünitenin havuzunu kendi içinde karıştır
+  // Ünitelerin sırasını da karıştır ki artan slotlar hep aynı üniteye gitmesin
+  const pools = shuffle(Array.from(unitMap.values()).map((p) => shuffle([...p])));
 
-  // 2. Round-Robin ile her üniteden sırayla birer öğe topla
+  // 3. Adil Round-Robin dağıtımı: her turda her üniteden 1 öğe al
   const selected: Item[] = [];
-  const unitPointers = new Map<string, number>(unitIds.map((u) => [u, 0]));
-
-  while (selected.length < totalNeeded) {
-    let addedInThisRound = false;
-
-    for (const uid of unitIds) {
-      if (selected.length >= totalNeeded) break;
-
-      const group = groups.get(uid)!;
-      const ptr = unitPointers.get(uid)!;
-
-      if (ptr < group.length) {
-        selected.push(group[ptr]);
-        unitPointers.set(uid, ptr + 1);
-        addedInThisRound = true;
+  while (selected.length < targetCount) {
+    let anyAdded = false;
+    for (const pool of pools) {
+      if (pool.length > 0) {
+        selected.push(pool.pop()!);
+        anyAdded = true;
+        if (selected.length === targetCount) break;
       }
     }
-
-    if (!addedInThisRound) break;
+    // Tüm havuzlar tükendiyse çık
+    if (!anyAdded) break;
   }
 
+  // 4. Farklı ünitelerden gelen soruları karıştır
   return shuffle(selected);
 }
 
@@ -187,6 +156,32 @@ export function getPronunciation(
   _lang?: Lang
 ): string {
   return item.pronunciationEn || "";
+}
+
+/**
+ * Rusça örnek cümlede kelimeyi bularak ____ ile değiştirir.
+ * Büyük/küçük harf duyarsızdır ve е/ё esnekliğini destekler.
+ * Eğer cümle içinde aranan kelime bulunamazsa null döner (boşluksuz soru oluşmasını engeller).
+ */
+export function makeSentenceWithBlank(sentence: string, targetWord: string): string | null {
+  if (!sentence || !targetWord) return null;
+
+  // е ve ё harflerini birbirinin yerine geçebilir yap
+  const pattern = targetWord
+    .split("")
+    .map((ch) => {
+      if (ch === "е" || ch === "ё") return "[её]";
+      if (ch === "Е" || ch === "Ё") return "[ЕЁ]";
+      return escapeRegex(ch);
+    })
+    .join("");
+
+  const rx = new RegExp(pattern, "gi");
+  if (rx.test(sentence)) {
+    return sentence.replace(rx, "____");
+  }
+
+  return null;
 }
 
 /* ========================================
@@ -256,7 +251,7 @@ export function generateMultipleChoice(
 /**
  * Boşluk doldurma soruları üretir.
  * exampleRu içindeki Rusça kelimeyi boşlukla (____) değiştirir.
- * Eğer hedef kelime cümle içinde bulunamazsa o item kesinlikle kullanılmaz.
+ * Sadece gerçekten boşluk oluşturulabilen geçerli cümleleri seçer.
  *
  * @param items - Tüm kelime öğeleri
  * @param lang  - Çeviri dili (ipucu için)
@@ -267,40 +262,40 @@ export function generateFillBlank(
   lang: Lang,
   count: number = 10
 ): FillBlankQuestion[] {
-  // Sadece exampleRu içinde hedef kelimesi kesin olarak geçen öğeler
-  const eligible = items.filter((item) => {
-    if (!item.exampleRu || !item.ru) return false;
-    const rx = createRussianRegex(item.ru);
-    return rx.test(item.exampleRu);
-  });
-  if (eligible.length === 0) return [];
+  // Sadece örnek cümlesinde kelime geçen ve başarıyla boşluk (____) oluşturulabilen öğeler
+  const eligibleWithBlank: { item: Item; sentenceWithBlank: string }[] = [];
 
-  const questionCount = Math.min(count, eligible.length);
-  const selected = selectBalancedItems(eligible, questionCount);
-
-  const questions: FillBlankQuestion[] = [];
-  for (const item of selected) {
-    const sentence = item.exampleRu!;
-    const rx = createRussianRegex(item.ru);
-    const sentenceWithBlank = sentence.replace(rx, "____");
-
-    // Güvenlik kontrolü: Boşluk oluşturulamadıysa bu soruyu atla
-    if (!sentenceWithBlank.includes("____")) {
-      continue;
+  for (const item of items) {
+    if (!item.exampleRu || !item.ru) continue;
+    const sentenceWithBlank = makeSentenceWithBlank(item.exampleRu, item.ru);
+    if (sentenceWithBlank && sentenceWithBlank.includes("____")) {
+      eligibleWithBlank.push({ item, sentenceWithBlank });
     }
+  }
 
+  if (eligibleWithBlank.length === 0) return [];
+
+  const questionCount = Math.min(count, eligibleWithBlank.length);
+  const eligibleItems = eligibleWithBlank.map((e) => e.item);
+  const selectedItems = selectBalancedItems(eligibleItems, questionCount);
+
+  const blankMap = new Map<string, string>();
+  for (const eb of eligibleWithBlank) {
+    blankMap.set(eb.item.id, eb.sentenceWithBlank);
+  }
+
+  return selectedItems.map((item) => {
+    const sentenceWithBlank = blankMap.get(item.id)!;
     const fullTranslation = getHighlightedTranslation(item, lang);
-    questions.push({
+    return {
       item,
       sentenceWithBlank,
       correctWord: item.ru,
       hint: getTranslationText(item, lang),
       fullTranslation,
       hintSentence: fullTranslation,
-    });
-  }
-
-  return questions;
+    };
+  });
 }
 
 /**
@@ -386,6 +381,13 @@ export function getHighlightedTranslation(item: Item, lang: Lang): string {
 
   // Fallback: tüm cümle çevirisini göster, boşluğu parantezle belirt
   return `${sentence} ({${word}})`;
+}
+
+/**
+ * Regex özel karakterlerini escape eder.
+ */
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 /* ========================================

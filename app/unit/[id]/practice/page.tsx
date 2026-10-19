@@ -366,8 +366,8 @@ export default function UnitPracticePage() {
         {header}
         <div className="flashcard">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{revealed ? fb.sentenceWithBlank.replace("____", `{${fb.correctWord}}`) : fb.sentenceWithBlank}</span>
-            <SpeakButton text={revealed ? (fb.item.exampleRu || fb.sentenceWithBlank) : fb.sentenceWithBlank} size="sm" />
+            <span>{fb.sentenceWithBlank}</span>
+            <SpeakButton text={fb.sentenceWithBlank} size="sm" />
           </div>
           {shouldShowPronunciation(revealed) && <PronunciationText item={fb.item} />}
           {(fb.fullTranslation || fb.hintSentence) && (
