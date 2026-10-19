@@ -982,23 +982,6 @@ export default function PracticePage() {
         <div className="page-container">
           {mixedHeader}
           <div className="flashcard">
-            {(mc.item.hexCode || getUnitById(mc.item.unitId)?.items.find((i) => i.id === mc.item.id)?.hexCode) && (
-              <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-                <div 
-                  className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                  style={{
-                    backgroundColor: mc.item.hexCode || getUnitById(mc.item.unitId)?.items.find((i) => i.id === mc.item.id)?.hexCode,
-                    width: "2rem",
-                    height: "2rem",
-                    minWidth: "2rem",
-                    minHeight: "2rem",
-                    borderRadius: "0.375rem",
-                    border: "1px solid #9ca3af",
-                  }} 
-                  title={mc.item.en || mc.item.ru}
-                />
-              </div>
-            )}
             <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
               <span>{mc.question}</span>
               {ruQuestion && <SpeakButton text={mc.question} size="sm" />}
@@ -1047,26 +1030,9 @@ export default function PracticePage() {
         <div className="page-container">
           {mixedHeader}
           <div className="flashcard">
-            {(fb.item.hexCode || getUnitById(fb.item.unitId)?.items.find((i) => i.id === fb.item.id)?.hexCode) && (
-              <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-                <div 
-                  className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                  style={{
-                    backgroundColor: fb.item.hexCode || getUnitById(fb.item.unitId)?.items.find((i) => i.id === fb.item.id)?.hexCode,
-                    width: "2rem",
-                    height: "2rem",
-                    minWidth: "2rem",
-                    minHeight: "2rem",
-                    borderRadius: "0.375rem",
-                    border: "1px solid #9ca3af",
-                  }} 
-                  title={fb.item.en || fb.item.ru}
-                />
-              </div>
-            )}
             <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-              <span>{fb.sentenceWithBlank}</span>
-              <SpeakButton text={fb.sentenceWithBlank} size="sm" />
+              <span>{mixedRevealed ? fb.sentenceWithBlank.replace("____", `{${fb.correctWord}}`) : fb.sentenceWithBlank}</span>
+              <SpeakButton text={mixedRevealed ? (fb.item.exampleRu || fb.sentenceWithBlank) : fb.sentenceWithBlank} size="sm" />
             </div>
             {shouldShowPronunciation(mixedRevealed) && <PronunciationText item={fb.item} />}
             {(fb.fullTranslation || fb.hintSentence) && (
@@ -1274,23 +1240,6 @@ export default function PracticePage() {
         </div>
 
         <div className="flashcard">
-          {(q.item.hexCode || getUnitById(q.item.unitId)?.items.find((i) => i.id === q.item.id)?.hexCode) && (
-            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-              <div 
-                className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                style={{
-                  backgroundColor: q.item.hexCode || getUnitById(q.item.unitId)?.items.find((i) => i.id === q.item.id)?.hexCode,
-                  width: "2rem",
-                  height: "2rem",
-                  minWidth: "2rem",
-                  minHeight: "2rem",
-                  borderRadius: "0.375rem",
-                  border: "1px solid #9ca3af",
-                }} 
-                title={q.item.en || q.item.ru}
-              />
-            </div>
-          )}
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
             <span>{q.question}</span>
             {ruQuestion && <SpeakButton text={q.question} size="sm" />}
@@ -1355,26 +1304,9 @@ export default function PracticePage() {
         </div>
 
         <div className="flashcard">
-          {(q.item.hexCode || getUnitById(q.item.unitId)?.items.find((i) => i.id === q.item.id)?.hexCode) && (
-            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-              <div 
-                className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                style={{
-                  backgroundColor: q.item.hexCode || getUnitById(q.item.unitId)?.items.find((i) => i.id === q.item.id)?.hexCode,
-                  width: "2rem",
-                  height: "2rem",
-                  minWidth: "2rem",
-                  minHeight: "2rem",
-                  borderRadius: "0.375rem",
-                  border: "1px solid #9ca3af",
-                }} 
-                title={q.item.en || q.item.ru}
-              />
-            </div>
-          )}
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{q.sentenceWithBlank}</span>
-            <SpeakButton text={q.sentenceWithBlank} size="sm" />
+            <span>{fbRevealed ? q.sentenceWithBlank.replace("____", `{${q.correctWord}}`) : q.sentenceWithBlank}</span>
+            <SpeakButton text={fbRevealed ? (q.item.exampleRu || q.sentenceWithBlank) : q.sentenceWithBlank} size="sm" />
           </div>
           {shouldShowPronunciation(fbRevealed) && <PronunciationText item={q.item} />}
           {(q.fullTranslation || q.hintSentence) && (
@@ -1492,27 +1424,6 @@ export default function PracticePage() {
         </div>
 
         <div className="flashcard">
-          {(() => {
-            const curItem = listenQuestions[listenIndex].item;
-            const hexColor = curItem.hexCode || getUnitById(curItem.unitId)?.items.find((i) => i.id === curItem.id)?.hexCode;
-            return hexColor ? (
-              <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-                <div 
-                  className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                  style={{
-                    backgroundColor: hexColor,
-                    width: "2rem",
-                    height: "2rem",
-                    minWidth: "2rem",
-                    minHeight: "2rem",
-                    borderRadius: "0.375rem",
-                    border: "1px solid #9ca3af",
-                  }} 
-                  title={curItem.en || curItem.ru}
-                />
-              </div>
-            ) : null;
-          })()}
           <div className="listen-btns">
             <button className="listen-play-btn" onClick={handleListenPlay}>
               <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} width={28} height={28}>

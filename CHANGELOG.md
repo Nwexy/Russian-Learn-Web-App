@@ -3,6 +3,11 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-19
+- Renk gorsellerinin (hexCode) alistirma ve testlerde cevabi ele vermesi engellendi, sadece ders ve review'da gosteriliyor.
+- Bosluk doldurma (fillBlank) algoritmasindaki bosluksuz soru uretme hatasi giderildi.
+- Coklu unite secimlerinde sorularin unitelere gore adil dagitilmasi saglandi (orn: Sayilar + Renkler secilirse esit soru gelir).
+
 ## 2026-10-18
 - PWA (Progressive Web App) destegi eklendi (manifest.json ve Service Worker).
 - Uygulama artik mobil cihazlara uygulama olarak eklenebilir.

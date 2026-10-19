@@ -52,8 +52,8 @@ export function renderHighlightedText(
         );
       }
       return (
-        <span key={i} className="fill-normal">
-          {part}
+        <span key={i} className="fill-normal font-semibold">
+          ____
         </span>
       );
     }

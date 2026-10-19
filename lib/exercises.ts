@@ -58,8 +58,32 @@ export interface ListeningQuestion {
 }
 
 /* ========================================
-   Fisher-Yates Shuffle
+   Fisher-Yates Shuffle & Regex
    ======================================== */
+
+/**
+ * Regex özel karakterlerini escape eder.
+ */
+export function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/**
+ * Rusça kelimeler için regex oluşturur (е ve ё varyasyonlarını kapsar).
+ */
+export function createRussianRegex(ruWord: string): RegExp {
+  const clean = ruWord.split("/")[0].replace(/\(.*?\)/g, "").trim();
+  const pattern = clean
+    .split("")
+    .map((ch) => {
+      if (ch === "е" || ch === "ё" || ch === "Е" || ch === "Ё") {
+        return "[еёЕЁ]";
+      }
+      return escapeRegex(ch);
+    })
+    .join("");
+  return new RegExp(pattern, "i");
+}
 
 /**
  * Diziyi yerinde karıştırır (Fisher-Yates algoritması).
@@ -71,6 +95,65 @@ function shuffle<T>(array: T[]): T[] {
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+
+/**
+ * Üniteler arası adil (dengeli) öğe seçimi (Faz 10.1).
+ * Gelen öğeleri unitId'ye göre gruplar.
+ * Her üniteden eşit (veya 4-3-3 gibi birbirine en yakın) sayıda öğe seçer.
+ * Kelime sayısı fazla olan ünitelerin (örn: 101 kelimeli sayılar) havuzu domine etmesini engeller.
+ */
+export function selectBalancedItems(items: Item[], totalNeeded: number): Item[] {
+  if (items.length <= totalNeeded) {
+    return shuffle([...items]);
+  }
+
+  // 1. unitId'ye göre grupla
+  const groups = new Map<string, Item[]>();
+  for (const item of items) {
+    const uid = item.unitId || "default";
+    const list = groups.get(uid);
+    if (list) {
+      list.push(item);
+    } else {
+      groups.set(uid, [item]);
+    }
+  }
+
+  // Her ünitenin kendi kelimelerini karıştır
+  for (const [uid, groupItems] of groups.entries()) {
+    groups.set(uid, shuffle([...groupItems]));
+  }
+
+  const unitIds = shuffle(Array.from(groups.keys()));
+  if (unitIds.length <= 1) {
+    return shuffle([...items]).slice(0, totalNeeded);
+  }
+
+  // 2. Round-Robin ile her üniteden sırayla birer öğe topla
+  const selected: Item[] = [];
+  const unitPointers = new Map<string, number>(unitIds.map((u) => [u, 0]));
+
+  while (selected.length < totalNeeded) {
+    let addedInThisRound = false;
+
+    for (const uid of unitIds) {
+      if (selected.length >= totalNeeded) break;
+
+      const group = groups.get(uid)!;
+      const ptr = unitPointers.get(uid)!;
+
+      if (ptr < group.length) {
+        selected.push(group[ptr]);
+        unitPointers.set(uid, ptr + 1);
+        addedInThisRound = true;
+      }
+    }
+
+    if (!addedInThisRound) break;
+  }
+
+  return shuffle(selected);
 }
 
 /* ========================================
@@ -130,7 +213,7 @@ export function generateMultipleChoice(
   if (eligible.length < 2) return [];
 
   const questionCount = Math.min(count, eligible.length);
-  const selected = shuffle([...eligible]).slice(0, questionCount);
+  const selected = selectBalancedItems(eligible, questionCount);
 
   return selected.map((item) => {
     const direction: McDirection =
@@ -172,7 +255,8 @@ export function generateMultipleChoice(
 
 /**
  * Boşluk doldurma soruları üretir.
- * exampleRu içindeki Rusça kelimeyi boşlukla değiştirir.
+ * exampleRu içindeki Rusça kelimeyi boşlukla (____) değiştirir.
+ * Eğer hedef kelime cümle içinde bulunamazsa o item kesinlikle kullanılmaz.
  *
  * @param items - Tüm kelime öğeleri
  * @param lang  - Çeviri dili (ipucu için)
@@ -183,30 +267,40 @@ export function generateFillBlank(
   lang: Lang,
   count: number = 10
 ): FillBlankQuestion[] {
-  // Sadece exampleRu olan öğeler
-  const eligible = items.filter((i) => i.exampleRu && i.ru);
+  // Sadece exampleRu içinde hedef kelimesi kesin olarak geçen öğeler
+  const eligible = items.filter((item) => {
+    if (!item.exampleRu || !item.ru) return false;
+    const rx = createRussianRegex(item.ru);
+    return rx.test(item.exampleRu);
+  });
   if (eligible.length === 0) return [];
 
   const questionCount = Math.min(count, eligible.length);
-  const selected = shuffle([...eligible]).slice(0, questionCount);
+  const selected = selectBalancedItems(eligible, questionCount);
 
-  return selected.map((item) => {
+  const questions: FillBlankQuestion[] = [];
+  for (const item of selected) {
     const sentence = item.exampleRu!;
-    // Rusça kelimeyi cümle içinde bul ve ____ ile değiştir
-    // Büyük/küçük harf duyarsız arama (Rusça cümle başında büyük harf olabilir)
-    const regex = new RegExp(escapeRegex(item.ru), "gi");
-    const sentenceWithBlank = sentence.replace(regex, "____");
+    const rx = createRussianRegex(item.ru);
+    const sentenceWithBlank = sentence.replace(rx, "____");
+
+    // Güvenlik kontrolü: Boşluk oluşturulamadıysa bu soruyu atla
+    if (!sentenceWithBlank.includes("____")) {
+      continue;
+    }
 
     const fullTranslation = getHighlightedTranslation(item, lang);
-    return {
+    questions.push({
       item,
       sentenceWithBlank,
       correctWord: item.ru,
       hint: getTranslationText(item, lang),
       fullTranslation,
       hintSentence: fullTranslation,
-    };
-  });
+    });
+  }
+
+  return questions;
 }
 
 /**
@@ -294,13 +388,6 @@ export function getHighlightedTranslation(item: Item, lang: Lang): string {
   return `${sentence} ({${word}})`;
 }
 
-/**
- * Regex özel karakterlerini escape eder.
- */
-function escapeRegex(str: string): string {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 /* ========================================
    Eşleştirme (Matching)
    ======================================== */
@@ -320,7 +407,7 @@ export function generateMatching(
 ): MatchingQuestion {
   const eligible = items.filter((i) => getTranslationText(i, lang) !== "—");
   const actualCount = Math.min(pairCount, eligible.length);
-  const selected = shuffle([...eligible]).slice(0, actualCount);
+  const selected = selectBalancedItems(eligible, actualCount);
 
   const pairs: MatchingPair[] = selected.map((item) => ({
     id: item.id,
@@ -350,7 +437,7 @@ export function generateListening(
   if (eligible.length === 0) return [];
 
   const questionCount = Math.min(count, eligible.length);
-  const selected = shuffle([...eligible]).slice(0, questionCount);
+  const selected = selectBalancedItems(eligible, questionCount);
 
   return selected.map((item) => ({
     item,

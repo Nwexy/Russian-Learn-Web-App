@@ -227,7 +227,6 @@ export default function MistakesPage() {
   const mistake = initialMistakes[currentIndex];
   const qd = mistake.questionData;
   const currentItem = itemsMap.get(mistake.itemId);
-  const itemHex = currentItem?.hexCode || (currentItem ? getUnitById(currentItem.unitId)?.items.find((i) => i.id === currentItem.id)?.hexCode : undefined);
 
   /* --- Çoktan Seçmeli --- */
   if (mistake.exerciseType === "multipleChoice") {
@@ -253,23 +252,6 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          {itemHex && (
-            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-              <div 
-                className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                style={{
-                  backgroundColor: itemHex,
-                  width: "2rem",
-                  height: "2rem",
-                  minWidth: "2rem",
-                  minHeight: "2rem",
-                  borderRadius: "0.375rem",
-                  border: "1px solid #9ca3af",
-                }} 
-                title={currentItem?.en || currentItem?.ru}
-              />
-            </div>
-          )}
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
             <span>{question}</span>
             {ruQuestion && <SpeakButton text={question} size="sm" />}
@@ -338,26 +320,9 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          {itemHex && (
-            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-              <div 
-                className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                style={{
-                  backgroundColor: itemHex,
-                  width: "2rem",
-                  height: "2rem",
-                  minWidth: "2rem",
-                  minHeight: "2rem",
-                  borderRadius: "0.375rem",
-                  border: "1px solid #9ca3af",
-                }} 
-                title={currentItem?.en || currentItem?.ru}
-              />
-            </div>
-          )}
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{sentence}</span>
-            <SpeakButton text={sentence} size="sm" />
+            <span>{revealed ? sentence.replace("____", `{${correctWord}}`) : sentence}</span>
+            <SpeakButton text={revealed ? ((currentItem?.exampleRu) || sentence) : sentence} size="sm" />
           </div>
           {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
           {fullTranslation && (
@@ -426,23 +391,6 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          {itemHex && (
-            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-              <div 
-                className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                style={{
-                  backgroundColor: itemHex,
-                  width: "2rem",
-                  height: "2rem",
-                  minWidth: "2rem",
-                  minHeight: "2rem",
-                  borderRadius: "0.375rem",
-                  border: "1px solid #9ca3af",
-                }} 
-                title={currentItem?.en || currentItem?.ru}
-              />
-            </div>
-          )}
           <div
             className="flashcard-ru"
             style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", cursor: "pointer" }}
@@ -519,23 +467,6 @@ export default function MistakesPage() {
         </div>
 
         <div className="flashcard">
-          {itemHex && (
-            <div style={{ position: "absolute", top: "1rem", right: "1rem", zIndex: 10 }}>
-              <div 
-                className="w-8 h-8 rounded-md border border-gray-400 dark:border-gray-600 shadow-sm" 
-                style={{
-                  backgroundColor: itemHex,
-                  width: "2rem",
-                  height: "2rem",
-                  minWidth: "2rem",
-                  minHeight: "2rem",
-                  borderRadius: "0.375rem",
-                  border: "1px solid #9ca3af",
-                }} 
-                title={currentItem?.en || currentItem?.ru}
-              />
-            </div>
-          )}
           {ttsSupported ? (
             <div className="listen-btns">
               <button className="listen-play-btn" onClick={handlePlay}>
