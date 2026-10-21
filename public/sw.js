@@ -3,7 +3,7 @@
  * Offline-first onbellek mekanizmasi.
  */
 
-const CACHE_NAME = 'russian-learn-v1';
+const CACHE_NAME = 'russian-learn-v2';
 
 // Ilk yuklemede onbellege alinacak temel statik kaynaklar
 const PRECACHE_URLS = [
@@ -11,6 +11,7 @@ const PRECACHE_URLS = [
   '/manifest.json',
   '/icon-192x192.png',
   '/icon-512x512.png',
+  '/avatar.jpg',
   '/practice',
   '/review',
   '/grammar',
@@ -57,6 +58,16 @@ self.addEventListener('fetch', (event) => {
   // Sadece ayni origin altindaki istekleri onbellekle
   if (url.origin !== self.location.origin) return;
 
+  // Next.js dahili dosyalari, HMR, RSC (_rsc) ve API isteklerini yakalama (tarayiciya birak)
+  if (
+    url.pathname.startsWith('/_next/') ||
+    url.pathname.startsWith('/api/') ||
+    url.searchParams.has('_rsc') ||
+    request.headers.get('upgrade') === 'websocket'
+  ) {
+    return;
+  }
+
   // Sayfa yonlendirmesi (navigation) istekleri icin: Once ag, basarisiz olursa onbellek
   if (request.mode === 'navigate') {
     event.respondWith(
@@ -71,7 +82,13 @@ self.addEventListener('fetch', (event) => {
         .catch(async () => {
           const cached = await caches.match(request);
           if (cached) return cached;
-          return caches.match('/');
+          const fallback = await caches.match('/');
+          if (fallback) return fallback;
+          return new Response('Offline', {
+            status: 503,
+            statusText: 'Service Unavailable',
+            headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+          });
         })
     );
     return;
@@ -79,30 +96,38 @@ self.addEventListener('fetch', (event) => {
 
   // Statik dosyalar ve diger varliklar icin: Once onbellek, yoksa ag
   event.respondWith(
-    caches.match(request).then((cachedResponse) => {
+    (async () => {
+      const cachedResponse = await caches.match(request);
       if (cachedResponse) {
-        // Arka planda guncelle (stale-while-revalidate)
+        // Arka planda agdan guncelle (stale-while-revalidate)
         fetch(request)
           .then((networkResponse) => {
             if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => cache.put(request, networkResponse));
+              const copy = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
             }
           })
           .catch(() => {});
         return cachedResponse;
       }
 
-      return fetch(request)
-        .then((networkResponse) => {
-          if (networkResponse && networkResponse.status === 200) {
-            const copy = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
-          }
-          return networkResponse;
-        })
-        .catch(() => {
-          return caches.match(request);
+      try {
+        const networkResponse = await fetch(request);
+        if (networkResponse && networkResponse.status === 200) {
+          const copy = networkResponse.clone();
+          const cache = await caches.open(CACHE_NAME);
+          cache.put(request, copy);
+        }
+        return networkResponse;
+      } catch {
+        const fallback = await caches.match(request);
+        if (fallback) return fallback;
+        return new Response('Network error', {
+          status: 503,
+          statusText: 'Service Unavailable',
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
         });
-    })
+      }
+    })()
   );
 });
