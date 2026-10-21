@@ -72,6 +72,8 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-border: var(--border);
+  --color-popover: var(--bg-card);
+  --color-popover-foreground: var(--text-primary);
   --color-primary: var(--accent);
   --color-primary-foreground: #ffffff;
   --color-muted-foreground: var(--text-secondary);

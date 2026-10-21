@@ -111,31 +111,69 @@ export function stopSpeechRecognition(): void {
 }
 
 /**
+ * Rusça konuşma tanıma ve karşılaştırma metnini normalize eder.
+ * - Küçük harfe çevirir.
+ * - 'ё' harfini 'е' olarak eşitler.
+ * - Noktalama işaretlerini, parantezleri ve özel sembolleri temizler.
+ * - Fazla boşlukları teke indirir ve kırpar.
+ */
+export function normalizeRussianSpeechText(s: string): string {
+  if (!s) return "";
+  return s
+    .toLowerCase()
+    .replace(/ё/g, "е")
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'«»—–]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
  * Kullanıcının söylediği metin ile hedef Rusça metni karşılaştırır.
  * Küçük/büyük harf duyarsızdır, noktalama işaretlerini, boşlukları ve е/ё farkını normalize eder.
+ * Sayılar için (numberValue): Hem Rusça kelime ("двадцать пять") hem de rakam ("25") geçerli kabul edilir.
+ *
+ * @param transcript  - Web Speech API'den dönen metin
+ * @param targetRu    - Hedef Rusça kelime (örn: "двадцать пять")
+ * @param numberValue - Varsa öğenin sayısal değeri (örn: 25 veya 0)
  */
-export function compareRussianSpeech(transcript: string, targetRu: string): boolean {
+export function compareRussianSpeech(
+  transcript: string,
+  targetRu: string,
+  numberValue?: number
+): boolean {
   if (!transcript || !targetRu) return false;
 
-  const clean = (s: string) =>
-    s
-      .toLowerCase()
-      .replace(/ё/g, "е")
-      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?"'«»—]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
+  const normTranscript = normalizeRussianSpeechText(transcript);
+  if (!normTranscript) return false;
 
-  const normTranscript = clean(transcript);
+  // Sayısal değer kontrolü: Web Speech API Rusça sayıları bazen rakam ("25"), bazen kelime ("двадцать пять") olarak döndürür
+  if (numberValue !== undefined && numberValue !== null) {
+    const numStr = String(numberValue);
 
-  // targetRu alternatifleri içerebilir ("друг / подруга")
+    // 1. Transcript doğrudan sayının rakam haline eşit mi ("25")
+    if (normTranscript === numStr) return true;
+
+    // 2. Transcript içinde sayının rakamı bağımsız bir kelime olarak geçiyor mu ("номер 25" -> true)
+    const transcriptWords = normTranscript.split(" ");
+    if (transcriptWords.includes(numStr)) return true;
+
+    // 3. Transcript'teki sadece rakamlar hedefe eşit mi ("25." veya "№25" -> "25")
+    const digitsOnly = normTranscript.replace(/\D/g, "");
+    if (digitsOnly === numStr) return true;
+  }
+
+  // targetRu alternatifleri içerebilir ("друг / подруга") veya parantez içi ("(он) читает")
   const targets = targetRu
     .split("/")
-    .map((t) => clean(t.replace(/\(.*?\)/g, "")))
+    .map((t) => normalizeRussianSpeechText(t.replace(/\(.*?\)/g, "")))
     .filter(Boolean);
 
-  if (targets.length === 0) targets.push(clean(targetRu));
+  if (targets.length === 0) {
+    targets.push(normalizeRussianSpeechText(targetRu));
+  }
 
   for (const t of targets) {
+    // Tam eşitlik
     if (normTranscript === t) return true;
 
     // Hedef kelime transcript içinde tam bir kelime olarak geçiyor mu
@@ -150,3 +188,4 @@ export function compareRussianSpeech(transcript: string, targetRu: string): bool
 
   return false;
 }
+

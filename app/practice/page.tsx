@@ -613,7 +613,7 @@ export default function PracticePage() {
       setMixedSpeakingListening(false);
       setMixedSpeakingTranscript(transcript);
 
-      const isMatch = compareRussianSpeech(transcript, sq.targetText);
+      const isMatch = compareRussianSpeech(transcript, sq.targetText, sq.item.numberValue);
       if (isMatch) {
         await settleMixed(
           true,
@@ -625,12 +625,16 @@ export default function PracticePage() {
         );
       } else {
         setMixedIsCorrect(false);
+        const expectedDisplay =
+          sq.item.numberValue !== undefined && sq.item.numberValue !== null
+            ? `${sq.item.numberValue} (${sq.targetText})`
+            : sq.targetText;
         await recordMistake({
           exerciseType: "speaking",
           itemId: sq.item.id,
           questionData: { targetText: sq.targetText, translation: sq.translation },
           userAnswer: transcript,
-          correctAnswer: sq.targetText,
+          correctAnswer: expectedDisplay,
         });
       }
     } catch (err: unknown) {
@@ -677,7 +681,7 @@ export default function PracticePage() {
       setSpeakingListening(false);
       setSpeakingTranscript(transcript);
 
-      const isMatch = compareRussianSpeech(transcript, q.targetText);
+      const isMatch = compareRussianSpeech(transcript, q.targetText, q.item.numberValue);
       if (isMatch) {
         setSpeakingCorrect(true);
         setSpeakingRevealed(true);
@@ -685,12 +689,16 @@ export default function PracticePage() {
         await removeMistakeByKey("speaking", q.item.id);
       } else {
         setSpeakingCorrect(false);
+        const expectedDisplay =
+          q.item.numberValue !== undefined && q.item.numberValue !== null
+            ? `${q.item.numberValue} (${q.targetText})`
+            : q.targetText;
         await recordMistake({
           exerciseType: "speaking",
           itemId: q.item.id,
           questionData: { targetText: q.targetText, translation: q.translation },
           userAnswer: transcript,
-          correctAnswer: q.targetText,
+          correctAnswer: expectedDisplay,
         });
       }
     } catch (err: unknown) {
@@ -746,7 +754,7 @@ export default function PracticePage() {
 
   /** Çoklu Ünite Seçici Bileşeni */
   const unitFilterSelector = (
-    <div className="w-full max-w-3xl mx-auto mb-6">
+    <div className="w-full max-w-3xl mx-auto mb-6 relative z-40">
       {isSessionActive ? (
         <div className="px-4 py-2.5 rounded-xl border border-border bg-card/60 backdrop-blur-sm flex items-center justify-between text-xs text-muted-foreground shadow-sm">
           <span className="font-medium text-foreground">
@@ -771,7 +779,7 @@ export default function PracticePage() {
             </span>
           </div>
 
-          <div className="relative" ref={dropdownRef}>
+          <div className="relative z-50" ref={dropdownRef}>
             <button
               type="button"
               onClick={() => setDropdownOpen((prev) => !prev)}
@@ -793,7 +801,10 @@ export default function PracticePage() {
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 left-0 sm:left-auto mt-2 sm:w-80 z-50 rounded-xl bg-card border border-border p-3 shadow-2xl backdrop-blur-md">
+              <div
+                className="absolute right-0 left-0 sm:left-auto mt-2 sm:w-80 z-50 rounded-xl bg-popover bg-background border border-border p-3 shadow-2xl opacity-100"
+                style={{ backgroundColor: "var(--bg-card, #1a2234)" }}
+              >
                 {/* Tüm Üniteler seçeneği */}
                 <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-card-hover cursor-pointer transition-colors text-sm font-semibold text-foreground">
                   <input
@@ -813,7 +824,7 @@ export default function PracticePage() {
                 <div className="h-px bg-border my-2" />
 
                 {/* Ünite listesi — Tüm üniteler listelenir, kilitliler belirtilir */}
-                <div className="max-h-60 overflow-y-auto space-y-1 pr-1">
+                <div className="max-h-[300px] overflow-y-auto space-y-1 pr-1">
                   {units.map((u) => {
                     const isCompleted = completedUnitIds.has(u.id);
                     const checked = isCompleted && (isAllUnits || selectedUnits.includes(u.id));
@@ -958,7 +969,7 @@ export default function PracticePage() {
         {unitFilterSelector}
 
         {/* Soru Sayısı Seçici */}
-        <div className="w-full max-w-3xl mx-auto mb-6 p-4 rounded-xl border border-border bg-card/80 backdrop-blur-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm">
+        <div className="w-full max-w-3xl mx-auto mb-6 p-4 rounded-xl border border-border bg-card/80 backdrop-blur-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm relative z-0">
           <div className="flex flex-col">
             <span className="text-sm font-semibold text-foreground">
               {t.questionCount}
@@ -1443,12 +1454,15 @@ export default function PracticePage() {
     if (q.kind === "speaking") {
       const sq = q.data;
 
+      const isNumber = sq.item.numberValue !== undefined && sq.item.numberValue !== null;
+      const targetDisplay = isNumber ? `${sq.item.numberValue} (${sq.targetText})` : sq.targetText;
+
       return (
         <div className="page-container">
           {mixedHeader}
           <div className="flashcard">
             <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-              <span>{sq.targetText}</span>
+              <span>{targetDisplay}</span>
               <SpeakButton text={sq.targetText} size="sm" />
             </div>
             <p className="practice-hint">{sq.translation}</p>
@@ -1519,8 +1533,11 @@ export default function PracticePage() {
                   <span className="feedback-wrong text-base font-bold text-rose-500 block">
                     {t.wrongPronunciation}
                   </span>
+                  <span className="text-xs font-semibold text-foreground mt-1 block">
+                    {targetDisplay}
+                  </span>
                   {mixedSpeakingTranscript && (
-                    <span className="text-xs text-muted-foreground mt-1 block">
+                    <span className="text-xs text-muted-foreground mt-0.5 block">
                       {t.heardAs}: &quot;{mixedSpeakingTranscript}&quot;
                     </span>
                   )}
@@ -1801,6 +1818,8 @@ export default function PracticePage() {
      ======================================== */
   if (exerciseType === "speaking" && speakingQuestions.length > 0) {
     const q = speakingQuestions[speakingIndex];
+    const isNumber = q.item.numberValue !== undefined && q.item.numberValue !== null;
+    const targetDisplay = isNumber ? `${q.item.numberValue} (${q.targetText})` : q.targetText;
 
     return (
       <div className="page-container">
@@ -1815,7 +1834,7 @@ export default function PracticePage() {
 
         <div className="flashcard">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{q.targetText}</span>
+            <span>{targetDisplay}</span>
             <SpeakButton text={q.targetText} size="sm" />
           </div>
           <p className="practice-hint">{q.translation}</p>
@@ -1886,8 +1905,11 @@ export default function PracticePage() {
                 <span className="feedback-wrong text-base font-bold text-rose-500 block">
                   {t.wrongPronunciation}
                 </span>
+                <span className="text-xs font-semibold text-foreground mt-1 block">
+                  {targetDisplay}
+                </span>
                 {speakingTranscript && (
-                  <span className="text-xs text-muted-foreground mt-1 block">
+                  <span className="text-xs text-muted-foreground mt-0.5 block">
                     {t.heardAs}: &quot;{speakingTranscript}&quot;
                   </span>
                 )}

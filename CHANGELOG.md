@@ -4,6 +4,8 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-21
+- Practice sayfasindaki unite secim dropdown'inin soru sayisi ile cakismasi (z-index ve arka plan) duzeltildi.
+- Konusma (Speaking) modunda sayilarin (numberValue) dogru taninmasi icin metin normalizasyonu eklendi.
 - Practice sayfasina soru sayisi secimi (10-50) eklendi.
 - Konusma (Speaking) modu eklendi (Web Speech API ile mikrofonla telaffuz kontrolu).
 - Karisik moda Konusma sorulari da dahil edildi.

@@ -562,7 +562,7 @@ export default function MistakesPage() {
       try {
         const transcript = await recognizeSpeech("ru-RU");
         setSpeakingListening(false);
-        const match = compareRussianSpeech(transcript, targetText);
+        const match = compareRussianSpeech(transcript, targetText, currentItem?.numberValue);
         await checkAnswer(match ? targetText : transcript, targetText, mistake);
       } catch (err: unknown) {
         setSpeakingListening(false);
@@ -577,6 +577,9 @@ export default function MistakesPage() {
       }
     };
 
+    const isNumber = currentItem?.numberValue !== undefined && currentItem?.numberValue !== null;
+    const targetDisplay = isNumber ? `${currentItem.numberValue} (${targetText})` : targetText;
+
     return (
       <div className="page-container">
         <div className="practice-progress-row">
@@ -589,7 +592,7 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{targetText}</span>
+            <span>{targetDisplay}</span>
             <SpeakButton text={targetText} size="sm" />
           </div>
           {translation && <p className="practice-hint">{translation}</p>}
