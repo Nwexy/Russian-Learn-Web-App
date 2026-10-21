@@ -39,7 +39,7 @@ import type {
   SpeakingQuestion,
   MixedQuestion,
 } from "@/lib/exercises";
-import { speak, isTTSSupported } from "@/lib/tts";
+import { speak, isTTSSupported, initVoices } from "@/lib/tts";
 import {
   isSpeechRecognitionSupported,
   recognizeSpeech,
@@ -327,6 +327,7 @@ export default function PracticePage() {
       const loaded = await loadFilteredItems(true, validCompletedIds, availableIds);
       setItems(loaded);
       setTtsSupported(isTTSSupported());
+      initVoices();
       setSpeechSupported(isSpeechRecognitionSupported());
       const mc = await getMistakeCount();
       setMistakeCount(mc);

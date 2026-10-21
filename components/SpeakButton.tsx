@@ -16,7 +16,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { speak, isTTSSupported } from "@/lib/tts";
+import { speak, isTTSSupported, initVoices } from "@/lib/tts";
 
 export interface SpeakButtonProps {
   text: string;
@@ -41,6 +41,7 @@ export function SpeakButton({
 
   useEffect(() => {
     setSupported(isTTSSupported());
+    initVoices();
   }, []);
 
   if (!supported || !text) return null;

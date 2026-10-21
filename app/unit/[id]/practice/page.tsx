@@ -21,7 +21,7 @@ import { getMessages } from "@/lib/i18n";
 import { generateMixedPractice } from "@/lib/exercises";
 import type { MixedQuestion } from "@/lib/exercises";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
-import { speak, isTTSSupported } from "@/lib/tts";
+import { speak, isTTSSupported, initVoices } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
@@ -111,6 +111,7 @@ export default function UnitPracticePage() {
 
       setItems(unitItems);
       setTtsOk(isTTSSupported());
+      initVoices();
       setLoading(false);
     }
     load();
