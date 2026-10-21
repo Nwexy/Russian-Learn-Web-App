@@ -187,6 +187,18 @@ export interface Messages {
   importError: string;
   confirmImportWarning: string;
   backupVersion: string;
+
+  // Faz 10.2 — Soru Sayısı ve Konuşma Modu
+  speaking: string;
+  micNotSupported: string;
+  speakNow: string;
+  correctPronunciation: string;
+  wrongPronunciation: string;
+  heardAs: string;
+  questionCount: string;
+  startSpeaking: string;
+  stopSpeaking: string;
+  listeningState: string;
 }
 
 /** Tüm çeviriler */
@@ -363,6 +375,18 @@ const messages: Record<Lang, Messages> = {
     importError: "Geçersiz yedek dosyası veya yükleme hatası.",
     confirmImportWarning: "Dikkat! Mevcut tüm ilerlemeniz silinecek ve seçtiğiniz dosyadaki veriler yüklenecektir. Onaylıyor musunuz?",
     backupVersion: "Yedek Sürümü",
+
+    // Faz 10.2 — Soru Sayısı ve Konuşma Modu
+    speaking: "Konuşma",
+    micNotSupported: "Tarayıcınız konuşma tanımayı desteklemiyor",
+    speakNow: "Şimdi konuşun...",
+    correctPronunciation: "Harika! Doğru telaffuz.",
+    wrongPronunciation: "Yanlış duydum. Tekrar deneyin.",
+    heardAs: "Duyulan",
+    questionCount: "Soru Sayısı",
+    startSpeaking: "Konuşmaya Başla",
+    stopSpeaking: "Durdur",
+    listeningState: "Dinleniyor...",
   },
   en: {
     appName: "Learning Russian",
@@ -536,6 +560,18 @@ const messages: Record<Lang, Messages> = {
     importError: "Invalid backup file or restore failed.",
     confirmImportWarning: "Warning! All your current progress will be deleted and data from the selected file will be restored. Do you want to continue?",
     backupVersion: "Backup Version",
+
+    // Faz 10.2 — Soru Sayısı ve Konuşma Modu
+    speaking: "Speaking",
+    micNotSupported: "Your browser does not support speech recognition",
+    speakNow: "Speak now...",
+    correctPronunciation: "Great! Correct pronunciation.",
+    wrongPronunciation: "Heard incorrectly. Try again.",
+    heardAs: "Heard as",
+    questionCount: "Question Count",
+    startSpeaking: "Start Speaking",
+    stopSpeaking: "Stop",
+    listeningState: "Listening...",
   },
 };
 

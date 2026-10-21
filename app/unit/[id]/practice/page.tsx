@@ -258,7 +258,8 @@ export default function UnitPracticePage() {
     q.kind === "multipleChoice" ? t.multipleChoice
       : q.kind === "fillBlank" ? t.fillBlank
         : q.kind === "matching" ? t.matching
-          : t.listening;
+          : q.kind === "listening" ? t.listening
+            : t.speaking;
 
   const header = (
     <>
@@ -492,46 +493,50 @@ export default function UnitPracticePage() {
   }
 
   /* ---------- Dinleme ---------- */
-  const ls = q.data;
-  const handlePlay = () => speak(ls.correctWord);
-  const handleListenCheck = async () => {
-    if (revealed) return;
-    const correct = answer.trim().toLowerCase() === ls.correctWord.toLowerCase();
-    await settle(correct, "listening", ls.item.id, { correctWord: ls.correctWord }, answer.trim(), ls.correctWord);
-  };
+  if (q.kind === "listening") {
+    const ls = q.data;
+    const handlePlay = () => speak(ls.correctWord);
+    const handleListenCheck = async () => {
+      if (revealed) return;
+      const correct = answer.trim().toLowerCase() === ls.correctWord.toLowerCase();
+      await settle(correct, "listening", ls.item.id, { correctWord: ls.correctWord }, answer.trim(), ls.correctWord);
+    };
 
-  return (
-    <div className="page-container">
-      {header}
-      <div className="flashcard">
-        <div className="listen-btns">
-          <button className="listen-play-btn" onClick={handlePlay}>
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} width={28} height={28}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.5l5-4v15l-5-4H4a1 1 0 01-1-1v-5a1 1 0 011-1h2.5z" />
-            </svg>
-            {t.play}
-          </button>
-          <button className="listen-replay-btn" onClick={handlePlay}>{t.replay}</button>
+    return (
+      <div className="page-container">
+        {header}
+        <div className="flashcard">
+          <div className="listen-btns">
+            <button className="listen-play-btn" onClick={handlePlay}>
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} width={28} height={28}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.5l5-4v15l-5-4H4a1 1 0 01-1-1v-5a1 1 0 011-1h2.5z" />
+              </svg>
+              {t.play}
+            </button>
+            <button className="listen-replay-btn" onClick={handlePlay}>{t.replay}</button>
+          </div>
+          <p className="practice-instruction">{t.listenAndType}</p>
         </div>
-        <p className="practice-instruction">{t.listenAndType}</p>
+        <div className="practice-input-row">
+          <input
+            ref={inputRef}
+            type="text"
+            className="practice-input"
+            value={answer}
+            onChange={(e) => setAnswer(e.target.value)}
+            onKeyDown={(e) => { if (e.key === "Enter" && !revealed) handleListenCheck(); }}
+            placeholder={t.typeYourAnswer}
+            disabled={revealed}
+            autoFocus
+          />
+          {!revealed && (
+            <button className="practice-btn practice-btn-primary" onClick={handleListenCheck}>{t.check}</button>
+          )}
+        </div>
+        {revealed && feedback(ls.item, ls.correctWord)}
       </div>
-      <div className="practice-input-row">
-        <input
-          ref={inputRef}
-          type="text"
-          className="practice-input"
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter" && !revealed) handleListenCheck(); }}
-          placeholder={t.typeYourAnswer}
-          disabled={revealed}
-          autoFocus
-        />
-        {!revealed && (
-          <button className="practice-btn practice-btn-primary" onClick={handleListenCheck}>{t.check}</button>
-        )}
-      </div>
-      {revealed && feedback(ls.item, ls.correctWord)}
-    </div>
-  );
+    );
+  }
+
+  return null;
 }

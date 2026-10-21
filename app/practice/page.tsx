@@ -19,7 +19,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { getProgress, isUnitUnlocked } from "@/lib/progress";
-import { Lock } from "lucide-react";
+import { Lock, Mic, Volume2 } from "lucide-react";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getAllUnits, getUnitById, getUnitTitle } from "@/lib/content";
@@ -28,6 +28,7 @@ import {
   generateFillBlank,
   generateMatching,
   generateListening,
+  generateSpeaking,
   generateMixedPractice,
 } from "@/lib/exercises";
 import type {
@@ -35,9 +36,16 @@ import type {
   FillBlankQuestion,
   MatchingQuestion,
   ListeningQuestion,
+  SpeakingQuestion,
   MixedQuestion,
 } from "@/lib/exercises";
 import { speak, isTTSSupported } from "@/lib/tts";
+import {
+  isSpeechRecognitionSupported,
+  recognizeSpeech,
+  stopSpeechRecognition,
+  compareRussianSpeech,
+} from "@/lib/speech";
 import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
@@ -85,6 +93,8 @@ export default function PracticePage() {
   const [loading, setLoading] = useState(true);
   const [mistakeCount, setMistakeCount] = useState(0);
   const [ttsSupported, setTtsSupported] = useState(true);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [questionCount, setQuestionCount] = useState<number>(10);
 
   // Karışık mod (Mixed) state
   const [mixedQuestions, setMixedQuestions] = useState<MixedQuestion[]>([]);
@@ -99,6 +109,9 @@ export default function PracticePage() {
   const [mixedMatchWrong, setMixedMatchWrong] = useState(false);
   const [mixedMatchHadError, setMixedMatchHadError] = useState(false);
   const [mixedMatchRightOrder, setMixedMatchRightOrder] = useState<{ id: string; translation: string }[]>([]);
+  const [mixedSpeakingListening, setMixedSpeakingListening] = useState(false);
+  const [mixedSpeakingTranscript, setMixedSpeakingTranscript] = useState("");
+  const [mixedSpeakingError, setMixedSpeakingError] = useState<string | null>(null);
 
   // Çoktan seçmeli state (Tekil mod)
   const [mcQuestions, setMcQuestions] = useState<MultipleChoiceQuestion[]>([]);
@@ -130,6 +143,15 @@ export default function PracticePage() {
   const [listenRevealed, setListenRevealed] = useState(false);
   const [listenCorrect, setListenCorrect] = useState<boolean | null>(null);
 
+  // Konuşma state (Tekil mod)
+  const [speakingQuestions, setSpeakingQuestions] = useState<SpeakingQuestion[]>([]);
+  const [speakingIndex, setSpeakingIndex] = useState(0);
+  const [speakingRevealed, setSpeakingRevealed] = useState(false);
+  const [speakingCorrect, setSpeakingCorrect] = useState<boolean | null>(null);
+  const [speakingListening, setSpeakingListening] = useState(false);
+  const [speakingTranscript, setSpeakingTranscript] = useState("");
+  const [speakingError, setSpeakingError] = useState<string | null>(null);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   /** Dersi tamamlanmış üniteler */
@@ -152,6 +174,7 @@ export default function PracticePage() {
 
   /** Karışık mod sorusunu hazırla */
   const prepareMixedQuestion = useCallback((q: MixedQuestion) => {
+    stopSpeechRecognition();
     setMixedRevealed(false);
     setMixedIsCorrect(null);
     setMixedAnswer("");
@@ -161,6 +184,9 @@ export default function PracticePage() {
     setMixedMatchedIds(new Set());
     setMixedMatchWrong(false);
     setMixedMatchHadError(false);
+    setMixedSpeakingListening(false);
+    setMixedSpeakingTranscript("");
+    setMixedSpeakingError(null);
 
     if (q.kind === "matching") {
       setMixedMatchRightOrder(shuffledPairs(q.data.pairs.map((p) => ({ id: p.id, translation: p.translation }))));
@@ -205,20 +231,21 @@ export default function PracticePage() {
 
   /** Alıştırma oturumunu başlatır */
   const initExerciseWith = useCallback(
-    (pool: Item[], type: PracticeMode) => {
+    (pool: Item[], type: PracticeMode, qCount: number) => {
       setScore(0);
       setPhase("active");
+      stopSpeechRecognition();
 
       switch (type) {
         case "mixed": {
-          const qs = generateMixedPractice(pool, translationLang, 10, ttsSupported);
+          const qs = generateMixedPractice(pool, translationLang, qCount, ttsSupported, speechSupported);
           setMixedQuestions(qs);
           setMixedIndex(0);
           if (qs.length > 0) prepareMixedQuestion(qs[0]);
           break;
         }
         case "multipleChoice": {
-          const q = generateMultipleChoice(pool, translationLang, 10);
+          const q = generateMultipleChoice(pool, translationLang, qCount);
           setMcQuestions(q);
           setMcIndex(0);
           setMcSelected(null);
@@ -226,7 +253,7 @@ export default function PracticePage() {
           break;
         }
         case "fillBlank": {
-          const q = generateFillBlank(pool, translationLang, 10);
+          const q = generateFillBlank(pool, translationLang, qCount);
           setFbQuestions(q);
           setFbIndex(0);
           setFbAnswer("");
@@ -235,7 +262,7 @@ export default function PracticePage() {
           break;
         }
         case "matching": {
-          const q = generateMatching(pool, translationLang, 6);
+          const q = generateMatching(pool, translationLang, qCount);
           setMatchData(q);
           setMatchSelectedLeft(null);
           setMatchSelectedRight(null);
@@ -248,7 +275,7 @@ export default function PracticePage() {
           break;
         }
         case "listening": {
-          const q = generateListening(pool, 10);
+          const q = generateListening(pool, qCount);
           setListenQuestions(q);
           setListenIndex(0);
           setListenAnswer("");
@@ -256,9 +283,20 @@ export default function PracticePage() {
           setListenCorrect(null);
           break;
         }
+        case "speaking": {
+          const q = generateSpeaking(pool, translationLang, qCount);
+          setSpeakingQuestions(q);
+          setSpeakingIndex(0);
+          setSpeakingRevealed(false);
+          setSpeakingCorrect(null);
+          setSpeakingListening(false);
+          setSpeakingTranscript("");
+          setSpeakingError(null);
+          break;
+        }
       }
     },
-    [translationLang, ttsSupported, prepareMixedQuestion]
+    [translationLang, ttsSupported, speechSupported, prepareMixedQuestion]
   );
 
   /** İlk veri yükleme */
@@ -289,11 +327,15 @@ export default function PracticePage() {
       const loaded = await loadFilteredItems(true, validCompletedIds, availableIds);
       setItems(loaded);
       setTtsSupported(isTTSSupported());
+      setSpeechSupported(isSpeechRecognitionSupported());
       const mc = await getMistakeCount();
       setMistakeCount(mc);
       setLoading(false);
     }
     load();
+    return () => {
+      stopSpeechRecognition();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -341,15 +383,15 @@ export default function PracticePage() {
   /** Butonla başlat */
   const startExercise = useCallback(() => {
     if (items.length === 0) return;
-    initExerciseWith(items, exerciseType);
-  }, [items, exerciseType, initExerciseWith]);
+    initExerciseWith(items, exerciseType, questionCount);
+  }, [items, exerciseType, questionCount, initExerciseWith]);
 
   /* ========================================
      KARIŞIK MOD (MIXED) HANDLERLARI
      ======================================== */
   const settleMixed = async (
     correct: boolean,
-    type: "multipleChoice" | "fillBlank" | "listening",
+    type: ExerciseType,
     itemId: string,
     questionData: Record<string, unknown>,
     userAnswer: string,
@@ -366,6 +408,7 @@ export default function PracticePage() {
   };
 
   const handleMixedNext = () => {
+    stopSpeechRecognition();
     if (mixedIndex + 1 >= mixedQuestions.length) {
       setPhase("result");
     } else {
@@ -550,6 +593,145 @@ export default function PracticePage() {
     }
   };
 
+  /* ========================================
+     KARIŞIK VE TEKİL KONUŞMA (SPEAKING) HANDLERLARI
+     ======================================== */
+  const handleMixedSpeakingMicToggle = async (sq: SpeakingQuestion) => {
+    if (mixedRevealed) return;
+
+    if (mixedSpeakingListening) {
+      stopSpeechRecognition();
+      setMixedSpeakingListening(false);
+      return;
+    }
+
+    setMixedSpeakingListening(true);
+    setMixedSpeakingError(null);
+
+    try {
+      const transcript = await recognizeSpeech("ru-RU");
+      setMixedSpeakingListening(false);
+      setMixedSpeakingTranscript(transcript);
+
+      const isMatch = compareRussianSpeech(transcript, sq.targetText);
+      if (isMatch) {
+        await settleMixed(
+          true,
+          "speaking",
+          sq.item.id,
+          { targetText: sq.targetText, translation: sq.translation },
+          transcript,
+          sq.targetText
+        );
+      } else {
+        setMixedIsCorrect(false);
+        await recordMistake({
+          exerciseType: "speaking",
+          itemId: sq.item.id,
+          questionData: { targetText: sq.targetText, translation: sq.translation },
+          userAnswer: transcript,
+          correctAnswer: sq.targetText,
+        });
+      }
+    } catch (err: unknown) {
+      setMixedSpeakingListening(false);
+      const errMsg = err instanceof Error ? err.message : String(err);
+      if (errMsg === "not-allowed" || errMsg.includes("permission")) {
+        setMixedSpeakingError(
+          uiLang === "tr"
+            ? "Mikrofon izni verilmedi. Lütfen tarayıcı ayarlarından mikrofona izin verin."
+            : "Microphone permission denied. Please allow microphone access in browser settings."
+        );
+      } else if (errMsg === "no-speech") {
+        setMixedSpeakingError(
+          uiLang === "tr"
+            ? "Ses algılanamadı. Lütfen tekrar deneyin."
+            : "No speech detected. Please try again."
+        );
+      } else {
+        setMixedSpeakingError(
+          uiLang === "tr"
+            ? "Konuşma tanıma hatası. Lütfen tekrar deneyin."
+            : "Speech recognition error. Please try again."
+        );
+      }
+    }
+  };
+
+  const handleSpeakingMicToggle = async () => {
+    if (speakingRevealed) return;
+    const q = speakingQuestions[speakingIndex];
+    if (!q) return;
+
+    if (speakingListening) {
+      stopSpeechRecognition();
+      setSpeakingListening(false);
+      return;
+    }
+
+    setSpeakingListening(true);
+    setSpeakingError(null);
+
+    try {
+      const transcript = await recognizeSpeech("ru-RU");
+      setSpeakingListening(false);
+      setSpeakingTranscript(transcript);
+
+      const isMatch = compareRussianSpeech(transcript, q.targetText);
+      if (isMatch) {
+        setSpeakingCorrect(true);
+        setSpeakingRevealed(true);
+        setScore((s) => s + 1);
+        await removeMistakeByKey("speaking", q.item.id);
+      } else {
+        setSpeakingCorrect(false);
+        await recordMistake({
+          exerciseType: "speaking",
+          itemId: q.item.id,
+          questionData: { targetText: q.targetText, translation: q.translation },
+          userAnswer: transcript,
+          correctAnswer: q.targetText,
+        });
+      }
+    } catch (err: unknown) {
+      setSpeakingListening(false);
+      const errMsg = err instanceof Error ? err.message : String(err);
+      if (errMsg === "not-allowed" || errMsg.includes("permission")) {
+        setSpeakingError(
+          uiLang === "tr"
+            ? "Mikrofon izni verilmedi. Lütfen tarayıcı ayarlarından mikrofona izin verin."
+            : "Microphone permission denied. Please allow microphone access in browser settings."
+        );
+      } else if (errMsg === "no-speech") {
+        setSpeakingError(
+          uiLang === "tr"
+            ? "Ses algılanamadı. Lütfen tekrar deneyin."
+            : "No speech detected. Please try again."
+        );
+      } else {
+        setSpeakingError(
+          uiLang === "tr"
+            ? "Konuşma tanıma hatası. Lütfen tekrar deneyin."
+            : "Speech recognition error. Please try again."
+        );
+      }
+    }
+  };
+
+  const handleSpeakingNext = () => {
+    stopSpeechRecognition();
+    if (speakingIndex + 1 >= speakingQuestions.length) {
+      setPhase("result");
+    } else {
+      setSpeakingIndex((i) => i + 1);
+      setSpeakingRevealed(false);
+      setSpeakingCorrect(null);
+      setSpeakingListening(false);
+      setSpeakingTranscript("");
+      setSpeakingError(null);
+    }
+  };
+
   /** Çoklu ünite tetikleyici buton metni */
   let triggerButtonText = "";
   if (isAllUnits) {
@@ -715,7 +897,9 @@ export default function PracticePage() {
             ? fbQuestions.length
             : exerciseType === "matching"
               ? (matchData?.pairs.length ?? 0)
-              : listenQuestions.length;
+              : exerciseType === "listening"
+                ? listenQuestions.length
+                : speakingQuestions.length;
     const pct = total > 0 ? Math.round((score / total) * 100) : 0;
 
     return (
@@ -752,11 +936,12 @@ export default function PracticePage() {
      RENDER — Tür seçimi
      ======================================== */
   if (phase === "select") {
-    const types: { key: ExerciseType; label: string; icon: string; desc: string }[] = [
-      { key: "multipleChoice", label: t.multipleChoice, icon: "🔤", desc: t.chooseAnswer },
-      { key: "fillBlank", label: t.fillBlank, icon: "✏️", desc: t.typeYourAnswer },
-      { key: "matching", label: t.matching, icon: "🔗", desc: t.matchPairs },
-      { key: "listening", label: t.listening, icon: "🎧", desc: t.listenAndType },
+    const types: { key: ExerciseType; label: string; icon: React.ReactNode; desc: string }[] = [
+      { key: "multipleChoice", label: t.multipleChoice, icon: <span>🔤</span>, desc: t.chooseAnswer },
+      { key: "fillBlank", label: t.fillBlank, icon: <span>✏️</span>, desc: t.typeYourAnswer },
+      { key: "matching", label: t.matching, icon: <span>🔗</span>, desc: t.matchPairs },
+      { key: "listening", label: t.listening, icon: <span>🎧</span>, desc: t.listenAndType },
+      { key: "speaking", label: t.speaking, icon: <Mic className="w-6 h-6 text-foreground" />, desc: t.speakNow },
     ];
 
     const hasEnoughItems = items.length >= 2;
@@ -771,6 +956,36 @@ export default function PracticePage() {
         </Link>
 
         {unitFilterSelector}
+
+        {/* Soru Sayısı Seçici */}
+        <div className="w-full max-w-3xl mx-auto mb-6 p-4 rounded-xl border border-border bg-card/80 backdrop-blur-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm">
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-foreground">
+              {t.questionCount}
+            </span>
+            <span className="text-xs text-muted-foreground mt-0.5">
+              {uiLang === "tr"
+                ? "Alıştırma oturumundaki soru veya çift sayısı"
+                : "Number of questions or pairs in session"}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {[10, 15, 20, 30, 40, 50].map((cnt) => (
+              <button
+                key={cnt}
+                type="button"
+                onClick={() => setQuestionCount(cnt)}
+                className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                  questionCount === cnt
+                    ? "bg-accent text-white shadow-sm ring-2 ring-accent/30"
+                    : "bg-secondary text-foreground/80 hover:bg-secondary/80 hover:text-foreground border border-border"
+                }`}
+              >
+                {cnt}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className="page-header text-center sm:text-left mb-6">
           <h1 className="page-title">{t.practiceTitle}</h1>
@@ -805,20 +1020,22 @@ export default function PracticePage() {
                 <div className="flex items-center gap-2">
                   <h3 className="text-xl font-bold text-foreground">{t.mixedMode}</h3>
                   <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-accent text-white">
-                    10 {uiLang === "tr" ? "Soru" : "Questions"}
+                    {questionCount} {uiLang === "tr" ? "Soru" : "Questions"}
                   </span>
                 </div>
                 <p className="text-sm text-muted-foreground max-w-lg">
                   {uiLang === "tr"
-                    ? "Çoktan seçmeli, boşluk doldurma, eşleştirme ve dinleme sorularını rastgele harmanlar."
-                    : "Randomly blends multiple choice, fill in the blank, matching, and listening."}
+                    ? "Çoktan seçmeli, boşluk doldurma, eşleştirme, dinleme ve konuşma sorularını rastgele harmanlar."
+                    : "Randomly blends multiple choice, fill in the blank, matching, listening, and speaking."}
                 </p>
               </div>
 
-              {/* 4 Tekil Alıştırma Kartı */}
+              {/* 5 Tekil Alıştırma Kartı */}
               {types.map((tp) => {
                 const isSelected = exerciseType === tp.key;
-                const isDisabled = tp.key === "listening" && !ttsSupported;
+                const isDisabled =
+                  (tp.key === "listening" && !ttsSupported) ||
+                  (tp.key === "speaking" && !speechSupported);
 
                 return (
                   <div
@@ -846,7 +1063,7 @@ export default function PracticePage() {
                     <p className="text-xs text-muted-foreground">{tp.desc}</p>
                     {isDisabled && (
                       <span className="text-[11px] text-amber-500 font-medium mt-1">
-                        {t.ttsNotSupported}
+                        {tp.key === "speaking" ? t.micNotSupported : t.ttsNotSupported}
                       </span>
                     )}
                   </div>
@@ -924,7 +1141,9 @@ export default function PracticePage() {
           ? t.fillBlank
           : q.kind === "matching"
             ? t.matching
-            : t.listening;
+            : q.kind === "listening"
+              ? t.listening
+              : t.speaking;
 
     const mixedHeader = (
       <>
@@ -1219,6 +1438,102 @@ export default function PracticePage() {
         </div>
       );
     }
+
+    // Mixed — Konuşma (Speaking)
+    if (q.kind === "speaking") {
+      const sq = q.data;
+
+      return (
+        <div className="page-container">
+          {mixedHeader}
+          <div className="flashcard">
+            <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+              <span>{sq.targetText}</span>
+              <SpeakButton text={sq.targetText} size="sm" />
+            </div>
+            <p className="practice-hint">{sq.translation}</p>
+            {shouldShowPronunciation(mixedRevealed || mixedIsCorrect !== null) && (
+              <PronunciationText item={sq.item} />
+            )}
+          </div>
+
+          <div className="flex flex-col items-center justify-center gap-4 my-6">
+            <button
+              type="button"
+              onClick={() => handleMixedSpeakingMicToggle(sq)}
+              disabled={mixedRevealed && mixedIsCorrect === true}
+              className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${
+                mixedSpeakingListening
+                  ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
+                  : mixedRevealed && mixedIsCorrect === true
+                  ? "bg-emerald-600 text-white cursor-default"
+                  : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
+              }`}
+            >
+              <Mic className={`w-5 h-5 ${mixedSpeakingListening ? "animate-bounce" : ""}`} />
+              <span>
+                {mixedSpeakingListening
+                  ? t.listeningState
+                  : mixedIsCorrect === false
+                  ? t.tryAgain
+                  : t.startSpeaking}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => speak(sq.targetText)}
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-secondary text-foreground hover:bg-secondary/80 transition-colors cursor-pointer border border-border"
+            >
+              <Volume2 className="w-4 h-4 text-accent" />
+              <span>{t.play}</span>
+            </button>
+
+            {mixedSpeakingError && (
+              <div className="text-xs text-rose-500 bg-rose-500/10 border border-rose-500/30 px-3.5 py-2 rounded-xl text-center max-w-md">
+                {mixedSpeakingError}
+              </div>
+            )}
+
+            {mixedIsCorrect === true && mixedRevealed && (
+              <div className="practice-feedback w-full max-w-md">
+                <div>
+                  <span className="feedback-correct text-base font-bold text-emerald-500 block">
+                    {t.correctPronunciation}
+                  </span>
+                  {mixedSpeakingTranscript && (
+                    <span className="text-xs text-muted-foreground mt-1 block">
+                      {t.heardAs}: &quot;{mixedSpeakingTranscript}&quot;
+                    </span>
+                  )}
+                </div>
+                <button className="practice-btn practice-btn-primary" onClick={handleMixedNext}>
+                  {t.next}
+                </button>
+              </div>
+            )}
+
+            {mixedIsCorrect === false && (
+              <div className="practice-feedback w-full max-w-md flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div>
+                  <span className="feedback-wrong text-base font-bold text-rose-500 block">
+                    {t.wrongPronunciation}
+                  </span>
+                  {mixedSpeakingTranscript && (
+                    <span className="text-xs text-muted-foreground mt-1 block">
+                      {t.heardAs}: &quot;{mixedSpeakingTranscript}&quot;
+                    </span>
+                  )}
+                </div>
+                <button className="practice-btn practice-btn-secondary" onClick={handleMixedNext}>
+                  {t.next}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
   }
 
   /* ========================================
@@ -1477,6 +1792,112 @@ export default function PracticePage() {
             </button>
           </div>
         )}
+      </div>
+    );
+  }
+
+  /* ========================================
+     RENDER — Tekil Konuşma (Speaking)
+     ======================================== */
+  if (exerciseType === "speaking" && speakingQuestions.length > 0) {
+    const q = speakingQuestions[speakingIndex];
+
+    return (
+      <div className="page-container">
+        {unitFilterSelector}
+        <div className="practice-progress-row">
+          <span className="review-progress">{speakingIndex + 1} / {speakingQuestions.length}</span>
+          <span className="practice-type-badge">{t.speaking}</span>
+        </div>
+        <div className="review-progress-bar">
+          <div className="review-progress-fill" style={{ width: `${(speakingIndex / speakingQuestions.length) * 100}%` }} />
+        </div>
+
+        <div className="flashcard">
+          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{q.targetText}</span>
+            <SpeakButton text={q.targetText} size="sm" />
+          </div>
+          <p className="practice-hint">{q.translation}</p>
+          {shouldShowPronunciation(speakingRevealed || speakingCorrect !== null) && (
+            <PronunciationText item={q.item} />
+          )}
+        </div>
+
+        <div className="flex flex-col items-center justify-center gap-4 my-6">
+          <button
+            type="button"
+            onClick={handleSpeakingMicToggle}
+            disabled={speakingRevealed && speakingCorrect === true}
+            className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${
+              speakingListening
+                ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
+                : speakingRevealed && speakingCorrect === true
+                ? "bg-emerald-600 text-white cursor-default"
+                : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
+            }`}
+          >
+            <Mic className={`w-5 h-5 ${speakingListening ? "animate-bounce" : ""}`} />
+            <span>
+              {speakingListening
+                ? t.listeningState
+                : speakingCorrect === false
+                ? t.tryAgain
+                : t.startSpeaking}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => speak(q.targetText)}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-secondary text-foreground hover:bg-secondary/80 transition-colors cursor-pointer border border-border"
+          >
+            <Volume2 className="w-4 h-4 text-accent" />
+            <span>{t.play}</span>
+          </button>
+
+          {speakingError && (
+            <div className="text-xs text-rose-500 bg-rose-500/10 border border-rose-500/30 px-3.5 py-2 rounded-xl text-center max-w-md">
+              {speakingError}
+            </div>
+          )}
+
+          {speakingCorrect === true && (
+            <div className="practice-feedback w-full max-w-md">
+              <div>
+                <span className="feedback-correct text-base font-bold text-emerald-500 block">
+                  {t.correctPronunciation}
+                </span>
+                {speakingTranscript && (
+                  <span className="text-xs text-muted-foreground mt-1 block">
+                    {t.heardAs}: &quot;{speakingTranscript}&quot;
+                  </span>
+                )}
+              </div>
+              <button className="practice-btn practice-btn-primary" onClick={handleSpeakingNext}>
+                {t.next}
+              </button>
+            </div>
+          )}
+
+          {speakingCorrect === false && (
+            <div className="practice-feedback w-full max-w-md flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div>
+                <span className="feedback-wrong text-base font-bold text-rose-500 block">
+                  {t.wrongPronunciation}
+                </span>
+                {speakingTranscript && (
+                  <span className="text-xs text-muted-foreground mt-1 block">
+                    {t.heardAs}: &quot;{speakingTranscript}&quot;
+                  </span>
+                )}
+              </div>
+              <button className="practice-btn practice-btn-secondary" onClick={handleSpeakingNext}>
+                {t.next}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     );
   }

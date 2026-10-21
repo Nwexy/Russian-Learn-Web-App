@@ -57,6 +57,13 @@ export interface ListeningQuestion {
   correctWord: string;  // Kullanıcının yazması gereken Rusça kelime
 }
 
+/** Konuşma sorusu */
+export interface SpeakingQuestion {
+  item: Item;
+  targetText: string;    // Rusça söylenmesi gereken kelime / cümle
+  translation: string;   // Çevirisi (ipucu)
+}
+
 /* ========================================
    Fisher-Yates Shuffle & Adil Dağıtım
    ======================================== */
@@ -498,6 +505,36 @@ export function generateListening(
 }
 
 /* ========================================
+   Konuşma (Speaking)
+   ======================================== */
+
+/**
+ * Konuşma soruları üretir.
+ * Kullanıcı ekranda Rusça kelimeyi ve çevirisini görür, mikrofonla telaffuz eder.
+ *
+ * @param items - Tüm kelime öğeleri
+ * @param lang  - Çeviri dili
+ * @param count - Soru sayısı
+ */
+export function generateSpeaking(
+  items: Item[],
+  lang: Lang,
+  count: number = 10
+): SpeakingQuestion[] {
+  const eligible = items.filter((i) => i.ru && getTranslationText(i, lang) !== "—");
+  if (eligible.length === 0) return [];
+
+  const questionCount = Math.min(count, eligible.length);
+  const selected = selectBalancedItems(eligible, questionCount);
+
+  return selected.map((item) => ({
+    item,
+    targetText: item.ru,
+    translation: getTranslationText(item, lang),
+  }));
+}
+
+/* ========================================
    Karışık Alıştırma (Mixed Practice)
    ======================================== */
 
@@ -506,7 +543,8 @@ export type MixedQuestion =
   | { kind: "multipleChoice"; data: MultipleChoiceQuestion }
   | { kind: "fillBlank"; data: FillBlankQuestion }
   | { kind: "matching"; data: MatchingQuestion }
-  | { kind: "listening"; data: ListeningQuestion };
+  | { kind: "listening"; data: ListeningQuestion }
+  | { kind: "speaking"; data: SpeakingQuestion };
 
 /** Karışık oturumda bir eşleştirme sorusundaki çift sayısı */
 const MIXED_MATCHING_PAIRS = 4;
@@ -514,19 +552,21 @@ const MIXED_MATCHING_PAIRS = 4;
 /**
  * Karışık alıştırma oturumu üretir.
  * Soru tipleri rastgele dağıtılır; uygun olmayan tipler atlanır
- * (örn. TTS yoksa dinleme, örnek cümle yoksa boşluk doldurma).
+ * (örn. TTS yoksa dinleme, mikrofon desteği yoksa konuşma, örnek cümle yoksa boşluk doldurma).
  * Bir eşleştirme sorusu tek soru sayılır.
  *
- * @param items        - Kelime öğeleri (type="word")
- * @param lang         - Çeviri dili
- * @param count        - Toplam soru sayısı (varsayılan 10)
- * @param ttsSupported - Tarayıcı ses okumayı destekliyor mu
+ * @param items           - Kelime öğeleri (type="word")
+ * @param lang            - Çeviri dili
+ * @param count           - Toplam soru sayısı (varsayılan 10)
+ * @param ttsSupported    - Tarayıcı ses okumayı destekliyor mu
+ * @param speechSupported - Tarayıcı konuşma tanımayı destekliyor mu
  */
 export function generateMixedPractice(
   items: Item[],
   lang: Lang,
   count: number = 10,
-  ttsSupported: boolean = true
+  ttsSupported: boolean = true,
+  speechSupported: boolean = false
 ): MixedQuestion[] {
   const withTranslation = items.filter((i) => getTranslationText(i, lang) !== "—");
   const withExample = items.filter((i) => i.exampleRu && i.ru);
@@ -537,18 +577,34 @@ export function generateMixedPractice(
   if (withExample.length > 0) kinds.push("fillBlank");
   if (withTranslation.length >= 3) kinds.push("matching");
   if (ttsSupported && items.length > 0) kinds.push("listening");
+  if (speechSupported && items.length > 0) kinds.push("speaking");
   if (kinds.length === 0) return [];
 
-  // Her slot için rastgele tip seç (eşleştirme en fazla 2 kez)
+  // Her slot için rastgele tip seç (eşleştirme en fazla 2 kez, konuşma en fazla 1 veya 2 kez)
   const plan: Record<MixedQuestion["kind"], number> = {
-    multipleChoice: 0, fillBlank: 0, matching: 0, listening: 0,
+    multipleChoice: 0,
+    fillBlank: 0,
+    matching: 0,
+    listening: 0,
+    speaking: 0,
   };
+
+  const maxSpeaking = count >= 20 ? 2 : 1;
+
   for (let s = 0; s < count; s++) {
     let kind = kinds[Math.floor(Math.random() * kinds.length)];
-    if (kind === "matching" && plan.matching >= 2) {
-      const others = kinds.filter((k) => k !== "matching");
-      if (others.length === 0) continue;
-      kind = others[Math.floor(Math.random() * others.length)];
+    if (
+      (kind === "matching" && plan.matching >= 2) ||
+      (kind === "speaking" && plan.speaking >= maxSpeaking)
+    ) {
+      const others = kinds.filter(
+        (k) =>
+          (k !== "matching" || plan.matching < 2) &&
+          (k !== "speaking" || plan.speaking < maxSpeaking)
+      );
+      if (others.length > 0) {
+        kind = others[Math.floor(Math.random() * others.length)];
+      }
     }
     plan[kind]++;
   }
@@ -566,6 +622,9 @@ export function generateMixedPractice(
     })),
     ...generateListening(items, plan.listening).map(
       (data) => ({ kind: "listening" as const, data })
+    ),
+    ...generateSpeaking(items, lang, plan.speaking).map(
+      (data) => ({ kind: "speaking" as const, data })
     ),
   ];
 

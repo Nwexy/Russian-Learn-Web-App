@@ -18,6 +18,13 @@ import { speak, isTTSSupported } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
+import { Mic, Volume2 } from "lucide-react";
+import {
+  isSpeechRecognitionSupported,
+  recognizeSpeech,
+  stopSpeechRecognition,
+  compareRussianSpeech,
+} from "@/lib/speech";
 import type { Mistake, Item } from "@/types";
 
 type Phase = "list" | "active" | "result";
@@ -45,6 +52,11 @@ export default function MistakesPage() {
   // MC state
   const [mcSelected, setMcSelected] = useState<number | null>(null);
 
+  // Speaking state
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [speakingListening, setSpeakingListening] = useState(false);
+  const [speechError, setSpeechError] = useState<string | null>(null);
+
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -57,9 +69,13 @@ export default function MistakesPage() {
       allItems.forEach((i) => map.set(i.id, i));
       setItemsMap(map);
       setTtsSupported(isTTSSupported());
+      setSpeechSupported(isSpeechRecognitionSupported());
       setLoading(false);
     }
     load();
+    return () => {
+      stopSpeechRecognition();
+    };
   }, []);
 
   /** Tekrarı başlat */
@@ -73,6 +89,9 @@ export default function MistakesPage() {
   };
 
   const resetQuestion = () => {
+    stopSpeechRecognition();
+    setSpeakingListening(false);
+    setSpeechError(null);
     setAnswer("");
     setRevealed(false);
     setIsCorrect(null);
@@ -519,6 +538,115 @@ export default function MistakesPage() {
             </button>
           </div>
         )}
+      </div>
+    );
+  }
+
+  /* --- Konuşma (Speaking) --- */
+  if (mistake.exerciseType === "speaking") {
+    const targetText = (qd.targetText as string) || mistake.correctAnswer;
+    const translation =
+      (qd.translation as string) ||
+      (currentItem ? (translationLang === "tr" ? currentItem.tr : currentItem.en) : "") ||
+      "";
+
+    const handleSpeakingMic = async () => {
+      if (revealed) return;
+      if (speakingListening) {
+        stopSpeechRecognition();
+        setSpeakingListening(false);
+        return;
+      }
+      setSpeakingListening(true);
+      setSpeechError(null);
+      try {
+        const transcript = await recognizeSpeech("ru-RU");
+        setSpeakingListening(false);
+        const match = compareRussianSpeech(transcript, targetText);
+        await checkAnswer(match ? targetText : transcript, targetText, mistake);
+      } catch (err: unknown) {
+        setSpeakingListening(false);
+        const errMsg = err instanceof Error ? err.message : String(err);
+        if (errMsg === "not-allowed" || errMsg.includes("permission")) {
+          setSpeechError(t.micNotSupported);
+        } else if (errMsg === "no-speech") {
+          setSpeechError(uiLang === "tr" ? "Ses algılanamadı. Tekrar deneyin." : "No speech detected. Try again.");
+        } else {
+          setSpeechError(uiLang === "tr" ? "Konuşma tanıma hatası. Tekrar deneyin." : "Speech recognition error. Try again.");
+        }
+      }
+    };
+
+    return (
+      <div className="page-container">
+        <div className="practice-progress-row">
+          <span className="review-progress">{currentIndex + 1} / {totalAsked}</span>
+          <span className="practice-type-badge">{t.speaking}</span>
+        </div>
+        <div className="review-progress-bar">
+          <div className="review-progress-fill" style={{ width: `${(currentIndex / totalAsked) * 100}%` }} />
+        </div>
+
+        <div className="flashcard">
+          <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+            <span>{targetText}</span>
+            <SpeakButton text={targetText} size="sm" />
+          </div>
+          {translation && <p className="practice-hint">{translation}</p>}
+          {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
+        </div>
+
+        <div className="flex flex-col items-center justify-center gap-4 my-6">
+          <button
+            type="button"
+            onClick={handleSpeakingMic}
+            disabled={revealed && isCorrect === true}
+            className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${
+              speakingListening
+                ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
+                : revealed && isCorrect === true
+                ? "bg-emerald-600 text-white cursor-default"
+                : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
+            }`}
+          >
+            <Mic className={`w-5 h-5 ${speakingListening ? "animate-bounce" : ""}`} />
+            <span>
+              {speakingListening
+                ? t.listeningState
+                : isCorrect === false
+                ? t.tryAgain
+                : t.startSpeaking}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => speak(targetText)}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-secondary text-foreground hover:bg-secondary/80 transition-colors cursor-pointer border border-border"
+          >
+            <Volume2 className="w-4 h-4 text-accent" />
+            <span>{t.play}</span>
+          </button>
+
+          {speechError && (
+            <div className="text-xs text-rose-500 bg-rose-500/10 border border-rose-500/30 px-3.5 py-2 rounded-xl text-center max-w-md">
+              {speechError}
+            </div>
+          )}
+
+          {revealed && (
+            <div className="practice-feedback w-full max-w-md">
+              <div>
+                <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
+                  {feedbackMsg}
+                </span>
+              </div>
+              <button className="practice-btn practice-btn-primary" onClick={nextQuestion}>
+                {t.next}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     );
   }

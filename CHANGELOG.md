@@ -3,6 +3,11 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-21
+- Practice sayfasina soru sayisi secimi (10-50) eklendi.
+- Konusma (Speaking) modu eklendi (Web Speech API ile mikrofonla telaffuz kontrolu).
+- Karisik moda Konusma sorulari da dahil edildi.
+
 ## 2026-10-19
 - Bosluk Doldurma (Fill in the Blank) alistirmalarinda hedef kelimenin Rusca cumleden silinmemesi hatasi giderildi.
 

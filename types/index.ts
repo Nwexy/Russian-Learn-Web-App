@@ -83,7 +83,7 @@ export interface UnitData {
 }
 
 /** Alıştırma tipleri */
-export type ExerciseType = "multipleChoice" | "fillBlank" | "matching" | "listening";
+export type ExerciseType = "multipleChoice" | "fillBlank" | "matching" | "listening" | "speaking";
 
 /** Yanlış yapılan soru kaydı (Dexie mistakes tablosu) */
 export interface Mistake {
