@@ -343,7 +343,9 @@ function ReviewContent() {
             <SpeakButton text={currentCard.ru} size="md" />
           </div>
           <PronunciationText item={currentCard} />
-          {currentCard.exampleRu && (
+          {currentCard.exampleRu &&
+            currentCard.exampleRu.trim().toLowerCase().replace(/[«».,!?—\s]/g, "") !==
+              currentCard.ru.trim().toLowerCase().replace(/[«».,!?—\s]/g, "") && (
             <div className="flashcard-example-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.4rem" }}>
               <span>« {currentCard.exampleRu} »</span>
               <SpeakButton text={currentCard.exampleRu} size="sm" />
@@ -355,45 +357,24 @@ function ReviewContent() {
         {showAnswer && (
           <div className="flashcard-back">
             <div className="flashcard-divider" />
-            {currentCard.id.startsWith("extra_") ? (
-              <div className="flashcard-extra-back">
-                <div className="flashcard-tr" style={{ fontSize: "1.15rem", fontWeight: 700, marginBottom: "0.5rem" }}>
-                  <span>{currentCard.ru}</span>
-                  <span className="extra-word-pill">
-                    {uiLang === "tr" ? "Cümleden Ekstra Kelime" : "Sentence Extra Word"}
-                  </span>
-                </div>
-                {currentCard.exampleRu && (
-                  <div className="flashcard-extra-box">
-                    <div className="flashcard-extra-ru">
-                      <span>« {currentCard.exampleRu} »</span>
-                      <SpeakButton text={currentCard.exampleRu} size="sm" />
-                    </div>
-                    {exampleTr && (
-                      <div className="flashcard-extra-tr">
-                        → {exampleTr.text}
-                      </div>
-                    )}
-                  </div>
+            <div className="flashcard-tr">
+              <span>{translation.text}</span>
+              {currentCard.id.startsWith("extra_") && (
+                <span className="extra-word-pill">
+                  {uiLang === "tr" ? "Cümleden Ekstra Kelime" : "Sentence Extra Word"}
+                </span>
+              )}
+              {translation.fallbackLang && (
+                <span className="fallback-badge">({translation.fallbackLang})</span>
+              )}
+            </div>
+            {!currentCard.id.startsWith("extra_") && exampleTr && (
+              <div className="flashcard-example-tr">
+                {exampleTr.text}
+                {exampleTr.fallbackLang && (
+                  <span className="fallback-badge">({exampleTr.fallbackLang})</span>
                 )}
               </div>
-            ) : (
-              <>
-                <div className="flashcard-tr">
-                  {translation.text}
-                  {translation.fallbackLang && (
-                    <span className="fallback-badge">({translation.fallbackLang})</span>
-                  )}
-                </div>
-                {exampleTr && (
-                  <div className="flashcard-example-tr">
-                    {exampleTr.text}
-                    {exampleTr.fallbackLang && (
-                      <span className="fallback-badge">({exampleTr.fallbackLang})</span>
-                    )}
-                  </div>
-                )}
-              </>
             )}
           </div>
         )}

@@ -1863,41 +1863,6 @@ body {
   vertical-align: middle;
 }
 
-.flashcard-extra-back {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.flashcard-extra-box {
-  width: 100%;
-  max-width: 480px;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 0.85rem 1rem;
-  margin-top: 0.5rem;
-  text-align: left;
-}
-
-.flashcard-extra-ru {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.flashcard-extra-tr {
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-  margin-top: 0.35rem;
-  line-height: 1.4;
-}
-
 @keyframes fadeInUp {
   from {
     opacity: 0;
