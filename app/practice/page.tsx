@@ -17,6 +17,7 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
+import { motion, LayoutGroup } from "framer-motion";
 import { db } from "@/lib/db";
 import { getProgress, isUnitUnlocked } from "@/lib/progress";
 import { Lock, Mic, Volume2, Blocks } from "lucide-react";
@@ -65,6 +66,13 @@ interface WordToken {
   id: string;
   word: string;
 }
+
+/** Framer Motion yay (spring) animasyonu ayarı */
+const wbSpring = {
+  type: "spring",
+  stiffness: 300,
+  damping: 30,
+} as const;
 
 /** Fisher-Yates ile kopya karıştırma (eşleştirme sağ sütunu için) */
 function shuffledPairs<T>(arr: T[]): T[] {
@@ -1726,75 +1734,87 @@ export default function PracticePage() {
             <p className="practice-instruction">{t.tapWordsInOrder}</p>
           </div>
 
-          <div className="wb-container">
-            {/* Seçim Alanı (Drop Zone) */}
-            <div className="wb-drop-zone">
-              {mixedWbSelectedTokens.length === 0 ? (
-                <span className="text-sm text-muted-foreground select-none italic py-1 px-2">
-                  {t.tapWordsInOrder}
-                </span>
-              ) : (
-                mixedWbSelectedTokens.map((tok) => (
-                  <button
+          <LayoutGroup id={`mixed-wb-${mixedIndex}`}>
+            <div className="wb-container">
+              {/* Seçim Alanı (Drop Zone) */}
+              <motion.div layout transition={wbSpring} className="wb-drop-zone">
+                {mixedWbSelectedTokens.length === 0 ? (
+                  <span className="text-sm text-muted-foreground select-none italic py-1 px-2">
+                    {t.tapWordsInOrder}
+                  </span>
+                ) : (
+                  mixedWbSelectedTokens.map((tok) => (
+                    <motion.button
+                      key={tok.id}
+                      layoutId={`mixed-tok-${tok.id}`}
+                      layout
+                      transition={wbSpring}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      type="button"
+                      className="wb-word-pill wb-word-pill-selected"
+                      onClick={() => handleMixedWbUnpickWord(tok)}
+                      disabled={mixedRevealed}
+                    >
+                      {tok.word}
+                    </motion.button>
+                  ))
+                )}
+              </motion.div>
+
+              {/* Kelime Bankası Havuzu */}
+              <motion.div layout transition={wbSpring} className="wb-pool-zone">
+                {mixedWbBankTokens.map((tok) => (
+                  <motion.button
                     key={tok.id}
+                    layoutId={`mixed-tok-${tok.id}`}
+                    layout
+                    transition={wbSpring}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                     type="button"
-                    className="wb-word-pill wb-word-pill-selected"
-                    onClick={() => handleMixedWbUnpickWord(tok)}
+                    className="wb-word-pill wb-word-pill-available"
+                    onClick={() => handleMixedWbPickWord(tok)}
                     disabled={mixedRevealed}
                   >
                     {tok.word}
+                  </motion.button>
+                ))}
+              </motion.div>
+
+              {!mixedRevealed && (
+                <div className="flex justify-center mb-6">
+                  <button
+                    type="button"
+                    className="practice-btn practice-btn-primary min-w-[180px]"
+                    onClick={handleMixedWbCheck}
+                    disabled={mixedWbSelectedTokens.length === 0}
+                  >
+                    {t.checkAnswer}
                   </button>
-                ))
+                </div>
+              )}
+
+              {mixedRevealed && (
+                <div className="practice-feedback">
+                  <div>
+                    <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
+                      {mixedIsCorrect
+                        ? t.correct
+                        : `${t.wrong} — ${t.showCorrect}: ${wb.targetSentence}`}
+                    </span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="feedback-meaning">{wb.targetSentence}</span>
+                      <SpeakButton text={wb.targetSentence} size="sm" />
+                    </div>
+                  </div>
+                  <button className="practice-btn practice-btn-primary" onClick={handleMixedNext}>
+                    {t.next}
+                  </button>
+                </div>
               )}
             </div>
-
-            {/* Kelime Bankası Havuzu */}
-            <div className="wb-pool-zone">
-              {mixedWbBankTokens.map((tok) => (
-                <button
-                  key={tok.id}
-                  type="button"
-                  className="wb-word-pill wb-word-pill-available"
-                  onClick={() => handleMixedWbPickWord(tok)}
-                  disabled={mixedRevealed}
-                >
-                  {tok.word}
-                </button>
-              ))}
-            </div>
-
-            {!mixedRevealed && (
-              <div className="flex justify-center mb-6">
-                <button
-                  type="button"
-                  className="practice-btn practice-btn-primary min-w-[180px]"
-                  onClick={handleMixedWbCheck}
-                  disabled={mixedWbSelectedTokens.length === 0}
-                >
-                  {t.checkAnswer}
-                </button>
-              </div>
-            )}
-
-            {mixedRevealed && (
-              <div className="practice-feedback">
-                <div>
-                  <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
-                    {mixedIsCorrect
-                      ? t.correct
-                      : `${t.wrong} — ${t.showCorrect}: ${wb.targetSentence}`}
-                  </span>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="feedback-meaning">{wb.targetSentence}</span>
-                    <SpeakButton text={wb.targetSentence} size="sm" />
-                  </div>
-                </div>
-                <button className="practice-btn practice-btn-primary" onClick={handleMixedNext}>
-                  {t.next}
-                </button>
-              </div>
-            )}
-          </div>
+          </LayoutGroup>
         </div>
       );
     }
@@ -2196,75 +2216,87 @@ export default function PracticePage() {
           <p className="practice-instruction">{t.tapWordsInOrder}</p>
         </div>
 
-        <div className="wb-container">
-          {/* Seçim Alanı (Drop Zone) */}
-          <div className="wb-drop-zone">
-            {wbSelectedTokens.length === 0 ? (
-              <span className="text-sm text-muted-foreground select-none italic py-1 px-2">
-                {t.tapWordsInOrder}
-              </span>
-            ) : (
-              wbSelectedTokens.map((tok) => (
-                <button
+        <LayoutGroup id={`wb-${wbIndex}`}>
+          <div className="wb-container">
+            {/* Seçim Alanı (Drop Zone) */}
+            <motion.div layout transition={wbSpring} className="wb-drop-zone">
+              {wbSelectedTokens.length === 0 ? (
+                <span className="text-sm text-muted-foreground select-none italic py-1 px-2">
+                  {t.tapWordsInOrder}
+                </span>
+              ) : (
+                wbSelectedTokens.map((tok) => (
+                  <motion.button
+                    key={tok.id}
+                    layoutId={`wb-tok-${tok.id}`}
+                    layout
+                    transition={wbSpring}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    type="button"
+                    className="wb-word-pill wb-word-pill-selected"
+                    onClick={() => handleWbUnpickWord(tok)}
+                    disabled={wbRevealed}
+                  >
+                    {tok.word}
+                  </motion.button>
+                ))
+              )}
+            </motion.div>
+
+            {/* Kelime Bankası Havuzu */}
+            <motion.div layout transition={wbSpring} className="wb-pool-zone">
+              {wbBankTokens.map((tok) => (
+                <motion.button
                   key={tok.id}
+                  layoutId={`wb-tok-${tok.id}`}
+                  layout
+                  transition={wbSpring}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   type="button"
-                  className="wb-word-pill wb-word-pill-selected"
-                  onClick={() => handleWbUnpickWord(tok)}
+                  className="wb-word-pill wb-word-pill-available"
+                  onClick={() => handleWbPickWord(tok)}
                   disabled={wbRevealed}
                 >
                   {tok.word}
+                </motion.button>
+              ))}
+            </motion.div>
+
+            {!wbRevealed && (
+              <div className="flex justify-center mb-6">
+                <button
+                  type="button"
+                  className="practice-btn practice-btn-primary min-w-[180px]"
+                  onClick={handleWbCheck}
+                  disabled={wbSelectedTokens.length === 0}
+                >
+                  {t.checkAnswer}
                 </button>
-              ))
+              </div>
+            )}
+
+            {wbRevealed && (
+              <div className="practice-feedback">
+                <div>
+                  <span className={wbIsCorrect ? "feedback-correct" : "feedback-wrong"}>
+                    {wbIsCorrect
+                      ? t.correct
+                      : `${t.wrong} — ${t.showCorrect}: ${q.targetSentence}`}
+                  </span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="feedback-meaning">{q.targetSentence}</span>
+                    <SpeakButton text={q.targetSentence} size="sm" />
+                  </div>
+                </div>
+                <button className="practice-btn practice-btn-primary" onClick={handleWbNext}>
+                  {t.next}
+                </button>
+              </div>
             )}
           </div>
-
-          {/* Kelime Bankası Havuzu */}
-          <div className="wb-pool-zone">
-            {wbBankTokens.map((tok) => (
-              <button
-                key={tok.id}
-                type="button"
-                className="wb-word-pill wb-word-pill-available"
-                onClick={() => handleWbPickWord(tok)}
-                disabled={wbRevealed}
-              >
-                {tok.word}
-              </button>
-            ))}
-          </div>
-
-          {!wbRevealed && (
-            <div className="flex justify-center mb-6">
-              <button
-                type="button"
-                className="practice-btn practice-btn-primary min-w-[180px]"
-                onClick={handleWbCheck}
-                disabled={wbSelectedTokens.length === 0}
-              >
-                {t.checkAnswer}
-              </button>
-            </div>
-          )}
-
-          {wbRevealed && (
-            <div className="practice-feedback">
-              <div>
-                <span className={wbIsCorrect ? "feedback-correct" : "feedback-wrong"}>
-                  {wbIsCorrect
-                    ? t.correct
-                    : `${t.wrong} — ${t.showCorrect}: ${q.targetSentence}`}
-                </span>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="feedback-meaning">{q.targetSentence}</span>
-                  <SpeakButton text={q.targetSentence} size="sm" />
-                </div>
-              </div>
-              <button className="practice-btn practice-btn-primary" onClick={handleWbNext}>
-                {t.next}
-              </button>
-            </div>
-          )}
-        </div>
+        </LayoutGroup>
       </div>
     );
   }

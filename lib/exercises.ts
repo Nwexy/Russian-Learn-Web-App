@@ -548,8 +548,26 @@ export function generateSpeaking(
    ======================================== */
 
 /**
+ * Kelimeyi veya parçasını tüm noktalama işaretlerinden (. , ! ? - — ; : " ' « » vb.) temizler.
+ * Sadece harf ve rakamlardan oluşan temiz kelimeleri döndürür.
+ * Eğer parça tire (—, -) veya sadece noktalama ise boş döner.
+ */
+export function cleanPunctuationWord(raw: string): string {
+  if (!raw) return "";
+  const cleaned = raw
+    .replace(/[.,!?;:"'`«»()[\]{}…—]/g, "")
+    .replace(/^-+|-+$/g, "")
+    .trim();
+  if (!cleaned || cleaned === "—" || cleaned === "-") {
+    return "";
+  }
+  return cleaned;
+}
+
+/**
  * Kelime Bankası (Cümle Kurucu / Word Bank) soruları üretir.
  * Örnek cümledeki kelimeler ile çeldirici kelimeleri karıştırarak kullanıcıya sunar.
+ * Cümle ve çeldiricilerdeki tüm noktalama işaretleri temizlenir.
  *
  * @param items - Tüm kelime öğeleri
  * @param lang  - Çeviri dili
@@ -573,17 +591,20 @@ export function generateWordBank(
   const questionCount = Math.min(count, eligible.length);
   const selected = selectBalancedItems(eligible, questionCount);
 
-  // Çeldiriciler için havuzdaki Rusça kelimeleri topla
+  // Çeldiriciler için havuzdaki temiz Rusça kelimeleri topla
   const poolWords = new Set<string>();
   items.forEach((item) => {
     if (item.ru && item.ru.trim() && !item.ru.includes(" ")) {
-      poolWords.add(item.ru.trim());
+      const clean = cleanPunctuationWord(item.ru.trim());
+      if (clean.length >= 2) {
+        poolWords.add(clean);
+      }
     }
     if (item.exampleRu && item.exampleRu.trim()) {
       const parts = item.exampleRu.trim().split(/\s+/);
       parts.forEach((p) => {
-        const clean = p.replace(/^[«"'(]+|[»"')]+$/g, "").trim();
-        if (clean.length >= 2 && !clean.includes("—")) {
+        const clean = cleanPunctuationWord(p);
+        if (clean.length >= 2) {
           poolWords.add(clean);
         }
       });
@@ -591,20 +612,25 @@ export function generateWordBank(
   });
 
   return selected.map((item) => {
-    const targetSentence = item.exampleRu!.trim();
     const hint = (lang === "tr" ? item.exampleTr : item.exampleEn || item.exampleTr)!.trim();
 
-    // Cümleyi kelimelere ayır (noktalama işaretleri kelimenin sonunda kalsın)
-    const targetWords = targetSentence.split(/\s+/).filter(Boolean);
+    // Cümleyi kelimelere ayır ve tüm noktalama işaretlerini (. , ! ? - — vb.) temizle
+    const rawParts = item.exampleRu!.trim().split(/\s+/);
+    const targetWords = rawParts
+      .map(cleanPunctuationWord)
+      .filter((w) => w.length > 0);
+
+    // Temizlenmiş kelimelerden oluşan hedef cümle
+    const targetSentence = targetWords.join(" ");
 
     // Hedef kelimelerin normalizasyonu (çeldirici çakışmasını engellemek için)
     const targetWordNorms = new Set(
-      targetWords.map((w) => w.toLowerCase().replace(/[^а-яёa-z]/gi, ""))
+      targetWords.map((w) => w.toLowerCase().replace(/[^а-яёa-z0-9]/gi, ""))
     );
 
-    // Çeldirici adayları
+    // Çeldirici adayları (sadece hedefte olmayan temiz kelimeler)
     const candidates = Array.from(poolWords).filter((w) => {
-      const norm = w.toLowerCase().replace(/[^а-яёa-z]/gi, "");
+      const norm = w.toLowerCase().replace(/[^а-яёa-z0-9]/gi, "");
       return norm.length > 0 && !targetWordNorms.has(norm);
     });
 

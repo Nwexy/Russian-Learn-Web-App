@@ -3188,16 +3188,11 @@ body {
   border-radius: 9999px;
   cursor: pointer;
   user-select: none;
-  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .wb-word-pill:hover:not(:disabled) {
-  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.wb-word-pill:active:not(:disabled) {
-  transform: scale(0.96);
 }
 
 .wb-word-pill-available {
