@@ -419,15 +419,16 @@ const messages: Record<Lang, Messages> = {
 
     // Faz 10.9 & 11.0 — Review yardım ve tüm kelimeler
     reviewHelp: "Puanlama Rehberi",
-    againDesc: "Hatırlamadım; sıfırlanır, bugün tekrar çalışılır.",
-    hardDesc: "Zorlandım; 1 gün sonra (yavaş artan aralıkla) gösterilir.",
-    goodDesc: "Doğru bildim; 1 gün sonra (pekiştikçe 6+ gün) gösterilir.",
-    easyDesc: "Çok kolaydı; 4 gün sonra (hızla artan aralıkla) gösterilir.",
+    againDesc: "Hatırlamadım, birkaç dakika içinde tekrar gösterilecek.",
+    hardDesc: "Zor hatırladım, birkaç gün içinde tekrar gösterilecek.",
+    goodDesc: "Biraz düşündüm ama doğru yaptım, yaklaşık bir hafta sonra gösterilecek.",
+    easyDesc: "Anında bildim, bir ay sonra gösterilecek.",
     includeAllWords: "Tüm Kelimeleri Dahil Et",
     includeAllWordsDesc: "Kilitli ünitelerin kelimelerini de tekrara dahil eder.",
-    includeAllWordsHelp: "Bu ayar açıkken, tekrar zamanı gelmese bile veritabanındaki tüm kelimeleri çalışabilirsiniz. Kapalıyken sadece bugün tekrar edilmesi gereken (süresi gelmiş) kelimeler gösterilir.",
+    includeAllWordsHelp: "Bu ayar açıkken, bir üniteye dahil olmasalar bile veritabanındaki tüm kelimeleri çalışabilirsiniz. Kapalıyken ise sadece ilgili ünitedeki kelimeler gösterilir.",
     matchingLimitInfo: "Eşleştirme modu maks. 4 çift gösterir.",
   },
+
   en: {
     appName: "Learning Russian",
     home: "Home",
@@ -624,13 +625,13 @@ const messages: Record<Lang, Messages> = {
 
     // Faz 10.9 & 11.0 — Review help and include all words
     reviewHelp: "Rating Guide",
-    againDesc: "Didn't remember; reset to 0, review again today.",
-    hardDesc: "Struggled; shown after 1 day (slowly increasing interval).",
-    goodDesc: "Got it right; shown after 1 day (6+ days as it strengthens).",
-    easyDesc: "Very easy; shown after 4 days (rapidly increasing interval).",
+    againDesc: "Didn't remember, will be shown in a few minutes.",
+    hardDesc: "Remembered but struggled, will be shown in a few days.",
+    goodDesc: "Thought a bit but got it right, will be shown in about a week.",
+    easyDesc: "Knew it instantly, will be shown in a month.",
     includeAllWords: "Include All Words",
     includeAllWordsDesc: "Also include words from locked units in review.",
-    includeAllWordsHelp: "When enabled, you can practice all words in the database even if they are not due yet. When disabled, only words due for review today are shown.",
+    includeAllWordsHelp: "When enabled, you can practice all words in the database even if they are not unit. When disabled, only words on the unit that are are shown.",
     matchingLimitInfo: "Matching mode shows max 4 pairs.",
   },
 };

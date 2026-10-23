@@ -131,11 +131,9 @@ function ReviewContent() {
     async function load() {
       setLoading(true);
       try {
-        let candidateItems: Item[] = [];
-
         if (unitParam) {
           // Belirli bir üniteye özel filtreli review
-          candidateItems = await db.items
+          let candidateItems: Item[] = await db.items
             .where("unitId")
             .equals(unitParam)
             .and((i) => i.type === "word")
@@ -160,39 +158,47 @@ function ReviewContent() {
                 tags: raw.tags,
               }));
           }
-          const reviews: Review[] = await getAllReviews();
-          const due = getDueCards(candidateItems, reviews, new Date());
-          setDueCards(due);
-          setTotalCards(due.length);
-        } else if (includeAll) {
-          // Tüm kelimeler — ünite kilidine ve vadesine bakmadan tüm kelimeleri çalıştır
-          const allWords: Item[] = await db.items
-            .where("type")
-            .equals("word")
-            .toArray();
-          setDueCards(allWords);
-          setTotalCards(allWords.length);
+
+          if (includeAll) {
+            setDueCards(candidateItems);
+            setTotalCards(candidateItems.length);
+          } else {
+            const reviews: Review[] = await getAllReviews();
+            const due = getDueCards(candidateItems, reviews, new Date());
+            setDueCards(due);
+            setTotalCards(due.length);
+          }
         } else {
-          // Genel review: Sadece dersi tamamlanmış (lessonDone === true) ünitelerin kelimeleri
+          // Genel review: Sadece dersi tamamlanmış (lessonDone === true) ünitelerin ID'leri
           const allProgress = await db.progress.toArray();
-          const completedUnitIds = new Set(
+          const unlockedUnitIds = new Set(
             allProgress.filter((p) => Boolean(p.lessonDone)).map((p) => p.unitId)
           );
 
-          if (completedUnitIds.size === 0) {
+          if (unlockedUnitIds.size === 0) {
             setDueCards([]);
             setTotalCards(0);
           } else {
+            // Sadece word tipindeki kelimeleri çek
             const allWords: Item[] = await db.items
               .where("type")
               .equals("word")
               .toArray();
 
-            const activeWords = allWords.filter((i) => completedUnitIds.has(i.unitId));
-            const reviews: Review[] = await getAllReviews();
-            const due = getDueCards(activeWords, reviews, new Date());
-            setDueCards(due);
-            setTotalCards(due.length);
+            // Sadece açık/tamamlanmış ünitelerin kelimeleri
+            const unlockedItems = allWords.filter((i) => unlockedUnitIds.has(i.unitId));
+
+            if (includeAll) {
+              // "Include All Words" AÇIK: SRS due zamanına bakma, ANCAK sadece unlockedUnitIds içindeki kelimeleri getir
+              setDueCards(unlockedItems);
+              setTotalCards(unlockedItems.length);
+            } else {
+              // "Include All Words" KAPALI: Sadece SRS due zamanı gelmiş VE unlockedUnitIds içinde olan item'ları getir
+              const reviews: Review[] = await getAllReviews();
+              const due = getDueCards(unlockedItems, reviews, new Date(), unlockedUnitIds);
+              setDueCards(due);
+              setTotalCards(due.length);
+            }
           }
         }
 

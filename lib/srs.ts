@@ -100,13 +100,26 @@ export function reviewCard(review: Review, rating: Rating): Review {
  * Tekrar zamanı gelmiş kartları döndürür.
  * due tarihi şimdiki zamandan küçük veya eşit olan kartlar "due" sayılır.
  * Reviews tablosunda kaydı olmayan kartlar da due sayılır (ilk kez görülecek).
+ * unlockedUnitIds verilirse sadece bu açık/tamamlanmış ünitelerdeki kartlar değerlendirilir.
  *
- * @param allItems  - Tüm öğeler
- * @param reviews   - Mevcut tekrar kayıtları
- * @param now       - Şimdiki zaman
- * @returns           Tekrar edilecek Item listesi
+ * @param allItems        - Tüm öğeler
+ * @param reviews         - Mevcut tekrar kayıtları
+ * @param now             - Şimdiki zaman
+ * @param unlockedUnitIds - Açık/tamamlanmış ünite ID'leri (opsiyonel filtre)
+ * @returns                 Tekrar edilecek Item listesi
  */
-export function getDueCards(allItems: Item[], reviews: Review[], now: Date): Item[] {
+export function getDueCards(
+  allItems: Item[],
+  reviews: Review[],
+  now: Date,
+  unlockedUnitIds?: Set<string> | string[]
+): Item[] {
+  const allowedSet = unlockedUnitIds
+    ? unlockedUnitIds instanceof Set
+      ? unlockedUnitIds
+      : new Set(unlockedUnitIds)
+    : null;
+
   // itemId → Review haritası
   const reviewMap = new Map<string, Review>();
   for (const r of reviews) {
@@ -114,6 +127,11 @@ export function getDueCards(allItems: Item[], reviews: Review[], now: Date): Ite
   }
 
   return allItems.filter((item) => {
+    // Ünite kısıtlaması varsa ve bu ünite açık değilse atla
+    if (allowedSet && !allowedSet.has(item.unitId)) {
+      return false;
+    }
+
     const review = reviewMap.get(item.id);
 
     // Henüz hiç tekrar edilmemiş → due

@@ -53,11 +53,11 @@ export default function HomePage() {
         setAllProgress(progs);
 
         // Sadece dersi tamamlanmış (lessonDone === true) üniteleri filtrele
-        const completedUnitIds = new Set(
+        const unlockedUnitIds = new Set(
           progs.filter((p) => Boolean(p.lessonDone)).map((p) => p.unitId)
         );
 
-        if (completedUnitIds.size === 0) {
+        if (unlockedUnitIds.size === 0) {
           setDueCount(0);
         } else {
           // Sadece tamamlanmış ünitelerin word tipindeki kartları
@@ -65,9 +65,8 @@ export default function HomePage() {
             .where("type")
             .equals("word")
             .toArray();
-          const activeItems = allItems.filter((i) => completedUnitIds.has(i.unitId));
           const reviews: Review[] = await getAllReviews();
-          const due = getDueCards(activeItems, reviews, new Date());
+          const due = getDueCards(allItems, reviews, new Date(), unlockedUnitIds);
           setDueCount(due.length);
         }
 

@@ -4,6 +4,8 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-23
+- Review sayfasinda "Include All Words" secenegi acikken kilitli unitelerin kelimelerinin gelmesi hatasi giderildi.
+- Bugunun Tekrari sayaci sadece acik uniteleri hesaplayacak sekilde guncellendi.
 - SRS Rating Guide metinlerine tekrar edilme zamanlari eklendi.
 - Navbar'a ve "Include All Words" secenegine yardim (?) ikonlari eklendi.
 - Bugunun Tekrari sayacinda kilitli/bitmemis unitelerin kelimelerinin sayilmasi hatasi duzeltildi.
