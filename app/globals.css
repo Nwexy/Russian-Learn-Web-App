@@ -1408,6 +1408,15 @@ body {
   margin: 0;
 }
 
+.review-banner-title .review-help-wrapper {
+  margin-left: 0.15rem;
+}
+
+.review-banner-title .review-help-btn {
+  width: 24px;
+  height: 24px;
+}
+
 .review-banner-icon {
   font-size: 1.25rem;
 }

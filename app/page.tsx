@@ -21,6 +21,7 @@ import { getAllGrammarProgress } from "@/lib/grammar-progress";
 import { FlagRu } from "@/components/icons/flag-icons";
 import { Lock } from "lucide-react";
 import { isUnitUnlocked } from "@/lib/progress";
+import { RatingGuidePopover } from "@/components/rating-guide-popover";
 import type { Item, Review, UnitStatus, Progress } from "@/types";
 
 export default function HomePage() {
@@ -119,7 +120,8 @@ export default function HomePage() {
           <div className="review-banner-left">
             <h2 className="review-banner-title">
               <span className="review-banner-icon">🔄</span>
-              {t.todayReview}
+              <span>{t.todayReview}</span>
+              <RatingGuidePopover align="left" size={16} />
             </h2>
             <p className="review-banner-desc">
               {loading

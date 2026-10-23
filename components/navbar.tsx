@@ -12,7 +12,6 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "@/components/theme-provider";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
-import { RatingGuidePopover } from "@/components/rating-guide-popover";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -55,28 +54,25 @@ export function Navbar() {
             </svg>
             <span>{t.home}</span>
           </Link>
-          <div className="navbar-item-with-help">
-            <Link
-              href="/review"
-              className={`navbar-link ${isActive("/review") ? "navbar-link-active" : ""}`}
+          <Link
+            href="/review"
+            className={`navbar-link ${isActive("/review") ? "navbar-link-active" : ""}`}
+          >
+            <svg
+              className="navbar-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2}
             >
-              <svg
-                className="navbar-icon"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                />
-              </svg>
-              <span>{t.review}</span>
-            </Link>
-            <RatingGuidePopover align="center" size={13} className="navbar-review-help" />
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            <span>{t.review}</span>
+          </Link>
           <Link
             href="/practice"
             className={`navbar-link ${isActive("/practice") ? "navbar-link-active" : ""}`}
