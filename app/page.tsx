@@ -47,14 +47,29 @@ export default function HomePage() {
   useEffect(() => {
     async function fetchDueCount() {
       try {
-        // Sadece word tipindeki kartlar
-        const allItems: Item[] = await db.items
-          .where("type")
-          .equals("word")
-          .toArray();
-        const reviews: Review[] = await getAllReviews();
-        const due = getDueCards(allItems, reviews, new Date());
-        setDueCount(due.length);
+        // Dexie progress kayıtlarını çek
+        const progs: Progress[] = await db.progress.toArray();
+        setAllProgress(progs);
+
+        // Sadece dersi tamamlanmış (lessonDone === true) üniteleri filtrele
+        const completedUnitIds = new Set(
+          progs.filter((p) => Boolean(p.lessonDone)).map((p) => p.unitId)
+        );
+
+        if (completedUnitIds.size === 0) {
+          setDueCount(0);
+        } else {
+          // Sadece tamamlanmış ünitelerin word tipindeki kartları
+          const allItems: Item[] = await db.items
+            .where("type")
+            .equals("word")
+            .toArray();
+          const activeItems = allItems.filter((i) => completedUnitIds.has(i.unitId));
+          const reviews: Review[] = await getAllReviews();
+          const due = getDueCards(activeItems, reviews, new Date());
+          setDueCount(due.length);
+        }
+
         const mc = await getMistakeCount();
         setMistakeCount(mc);
         // Gramer ilerlemesini çek
@@ -62,9 +77,6 @@ export default function HomePage() {
         const gProgress = await getAllGrammarProgress();
         const gCompleted = gProgress.filter((p) => p.completed).length;
         setGrammarStats({ completed: gCompleted, total: gNotes.length });
-        // Dexie progress kayıtlarını çek
-        const progs: Progress[] = await db.progress.toArray();
-        setAllProgress(progs);
 
         // Ünite durumlarını çek
         const statuses: Record<string, UnitStatus> = {};

@@ -209,7 +209,7 @@ export interface Messages {
   stopSpeaking: string;
   listeningState: string;
 
-  // Faz 10.9 — Review yardım ve tüm kelimeler
+  // Faz 10.9 & 11.0 — Review yardım ve tüm kelimeler
   reviewHelp: string;
   againDesc: string;
   hardDesc: string;
@@ -217,6 +217,7 @@ export interface Messages {
   easyDesc: string;
   includeAllWords: string;
   includeAllWordsDesc: string;
+  includeAllWordsHelp: string;
   matchingLimitInfo: string;
 }
 
@@ -416,14 +417,15 @@ const messages: Record<Lang, Messages> = {
     stopSpeaking: "Durdur",
     listeningState: "Dinleniyor...",
 
-    // Faz 10.9 — Review yardım ve tüm kelimeler
+    // Faz 10.9 & 11.0 — Review yardım ve tüm kelimeler
     reviewHelp: "Puanlama Rehberi",
-    againDesc: "Hatırlamadım, hemen tekrar göster.",
-    hardDesc: "Hatırladım ama zorlandım.",
-    goodDesc: "Biraz düşündüm ama bildim.",
-    easyDesc: "Anında bildim, çok kolaydı.",
+    againDesc: "Hatırlamadım, birkaç dakika içinde tekrar gösterilecek.",
+    hardDesc: "Zor hatırladım, birkaç gün içinde tekrar gösterilecek.",
+    goodDesc: "Biraz düşündüm ama doğru yaptım, yaklaşık bir hafta sonra gösterilecek.",
+    easyDesc: "Anında bildim, bir ay sonra gösterilecek.",
     includeAllWords: "Tüm Kelimeleri Dahil Et",
     includeAllWordsDesc: "Kilitli ünitelerin kelimelerini de tekrara dahil eder.",
+    includeAllWordsHelp: "Bu ayar açıkken, tekrar zamanı gelmese bile veritabanındaki tüm kelimeleri çalışabilirsiniz. Kapalıyken sadece bugün tekrar edilmesi gereken (süresi gelmiş) kelimeler gösterilir.",
     matchingLimitInfo: "Eşleştirme modu maks. 4 çift gösterir.",
   },
   en: {
@@ -620,14 +622,15 @@ const messages: Record<Lang, Messages> = {
     tapWordsInOrder: "Tap the words in the correct order",
     checkAnswer: "Check Answer",
 
-    // Faz 10.9 — Review help and include all words
+    // Faz 10.9 & 11.0 — Review help and include all words
     reviewHelp: "Rating Guide",
-    againDesc: "Didn't remember, show again soon.",
-    hardDesc: "Remembered but struggled.",
-    goodDesc: "Thought a bit but got it right.",
-    easyDesc: "Knew it instantly, very easy.",
+    againDesc: "Didn't remember, will be shown in a few minutes.",
+    hardDesc: "Remembered but struggled, will be shown in a few days.",
+    goodDesc: "Thought a bit but got it right, will be shown in about a week.",
+    easyDesc: "Knew it instantly, will be shown in a month.",
     includeAllWords: "Include All Words",
     includeAllWordsDesc: "Also include words from locked units in review.",
+    includeAllWordsHelp: "When enabled, you can practice all words in the database even if they are not due yet. When disabled, only words due for review today are shown.",
     matchingLimitInfo: "Matching mode shows max 4 pairs.",
   },
 };

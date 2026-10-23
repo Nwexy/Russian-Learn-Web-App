@@ -9,7 +9,7 @@
 
 "use client";
 
-import { useState, useEffect, useCallback, useRef, Suspense } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { db } from "@/lib/db";
@@ -20,6 +20,8 @@ import { getReview, upsertReview, getAllReviews } from "@/lib/reviews";
 import { getUnitById, getUnitTitle } from "@/lib/content";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { SpeakButton } from "@/components/SpeakButton";
+import { RatingGuidePopover } from "@/components/rating-guide-popover";
+import { InfoTooltip } from "@/components/info-tooltip";
 import type { Item, Review, Lang } from "@/types";
 import type { Rating } from "@/lib/srs";
 
@@ -55,82 +57,6 @@ function getExampleTranslation(
   return null;
 }
 
-/** HelpCircle SVG ikonu */
-function HelpCircleIcon({ size = 20 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-      <line x1="12" y1="17" x2="12.01" y2="17" />
-    </svg>
-  );
-}
-
-/** Yardım balonu (Popover) bileşeni */
-function ReviewHelpPopover({ t }: { t: ReturnType<typeof getMessages> }) {
-  const [open, setOpen] = useState(false);
-  const popRef = useRef<HTMLDivElement>(null);
-
-  // Dışarı tıklayınca kapat
-  useEffect(() => {
-    if (!open) return;
-    function handleClick(e: MouseEvent) {
-      if (popRef.current && !popRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [open]);
-
-  return (
-    <div className="review-help-wrapper" ref={popRef}>
-      <button
-        className="review-help-btn"
-        onClick={() => setOpen((p) => !p)}
-        aria-label={t.reviewHelp}
-        title={t.reviewHelp}
-        type="button"
-      >
-        <HelpCircleIcon size={18} />
-      </button>
-
-      {open && (
-        <div className="review-help-popover">
-          <h4 className="review-help-title">{t.reviewHelp}</h4>
-          <ul className="review-help-list">
-            <li>
-              <span className="review-help-label review-help-again">{t.again}</span>
-              <span className="review-help-desc">{t.againDesc}</span>
-            </li>
-            <li>
-              <span className="review-help-label review-help-hard">{t.hard}</span>
-              <span className="review-help-desc">{t.hardDesc}</span>
-            </li>
-            <li>
-              <span className="review-help-label review-help-good">{t.good}</span>
-              <span className="review-help-desc">{t.goodDesc}</span>
-            </li>
-            <li>
-              <span className="review-help-label review-help-easy">{t.easy}</span>
-              <span className="review-help-desc">{t.easyDesc}</span>
-            </li>
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-}
-
 /** "Tüm Kelimeleri Dahil Et" toggle switch'i */
 function IncludeAllToggle({
   checked,
@@ -142,18 +68,22 @@ function IncludeAllToggle({
   t: ReturnType<typeof getMessages>;
 }) {
   return (
-    <label className="review-toggle-row" title={t.includeAllWordsDesc}>
-      <span className="review-toggle-text">{t.includeAllWords}</span>
+    <div className="review-toggle-row">
+      <div className="review-toggle-left">
+        <span className="review-toggle-text">{t.includeAllWords}</span>
+        <InfoTooltip content={t.includeAllWordsHelp} title={t.includeAllWords} size={15} />
+      </div>
       <button
         type="button"
         role="switch"
         aria-checked={checked}
+        aria-label={t.includeAllWords}
         className={`review-toggle-switch ${checked ? "review-toggle-on" : ""}`}
         onClick={() => onChange(!checked)}
       >
         <span className="review-toggle-thumb" />
       </button>
-    </label>
+    </div>
   );
 }
 
@@ -230,12 +160,18 @@ function ReviewContent() {
                 tags: raw.tags,
               }));
           }
+          const reviews: Review[] = await getAllReviews();
+          const due = getDueCards(candidateItems, reviews, new Date());
+          setDueCards(due);
+          setTotalCards(due.length);
         } else if (includeAll) {
-          // Tüm kelimeler — ünite kilidine bakmadan
-          candidateItems = await db.items
+          // Tüm kelimeler — ünite kilidine ve vadesine bakmadan tüm kelimeleri çalıştır
+          const allWords: Item[] = await db.items
             .where("type")
             .equals("word")
             .toArray();
+          setDueCards(allWords);
+          setTotalCards(allWords.length);
         } else {
           // Genel review: Sadece dersi tamamlanmış (lessonDone === true) ünitelerin kelimeleri
           const allProgress = await db.progress.toArray();
@@ -243,18 +179,23 @@ function ReviewContent() {
             allProgress.filter((p) => Boolean(p.lessonDone)).map((p) => p.unitId)
           );
 
-          const allWords: Item[] = await db.items
-            .where("type")
-            .equals("word")
-            .toArray();
+          if (completedUnitIds.size === 0) {
+            setDueCards([]);
+            setTotalCards(0);
+          } else {
+            const allWords: Item[] = await db.items
+              .where("type")
+              .equals("word")
+              .toArray();
 
-          candidateItems = allWords.filter((i) => completedUnitIds.has(i.unitId));
+            const activeWords = allWords.filter((i) => completedUnitIds.has(i.unitId));
+            const reviews: Review[] = await getAllReviews();
+            const due = getDueCards(activeWords, reviews, new Date());
+            setDueCards(due);
+            setTotalCards(due.length);
+          }
         }
 
-        const reviews: Review[] = await getAllReviews();
-        const due = getDueCards(candidateItems, reviews, new Date());
-        setDueCards(due);
-        setTotalCards(due.length);
         setCurrentIndex(0);
         setShowAnswer(false);
       } catch {
@@ -341,7 +282,7 @@ function ReviewContent() {
       <div className="review-header">
         <div className="review-header-left">
           <h1 className="page-title">{pageTitle}</h1>
-          <ReviewHelpPopover t={t} />
+          <RatingGuidePopover align="left" size={18} />
         </div>
         <span className="review-progress">
           {currentIndex + 1} / {totalCards}

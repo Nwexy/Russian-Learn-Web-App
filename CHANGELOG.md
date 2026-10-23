@@ -4,6 +4,9 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-23
+- SRS Rating Guide metinlerine tekrar edilme zamanlari eklendi.
+- Navbar'a ve "Include All Words" secenegine yardim (?) ikonlari eklendi.
+- Bugunun Tekrari sayacinda kilitli/bitmemis unitelerin kelimelerinin sayilmasi hatasi duzeltildi.
 - Eslestirme (Matching) modunda ekrana gelen kart sayisi sinirlandirildi (tek basina maks. 4, karisik modda 4-6 cift).
 - Review sayfasina puanlama rehberi (?) yardim balonu eklendi (Tekrar, Zor, Iyi, Kolay aciklamalari).
 - Review sayfasina "Tum Kelimeleri Dahil Et" toggle switch'i eklendi (kilitli unitelerin kelimeleri de tekrara dahil edilir).
