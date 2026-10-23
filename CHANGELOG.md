@@ -4,6 +4,8 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-23
+- Tum alistirma tiplerinde (Speaking, Word Bank dahil) yanlis cevaplarin kaydedilmesi saglandi.
+- Mistakes sayfasinin bos gelmesine neden olan render hatasi giderildi, "Yanlisin yok" ekrani eklendi.
 - Kelime Bankasi (Word Bank) modunda noktalama isaretleri (., - vb.) kaldirildi.
 - Kelimelerin secilme/silinme anina framer-motion ile akici surukleme animasyonu eklendi.
 - Duolingo tarzi "Kelime Bankasi / Cumle Kurucu" (Word Bank) alistirma modu eklendi.

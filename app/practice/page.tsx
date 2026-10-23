@@ -451,10 +451,19 @@ export default function PracticePage() {
     setMixedRevealed(true);
     if (correct) {
       setScore((s) => s + 1);
-      await removeMistakeByKey(type, itemId);
+      try {
+        await removeMistakeByKey(type, itemId);
+      } catch (err) {
+        console.error("removeMistakeByKey error:", err);
+      }
     } else {
-      await recordMistake({ exerciseType: type, itemId, questionData, userAnswer, correctAnswer });
+      try {
+        await recordMistake({ exerciseType: type, itemId, questionData, userAnswer, correctAnswer });
+      } catch (err) {
+        console.error("recordMistake error:", err);
+      }
     }
+    getMistakeCount().then(setMistakeCount).catch(() => {});
   };
 
   const handleMixedNext = () => {
@@ -517,16 +526,31 @@ export default function PracticePage() {
     setMcRevealed(true);
     if (idx === q.correctIndex) {
       setScore((s) => s + 1);
-      await removeMistakeByKey("multipleChoice", q.item.id);
+      try {
+        await removeMistakeByKey("multipleChoice", q.item.id);
+      } catch (err) {
+        console.error("removeMistakeByKey error:", err);
+      }
     } else {
-      await recordMistake({
-        exerciseType: "multipleChoice",
-        itemId: q.item.id,
-        questionData: { question: q.question, options: q.options, correctIndex: q.correctIndex, direction: q.direction },
-        userAnswer: q.options[idx],
-        correctAnswer: q.options[q.correctIndex],
-      });
+      try {
+        await recordMistake({
+          exerciseType: "multipleChoice",
+          itemId: q.item.id,
+          questionData: {
+            question: q.question,
+            options: q.options,
+            correctIndex: q.correctIndex,
+            direction: q.direction,
+            item: q.item,
+          },
+          userAnswer: q.options[idx],
+          correctAnswer: q.options[q.correctIndex],
+        });
+      } catch (err) {
+        console.error("recordMistake error:", err);
+      }
     }
+    getMistakeCount().then(setMistakeCount).catch(() => {});
   };
 
   const handleMcNext = () => {
@@ -550,16 +574,31 @@ export default function PracticePage() {
     setFbRevealed(true);
     if (isCorrect) {
       setScore((s) => s + 1);
-      await removeMistakeByKey("fillBlank", q.item.id);
+      try {
+        await removeMistakeByKey("fillBlank", q.item.id);
+      } catch (err) {
+        console.error("removeMistakeByKey error:", err);
+      }
     } else {
-      await recordMistake({
-        exerciseType: "fillBlank",
-        itemId: q.item.id,
-        questionData: { sentenceWithBlank: q.sentenceWithBlank, correctWord: q.correctWord, hint: q.hint },
-        userAnswer: fbAnswer.trim(),
-        correctAnswer: q.correctWord,
-      });
+      try {
+        await recordMistake({
+          exerciseType: "fillBlank",
+          itemId: q.item.id,
+          questionData: {
+            sentenceWithBlank: q.sentenceWithBlank,
+            correctWord: q.correctWord,
+            hint: q.hint,
+            fullTranslation: q.fullTranslation,
+            item: q.item,
+          },
+          userAnswer: fbAnswer.trim(),
+          correctAnswer: q.correctWord,
+        });
+      } catch (err) {
+        console.error("recordMistake error:", err);
+      }
     }
+    getMistakeCount().then(setMistakeCount).catch(() => {});
   };
 
   const handleFbNext = () => {
@@ -625,13 +664,18 @@ export default function PracticePage() {
       const leftPair = matchData?.pairs.find((p) => p.id === leftId);
       const rightPair = matchData?.pairs.find((p) => p.id === rightId);
       if (leftPair) {
-        await recordMistake({
-          exerciseType: "matching",
-          itemId: leftPair.id,
-          questionData: { ru: leftPair.ru, translation: leftPair.translation },
-          userAnswer: rightPair?.translation || "",
-          correctAnswer: leftPair.translation,
-        });
+        try {
+          await recordMistake({
+            exerciseType: "matching",
+            itemId: leftPair.id,
+            questionData: { ru: leftPair.ru, translation: leftPair.translation },
+            userAnswer: rightPair?.translation || "",
+            correctAnswer: leftPair.translation,
+          });
+        } catch (err) {
+          console.error("recordMistake error:", err);
+        }
+        getMistakeCount().then(setMistakeCount).catch(() => {});
       }
       setTimeout(() => {
         setMatchSelectedLeft(null);
@@ -657,16 +701,25 @@ export default function PracticePage() {
     setListenRevealed(true);
     if (isCorrect) {
       setScore((s) => s + 1);
-      await removeMistakeByKey("listening", q.item.id);
+      try {
+        await removeMistakeByKey("listening", q.item.id);
+      } catch (err) {
+        console.error("removeMistakeByKey error:", err);
+      }
     } else {
-      await recordMistake({
-        exerciseType: "listening",
-        itemId: q.item.id,
-        questionData: { correctWord: q.correctWord },
-        userAnswer: listenAnswer.trim(),
-        correctAnswer: q.correctWord,
-      });
+      try {
+        await recordMistake({
+          exerciseType: "listening",
+          itemId: q.item.id,
+          questionData: { correctWord: q.correctWord, item: q.item },
+          userAnswer: listenAnswer.trim(),
+          correctAnswer: q.correctWord,
+        });
+      } catch (err) {
+        console.error("recordMistake error:", err);
+      }
     }
+    getMistakeCount().then(setMistakeCount).catch(() => {});
   };
 
   const handleListenNext = () => {
@@ -717,13 +770,18 @@ export default function PracticePage() {
           sq.item.numberValue !== undefined && sq.item.numberValue !== null
             ? `${sq.item.numberValue} (${sq.targetText})`
             : sq.targetText;
-        await recordMistake({
-          exerciseType: "speaking",
-          itemId: sq.item.id,
-          questionData: { targetText: sq.targetText, translation: sq.translation },
-          userAnswer: transcript,
-          correctAnswer: expectedDisplay,
-        });
+        try {
+          await recordMistake({
+            exerciseType: "speaking",
+            itemId: sq.item.id,
+            questionData: { targetText: sq.targetText, translation: sq.translation, item: sq.item },
+            userAnswer: transcript,
+            correctAnswer: expectedDisplay,
+          });
+        } catch (err) {
+          console.error("recordMistake error:", err);
+        }
+        getMistakeCount().then(setMistakeCount).catch(() => {});
       }
     } catch (err: unknown) {
       setMixedSpeakingListening(false);
@@ -774,21 +832,30 @@ export default function PracticePage() {
         setSpeakingCorrect(true);
         setSpeakingRevealed(true);
         setScore((s) => s + 1);
-        await removeMistakeByKey("speaking", q.item.id);
+        try {
+          await removeMistakeByKey("speaking", q.item.id);
+        } catch (err) {
+          console.error("removeMistakeByKey error:", err);
+        }
       } else {
         setSpeakingCorrect(false);
         const expectedDisplay =
           q.item.numberValue !== undefined && q.item.numberValue !== null
             ? `${q.item.numberValue} (${q.targetText})`
             : q.targetText;
-        await recordMistake({
-          exerciseType: "speaking",
-          itemId: q.item.id,
-          questionData: { targetText: q.targetText, translation: q.translation },
-          userAnswer: transcript,
-          correctAnswer: expectedDisplay,
-        });
+        try {
+          await recordMistake({
+            exerciseType: "speaking",
+            itemId: q.item.id,
+            questionData: { targetText: q.targetText, translation: q.translation, item: q.item },
+            userAnswer: transcript,
+            correctAnswer: expectedDisplay,
+          });
+        } catch (err) {
+          console.error("recordMistake error:", err);
+        }
       }
+      getMistakeCount().then(setMistakeCount).catch(() => {});
     } catch (err: unknown) {
       setSpeakingListening(false);
       const errMsg = err instanceof Error ? err.message : String(err);
@@ -858,21 +925,31 @@ export default function PracticePage() {
 
     if (isCorrect) {
       setScore((s) => s + 1);
-      await removeMistakeByKey("wordBank", q.item.id);
+      try {
+        await removeMistakeByKey("wordBank", q.item.id);
+      } catch (err) {
+        console.error("removeMistakeByKey error:", err);
+      }
     } else {
-      await recordMistake({
-        exerciseType: "wordBank",
-        itemId: q.item.id,
-        questionData: {
-          targetSentence: q.targetSentence,
-          hint: q.hint,
-          targetWords: q.targetWords,
-          shuffledWords: q.shuffledWords,
-        },
-        userAnswer: selectedWords.join(" "),
-        correctAnswer: q.targetSentence,
-      });
+      try {
+        await recordMistake({
+          exerciseType: "wordBank",
+          itemId: q.item.id,
+          questionData: {
+            targetSentence: q.targetSentence,
+            hint: q.hint,
+            targetWords: q.targetWords,
+            shuffledWords: q.shuffledWords,
+            item: q.item,
+          },
+          userAnswer: selectedWords.join(" "),
+          correctAnswer: q.targetSentence,
+        });
+      } catch (err) {
+        console.error("recordMistake error:", err);
+      }
     }
+    getMistakeCount().then(setMistakeCount).catch(() => {});
   };
 
   const handleWbNext = () => {
@@ -1484,13 +1561,18 @@ export default function PracticePage() {
           const leftPair = pairs.find((p) => p.id === leftId);
           const rightPair = pairs.find((p) => p.id === rightId);
           if (leftPair) {
-            await recordMistake({
-              exerciseType: "matching",
-              itemId: leftPair.id,
-              questionData: { ru: leftPair.ru, translation: leftPair.translation },
-              userAnswer: rightPair?.translation || "",
-              correctAnswer: leftPair.translation,
-            });
+            try {
+              await recordMistake({
+                exerciseType: "matching",
+                itemId: leftPair.id,
+                questionData: { ru: leftPair.ru, translation: leftPair.translation },
+                userAnswer: rightPair?.translation || "",
+                correctAnswer: leftPair.translation,
+              });
+            } catch (err) {
+              console.error("recordMistake error:", err);
+            }
+            getMistakeCount().then(setMistakeCount).catch(() => {});
           }
           setTimeout(() => {
             setMixedMatchLeft(null);
