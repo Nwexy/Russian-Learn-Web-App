@@ -4,6 +4,10 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-23
+- Eslestirme (Matching) modunda ekrana gelen kart sayisi sinirlandirildi (tek basina maks. 4, karisik modda 4-6 cift).
+- Review sayfasina puanlama rehberi (?) yardim balonu eklendi (Tekrar, Zor, Iyi, Kolay aciklamalari).
+- Review sayfasina "Tum Kelimeleri Dahil Et" toggle switch'i eklendi (kilitli unitelerin kelimeleri de tekrara dahil edilir).
+- i18n: reviewHelp, againDesc, hardDesc, goodDesc, easyDesc, includeAllWords, includeAllWordsDesc, matchingLimitInfo anahtarlari eklendi.
 - Tum alistirma tiplerinde (Speaking, Word Bank dahil) yanlis cevaplarin kaydedilmesi saglandi.
 - Mistakes sayfasinin bos gelmesine neden olan render hatasi giderildi, "Yanlisin yok" ekrani eklendi.
 - Kelime Bankasi (Word Bank) modunda noktalama isaretleri (., - vb.) kaldirildi.

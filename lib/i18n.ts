@@ -208,6 +208,16 @@ export interface Messages {
   startSpeaking: string;
   stopSpeaking: string;
   listeningState: string;
+
+  // Faz 10.9 — Review yardım ve tüm kelimeler
+  reviewHelp: string;
+  againDesc: string;
+  hardDesc: string;
+  goodDesc: string;
+  easyDesc: string;
+  includeAllWords: string;
+  includeAllWordsDesc: string;
+  matchingLimitInfo: string;
 }
 
 /** Tüm çeviriler */
@@ -405,6 +415,16 @@ const messages: Record<Lang, Messages> = {
     startSpeaking: "Konuşmaya Başla",
     stopSpeaking: "Durdur",
     listeningState: "Dinleniyor...",
+
+    // Faz 10.9 — Review yardım ve tüm kelimeler
+    reviewHelp: "Puanlama Rehberi",
+    againDesc: "Hatırlamadım, hemen tekrar göster.",
+    hardDesc: "Hatırladım ama zorlandım.",
+    goodDesc: "Biraz düşündüm ama bildim.",
+    easyDesc: "Anında bildim, çok kolaydı.",
+    includeAllWords: "Tüm Kelimeleri Dahil Et",
+    includeAllWordsDesc: "Kilitli ünitelerin kelimelerini de tekrara dahil eder.",
+    matchingLimitInfo: "Eşleştirme modu maks. 4 çift gösterir.",
   },
   en: {
     appName: "Learning Russian",
@@ -599,6 +619,16 @@ const messages: Record<Lang, Messages> = {
     translateToTarget: "Build the sentence",
     tapWordsInOrder: "Tap the words in the correct order",
     checkAnswer: "Check Answer",
+
+    // Faz 10.9 — Review help and include all words
+    reviewHelp: "Rating Guide",
+    againDesc: "Didn't remember, show again soon.",
+    hardDesc: "Remembered but struggled.",
+    goodDesc: "Thought a bit but got it right.",
+    easyDesc: "Knew it instantly, very easy.",
+    includeAllWords: "Include All Words",
+    includeAllWordsDesc: "Also include words from locked units in review.",
+    matchingLimitInfo: "Matching mode shows max 4 pairs.",
   },
 };
 

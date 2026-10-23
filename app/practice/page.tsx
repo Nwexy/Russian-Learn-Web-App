@@ -28,6 +28,7 @@ import {
   generateMultipleChoice,
   generateFillBlank,
   generateMatching,
+  MATCHING_MAX_PAIRS,
   generateListening,
   generateSpeaking,
   generateWordBank,
@@ -294,7 +295,8 @@ export default function PracticePage() {
           break;
         }
         case "matching": {
-          const q = generateMatching(pool, translationLang, qCount);
+          // Tekil eşleştirmede ekranı kalabalıklaştırmamak için soru sayısından bağımsız olarak en fazla 4 çift
+          const q = generateMatching(pool, translationLang, Math.min(qCount, MATCHING_MAX_PAIRS));
           setMatchData(q);
           setMatchSelectedLeft(null);
           setMatchSelectedRight(null);
@@ -1604,7 +1606,7 @@ export default function PracticePage() {
         <div className="page-container">
           {mixedHeader}
           <p className="practice-instruction" style={{ textAlign: "center", marginBottom: "1.5rem" }}>{t.matchPairs}</p>
-          <div className="match-grid">
+          <div className={`match-grid ${pairs.length > 4 ? "match-grid-compact" : ""}`}>
             <div className="match-column">
               {pairs.map((p) => {
                 const done = mixedMatchedIds.has(p.id);
@@ -2052,7 +2054,8 @@ export default function PracticePage() {
           <div className="review-progress-fill" style={{ width: `${(matchedIds.size / matchData.pairs.length) * 100}%` }} />
         </div>
 
-        <p className="practice-instruction" style={{ textAlign: "center", marginBottom: "1.5rem" }}>{t.matchPairs}</p>
+        <p className="practice-instruction" style={{ textAlign: "center", marginBottom: "0.5rem" }}>{t.matchPairs}</p>
+        <p className="text-xs text-muted-foreground text-center mb-5">{t.matchingLimitInfo}</p>
 
         <div className="match-grid">
           {/* Sol sütun — Rusça */}

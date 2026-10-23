@@ -460,18 +460,31 @@ function escapeRegex(str: string): string {
    Eşleştirme (Matching)
    ======================================== */
 
+/** Tekil eşleştirme modunda ekranda gösterilecek maksimum çift sayısı */
+export const MATCHING_MAX_PAIRS = 4;
+
+/**
+ * Karışık modda bir eşleştirme sorusu için çift sayısını rastgele seçer.
+ * Kısa oturumlarda (15 sorudan az) 4-5, daha uzun oturumlarda 4-6 çift.
+ */
+export function pickMixedMatchingPairCount(sessionCount: number): number {
+  const maxPairs = sessionCount >= 15 ? 6 : 5;
+  const minPairs = 4;
+  return minPairs + Math.floor(Math.random() * (maxPairs - minPairs + 1));
+}
+
 /**
  * Eşleştirme sorusu üretir.
  * Sol sütun: ru (sıralı), sağ sütun: çeviri (karışık).
  *
  * @param items     - Tüm kelime öğeleri
  * @param lang      - Çeviri dili
- * @param pairCount - Eşleştirme çifti sayısı (varsayılan 6)
+ * @param pairCount - Eşleştirme çifti sayısı (varsayılan 4)
  */
 export function generateMatching(
   items: Item[],
   lang: Lang,
-  pairCount: number = 6
+  pairCount: number = MATCHING_MAX_PAIRS
 ): MatchingQuestion {
   const eligible = items.filter((i) => getTranslationText(i, lang) !== "—");
   const actualCount = Math.min(pairCount, eligible.length);
@@ -667,8 +680,6 @@ export type MixedQuestion =
   | { kind: "speaking"; data: SpeakingQuestion }
   | { kind: "wordBank"; data: WordBankQuestion };
 
-/** Karışık oturumda bir eşleştirme sorusundaki çift sayısı */
-const MIXED_MATCHING_PAIRS = 4;
 
 /**
  * Karışık alıştırma oturumu üretir.
@@ -741,7 +752,7 @@ export function generateMixedPractice(
     ),
     ...Array.from({ length: plan.matching }, () => ({
       kind: "matching" as const,
-      data: generateMatching(items, lang, MIXED_MATCHING_PAIRS),
+      data: generateMatching(items, lang, pickMixedMatchingPairCount(count)),
     })),
     ...generateListening(items, plan.listening).map(
       (data) => ({ kind: "listening" as const, data })
