@@ -631,7 +631,7 @@ const messages: Record<Lang, Messages> = {
     easyDesc: "Knew it instantly, will be shown in a month.",
     includeAllWords: "Include All Words",
     includeAllWordsDesc: "Also include words from locked units in review.",
-    includeAllWordsHelp: "When enabled, you can practice all words in the database even if they are not unit. When disabled, only words on the unit that are are shown.",
+    includeAllWordsHelp: "When enabled, you can practice all words in the database even if they are not on units lesson. When disabled, only words on the unit that are are shown.",
     matchingLimitInfo: "Matching mode shows max 4 pairs.",
   },
 };

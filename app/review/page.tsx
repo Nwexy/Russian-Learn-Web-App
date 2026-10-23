@@ -22,6 +22,7 @@ import { PronunciationText } from "@/components/pronunciation-text";
 import { SpeakButton } from "@/components/SpeakButton";
 import { RatingGuidePopover } from "@/components/rating-guide-popover";
 import { InfoTooltip } from "@/components/info-tooltip";
+import { extractExtraWords } from "@/lib/extraWords";
 import type { Item, Review, Lang } from "@/types";
 import type { Rating } from "@/lib/srs";
 
@@ -159,15 +160,17 @@ function ReviewContent() {
               }));
           }
 
+          let pool = candidateItems;
           if (includeAll) {
-            setDueCards(candidateItems);
-            setTotalCards(candidateItems.length);
-          } else {
-            const reviews: Review[] = await getAllReviews();
-            const due = getDueCards(candidateItems, reviews, new Date());
-            setDueCards(due);
-            setTotalCards(due.length);
+            // Açık olan bu ünitedeki örnek cümlelerden ekstra kelimeleri de havuza ekle
+            const extraWords = extractExtraWords([unitParam]);
+            pool = [...candidateItems, ...extraWords];
           }
+
+          const reviews: Review[] = await getAllReviews();
+          const due = getDueCards(pool, reviews, new Date());
+          setDueCards(due);
+          setTotalCards(due.length);
         } else {
           // Genel review: Sadece dersi tamamlanmış (lessonDone === true) ünitelerin ID'leri
           const allProgress = await db.progress.toArray();
@@ -188,17 +191,18 @@ function ReviewContent() {
             // Sadece açık/tamamlanmış ünitelerin kelimeleri
             const unlockedItems = allWords.filter((i) => unlockedUnitIds.has(i.unitId));
 
+            let pool = unlockedItems;
             if (includeAll) {
-              // "Include All Words" AÇIK: SRS due zamanına bakma, ANCAK sadece unlockedUnitIds içindeki kelimeleri getir
-              setDueCards(unlockedItems);
-              setTotalCards(unlockedItems.length);
-            } else {
-              // "Include All Words" KAPALI: Sadece SRS due zamanı gelmiş VE unlockedUnitIds içinde olan item'ları getir
-              const reviews: Review[] = await getAllReviews();
-              const due = getDueCards(unlockedItems, reviews, new Date(), unlockedUnitIds);
-              setDueCards(due);
-              setTotalCards(due.length);
+              // "Include All Words" AÇIK: Ana kelimelere EK OLARAK açık ünitelerin örnek cümlelerindeki ekstra kelimeleri de havuza ekle
+              const extraWords = extractExtraWords(unlockedUnitIds);
+              pool = [...unlockedItems, ...extraWords];
             }
+
+            // SRS due tarihine uyarak due olan kartları getir
+            const reviews: Review[] = await getAllReviews();
+            const due = getDueCards(pool, reviews, new Date(), unlockedUnitIds);
+            setDueCards(due);
+            setTotalCards(due.length);
           }
         }
 
@@ -351,19 +355,45 @@ function ReviewContent() {
         {showAnswer && (
           <div className="flashcard-back">
             <div className="flashcard-divider" />
-            <div className="flashcard-tr">
-              {translation.text}
-              {translation.fallbackLang && (
-                <span className="fallback-badge">({translation.fallbackLang})</span>
-              )}
-            </div>
-            {exampleTr && (
-              <div className="flashcard-example-tr">
-                {exampleTr.text}
-                {exampleTr.fallbackLang && (
-                  <span className="fallback-badge">({exampleTr.fallbackLang})</span>
+            {currentCard.id.startsWith("extra_") ? (
+              <div className="flashcard-extra-back">
+                <div className="flashcard-tr" style={{ fontSize: "1.15rem", fontWeight: 700, marginBottom: "0.5rem" }}>
+                  <span>{currentCard.ru}</span>
+                  <span className="extra-word-pill">
+                    {uiLang === "tr" ? "Cümleden Ekstra Kelime" : "Sentence Extra Word"}
+                  </span>
+                </div>
+                {currentCard.exampleRu && (
+                  <div className="flashcard-extra-box">
+                    <div className="flashcard-extra-ru">
+                      <span>« {currentCard.exampleRu} »</span>
+                      <SpeakButton text={currentCard.exampleRu} size="sm" />
+                    </div>
+                    {exampleTr && (
+                      <div className="flashcard-extra-tr">
+                        → {exampleTr.text}
+                      </div>
+                    )}
+                  </div>
                 )}
               </div>
+            ) : (
+              <>
+                <div className="flashcard-tr">
+                  {translation.text}
+                  {translation.fallbackLang && (
+                    <span className="fallback-badge">({translation.fallbackLang})</span>
+                  )}
+                </div>
+                {exampleTr && (
+                  <div className="flashcard-example-tr">
+                    {exampleTr.text}
+                    {exampleTr.fallbackLang && (
+                      <span className="fallback-badge">({exampleTr.fallbackLang})</span>
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
