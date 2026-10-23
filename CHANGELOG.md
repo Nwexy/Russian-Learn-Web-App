@@ -3,6 +3,10 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-23
+- Duolingo tarzi "Kelime Bankasi / Cumle Kurucu" (Word Bank) alistirma modu eklendi.
+- Karisik moda kelime bankasi sorulari dahil edildi.
+
 ## 2026-10-21
 - Seslendirme (TTS) ve Dinleme alistirmalarindaki 1 saniyelik baslangic gecikmesi giderildi (Sesler onceden yukleniyor).
 - Practice sayfasindaki unite secim dropdown'inin soru sayisi ile cakismasi (z-index ve arka plan) duzeltildi.

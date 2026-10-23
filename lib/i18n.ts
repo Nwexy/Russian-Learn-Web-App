@@ -94,6 +94,15 @@ export interface Messages {
   exerciseComplete: string;
   ttsNotSupported: string;
 
+  // Faz 10.6 — Kelime Bankası (Cümle Kurucu)
+  wordBank: string;
+  sentenceBuilder: string;
+  buildSentence: string;
+  translateToRussian: string;
+  translateToTarget: string;
+  tapWordsInOrder: string;
+  checkAnswer: string;
+
   // Mistakes
   myMistakes: string;
   noMistakes: string;
@@ -283,6 +292,15 @@ const messages: Record<Lang, Messages> = {
     listenAndType: "Dinleyin ve Rusça yazın",
     exerciseComplete: "Alıştırma tamamlandı!",
     ttsNotSupported: "Tarayıcınız ses okumayı desteklemiyor.",
+
+    // Faz 10.6 — Kelime Bankası (Cümle Kurucu)
+    wordBank: "Kelime Bankası",
+    sentenceBuilder: "Cümle Kurucu",
+    buildSentence: "Cümleyi Kurun",
+    translateToRussian: "Bu cümleyi Rusça kurun",
+    translateToTarget: "Cümleyi oluşturun",
+    tapWordsInOrder: "Kelimelere doğru sırada tıklayın",
+    checkAnswer: "Kontrol Et",
 
     // Mistakes
     myMistakes: "Yanlışlarım",
@@ -572,6 +590,15 @@ const messages: Record<Lang, Messages> = {
     startSpeaking: "Start Speaking",
     stopSpeaking: "Stop",
     listeningState: "Listening...",
+
+    // Faz 10.6 — Word Bank (Sentence Builder)
+    wordBank: "Word Bank",
+    sentenceBuilder: "Sentence Builder",
+    buildSentence: "Build the sentence",
+    translateToRussian: "Translate this sentence to Russian",
+    translateToTarget: "Build the sentence",
+    tapWordsInOrder: "Tap the words in the correct order",
+    checkAnswer: "Check Answer",
   },
 };
 

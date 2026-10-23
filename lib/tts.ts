@@ -7,6 +7,14 @@
 
 let russianVoice: SpeechSynthesisVoice | null = null;
 let isVoicesListening = false;
+let speakTimer: ReturnType<typeof setTimeout> | null = null;
+
+export interface SpeakOptions {
+  delayMs?: number;
+  onStart?: () => void;
+  onEnd?: () => void;
+  onError?: () => void;
+}
 
 /**
  * Tarayıcının TTS desteğini kontrol eder.
@@ -74,15 +82,25 @@ export function getRussianVoice(): SpeechSynthesisVoice | null {
  *
  * @param text - Okunacak metin
  * @param lang - BCP-47 dil kodu (varsayılan: "ru-RU")
+ * @param options - Gecikme süresi (varsayılan: 500ms) veya callback seçenekleri
  *
  * Davranış:
  *  - Önceki konuşmaları hemen iptal eder (kuyruğu temizler).
+ *  - Kelimeyi söylemeden önce yarım saniye (500ms) bekler (doğal duraklama sağlar ve ilk hece kesilmesini önler).
  *  - Önceden yüklenmiş Rusça sesini doğrudan atayarak arama gecikmesini sıfırlar.
  *  - Hız: 0.9 (yeni başlayanlar için ideal tempo).
  *  - Tarayıcı TTS desteklemiyorsa sessizce döner.
  */
-export function speak(text: string, lang: string = "ru-RU"): void {
+export function speak(
+  text: string,
+  lang: string = "ru-RU",
+  options?: SpeakOptions | number
+): void {
   if (!isTTSSupported() || !text) return;
+
+  const opts: SpeakOptions =
+    typeof options === "number" ? { delayMs: options } : options || {};
+  const delayMs = opts.delayMs !== undefined ? opts.delayMs : 500;
 
   // Ses henüz hafızaya alınmadıysa tekrar dene
   if (!russianVoice) {
@@ -94,30 +112,46 @@ export function speak(text: string, lang: string = "ru-RU"): void {
     window.speechSynthesis.resume();
   }
 
-  // Önceki konuşmaları hemen iptal et (kuyruğu temizle)
+  // Önceki konuşmaları ve bekleyen zamanlayıcıyı hemen iptal et
+  if (speakTimer) {
+    clearTimeout(speakTimer);
+    speakTimer = null;
+  }
   window.speechSynthesis.cancel();
 
-  const utterance = new SpeechSynthesisUtterance(text);
+  const doSpeak = () => {
+    const utterance = new SpeechSynthesisUtterance(text);
 
-  // Önceden yüklediğimiz Rusça sesi varsa doğrudan ata
-  if (russianVoice && (lang === "ru-RU" || lang.startsWith("ru"))) {
-    utterance.voice = russianVoice;
-  } else {
-    try {
-      const voices = window.speechSynthesis.getVoices();
-      const match =
-        voices.find((v) => v.lang === lang) ||
-        voices.find((v) => v.lang.startsWith(lang.split("-")[0]));
-      if (match) {
-        utterance.voice = match;
+    // Önceden yüklediğimiz Rusça sesi varsa doğrudan ata
+    if (russianVoice && (lang === "ru-RU" || lang.startsWith("ru"))) {
+      utterance.voice = russianVoice;
+    } else {
+      try {
+        const voices = window.speechSynthesis.getVoices();
+        const match =
+          voices.find((v) => v.lang === lang) ||
+          voices.find((v) => v.lang.startsWith(lang.split("-")[0]));
+        if (match) {
+          utterance.voice = match;
+        }
+      } catch {
+        // Tarayıcı varsayılanı kullanılır
       }
-    } catch {
-      // Tarayıcı varsayılanı kullanılır
     }
+
+    utterance.lang = lang;
+    utterance.rate = 0.9;
+
+    if (opts.onStart) utterance.onstart = opts.onStart;
+    if (opts.onEnd) utterance.onend = opts.onEnd;
+    if (opts.onError) utterance.onerror = opts.onError;
+
+    window.speechSynthesis.speak(utterance);
+  };
+
+  if (delayMs > 0) {
+    speakTimer = setTimeout(doSpeak, delayMs);
+  } else {
+    doSpeak();
   }
-
-  utterance.lang = lang;
-  utterance.rate = 0.9;
-
-  window.speechSynthesis.speak(utterance);
 }

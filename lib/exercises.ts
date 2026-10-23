@@ -64,6 +64,15 @@ export interface SpeakingQuestion {
   translation: string;   // Çevirisi (ipucu)
 }
 
+/** Kelime Bankası (Cümle Kurucu) sorusu */
+export interface WordBankQuestion {
+  item: Item;
+  targetSentence: string;    // Orijinal Rusça cümle (örn: "Это зелёный чай.")
+  hint: string;              // Çeviri dilindeki ipucu (örn: "Bu yeşil çay.")
+  targetWords: string[];     // Hedef kelimeler sırasıyla: ["Это", "зелёный", "чай."]
+  shuffledWords: string[];   // Hedef kelimeler + 3-4 çeldirici kelime, karıştırılmış
+}
+
 /* ========================================
    Fisher-Yates Shuffle & Adil Dağıtım
    ======================================== */
@@ -535,6 +544,91 @@ export function generateSpeaking(
 }
 
 /* ========================================
+   Kelime Bankası (Word Bank / Cümle Kurucu)
+   ======================================== */
+
+/**
+ * Kelime Bankası (Cümle Kurucu / Word Bank) soruları üretir.
+ * Örnek cümledeki kelimeler ile çeldirici kelimeleri karıştırarak kullanıcıya sunar.
+ *
+ * @param items - Tüm kelime öğeleri
+ * @param lang  - Çeviri dili
+ * @param count - Soru sayısı (varsayılan 10)
+ */
+export function generateWordBank(
+  items: Item[],
+  lang: Lang = "tr",
+  count: number = 10
+): WordBankQuestion[] {
+  // Sadece exampleRu ve seçili dile göre çevirisi olan öğeler
+  const eligible = items.filter((i) => {
+    const hasRu = Boolean(i.exampleRu && i.exampleRu.trim().length > 0);
+    const trans = lang === "tr" ? i.exampleTr : i.exampleEn || i.exampleTr;
+    const hasTrans = Boolean(trans && trans.trim().length > 0);
+    return hasRu && hasTrans;
+  });
+
+  if (eligible.length === 0) return [];
+
+  const questionCount = Math.min(count, eligible.length);
+  const selected = selectBalancedItems(eligible, questionCount);
+
+  // Çeldiriciler için havuzdaki Rusça kelimeleri topla
+  const poolWords = new Set<string>();
+  items.forEach((item) => {
+    if (item.ru && item.ru.trim() && !item.ru.includes(" ")) {
+      poolWords.add(item.ru.trim());
+    }
+    if (item.exampleRu && item.exampleRu.trim()) {
+      const parts = item.exampleRu.trim().split(/\s+/);
+      parts.forEach((p) => {
+        const clean = p.replace(/^[«"'(]+|[»"')]+$/g, "").trim();
+        if (clean.length >= 2 && !clean.includes("—")) {
+          poolWords.add(clean);
+        }
+      });
+    }
+  });
+
+  return selected.map((item) => {
+    const targetSentence = item.exampleRu!.trim();
+    const hint = (lang === "tr" ? item.exampleTr : item.exampleEn || item.exampleTr)!.trim();
+
+    // Cümleyi kelimelere ayır (noktalama işaretleri kelimenin sonunda kalsın)
+    const targetWords = targetSentence.split(/\s+/).filter(Boolean);
+
+    // Hedef kelimelerin normalizasyonu (çeldirici çakışmasını engellemek için)
+    const targetWordNorms = new Set(
+      targetWords.map((w) => w.toLowerCase().replace(/[^а-яёa-z]/gi, ""))
+    );
+
+    // Çeldirici adayları
+    const candidates = Array.from(poolWords).filter((w) => {
+      const norm = w.toLowerCase().replace(/[^а-яёa-z]/gi, "");
+      return norm.length > 0 && !targetWordNorms.has(norm);
+    });
+
+    const shuffledCandidates = shuffle([...candidates]);
+    const distractorCount = Math.min(
+      Math.floor(Math.random() * 2) + 3, // 3 veya 4 adet
+      shuffledCandidates.length
+    );
+    const distractors = shuffledCandidates.slice(0, distractorCount);
+
+    const allWords = [...targetWords, ...distractors];
+    const shuffledWords = shuffle([...allWords]);
+
+    return {
+      item,
+      targetSentence,
+      hint,
+      targetWords,
+      shuffledWords,
+    };
+  });
+}
+
+/* ========================================
    Karışık Alıştırma (Mixed Practice)
    ======================================== */
 
@@ -544,7 +638,8 @@ export type MixedQuestion =
   | { kind: "fillBlank"; data: FillBlankQuestion }
   | { kind: "matching"; data: MatchingQuestion }
   | { kind: "listening"; data: ListeningQuestion }
-  | { kind: "speaking"; data: SpeakingQuestion };
+  | { kind: "speaking"; data: SpeakingQuestion }
+  | { kind: "wordBank"; data: WordBankQuestion };
 
 /** Karışık oturumda bir eşleştirme sorusundaki çift sayısı */
 const MIXED_MATCHING_PAIRS = 4;
@@ -578,6 +673,7 @@ export function generateMixedPractice(
   if (withTranslation.length >= 3) kinds.push("matching");
   if (ttsSupported && items.length > 0) kinds.push("listening");
   if (speechSupported && items.length > 0) kinds.push("speaking");
+  if (withExample.length > 0) kinds.push("wordBank");
   if (kinds.length === 0) return [];
 
   // Her slot için rastgele tip seç (eşleştirme en fazla 2 kez, konuşma en fazla 1 veya 2 kez)
@@ -587,6 +683,7 @@ export function generateMixedPractice(
     matching: 0,
     listening: 0,
     speaking: 0,
+    wordBank: 0,
   };
 
   const maxSpeaking = count >= 20 ? 2 : 1;
@@ -625,6 +722,9 @@ export function generateMixedPractice(
     ),
     ...generateSpeaking(items, lang, plan.speaking).map(
       (data) => ({ kind: "speaking" as const, data })
+    ),
+    ...generateWordBank(items, lang, plan.wordBank).map(
+      (data) => ({ kind: "wordBank" as const, data })
     ),
   ];
 

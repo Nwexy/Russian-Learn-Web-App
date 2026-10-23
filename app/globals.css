@@ -2840,6 +2840,12 @@ body {
   transform: scale(0.95);
 }
 
+.speak-btn-active {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: var(--accent, #3b82f6);
+  opacity: 0.9;
+}
+
 .speak-btn-sm {
   padding: 0.2rem 0.45rem;
   font-size: 0.85rem;
@@ -3122,6 +3128,109 @@ body {
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   color: #dc2626;
+}
+
+/* ========================================
+   Faz 10.6 — Kelime Bankası (Word Bank) Stilleri
+   ======================================== */
+
+.wb-container {
+  width: 100%;
+  max-width: 44rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.wb-drop-zone {
+  width: 100%;
+  min-height: 5.5rem;
+  padding: 1rem;
+  border-radius: var(--radius-md, 16px);
+  border: 2px dashed var(--border);
+  background: rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  align-content: flex-start;
+  gap: 0.65rem;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.wb-drop-zone:focus-within {
+  border-color: var(--accent);
+}
+
+.wb-pool-zone {
+  width: 100%;
+  min-height: 6rem;
+  padding: 1.25rem 1rem;
+  border-radius: var(--radius-md, 16px);
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.wb-word-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.15rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: 9999px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.wb-word-pill:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.wb-word-pill:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.wb-word-pill-available {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1.5px solid var(--border);
+}
+
+.wb-word-pill-available:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.wb-word-pill-selected {
+  background: var(--accent);
+  color: #ffffff;
+  border: 1.5px solid var(--accent);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
+}
+
+.wb-word-pill-selected:hover:not(:disabled) {
+  opacity: 0.92;
+}
+
+@media (max-width: 640px) {
+  .wb-word-pill {
+    padding: 0.5rem 0.9rem;
+    font-size: 0.925rem;
+  }
+  .wb-drop-zone, .wb-pool-zone {
+    gap: 0.5rem;
+    padding: 0.85rem;
+  }
 }
 
 

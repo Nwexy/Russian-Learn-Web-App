@@ -19,7 +19,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { getProgress, isUnitUnlocked } from "@/lib/progress";
-import { Lock, Mic, Volume2 } from "lucide-react";
+import { Lock, Mic, Volume2, Blocks } from "lucide-react";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getAllUnits, getUnitById, getUnitTitle } from "@/lib/content";
@@ -29,6 +29,7 @@ import {
   generateMatching,
   generateListening,
   generateSpeaking,
+  generateWordBank,
   generateMixedPractice,
 } from "@/lib/exercises";
 import type {
@@ -37,6 +38,7 @@ import type {
   MatchingQuestion,
   ListeningQuestion,
   SpeakingQuestion,
+  WordBankQuestion,
   MixedQuestion,
 } from "@/lib/exercises";
 import { speak, isTTSSupported, initVoices } from "@/lib/tts";
@@ -57,6 +59,12 @@ export type PracticeMode = "mixed" | ExerciseType;
 
 /** Alıştırma durumları */
 type Phase = "select" | "active" | "result";
+
+/** Kelime Bankası için token yapısı */
+interface WordToken {
+  id: string;
+  word: string;
+}
 
 /** Fisher-Yates ile kopya karıştırma (eşleştirme sağ sütunu için) */
 function shuffledPairs<T>(arr: T[]): T[] {
@@ -112,6 +120,8 @@ export default function PracticePage() {
   const [mixedSpeakingListening, setMixedSpeakingListening] = useState(false);
   const [mixedSpeakingTranscript, setMixedSpeakingTranscript] = useState("");
   const [mixedSpeakingError, setMixedSpeakingError] = useState<string | null>(null);
+  const [mixedWbBankTokens, setMixedWbBankTokens] = useState<WordToken[]>([]);
+  const [mixedWbSelectedTokens, setMixedWbSelectedTokens] = useState<WordToken[]>([]);
 
   // Çoktan seçmeli state (Tekil mod)
   const [mcQuestions, setMcQuestions] = useState<MultipleChoiceQuestion[]>([]);
@@ -151,6 +161,14 @@ export default function PracticePage() {
   const [speakingListening, setSpeakingListening] = useState(false);
   const [speakingTranscript, setSpeakingTranscript] = useState("");
   const [speakingError, setSpeakingError] = useState<string | null>(null);
+
+  // Kelime Bankası (Cümle Kurucu) state (Tekil mod)
+  const [wbQuestions, setWbQuestions] = useState<WordBankQuestion[]>([]);
+  const [wbIndex, setWbIndex] = useState(0);
+  const [wbBankTokens, setWbBankTokens] = useState<WordToken[]>([]);
+  const [wbSelectedTokens, setWbSelectedTokens] = useState<WordToken[]>([]);
+  const [wbRevealed, setWbRevealed] = useState(false);
+  const [wbIsCorrect, setWbIsCorrect] = useState<boolean | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -193,6 +211,12 @@ export default function PracticePage() {
     }
     if (q.kind === "listening" && isTTSSupported()) {
       speak(q.data.correctWord);
+    }
+    if (q.kind === "wordBank") {
+      setMixedWbBankTokens(
+        q.data.shuffledWords.map((w, idx) => ({ id: `m-wb-${idx}-${w}`, word: w }))
+      );
+      setMixedWbSelectedTokens([]);
     }
   }, []);
 
@@ -292,6 +316,23 @@ export default function PracticePage() {
           setSpeakingListening(false);
           setSpeakingTranscript("");
           setSpeakingError(null);
+          break;
+        }
+        case "wordBank": {
+          const q = generateWordBank(pool, translationLang, qCount);
+          setWbQuestions(q);
+          setWbIndex(0);
+          setWbRevealed(false);
+          setWbIsCorrect(null);
+          if (q.length > 0) {
+            setWbBankTokens(
+              q[0].shuffledWords.map((w, idx) => ({ id: `wb-0-${idx}-${w}`, word: w }))
+            );
+            setWbSelectedTokens([]);
+          } else {
+            setWbBankTokens([]);
+            setWbSelectedTokens([]);
+          }
           break;
         }
       }
@@ -418,6 +459,44 @@ export default function PracticePage() {
       prepareMixedQuestion(mixedQuestions[nextIdx]);
       setTimeout(() => inputRef.current?.focus(), 50);
     }
+  };
+
+  const handleMixedWbPickWord = (token: WordToken) => {
+    if (mixedRevealed) return;
+    setMixedWbBankTokens((prev) => prev.filter((t) => t.id !== token.id));
+    setMixedWbSelectedTokens((prev) => [...prev, token]);
+  };
+
+  const handleMixedWbUnpickWord = (token: WordToken) => {
+    if (mixedRevealed) return;
+    setMixedWbSelectedTokens((prev) => prev.filter((t) => t.id !== token.id));
+    setMixedWbBankTokens((prev) => [...prev, token]);
+  };
+
+  const handleMixedWbCheck = async () => {
+    if (mixedRevealed) return;
+    const currentQ = mixedQuestions[mixedIndex];
+    if (currentQ?.kind !== "wordBank") return;
+    const wb = currentQ.data;
+
+    const selectedWords = mixedWbSelectedTokens.map((t) => t.word);
+    const isCorrect =
+      selectedWords.length === wb.targetWords.length &&
+      selectedWords.every((w, i) => w === wb.targetWords[i]);
+
+    await settleMixed(
+      isCorrect,
+      "wordBank",
+      wb.item.id,
+      {
+        targetSentence: wb.targetSentence,
+        hint: wb.hint,
+        targetWords: wb.targetWords,
+        shuffledWords: wb.shuffledWords,
+      },
+      selectedWords.join(" "),
+      wb.targetSentence
+    );
   };
 
   /* ========================================
@@ -741,6 +820,69 @@ export default function PracticePage() {
     }
   };
 
+  /* ========================================
+     TEKİL KELİME BANKASI (WORD BANK) HANDLERLARI
+     ======================================== */
+  const handleWbPickWord = (token: WordToken) => {
+    if (wbRevealed) return;
+    setWbBankTokens((prev) => prev.filter((t) => t.id !== token.id));
+    setWbSelectedTokens((prev) => [...prev, token]);
+  };
+
+  const handleWbUnpickWord = (token: WordToken) => {
+    if (wbRevealed) return;
+    setWbSelectedTokens((prev) => prev.filter((t) => t.id !== token.id));
+    setWbBankTokens((prev) => [...prev, token]);
+  };
+
+  const handleWbCheck = async () => {
+    if (wbRevealed) return;
+    const q = wbQuestions[wbIndex];
+    if (!q) return;
+
+    const selectedWords = wbSelectedTokens.map((t) => t.word);
+    const isCorrect =
+      selectedWords.length === q.targetWords.length &&
+      selectedWords.every((w, i) => w === q.targetWords[i]);
+
+    setWbIsCorrect(isCorrect);
+    setWbRevealed(true);
+
+    if (isCorrect) {
+      setScore((s) => s + 1);
+      await removeMistakeByKey("wordBank", q.item.id);
+    } else {
+      await recordMistake({
+        exerciseType: "wordBank",
+        itemId: q.item.id,
+        questionData: {
+          targetSentence: q.targetSentence,
+          hint: q.hint,
+          targetWords: q.targetWords,
+          shuffledWords: q.shuffledWords,
+        },
+        userAnswer: selectedWords.join(" "),
+        correctAnswer: q.targetSentence,
+      });
+    }
+  };
+
+  const handleWbNext = () => {
+    if (wbIndex + 1 >= wbQuestions.length) {
+      setPhase("result");
+    } else {
+      const nextIdx = wbIndex + 1;
+      setWbIndex(nextIdx);
+      const nextQ = wbQuestions[nextIdx];
+      setWbBankTokens(
+        nextQ.shuffledWords.map((w, idx) => ({ id: `wb-${nextIdx}-${idx}-${w}`, word: w }))
+      );
+      setWbSelectedTokens([]);
+      setWbRevealed(false);
+      setWbIsCorrect(null);
+    }
+  };
+
   /** Çoklu ünite tetikleyici buton metni */
   let triggerButtonText = "";
   if (isAllUnits) {
@@ -911,7 +1053,9 @@ export default function PracticePage() {
               ? (matchData?.pairs.length ?? 0)
               : exerciseType === "listening"
                 ? listenQuestions.length
-                : speakingQuestions.length;
+                : exerciseType === "speaking"
+                  ? speakingQuestions.length
+                  : wbQuestions.length;
     const pct = total > 0 ? Math.round((score / total) * 100) : 0;
 
     return (
@@ -948,12 +1092,19 @@ export default function PracticePage() {
      RENDER — Tür seçimi
      ======================================== */
   if (phase === "select") {
+    const hasWordBankItems = items.some((i) => {
+      const hasRu = Boolean(i.exampleRu && i.exampleRu.trim().length > 0);
+      const trans = translationLang === "tr" ? i.exampleTr : i.exampleEn || i.exampleTr;
+      return hasRu && Boolean(trans && trans.trim().length > 0);
+    });
+
     const types: { key: ExerciseType; label: string; icon: React.ReactNode; desc: string }[] = [
       { key: "multipleChoice", label: t.multipleChoice, icon: <span>🔤</span>, desc: t.chooseAnswer },
       { key: "fillBlank", label: t.fillBlank, icon: <span>✏️</span>, desc: t.typeYourAnswer },
       { key: "matching", label: t.matching, icon: <span>🔗</span>, desc: t.matchPairs },
       { key: "listening", label: t.listening, icon: <span>🎧</span>, desc: t.listenAndType },
       { key: "speaking", label: t.speaking, icon: <Mic className="w-6 h-6 text-foreground" />, desc: t.speakNow },
+      { key: "wordBank", label: t.sentenceBuilder, icon: <Blocks className="w-6 h-6 text-foreground" />, desc: t.tapWordsInOrder },
     ];
 
     const hasEnoughItems = items.length >= 2;
@@ -1037,17 +1188,18 @@ export default function PracticePage() {
                 </div>
                 <p className="text-sm text-muted-foreground max-w-lg">
                   {uiLang === "tr"
-                    ? "Çoktan seçmeli, boşluk doldurma, eşleştirme, dinleme ve konuşma sorularını rastgele harmanlar."
-                    : "Randomly blends multiple choice, fill in the blank, matching, listening, and speaking."}
+                    ? "Çoktan seçmeli, boşluk doldurma, eşleştirme, dinleme, konuşma ve cümle kurma sorularını rastgele harmanlar."
+                    : "Randomly blends multiple choice, fill in the blank, matching, listening, speaking, and sentence building."}
                 </p>
               </div>
 
-              {/* 5 Tekil Alıştırma Kartı */}
+              {/* 6 Tekil Alıştırma Kartı */}
               {types.map((tp) => {
                 const isSelected = exerciseType === tp.key;
                 const isDisabled =
                   (tp.key === "listening" && !ttsSupported) ||
-                  (tp.key === "speaking" && !speechSupported);
+                  (tp.key === "speaking" && !speechSupported) ||
+                  (tp.key === "wordBank" && !hasWordBankItems);
 
                 return (
                   <div
@@ -1075,7 +1227,11 @@ export default function PracticePage() {
                     <p className="text-xs text-muted-foreground">{tp.desc}</p>
                     {isDisabled && (
                       <span className="text-[11px] text-amber-500 font-medium mt-1">
-                        {tp.key === "speaking" ? t.micNotSupported : t.ttsNotSupported}
+                        {tp.key === "speaking"
+                          ? t.micNotSupported
+                          : tp.key === "wordBank"
+                          ? (uiLang === "tr" ? "Örnek cümle bulunmuyor" : "No example sentences")
+                          : t.ttsNotSupported}
                       </span>
                     )}
                   </div>
@@ -1155,7 +1311,9 @@ export default function PracticePage() {
             ? t.matching
             : q.kind === "listening"
               ? t.listening
-              : t.speaking;
+              : q.kind === "speaking"
+                ? t.speaking
+                : t.sentenceBuilder;
 
     const mixedHeader = (
       <>
@@ -1552,6 +1710,94 @@ export default function PracticePage() {
         </div>
       );
     }
+
+    // Mixed — Kelime Bankası (Cümle Kurucu)
+    if (q.kind === "wordBank") {
+      const wb = q.data;
+      return (
+        <div className="page-container">
+          {mixedHeader}
+
+          <div className="flashcard">
+            <span className="practice-type-badge mb-2">{t.translateToRussian}</span>
+            <div className="flashcard-ru flashcard-target text-xl sm:text-2xl font-bold my-2">
+              {wb.hint}
+            </div>
+            <p className="practice-instruction">{t.tapWordsInOrder}</p>
+          </div>
+
+          <div className="wb-container">
+            {/* Seçim Alanı (Drop Zone) */}
+            <div className="wb-drop-zone">
+              {mixedWbSelectedTokens.length === 0 ? (
+                <span className="text-sm text-muted-foreground select-none italic py-1 px-2">
+                  {t.tapWordsInOrder}
+                </span>
+              ) : (
+                mixedWbSelectedTokens.map((tok) => (
+                  <button
+                    key={tok.id}
+                    type="button"
+                    className="wb-word-pill wb-word-pill-selected"
+                    onClick={() => handleMixedWbUnpickWord(tok)}
+                    disabled={mixedRevealed}
+                  >
+                    {tok.word}
+                  </button>
+                ))
+              )}
+            </div>
+
+            {/* Kelime Bankası Havuzu */}
+            <div className="wb-pool-zone">
+              {mixedWbBankTokens.map((tok) => (
+                <button
+                  key={tok.id}
+                  type="button"
+                  className="wb-word-pill wb-word-pill-available"
+                  onClick={() => handleMixedWbPickWord(tok)}
+                  disabled={mixedRevealed}
+                >
+                  {tok.word}
+                </button>
+              ))}
+            </div>
+
+            {!mixedRevealed && (
+              <div className="flex justify-center mb-6">
+                <button
+                  type="button"
+                  className="practice-btn practice-btn-primary min-w-[180px]"
+                  onClick={handleMixedWbCheck}
+                  disabled={mixedWbSelectedTokens.length === 0}
+                >
+                  {t.checkAnswer}
+                </button>
+              </div>
+            )}
+
+            {mixedRevealed && (
+              <div className="practice-feedback">
+                <div>
+                  <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
+                    {mixedIsCorrect
+                      ? t.correct
+                      : `${t.wrong} — ${t.showCorrect}: ${wb.targetSentence}`}
+                  </span>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="feedback-meaning">{wb.targetSentence}</span>
+                    <SpeakButton text={wb.targetSentence} size="sm" />
+                  </div>
+                </div>
+                <button className="practice-btn practice-btn-primary" onClick={handleMixedNext}>
+                  {t.next}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
   }
 
   /* ========================================
@@ -1916,6 +2162,104 @@ export default function PracticePage() {
                 )}
               </div>
               <button className="practice-btn practice-btn-secondary" onClick={handleSpeakingNext}>
+                {t.next}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  /* ========================================
+     RENDER — Tekil Kelime Bankası (Word Bank)
+     ======================================== */
+  if (exerciseType === "wordBank" && wbQuestions.length > 0) {
+    const q = wbQuestions[wbIndex];
+
+    return (
+      <div className="page-container">
+        {unitFilterSelector}
+        <div className="practice-progress-row">
+          <span className="review-progress">{wbIndex + 1} / {wbQuestions.length}</span>
+          <span className="practice-type-badge">{t.sentenceBuilder}</span>
+        </div>
+        <div className="review-progress-bar">
+          <div className="review-progress-fill" style={{ width: `${(wbIndex / wbQuestions.length) * 100}%` }} />
+        </div>
+
+        <div className="flashcard">
+          <span className="practice-type-badge mb-2">{t.translateToRussian}</span>
+          <div className="flashcard-ru flashcard-target text-xl sm:text-2xl font-bold my-2">
+            {q.hint}
+          </div>
+          <p className="practice-instruction">{t.tapWordsInOrder}</p>
+        </div>
+
+        <div className="wb-container">
+          {/* Seçim Alanı (Drop Zone) */}
+          <div className="wb-drop-zone">
+            {wbSelectedTokens.length === 0 ? (
+              <span className="text-sm text-muted-foreground select-none italic py-1 px-2">
+                {t.tapWordsInOrder}
+              </span>
+            ) : (
+              wbSelectedTokens.map((tok) => (
+                <button
+                  key={tok.id}
+                  type="button"
+                  className="wb-word-pill wb-word-pill-selected"
+                  onClick={() => handleWbUnpickWord(tok)}
+                  disabled={wbRevealed}
+                >
+                  {tok.word}
+                </button>
+              ))
+            )}
+          </div>
+
+          {/* Kelime Bankası Havuzu */}
+          <div className="wb-pool-zone">
+            {wbBankTokens.map((tok) => (
+              <button
+                key={tok.id}
+                type="button"
+                className="wb-word-pill wb-word-pill-available"
+                onClick={() => handleWbPickWord(tok)}
+                disabled={wbRevealed}
+              >
+                {tok.word}
+              </button>
+            ))}
+          </div>
+
+          {!wbRevealed && (
+            <div className="flex justify-center mb-6">
+              <button
+                type="button"
+                className="practice-btn practice-btn-primary min-w-[180px]"
+                onClick={handleWbCheck}
+                disabled={wbSelectedTokens.length === 0}
+              >
+                {t.checkAnswer}
+              </button>
+            </div>
+          )}
+
+          {wbRevealed && (
+            <div className="practice-feedback">
+              <div>
+                <span className={wbIsCorrect ? "feedback-correct" : "feedback-wrong"}>
+                  {wbIsCorrect
+                    ? t.correct
+                    : `${t.wrong} — ${t.showCorrect}: ${q.targetSentence}`}
+                </span>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="feedback-meaning">{q.targetSentence}</span>
+                  <SpeakButton text={q.targetSentence} size="sm" />
+                </div>
+              </div>
+              <button className="practice-btn practice-btn-primary" onClick={handleWbNext}>
                 {t.next}
               </button>
             </div>
