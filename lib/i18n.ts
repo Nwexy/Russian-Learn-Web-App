@@ -219,6 +219,9 @@ export interface Messages {
   includeAllWordsDesc: string;
   includeAllWordsHelp: string;
   matchingLimitInfo: string;
+
+  // Faz 11.3 — Ekstra kelime bağlamı
+  context: string;
 }
 
 /** Tüm çeviriler */
@@ -424,9 +427,12 @@ const messages: Record<Lang, Messages> = {
     goodDesc: "Biraz düşündüm ama doğru yaptım, yaklaşık bir hafta sonra gösterilecek.",
     easyDesc: "Anında bildim, bir ay sonra gösterilecek.",
     includeAllWords: "Tüm Kelimeleri Dahil Et",
-    includeAllWordsDesc: "Kilitli ünitelerin kelimelerini de tekrara dahil eder.",
-    includeAllWordsHelp: "Bu ayar açıkken, bir üniteye dahil olmasalar bile veritabanındaki tüm kelimeleri çalışabilirsiniz. Kapalıyken ise sadece ilgili ünitedeki kelimeler gösterilir.",
+    includeAllWordsDesc: "Örnek cümlelerde geçen ekstra kelimeleri de tekrara dahil eder.",
+    includeAllWordsHelp: "Bu ayar açıkken, açık ünitelerdeki örnek cümlelerde geçen ancak ana listede olmayan yardımcı kelimeler de SRS tekrar havuzuna eklenir.",
     matchingLimitInfo: "Eşleştirme modu maks. 4 çift gösterir.",
+
+    // Faz 11.3 — Ekstra kelime bağlamı
+    context: "Bağlam",
   },
 
   en: {
@@ -630,9 +636,12 @@ const messages: Record<Lang, Messages> = {
     goodDesc: "Thought a bit but got it right, will be shown in about a week.",
     easyDesc: "Knew it instantly, will be shown in a month.",
     includeAllWords: "Include All Words",
-    includeAllWordsDesc: "Also include words from locked units in review.",
-    includeAllWordsHelp: "When enabled, you can practice all words in the database even if they are not on units lesson. When disabled, only words on the unit that are are shown.",
+    includeAllWordsDesc: "Also include extra words found in example sentences.",
+    includeAllWordsHelp: "When enabled, extra words from example sentences in unlocked units are also added to the SRS review pool.",
     matchingLimitInfo: "Matching mode shows max 4 pairs.",
+
+    // Faz 11.3 — Ekstra kelime bağlamı
+    context: "Context",
   },
 };
 

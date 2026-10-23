@@ -4,6 +4,8 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-10-23
+- Review ekranindaki Extra Words kartlarinda, kelimenin kendi anlami ve cumle baglami birbirinden ayrildi.
+- Ekstra kelimeler icin sozluk yapisi eklendi.
 - "Include All Words" secenegi guncellendi. Artik SRS zamanini sifirlamak yerine, ornek cumlelerde gecen ekstra kelimeleri de tekrar havuzuna dahil ediyor.
 - Review sayfasinda "Include All Words" secenegi acikken kilitli unitelerin kelimelerinin gelmesi hatasi giderildi.
 - Bugunun Tekrari sayaci sadece acik uniteleri hesaplayacak sekilde guncellendi.

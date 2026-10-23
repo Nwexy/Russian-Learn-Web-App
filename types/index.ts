@@ -24,6 +24,8 @@ export interface Item {
   numberValue?: number;      // Sayısal değer (örn. 0-100)
   hexCode?: string;          // Renk hex kodu (örn. #FF0000)
   tags?: string[];     // Etiketler (opsiyonel)
+  wordTr?: string;     // Ekstra kelimenin kendi Türkçe anlamı (Faz 11.3)
+  wordEn?: string;     // Ekstra kelimenin kendi İngilizce anlamı (Faz 11.3)
 }
 
 /** SRS tekrar kaydı (Faz 2 için hazırlık) */

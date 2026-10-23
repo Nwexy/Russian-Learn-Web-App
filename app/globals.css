@@ -1848,7 +1848,7 @@ body {
   color: var(--text-secondary);
 }
 
-/* --- Ekstra Kelime Kartı Stilleri (Faz 11.2) --- */
+/* --- Ekstra Kelime Kartı Stilleri (Faz 11.2 & 11.3) --- */
 
 .extra-word-pill {
   display: inline-block;
@@ -1861,6 +1861,69 @@ body {
   padding: 0.2rem 0.5rem;
   margin-left: 0.5rem;
   vertical-align: middle;
+}
+
+.flashcard-extra-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.flashcard-extra-meaning-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.flashcard-extra-meaning {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1.25;
+}
+
+.flashcard-extra-secondary {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+  opacity: 0.85;
+}
+
+.flashcard-context-container {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 0.5rem;
+}
+
+.flashcard-context-divider {
+  width: 48px;
+  height: 1px;
+  background: var(--border);
+  margin: 0.75rem auto;
+  opacity: 0.8;
+}
+
+.flashcard-context-row {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  text-align: center;
+}
+
+.flashcard-context-label {
+  font-weight: 600;
+  color: var(--text-secondary);
+  opacity: 0.9;
+  margin-right: 0.35rem;
+}
+
+.flashcard-context-text {
+  font-style: italic;
+  opacity: 0.85;
 }
 
 @keyframes fadeInUp {

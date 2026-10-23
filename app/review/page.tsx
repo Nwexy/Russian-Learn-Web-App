@@ -264,9 +264,20 @@ function ReviewContent() {
     );
   }
 
+  const isExtraWord = currentCard.id.startsWith("extra_");
   const translation = getTranslation(currentCard, translationLang);
   const exampleTr = getExampleTranslation(currentCard, translationLang);
   const pageTitle = unitObj ? `${getUnitTitle(unitObj, uiLang)} — ${t.review}` : t.review;
+
+  // Faz 11.3: Ekstra kelimeler için sözlük anlamı (wordTr / wordEn)
+  const primaryWordMeaning = translationLang === "tr" ? currentCard.wordTr : currentCard.wordEn;
+  const secondaryWordMeaning = translationLang === "tr" ? currentCard.wordEn : currentCard.wordTr;
+  const displayedWordMeaning = primaryWordMeaning || secondaryWordMeaning || currentCard.ru;
+  const showSecondary = Boolean(
+    primaryWordMeaning &&
+      secondaryWordMeaning &&
+      primaryWordMeaning.trim().toLowerCase() !== secondaryWordMeaning.trim().toLowerCase()
+  );
 
   return (
     <div className="page-container">
@@ -357,24 +368,54 @@ function ReviewContent() {
         {showAnswer && (
           <div className="flashcard-back">
             <div className="flashcard-divider" />
-            <div className="flashcard-tr">
-              <span>{translation.text}</span>
-              {currentCard.id.startsWith("extra_") && (
-                <span className="extra-word-pill">
-                  {uiLang === "tr" ? "Cümleden Ekstra Kelime" : "Sentence Extra Word"}
-                </span>
-              )}
-              {translation.fallbackLang && (
-                <span className="fallback-badge">({translation.fallbackLang})</span>
-              )}
-            </div>
-            {!currentCard.id.startsWith("extra_") && exampleTr && (
-              <div className="flashcard-example-tr">
-                {exampleTr.text}
-                {exampleTr.fallbackLang && (
-                  <span className="fallback-badge">({exampleTr.fallbackLang})</span>
+            {isExtraWord ? (
+              <div className="flashcard-extra-container">
+                {/* Üst Kısım: Kelime Anlamı */}
+                <div className="flashcard-extra-meaning-row">
+                  <span className="flashcard-extra-meaning">
+                    {displayedWordMeaning}
+                  </span>
+                  {showSecondary && (
+                    <span className="flashcard-extra-secondary">
+                      ({secondaryWordMeaning})
+                    </span>
+                  )}
+                  <span className="extra-word-pill">
+                    {uiLang === "tr" ? "Cümleden Ekstra Kelime" : "Sentence Extra Word"}
+                  </span>
+                </div>
+
+                {/* Alt Kısım: Cümle Bağlamı */}
+                {exampleTr && (
+                  <div className="flashcard-context-container">
+                    <div className="flashcard-context-divider" />
+                    <div className="flashcard-context-row">
+                      <span className="flashcard-context-label">{t.context}:</span>{" "}
+                      <span className="flashcard-context-text">{exampleTr.text}</span>
+                      {exampleTr.fallbackLang && (
+                        <span className="fallback-badge">({exampleTr.fallbackLang})</span>
+                      )}
+                    </div>
+                  </div>
                 )}
               </div>
+            ) : (
+              <>
+                <div className="flashcard-tr">
+                  <span>{translation.text}</span>
+                  {translation.fallbackLang && (
+                    <span className="fallback-badge">({translation.fallbackLang})</span>
+                  )}
+                </div>
+                {exampleTr && (
+                  <div className="flashcard-example-tr">
+                    {exampleTr.text}
+                    {exampleTr.fallbackLang && (
+                      <span className="fallback-badge">({exampleTr.fallbackLang})</span>
+                    )}
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
