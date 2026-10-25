@@ -12,7 +12,7 @@ import { getAllUnits, getUnitTitle } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { db } from "@/lib/db";
-import { getDueCards } from "@/lib/srs";
+import { getDueCards, isNumberItem } from "@/lib/srs";
 import { getAllReviews } from "@/lib/reviews";
 import { getMistakeCount } from "@/lib/mistakes";
 import { getUnitStatus } from "@/lib/progress";
@@ -60,13 +60,14 @@ export default function HomePage() {
         if (unlockedUnitIds.size === 0) {
           setDueCount(0);
         } else {
-          // Sadece tamamlanmış ünitelerin word tipindeki kartları
+          // Sadece tamamlanmış ünitelerin word tipindeki kartları (sayılar hariç - Faz 11.4)
           const allItems: Item[] = await db.items
             .where("type")
             .equals("word")
             .toArray();
+          const candidateItems = allItems.filter((item) => !isNumberItem(item));
           const reviews: Review[] = await getAllReviews();
-          const due = getDueCards(allItems, reviews, new Date(), unlockedUnitIds);
+          const due = getDueCards(candidateItems, reviews, new Date(), unlockedUnitIds);
           setDueCount(due.length);
         }
 

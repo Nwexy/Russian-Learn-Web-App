@@ -3,6 +3,9 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-25
+- Sayilar unitisindeki 101 kelimenin genel SRS Review havuzunu kilitlemesini onlemek icin, sayilar genel Review ve Bugunun Tekrari sayacindan cikarildi. (Sadece Practice modunda manuel calisilabilir).
+
 ## 2026-10-23
 - Review ekranindaki Extra Words kartlarinda, kelimenin kendi anlami ve cumle baglami birbirinden ayrildi.
 - Ekstra kelimeler icin sozluk yapisi eklendi.

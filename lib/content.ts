@@ -135,3 +135,6 @@ export { isUnitUnlocked } from "@/lib/progress";
 
 // Faz 11.2 & 11.3: Ekstra kelimeler ve sözlük
 export { extractExtraWords, EXTRA_WORDS_DICTIONARY } from "@/lib/extraWords";
+
+// Faz 11.4: Sayı öğesi kontrolü re-export
+export { isNumberItem } from "@/lib/srs";

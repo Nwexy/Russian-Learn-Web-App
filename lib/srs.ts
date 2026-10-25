@@ -97,22 +97,46 @@ export function reviewCard(review: Review, rating: Rating): Review {
 }
 
 /**
+ * Bir öğenin sayı olup olmadığını kontrol eder.
+ * Faz 11.4: Sayılar ünitesi (unitId: "unit-02" veya "unit-numbers") veya
+ * numberValue içeren öğeler genel SRS Review havuzundan ve Bugünün Tekrarı sayacından hariç tutulur.
+ *
+ * @param item - Kontrol edilecek öğe
+ * @returns      Sayı ise true, değilse false
+ */
+export function isNumberItem(
+  item: { unitId?: string; numberValue?: number } | null | undefined
+): boolean {
+  if (!item) return false;
+  if (item.unitId === "unit-02" || item.unitId === "unit-numbers") {
+    return true;
+  }
+  if (item.numberValue !== undefined && item.numberValue !== null) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * Tekrar zamanı gelmiş kartları döndürür.
  * due tarihi şimdiki zamandan küçük veya eşit olan kartlar "due" sayılır.
  * Reviews tablosunda kaydı olmayan kartlar da due sayılır (ilk kez görülecek).
  * unlockedUnitIds verilirse sadece bu açık/tamamlanmış ünitelerdeki kartlar değerlendirilir.
+ * excludeNumbers true ise sayı kartları (unit-02 veya numberValue olanlar) değerlendirmeye alınmaz.
  *
  * @param allItems        - Tüm öğeler
  * @param reviews         - Mevcut tekrar kayıtları
  * @param now             - Şimdiki zaman
  * @param unlockedUnitIds - Açık/tamamlanmış ünite ID'leri (opsiyonel filtre)
+ * @param excludeNumbers  - Sayıları hariç tut (varsayılan: true)
  * @returns                 Tekrar edilecek Item listesi
  */
 export function getDueCards(
   allItems: Item[],
   reviews: Review[],
   now: Date,
-  unlockedUnitIds?: Set<string> | string[]
+  unlockedUnitIds?: Set<string> | string[],
+  excludeNumbers: boolean = true
 ): Item[] {
   const allowedSet = unlockedUnitIds
     ? unlockedUnitIds instanceof Set
@@ -127,6 +151,11 @@ export function getDueCards(
   }
 
   return allItems.filter((item) => {
+    // Faz 11.4: Sayılar ünitesi ve numberValue içeren kartlar SRS tekrar havuzundan hariç tutulur
+    if (excludeNumbers && isNumberItem(item)) {
+      return false;
+    }
+
     // Ünite kısıtlaması varsa ve bu ünite açık değilse atla
     if (allowedSet && !allowedSet.has(item.unitId)) {
       return false;

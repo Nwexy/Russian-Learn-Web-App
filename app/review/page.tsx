@@ -15,7 +15,7 @@ import { useSearchParams } from "next/navigation";
 import { db } from "@/lib/db";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
-import { getDueCards, reviewCard } from "@/lib/srs";
+import { getDueCards, reviewCard, isNumberItem } from "@/lib/srs";
 import { getReview, upsertReview, getAllReviews } from "@/lib/reviews";
 import { getUnitById, getUnitTitle } from "@/lib/content";
 import { PronunciationText } from "@/components/pronunciation-text";
@@ -160,11 +160,12 @@ function ReviewContent() {
               }));
           }
 
-          let pool = candidateItems;
+          // Faz 11.4: Sayılar ünitesi kelimeleri veya numberValue içeren kartlar review havuzuna eklenmez
+          let pool = candidateItems.filter((i) => !isNumberItem(i));
           if (includeAll) {
-            // Açık olan bu ünitedeki örnek cümlelerden ekstra kelimeleri de havuza ekle
-            const extraWords = extractExtraWords([unitParam]);
-            pool = [...candidateItems, ...extraWords];
+            // Açık olan bu ünitedeki örnek cümlelerden ekstra kelimeleri de havuza ekle (sayılar hariç)
+            const extraWords = extractExtraWords([unitParam]).filter((i) => !isNumberItem(i));
+            pool = [...pool, ...extraWords];
           }
 
           const reviews: Review[] = await getAllReviews();
@@ -188,13 +189,15 @@ function ReviewContent() {
               .equals("word")
               .toArray();
 
-            // Sadece açık/tamamlanmış ünitelerin kelimeleri
-            const unlockedItems = allWords.filter((i) => unlockedUnitIds.has(i.unitId));
+            // Sadece açık/tamamlanmış ünitelerin kelimeleri (sayılar hariç - Faz 11.4)
+            const unlockedItems = allWords
+              .filter((i) => unlockedUnitIds.has(i.unitId))
+              .filter((i) => !isNumberItem(i));
 
             let pool = unlockedItems;
             if (includeAll) {
-              // "Include All Words" AÇIK: Ana kelimelere EK OLARAK açık ünitelerin örnek cümlelerindeki ekstra kelimeleri de havuza ekle
-              const extraWords = extractExtraWords(unlockedUnitIds);
+              // "Include All Words" AÇIK: Ana kelimelere EK OLARAK açık ünitelerin örnek cümlelerindeki ekstra kelimeleri de havuza ekle (sayılar hariç)
+              const extraWords = extractExtraWords(unlockedUnitIds).filter((i) => !isNumberItem(i));
               pool = [...unlockedItems, ...extraWords];
             }
 
@@ -244,10 +247,33 @@ function ReviewContent() {
   // Tüm kartlar bitti veya hiç kart yok
   const currentCard = dueCards[currentIndex];
   if (!currentCard) {
+    const isNumbersUnit = unitParam === "unit-02" || unitParam === "unit-numbers";
     return (
       <div className="page-container">
         <div className="review-done">
-          <p className="review-done-text">{t.noCardsDue}</p>
+          <p className="review-done-text">
+            {isNumbersUnit ? t.numbersExcludedFromReview : t.noCardsDue}
+          </p>
+
+          {isNumbersUnit && (
+            <div style={{ marginBottom: "1.25rem" }}>
+              <Link
+                href="/practice?unit=unit-02"
+                className="review-done-link"
+                style={{
+                  display: "inline-block",
+                  padding: "0.5rem 1rem",
+                  background: "var(--accent)",
+                  color: "#fff",
+                  borderRadius: "var(--radius-md)",
+                  fontWeight: 500,
+                  textDecoration: "none",
+                }}
+              >
+                {t.practiceNumbers} →
+              </Link>
+            </div>
+          )}
 
           {/* Unit-specific review yoksa toggle göster */}
           {!unitParam && (

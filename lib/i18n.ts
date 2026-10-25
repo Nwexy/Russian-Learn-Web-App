@@ -222,6 +222,10 @@ export interface Messages {
 
   // Faz 11.3 — Ekstra kelime bağlamı
   context: string;
+
+  // Faz 11.4 — Sayılar filtreleme
+  numbersExcludedFromReview: string;
+  practiceNumbers: string;
 }
 
 /** Tüm çeviriler */
@@ -427,12 +431,16 @@ const messages: Record<Lang, Messages> = {
     goodDesc: "Biraz düşündüm ama doğru yaptım, yaklaşık bir hafta sonra gösterilecek.",
     easyDesc: "Anında bildim, bir ay sonra gösterilecek.",
     includeAllWords: "Tüm Kelimeleri Dahil Et",
-    includeAllWordsDesc: "Örnek cümlelerde geçen ekstra kelimeleri de tekrara dahil eder.",
-    includeAllWordsHelp: "Bu ayar açıkken, açık ünitelerdeki örnek cümlelerde geçen ancak ana listede olmayan yardımcı kelimeler de SRS tekrar havuzuna eklenir.",
+    includeAllWordsDesc: "Kilitli ünitelerin kelimelerini de tekrara dahil eder.",
+    includeAllWordsHelp: "Bu ayar açıkken, bir üniteye dahil olmasalar bile veritabanındaki tüm kelimeleri çalışabilirsiniz. Kapalıyken ise sadece ilgili ünitedeki kelimeler gösterilir.",
     matchingLimitInfo: "Eşleştirme modu maks. 4 çift gösterir.",
 
     // Faz 11.3 — Ekstra kelime bağlamı
     context: "Bağlam",
+
+    // Faz 11.4 — Sayılar filtreleme
+    numbersExcludedFromReview: "Sayılar genel tekrar havuzuna dahil edilmez. Sayıları Alıştırma (Practice) sayfasından çalışabilirsiniz.",
+    practiceNumbers: "Sayıları Alıştırma Modunda Çalış",
   },
 
   en: {
@@ -636,12 +644,16 @@ const messages: Record<Lang, Messages> = {
     goodDesc: "Thought a bit but got it right, will be shown in about a week.",
     easyDesc: "Knew it instantly, will be shown in a month.",
     includeAllWords: "Include All Words",
-    includeAllWordsDesc: "Also include extra words found in example sentences.",
-    includeAllWordsHelp: "When enabled, extra words from example sentences in unlocked units are also added to the SRS review pool.",
+    includeAllWordsDesc: "Also include words from locked units in review.",
+    includeAllWordsHelp: "When enabled, you can practice all words in the database even if they are not on units lesson. When disabled, only words on the unit that are are shown.",
     matchingLimitInfo: "Matching mode shows max 4 pairs.",
 
     // Faz 11.3 — Ekstra kelime bağlamı
     context: "Context",
+
+    // Faz 11.4 — Sayılar filtreleme
+    numbersExcludedFromReview: "Numbers are not included in the general review pool. You can practice numbers in Practice mode.",
+    practiceNumbers: "Practice Numbers in Practice Mode",
   },
 };
 
