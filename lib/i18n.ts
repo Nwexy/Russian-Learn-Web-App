@@ -226,6 +226,29 @@ export interface Messages {
   // Faz 11.4 — Sayılar filtreleme
   numbersExcludedFromReview: string;
   practiceNumbers: string;
+
+  // Faz 11.5 — Kilit Aşma & FAQ
+  confirmUnlockTitle: string;
+  confirmUnlockDesc: string;
+  confirmUnlockAction: string;
+  cancel: string;
+  faq: string;
+  faqTitle: string;
+  faqSubtitle: string;
+  faqQ1: string;
+  faqA1: string;
+  faqQ2: string;
+  faqA2: string;
+  faqQ3: string;
+  faqA3: string;
+  faqQ4: string;
+  faqA4: string;
+  faqQ5: string;
+  faqA5: string;
+  faqQ6: string;
+  faqA6: string;
+  faqQ7: string;
+  faqA7: string;
 }
 
 /** Tüm çeviriler */
@@ -441,6 +464,29 @@ const messages: Record<Lang, Messages> = {
     // Faz 11.4 — Sayılar filtreleme
     numbersExcludedFromReview: "Sayılar genel tekrar havuzuna dahil edilmez. Sayıları Alıştırma (Practice) sayfasından çalışabilirsiniz.",
     practiceNumbers: "Sayıları Alıştırma Modunda Çalış",
+
+    // Faz 11.5 — Kilit Aşma & FAQ
+    confirmUnlockTitle: "Ünite Kilidini Aç",
+    confirmUnlockDesc: "Bu ünite kilitli. Önceki üniteleri tamamlamadan bu üniteye geçmek istediğinize emin misiniz?",
+    confirmUnlockAction: "Evet, Kilidi Aç",
+    cancel: "Vazgeç",
+    faq: "SSS",
+    faqTitle: "Sıkça Sorulan Sorular",
+    faqSubtitle: "Uygulama ve öğrenme süreciyle ilgili merak edilenler",
+    faqQ1: "Nereden başlanmalı?",
+    faqA1: "Alfabe ile başlayın, sırayla ilerleyin. Ders -> Test -> Review döngüsünü takip edin.",
+    faqQ2: "Üniteleri atlayabilir miyim?",
+    faqA2: "Evet, kilitli bir üniteye tıkladığınızda onay vererek o üniteyi açabilirsiniz.",
+    faqQ3: "Dil ayarları nasıl çalışır?",
+    faqA3: "Arayüz dili uygulamanın menülerini değiştirir. Çeviri dili ise Rusça kelimelerin hangi dilde karşılığını göreceğinizi belirler.",
+    faqQ4: "Review ve Include All Words nedir?",
+    faqA4: "Review, SRS algoritmasıyla kelimeleri unutmadan tekrar etmenizi sağlar. Include All Words açıkken, örnek cümlelerin içindeki ekstra kelimeler de havuza dahil edilir.",
+    faqQ5: "Mistakes (Yanlışlarım) nasıl çalışır?",
+    faqA5: "Testlerde veya pratiklerde yanlış yaptığınız sorular buraya kaydedilir. Bir soruyu doğru yapana kadar burada kalır.",
+    faqQ6: "Practice ve Test arasındaki fark nedir?",
+    faqA6: "Practice sınırsız ve serbest çalışma modudur, üniteyi tamamlamaz. Test ise üniteyi geçmek için çözmeniz gereken sınavdır.",
+    faqQ7: "Verilerimi nasıl yedeklerim?",
+    faqA7: "Ayarlar sayfasından 'Verileri Yedekle' diyerek JSON dosyası olarak indirebilir ve başka bir cihazda 'Yedekten Geri Yükle' ile açabilirsiniz.",
   },
 
   en: {
@@ -654,6 +700,29 @@ const messages: Record<Lang, Messages> = {
     // Faz 11.4 — Sayılar filtreleme
     numbersExcludedFromReview: "Numbers are not included in the general review pool. You can practice numbers in Practice mode.",
     practiceNumbers: "Practice Numbers in Practice Mode",
+
+    // Faz 11.5 — Kilit Aşma & FAQ
+    confirmUnlockTitle: "Unlock Unit",
+    confirmUnlockDesc: "This unit is locked. Are you sure you want to proceed to this unit without completing previous units?",
+    confirmUnlockAction: "Yes, Unlock Unit",
+    cancel: "Cancel",
+    faq: "FAQ",
+    faqTitle: "Frequently Asked Questions",
+    faqSubtitle: "Frequently asked questions about the app and learning process",
+    faqQ1: "Where should I start?",
+    faqA1: "Start with the alphabet and progress in order. Follow the Lesson -> Test -> Review cycle.",
+    faqQ2: "Can I skip units?",
+    faqA2: "Yes, when you click on a locked unit, you can confirm to unlock and access it directly.",
+    faqQ3: "How do language settings work?",
+    faqA3: "UI language changes the application menus and interface. Translation language determines the language used for Russian word meanings.",
+    faqQ4: "What is Review and Include All Words?",
+    faqA4: "Review lets you practice words before you forget them using an SRS algorithm. When Include All Words is enabled, extra words appearing in example sentences are also included in the pool.",
+    faqQ5: "How does Mistakes work?",
+    faqA5: "Questions you answer incorrectly in tests or practice sessions are saved here. They remain until you answer them correctly.",
+    faqQ6: "What is the difference between Practice and Test?",
+    faqA6: "Practice is an unlimited free study mode that does not complete a unit. Test is the exam you must pass to successfully complete the unit.",
+    faqQ7: "How do I backup my data?",
+    faqA7: "You can download a JSON file by clicking 'Export Data' in the Settings page, and restore it on another device using 'Import Data'.",
   },
 };
 

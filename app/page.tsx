@@ -8,6 +8,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { getAllUnits, getUnitTitle } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
@@ -15,16 +16,26 @@ import { db } from "@/lib/db";
 import { getDueCards, isNumberItem } from "@/lib/srs";
 import { getAllReviews } from "@/lib/reviews";
 import { getMistakeCount } from "@/lib/mistakes";
-import { getUnitStatus } from "@/lib/progress";
+import { getUnitStatus, isUnitUnlocked, setForceUnlocked } from "@/lib/progress";
 import { loadGrammarNotes } from "@/lib/grammar";
 import { getAllGrammarProgress } from "@/lib/grammar-progress";
 import { FlagRu } from "@/components/icons/flag-icons";
 import { Lock } from "lucide-react";
-import { isUnitUnlocked } from "@/lib/progress";
 import { RatingGuidePopover } from "@/components/rating-guide-popover";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import type { Item, Review, UnitStatus, Progress } from "@/types";
 
 export default function HomePage() {
+  const router = useRouter();
   const units = getAllUnits();
   const { uiLang } = useLang();
   const t = getMessages(uiLang);
@@ -35,14 +46,22 @@ export default function HomePage() {
   const [grammarStats, setGrammarStats] = useState({ completed: 0, total: 0 });
   const [unitStatuses, setUnitStatuses] = useState<Record<string, UnitStatus>>({});
   const [allProgress, setAllProgress] = useState<Progress[]>([]);
-  const [lockedNoticeUnitId, setLockedNoticeUnitId] = useState<string | null>(null);
+  const [selectedLockedUnitId, setSelectedLockedUnitId] = useState<string | null>(null);
+  const [unlockDialogOpen, setUnlockDialogOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   const handleLockedClick = (unitId: string) => {
-    setLockedNoticeUnitId(unitId);
-    setTimeout(() => {
-      setLockedNoticeUnitId((curr) => (curr === unitId ? null : curr));
-    }, 3500);
+    setSelectedLockedUnitId(unitId);
+    setUnlockDialogOpen(true);
+  };
+
+  const handleConfirmUnlock = async () => {
+    if (!selectedLockedUnitId) return;
+    const targetId = selectedLockedUnitId;
+    await setForceUnlocked(targetId);
+    setUnlockDialogOpen(false);
+    setSelectedLockedUnitId(null);
+    router.push(`/unit/${targetId}`);
   };
 
   useEffect(() => {
@@ -271,9 +290,9 @@ export default function HomePage() {
                     key={unit.id}
                     role="button"
                     tabIndex={0}
-                    className="card opacity-50 grayscale cursor-not-allowed select-none relative"
+                    className="card opacity-60 hover:opacity-85 transition-opacity cursor-pointer select-none relative"
                     onClick={() => handleLockedClick(unit.id)}
-                    title={t.completePreviousUnitToUnlock}
+                    title={t.confirmUnlockTitle}
                   >
                     <div className="absolute top-4 right-4 text-muted-foreground p-1.5 rounded-full bg-secondary/80">
                       <Lock className="w-4 h-4 text-muted-foreground" />
@@ -292,11 +311,6 @@ export default function HomePage() {
                       <Lock className="w-3.5 h-3.5" />
                       <span>{t.unitLocked}</span>
                     </div>
-                    {lockedNoticeUnitId === unit.id && (
-                      <div className="mt-3 py-1.5 px-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-500 dark:text-amber-400 text-xs font-medium text-center">
-                        {t.completePreviousUnitToUnlock}
-                      </div>
-                    )}
                   </div>
                 );
               }
@@ -326,6 +340,24 @@ export default function HomePage() {
           </div>
         )}
       </section>
+
+      {/* Kilitli Üniteyi Açma Onay Penceresi */}
+      <AlertDialog open={unlockDialogOpen} onOpenChange={setUnlockDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t.confirmUnlockTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{t.confirmUnlockDesc}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setUnlockDialogOpen(false)}>
+              {t.cancel}
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmUnlock}>
+              {t.confirmUnlockAction}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -3,6 +3,11 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-10-30
+- Kullanicilarin kilitli uniteleri onay vererek acmasini saglayan "Kilidi Asma" ozelligi eklendi.
+- Uygulamanin nasil kullanilacagini anlatan detayli bir SSS (FAQ) sayfasi eklendi.
+- Navbar'a FAQ linki eklendi.
+
 ## 2026-10-25
 - Sayilar unitisindeki 101 kelimenin genel SRS Review havuzunu kilitlemesini onlemek icin, sayilar genel Review ve Bugunun Tekrari sayacindan cikarildi. (Sadece Practice modunda manuel calisilabilir).
 

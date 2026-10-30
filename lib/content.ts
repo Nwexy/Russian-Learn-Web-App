@@ -130,8 +130,8 @@ export async function seedDatabase(): Promise<void> {
   }
 }
 
-// Faz 7.6: Doğrusal ilerleme kontrolü re-export
-export { isUnitUnlocked } from "@/lib/progress";
+// Faz 7.6 & 11.5: Doğrusal ilerleme ve kilit aşma re-export
+export { isUnitUnlocked, setForceUnlocked } from "@/lib/progress";
 
 // Faz 11.2 & 11.3: Ekstra kelimeler ve sözlük
 export { extractExtraWords, EXTRA_WORDS_DICTIONARY } from "@/lib/extraWords";

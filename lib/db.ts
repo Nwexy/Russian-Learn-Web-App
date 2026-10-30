@@ -12,7 +12,7 @@ import type { Item, Review, Progress, Setting, Mistake, GrammarProgress } from "
  * Tablolar:
  *  - items: Öğrenme öğeleri (harf, kelime, kalıp vb.)
  *  - reviews: SRS tekrar kayıtları
- *  - progress: Ünite ilerleme durumları
+ *  - progress: Ünite ilerleme durumları (lessonDone, testDone, forceUnlocked vb.)
  *  - settings: Uygulama ayarları (tema, uiLang, translationLang, showPronunciation: "true"|"false")
  *  - mistakes: Yanlış yapılan sorular (Faz 3.5)
  *  - grammarProgress: Gramer notları ilerleme durumları (Faz 5)

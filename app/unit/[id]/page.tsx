@@ -13,11 +13,21 @@ import { getUnitById, getUnitTitle, getAllUnits } from "@/lib/content";
 import { getGrammarByUnit } from "@/lib/grammar";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
-import { getProgress, setLessonComplete, isUnitUnlocked } from "@/lib/progress";
+import { getProgress, setLessonComplete, isUnitUnlocked, setForceUnlocked } from "@/lib/progress";
 import { db } from "@/lib/db";
 import { Lock } from "lucide-react";
 import { PronunciationText } from "@/components/pronunciation-text";
 import { SpeakButton } from "@/components/SpeakButton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import type { Lang, RawItem, Progress } from "@/types";
 
 /**
@@ -65,6 +75,16 @@ export default function UnitPage() {
   const [unlocked, setUnlocked] = useState<boolean | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("overview");
   const [lessonMarked, setLessonMarked] = useState(false);
+  const [unlockDialogOpen, setUnlockDialogOpen] = useState(false);
+
+  const handleConfirmUnlock = async () => {
+    if (!unit) return;
+    await setForceUnlocked(unit.id);
+    setUnlockDialogOpen(false);
+    setUnlocked(true);
+    const prog = await getProgress(unit.id);
+    setProgress(prog);
+  };
 
   useEffect(() => {
     if (!unit) return;
@@ -119,13 +139,38 @@ export default function UnitPage() {
           <p className="text-muted-foreground text-sm max-w-md mb-8">
             {t.unitLockedMessage}
           </p>
-          <Link
-            href="/"
-            className="px-6 py-3 rounded-xl bg-accent text-white font-medium hover:opacity-90 transition-opacity shadow-md"
-          >
-            {t.backToHome}
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/"
+              className="px-6 py-3 rounded-xl bg-secondary text-foreground font-medium hover:bg-secondary/80 transition-colors shadow-sm"
+            >
+              {t.backToHome}
+            </Link>
+            <button
+              onClick={() => setUnlockDialogOpen(true)}
+              className="px-6 py-3 rounded-xl bg-accent text-white font-medium hover:opacity-90 transition-opacity shadow-md cursor-pointer"
+            >
+              {t.confirmUnlockTitle}
+            </button>
+          </div>
         </div>
+
+        <AlertDialog open={unlockDialogOpen} onOpenChange={setUnlockDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t.confirmUnlockTitle}</AlertDialogTitle>
+              <AlertDialogDescription>{t.confirmUnlockDesc}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setUnlockDialogOpen(false)}>
+                {t.cancel}
+              </AlertDialogCancel>
+              <AlertDialogAction onClick={handleConfirmUnlock}>
+                {t.confirmUnlockAction}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     );
   }

@@ -4,9 +4,10 @@
 
 "use client";
 
+import Link from "next/link";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, HelpCircle } from "lucide-react";
 
 export function Footer() {
   const { uiLang } = useLang();
@@ -18,6 +19,14 @@ export function Footer() {
         <p className="footer-tagline">{t.footerText}</p>
         <p className="footer-copyright">{t.footerTextExtra}</p>
         <div className="footer-links">
+          <Link
+            href="/faq"
+            className="footer-portfolio-link"
+            id="footer-faq-link"
+          >
+            <HelpCircle size={16} className="footer-link-icon" aria-hidden="true" />
+            <span>{t.faq}</span>
+          </Link>
           <a
             href="https://nwexy.netlify.app"
             target="_blank"

@@ -48,6 +48,7 @@ export interface Progress {
   practiceScore: number;     // Alıştırma puanı (0-100)
   testScore: number;         // Test puanı (0-100)
   updatedAt: Date;
+  forceUnlocked?: boolean;   // Faz 11.5: Kullanıcı kilidi atladı mı
 }
 
 /** Ünite genel durum */

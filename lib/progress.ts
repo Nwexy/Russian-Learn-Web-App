@@ -59,6 +59,17 @@ export async function setTestComplete(unitId: string, score: number): Promise<vo
   await db.progress.put(prog);
 }
 
+/**
+ * Kullanıcının kilitli bir üniteyi onay vererek manuel olarak açmasını (kilidi aşmasını) sağlar.
+ * Faz 11.5: forceUnlocked = true olarak kaydedilir.
+ */
+export async function setForceUnlocked(unitId: string): Promise<void> {
+  const prog = await getProgress(unitId);
+  prog.forceUnlocked = true;
+  prog.updatedAt = new Date();
+  await db.progress.put(prog);
+}
+
 import { getUnitById, unitHasExercises } from "@/lib/content";
 
 /**
@@ -123,6 +134,12 @@ export function isUnitUnlocked(
     }
     return allProgress[id];
   };
+
+  // Faz 11.5: Eğer bu ünite manuel olarak açılmışsa (forceUnlocked === true) açıktır
+  const targetProg = getProg(unitId);
+  if (targetProg?.forceUnlocked) {
+    return true;
+  }
 
   // Doğrusal ilerleme: Hedef üniteye kadar olan tüm önceki ünitelerin tamamlanmış olması gerekir
   for (let i = 0; i < targetIndex; i++) {
