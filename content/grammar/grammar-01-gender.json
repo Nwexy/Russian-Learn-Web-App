@@ -5,7 +5,10 @@
   "titleEn": "Gender in Nouns",
   "summaryTr": "Rusça'da isimler eril, dişil veya nötr cinsiyettedir. Kelimenin son harfine bakarak cinsiyeti kolayca anlayabilirsiniz.",
   "summaryEn": "In Russian, nouns are masculine, feminine, or neuter. You can easily determine the gender by looking at the word ending.",
-  "relatedUnits": ["unit-00-alphabet", "unit-01-greetings"],
+  "relatedUnits": [
+    "unit-00-alphabet",
+    "unit-01-greetings"
+  ],
   "sections": [
     {
       "type": "text",
@@ -19,34 +22,122 @@
     },
     {
       "type": "table",
-      "headersTr": ["Cinsiyet", "Kelime Sonu", "Örnekler", "Anlam"],
-      "headersEn": ["Gender", "Ending", "Examples", "Meaning"],
+      "headersTr": [
+        "Cinsiyet",
+        "Kelime Sonu",
+        "Örnekler",
+        "Anlam"
+      ],
+      "headersEn": [
+        "Gender",
+        "Ending",
+        "Examples",
+        "Meaning"
+      ],
       "rows": [
         {
-          "cellsTr": ["Eril (Мужской)", "Ünsüz harf, -й", "кот, стол, чай", "kedi, masa, çay"],
-          "cellsEn": ["Masculine (Мужской)", "Consonant, -й", "кот, стол, чай", "cat, table, tea"]
+          "cellsTr": [
+            "Eril (Мужской)",
+            "Ünsüz harf, -й",
+            "кот, стол, чай",
+            "kedi, masa, çay"
+          ],
+          "cellsEn": [
+            "Masculine (Мужской)",
+            "Consonant, -й",
+            "кот, стол, чай",
+            "cat, table, tea"
+          ]
         },
         {
-          "cellsTr": ["Dişil (Женский)", "-а, -я", "мама, книга, песня", "anne, kitap, şarkı"],
-          "cellsEn": ["Feminine (Женский)", "-а, -я", "мама, книга, песня", "mom, book, song"]
+          "cellsTr": [
+            "Dişil (Женский)",
+            "-а, -я",
+            "мама, книга, песня",
+            "anne, kitap, şarkı"
+          ],
+          "cellsEn": [
+            "Feminine (Женский)",
+            "-а, -я",
+            "мама, книга, песня",
+            "mom, book, song"
+          ]
         },
         {
-          "cellsTr": ["Nötr (Средний)", "-о, -е", "окно, море, письмо", "pencere, deniz, mektup"],
-          "cellsEn": ["Neuter (Средний)", "-о, -е", "окно, море, письмо", "window, sea, letter"]
+          "cellsTr": [
+            "Nötr (Средний)",
+            "-о, -е",
+            "окно, море, письмо",
+            "pencere, deniz, mektup"
+          ],
+          "cellsEn": [
+            "Neuter (Средний)",
+            "-о, -е",
+            "окно, море, письмо",
+            "window, sea, letter"
+          ]
         }
       ]
     },
     {
       "type": "examples",
       "items": [
-        { "ru": "стол", "tr": "masa", "en": "table", "note": "Eril (ünsüz -л) / Masculine" },
-        { "ru": "чай", "tr": "çay", "en": "tea", "note": "Eril (-й ile biter) / Masculine" },
-        { "ru": "книга", "tr": "kitap", "en": "book", "note": "Dişil (-а ile biter) / Feminine" },
-        { "ru": "мама", "tr": "anne", "en": "mom", "note": "Dişil (-а ile biter) / Feminine" },
-        { "ru": "окно", "tr": "pencere", "en": "window", "note": "Nötr (-о ile biter) / Neuter" },
-        { "ru": "море", "tr": "deniz", "en": "sea", "note": "Nötr (-е ile biter) / Neuter" },
-        { "ru": "словарь", "tr": "sözlük", "en": "dictionary", "note": "Eril (-ь ile biter, istisna) / Masculine" },
-        { "ru": "газета", "tr": "gazete", "en": "newspaper", "note": "Dişil (-а ile biter) / Feminine" }
+        {
+          "ru": "стол",
+          "tr": "masa",
+          "en": "table",
+          "noteTr": "Eril (ünsüz -л)",
+          "noteEn": "Masculine (consonant -л)"
+        },
+        {
+          "ru": "чай",
+          "tr": "çay",
+          "en": "tea",
+          "noteTr": "Eril (-й ile biter)",
+          "noteEn": "Masculine (ends in -й)"
+        },
+        {
+          "ru": "книга",
+          "tr": "kitap",
+          "en": "book",
+          "noteTr": "Dişil (-а ile biter)",
+          "noteEn": "Feminine (ends in -а)"
+        },
+        {
+          "ru": "мама",
+          "tr": "anne",
+          "en": "mom",
+          "noteTr": "Dişil (-а ile biter)",
+          "noteEn": "Feminine (ends in -а)"
+        },
+        {
+          "ru": "окно",
+          "tr": "pencere",
+          "en": "window",
+          "noteTr": "Nötr (-о ile biter)",
+          "noteEn": "Neuter (ends in -о)"
+        },
+        {
+          "ru": "море",
+          "tr": "deniz",
+          "en": "sea",
+          "noteTr": "Nötr (-е ile biter)",
+          "noteEn": "Neuter (ends in -е)"
+        },
+        {
+          "ru": "словарь",
+          "tr": "sözlük",
+          "en": "dictionary",
+          "noteTr": "Eril (-ь ile biter, istisna)",
+          "noteEn": "Masculine (ends in -ь, exception)"
+        },
+        {
+          "ru": "газета",
+          "tr": "gazete",
+          "en": "newspaper",
+          "noteTr": "Dişil (-а ile biter)",
+          "noteEn": "Feminine (ends in -а)"
+        }
       ]
     }
   ],
@@ -55,8 +146,18 @@
       "type": "multipleChoice",
       "questionTr": "«окно» (pencere) kelimesinin cinsiyeti nedir?",
       "questionEn": "What is the gender of the word «окно» (window)?",
-      "optionsTr": ["Eril", "Dişil", "Nötr", "Çoğul"],
-      "optionsEn": ["Masculine", "Feminine", "Neuter", "Plural"],
+      "optionsTr": [
+        "Eril",
+        "Dişil",
+        "Nötr",
+        "Çoğul"
+      ],
+      "optionsEn": [
+        "Masculine",
+        "Feminine",
+        "Neuter",
+        "Plural"
+      ],
       "correctIndex": 2,
       "explanationTr": "«окно» kelimesi -о ile bittiği için nötr (orta) cinstir.",
       "explanationEn": "«окно» ends with -о, so it is neuter."
@@ -65,8 +166,18 @@
       "type": "multipleChoice",
       "questionTr": "«мама» kelimesinin cinsiyeti nedir?",
       "questionEn": "What is the gender of the word «мама»?",
-      "optionsTr": ["Eril", "Dişil", "Nötr", "Bilinemez"],
-      "optionsEn": ["Masculine", "Feminine", "Neuter", "Unknown"],
+      "optionsTr": [
+        "Eril",
+        "Dişil",
+        "Nötr",
+        "Bilinemez"
+      ],
+      "optionsEn": [
+        "Masculine",
+        "Feminine",
+        "Neuter",
+        "Unknown"
+      ],
       "correctIndex": 1,
       "explanationTr": "«мама» -а ile bittiği için dişil cinstir.",
       "explanationEn": "«мама» ends with -а, so it is feminine."
@@ -75,8 +186,18 @@
       "type": "multipleChoice",
       "questionTr": "Aşağıdaki kelimelerden hangisi eril (masculine) cinstedir?",
       "questionEn": "Which of the following words is masculine?",
-      "optionsTr": ["книга", "море", "стол", "вода"],
-      "optionsEn": ["книга", "море", "стол", "вода"],
+      "optionsTr": [
+        "книга",
+        "море",
+        "стол",
+        "вода"
+      ],
+      "optionsEn": [
+        "книга",
+        "море",
+        "стол",
+        "вода"
+      ],
       "correctIndex": 2,
       "explanationTr": "«стол» sert bir ünsüz (-л) ile bittiği için erildir.",
       "explanationEn": "«стол» ends with a consonant (-л), so it is masculine."
@@ -85,8 +206,18 @@
       "type": "multipleChoice",
       "questionTr": "Rusça'da -е ile biten isimler kural olarak hangi cinsiyettedir?",
       "questionEn": "In Russian, nouns ending in -е are typically which gender?",
-      "optionsTr": ["Nötr", "Eril", "Dişil", "Belirsiz"],
-      "optionsEn": ["Neuter", "Masculine", "Feminine", "Indefinite"],
+      "optionsTr": [
+        "Nötr",
+        "Eril",
+        "Dişil",
+        "Belirsiz"
+      ],
+      "optionsEn": [
+        "Neuter",
+        "Masculine",
+        "Feminine",
+        "Indefinite"
+      ],
       "correctIndex": 0,
       "explanationTr": "-о ve -е ile biten isimler kural olarak nötrdür.",
       "explanationEn": "Nouns ending in -о and -е are typically neuter."
@@ -95,8 +226,18 @@
       "type": "multipleChoice",
       "questionTr": "«чай» (çay) kelimesinin cinsiyeti nedir?",
       "questionEn": "What is the gender of the word «чай» (tea)?",
-      "optionsTr": ["Eril", "Dişil", "Nötr", "Çoğul"],
-      "optionsEn": ["Masculine", "Feminine", "Neuter", "Plural"],
+      "optionsTr": [
+        "Eril",
+        "Dişil",
+        "Nötr",
+        "Çoğul"
+      ],
+      "optionsEn": [
+        "Masculine",
+        "Feminine",
+        "Neuter",
+        "Plural"
+      ],
       "correctIndex": 0,
       "explanationTr": "-й ile biten isimler eril cinstedir.",
       "explanationEn": "Nouns ending in -й are masculine."
@@ -105,8 +246,18 @@
       "type": "multipleChoice",
       "questionTr": "Aşağıdakilerden hangisi dişil (feminine) bir isimdir?",
       "questionEn": "Which of the following is a feminine noun?",
-      "optionsTr": ["брат", "газета", "город", "дом"],
-      "optionsEn": ["брат", "газета", "город", "дом"],
+      "optionsTr": [
+        "брат",
+        "газета",
+        "город",
+        "дом"
+      ],
+      "optionsEn": [
+        "брат",
+        "газета",
+        "город",
+        "дом"
+      ],
       "correctIndex": 1,
       "explanationTr": "«газета» -а ile bittiği için dişildir.",
       "explanationEn": "«газета» ends with -а, so it is feminine."
@@ -115,8 +266,18 @@
       "type": "multipleChoice",
       "questionTr": "«море» (deniz) kelimesinin cinsiyeti nedir?",
       "questionEn": "What is the gender of the word «море» (sea)?",
-      "optionsTr": ["Eril", "Dişil", "Nötr", "Çoğul"],
-      "optionsEn": ["Masculine", "Feminine", "Neuter", "Plural"],
+      "optionsTr": [
+        "Eril",
+        "Dişil",
+        "Nötr",
+        "Çoğul"
+      ],
+      "optionsEn": [
+        "Masculine",
+        "Feminine",
+        "Neuter",
+        "Plural"
+      ],
       "correctIndex": 2,
       "explanationTr": "«море» -е ile bittiği için nötr cinstir.",
       "explanationEn": "«море» ends with -е, so it is neuter."
@@ -125,8 +286,18 @@
       "type": "multipleChoice",
       "questionTr": "Aşağıdaki kelimelerden hangisi nötr (neuter) cinstedir?",
       "questionEn": "Which of the following words is neuter?",
-      "optionsTr": ["письмо", "чай", "друг", "сестра"],
-      "optionsEn": ["письмо", "чай", "друг", "сестра"],
+      "optionsTr": [
+        "письмо",
+        "чай",
+        "друг",
+        "сестра"
+      ],
+      "optionsEn": [
+        "письмо",
+        "чай",
+        "друг",
+        "сестра"
+      ],
       "correctIndex": 0,
       "explanationTr": "«письмо» -о ile bittiği için nötr cinstir.",
       "explanationEn": "«письмо» ends with -о, so it is neuter."

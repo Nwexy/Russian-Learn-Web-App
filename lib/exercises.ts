@@ -8,7 +8,7 @@
  *  4. Dinleme (Listening)
  */
 
-import type { Item, Lang } from "@/types";
+import type { Item, Lang, ExerciseType } from "@/types";
 
 /* ========================================
    Soru tipleri
@@ -698,19 +698,25 @@ export function generateMixedPractice(
   lang: Lang,
   count: number = 10,
   ttsSupported: boolean = true,
-  speechSupported: boolean = false
+  speechSupported: boolean = false,
+  allowedModes?: ExerciseType[]
 ): MixedQuestion[] {
   const withTranslation = items.filter((i) => getTranslationText(i, lang) !== "—");
   const withExample = items.filter((i) => i.exampleRu && i.ru);
 
   // Kullanılabilir tipler
-  const kinds: MixedQuestion["kind"][] = [];
+  let kinds: MixedQuestion["kind"][] = [];
   if (withTranslation.length >= 2) kinds.push("multipleChoice");
   if (withExample.length > 0) kinds.push("fillBlank");
   if (withTranslation.length >= 3) kinds.push("matching");
   if (ttsSupported && items.length > 0) kinds.push("listening");
   if (speechSupported && items.length > 0) kinds.push("speaking");
   if (withExample.length > 0) kinds.push("wordBank");
+
+  if (allowedModes && allowedModes.length > 0) {
+    kinds = kinds.filter((k) => allowedModes.includes(k));
+  }
+
   if (kinds.length === 0) return [];
 
   // Her slot için rastgele tip seç (eşleştirme en fazla 2 kez, konuşma en fazla 1 veya 2 kez)

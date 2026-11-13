@@ -20,7 +20,28 @@ import Link from "next/link";
 import { motion, LayoutGroup } from "framer-motion";
 import { db } from "@/lib/db";
 import { getProgress, isUnitUnlocked } from "@/lib/progress";
-import { Lock, Mic, Volume2, Blocks } from "lucide-react";
+import {
+  Lock,
+  Mic,
+  Volume2,
+  Blocks,
+  SlidersHorizontal,
+  Shuffle,
+  Type,
+  PenLine,
+  Link2,
+  Headphones,
+  Trophy,
+  CheckCircle2,
+  BookOpen,
+} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { getAllUnits, getUnitById, getUnitTitle } from "@/lib/content";
@@ -112,6 +133,27 @@ export default function PracticePage() {
   const [ttsSupported, setTtsSupported] = useState(true);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [questionCount, setQuestionCount] = useState<number>(10);
+
+  // Karışık mod tür seçimi state (Faz 11.7)
+  const [selectedMixedModes, setSelectedMixedModes] = useState<ExerciseType[]>([
+    "multipleChoice",
+    "fillBlank",
+    "matching",
+    "listening",
+    "speaking",
+    "wordBank",
+  ]);
+  const [isMixedModesDialogOpen, setIsMixedModesDialogOpen] = useState(false);
+
+  const toggleMixedMode = (mode: ExerciseType) => {
+    setSelectedMixedModes((prev) => {
+      if (prev.includes(mode)) {
+        return prev.filter((m) => m !== mode);
+      } else {
+        return [...prev, mode];
+      }
+    });
+  };
 
   // Karışık mod (Mixed) state
   const [mixedQuestions, setMixedQuestions] = useState<MixedQuestion[]>([]);
@@ -271,7 +313,14 @@ export default function PracticePage() {
 
       switch (type) {
         case "mixed": {
-          const qs = generateMixedPractice(pool, translationLang, qCount, ttsSupported, speechSupported);
+          const qs = generateMixedPractice(
+            pool,
+            translationLang,
+            qCount,
+            ttsSupported,
+            speechSupported,
+            selectedMixedModes
+          );
           setMixedQuestions(qs);
           setMixedIndex(0);
           if (qs.length > 0) prepareMixedQuestion(qs[0]);
@@ -347,7 +396,7 @@ export default function PracticePage() {
         }
       }
     },
-    [translationLang, ttsSupported, speechSupported, prepareMixedQuestion]
+    [translationLang, ttsSupported, speechSupported, prepareMixedQuestion, selectedMixedModes]
   );
 
   /** İlk veri yükleme */
@@ -435,8 +484,9 @@ export default function PracticePage() {
   /** Butonla başlat */
   const startExercise = useCallback(() => {
     if (items.length === 0) return;
+    if (exerciseType === "mixed" && selectedMixedModes.length < 2) return;
     initExerciseWith(items, exerciseType, questionCount);
-  }, [items, exerciseType, questionCount, initExerciseWith]);
+  }, [items, exerciseType, questionCount, selectedMixedModes, initExerciseWith]);
 
   /* ========================================
      KARIŞIK MOD (MIXED) HANDLERLARI
@@ -789,23 +839,11 @@ export default function PracticePage() {
       setMixedSpeakingListening(false);
       const errMsg = err instanceof Error ? err.message : String(err);
       if (errMsg === "not-allowed" || errMsg.includes("permission")) {
-        setMixedSpeakingError(
-          uiLang === "tr"
-            ? "Mikrofon izni verilmedi. Lütfen tarayıcı ayarlarından mikrofona izin verin."
-            : "Microphone permission denied. Please allow microphone access in browser settings."
-        );
+        setMixedSpeakingError(t.micPermissionDenied);
       } else if (errMsg === "no-speech") {
-        setMixedSpeakingError(
-          uiLang === "tr"
-            ? "Ses algılanamadı. Lütfen tekrar deneyin."
-            : "No speech detected. Please try again."
-        );
+        setMixedSpeakingError(t.speechNotDetected);
       } else {
-        setMixedSpeakingError(
-          uiLang === "tr"
-            ? "Konuşma tanıma hatası. Lütfen tekrar deneyin."
-            : "Speech recognition error. Please try again."
-        );
+        setMixedSpeakingError(t.speechRecognitionError);
       }
     }
   };
@@ -862,23 +900,11 @@ export default function PracticePage() {
       setSpeakingListening(false);
       const errMsg = err instanceof Error ? err.message : String(err);
       if (errMsg === "not-allowed" || errMsg.includes("permission")) {
-        setSpeakingError(
-          uiLang === "tr"
-            ? "Mikrofon izni verilmedi. Lütfen tarayıcı ayarlarından mikrofona izin verin."
-            : "Microphone permission denied. Please allow microphone access in browser settings."
-        );
+        setSpeakingError(t.micPermissionDenied);
       } else if (errMsg === "no-speech") {
-        setSpeakingError(
-          uiLang === "tr"
-            ? "Ses algılanamadı. Lütfen tekrar deneyin."
-            : "No speech detected. Please try again."
-        );
+        setSpeakingError(t.speechNotDetected);
       } else {
-        setSpeakingError(
-          uiLang === "tr"
-            ? "Konuşma tanıma hatası. Lütfen tekrar deneyin."
-            : "Speech recognition error. Please try again."
-        );
+        setSpeakingError(t.speechRecognitionError);
       }
     }
   };
@@ -1150,7 +1176,13 @@ export default function PracticePage() {
         {unitFilterSelector}
         <div className="practice-result">
           <div className="practice-result-icon">
-            {pct >= 80 ? "🎉" : pct >= 50 ? "👍" : "📖"}
+            {pct >= 80 ? (
+              <Trophy className="w-16 h-16 text-yellow-500 mx-auto" />
+            ) : pct >= 50 ? (
+              <CheckCircle2 className="w-16 h-16 text-emerald-500 mx-auto" />
+            ) : (
+              <BookOpen className="w-16 h-16 text-blue-500 mx-auto" />
+            )}
           </div>
           <h2 className="practice-result-title">{t.exerciseComplete}</h2>
           <p className="practice-result-score">
@@ -1186,10 +1218,10 @@ export default function PracticePage() {
     });
 
     const types: { key: ExerciseType; label: string; icon: React.ReactNode; desc: string }[] = [
-      { key: "multipleChoice", label: t.multipleChoice, icon: <span>🔤</span>, desc: t.chooseAnswer },
-      { key: "fillBlank", label: t.fillBlank, icon: <span>✏️</span>, desc: t.typeYourAnswer },
-      { key: "matching", label: t.matching, icon: <span>🔗</span>, desc: t.matchPairs },
-      { key: "listening", label: t.listening, icon: <span>🎧</span>, desc: t.listenAndType },
+      { key: "multipleChoice", label: t.multipleChoice, icon: <Type className="w-6 h-6 text-foreground" />, desc: t.chooseAnswer },
+      { key: "fillBlank", label: t.fillBlank, icon: <PenLine className="w-6 h-6 text-foreground" />, desc: t.typeYourAnswer },
+      { key: "matching", label: t.matching, icon: <Link2 className="w-6 h-6 text-foreground" />, desc: t.matchPairs },
+      { key: "listening", label: t.listening, icon: <Headphones className="w-6 h-6 text-foreground" />, desc: t.listenAndType },
       { key: "speaking", label: t.speaking, icon: <Mic className="w-6 h-6 text-foreground" />, desc: t.speakNow },
       { key: "wordBank", label: t.sentenceBuilder, icon: <Blocks className="w-6 h-6 text-foreground" />, desc: t.tapWordsInOrder },
     ];
@@ -1214,9 +1246,7 @@ export default function PracticePage() {
               {t.questionCount}
             </span>
             <span className="text-xs text-muted-foreground mt-0.5">
-              {uiLang === "tr"
-                ? "Alıştırma oturumundaki soru veya çift sayısı"
-                : "Number of questions or pairs in session"}
+              {t.questionCountTooltip}
             </span>
           </div>
           <div className="flex items-center gap-1.5 flex-wrap">
@@ -1264,20 +1294,34 @@ export default function PracticePage() {
                     : "border-border bg-card hover:bg-card-hover hover:border-accent/40"
                 }`}
               >
-                <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center text-3xl shadow-inner mb-0.5">
-                  🎲
+                <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center shadow-inner mb-0.5 text-accent">
+                  <Shuffle className="w-7 h-7" />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap justify-center">
                   <h3 className="text-xl font-bold text-foreground">{t.mixedMode}</h3>
                   <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-accent text-white">
-                    {questionCount} {uiLang === "tr" ? "Soru" : "Questions"}
+                    {questionCount} {t.questionsLabel}
                   </span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMixedModesDialogOpen(true);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-accent/15 text-accent hover:bg-accent/25 border border-accent/30 transition-all cursor-pointer"
+                  >
+                    <SlidersHorizontal className="w-3.5 h-3.5" />
+                    <span>{t.selectModes} ({selectedMixedModes.length}/6)</span>
+                  </button>
                 </div>
                 <p className="text-sm text-muted-foreground max-w-lg">
-                  {uiLang === "tr"
-                    ? "Çoktan seçmeli, boşluk doldurma, eşleştirme, dinleme, konuşma ve cümle kurma sorularını rastgele harmanlar."
-                    : "Randomly blends multiple choice, fill in the blank, matching, listening, speaking, and sentence building."}
+                  {t.mixedModeDesc}
                 </p>
+                {selectedMixedModes.length < 2 && (
+                  <span className="text-xs font-semibold text-rose-500 animate-pulse">
+                    {t.selectAtLeastTwoModes}
+                  </span>
+                )}
               </div>
 
               {/* 6 Tekil Alıştırma Kartı */}
@@ -1317,7 +1361,7 @@ export default function PracticePage() {
                         {tp.key === "speaking"
                           ? t.micNotSupported
                           : tp.key === "wordBank"
-                          ? (uiLang === "tr" ? "Örnek cümle bulunmuyor" : "No example sentences")
+                          ? t.noExampleSentences
                           : t.ttsNotSupported}
                       </span>
                     )}
@@ -1327,16 +1371,95 @@ export default function PracticePage() {
             </div>
 
             {/* Başlat Butonu Alanı */}
-            <div className="flex justify-center my-8">
+            <div className="flex flex-col items-center justify-center my-8 gap-2">
               <button
                 type="button"
                 className="px-8 py-3.5 text-base font-semibold rounded-xl bg-accent text-white hover:opacity-90 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed min-w-[220px] cursor-pointer"
                 onClick={startExercise}
-                disabled={!hasEnoughItems}
+                disabled={!hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)}
               >
                 {t.start}
               </button>
+              {exerciseType === "mixed" && selectedMixedModes.length < 2 && (
+                <p className="text-xs font-semibold text-rose-500 animate-pulse">
+                  {t.selectAtLeastTwoModes}
+                </p>
+              )}
             </div>
+
+            {/* Karışık Mod Seçimi Modal (Faz 11.7) */}
+            <Dialog open={isMixedModesDialogOpen} onOpenChange={setIsMixedModesDialogOpen}>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle>{t.mixedModesModalTitle}</DialogTitle>
+                  <DialogDescription>{t.mixedModesModalDesc}</DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-2.5 my-2">
+                  {types.map((tp) => {
+                    const isChecked = selectedMixedModes.includes(tp.key);
+                    return (
+                      <div
+                        key={tp.key}
+                        onClick={() => toggleMixedMode(tp.key)}
+                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${
+                          isChecked
+                            ? "border-accent bg-accent/10 shadow-sm"
+                            : "border-border bg-card/60 hover:bg-card hover:border-accent/30 opacity-70"
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
+                              isChecked
+                                ? "bg-accent text-white"
+                                : "bg-secondary text-muted-foreground"
+                            }`}
+                          >
+                            {tp.icon}
+                          </div>
+                          <div>
+                            <div className="text-sm font-semibold text-foreground">
+                              {tp.label}
+                            </div>
+                            <div className="text-xs text-muted-foreground">
+                              {tp.desc}
+                            </div>
+                          </div>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => {}}
+                          className="w-4 h-4 rounded border-border text-accent focus:ring-accent cursor-pointer"
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {selectedMixedModes.length < 2 && (
+                  <div className="p-2.5 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs font-semibold text-center">
+                    {t.selectAtLeastTwoModes}
+                  </div>
+                )}
+
+                <div className="flex items-center justify-between pt-2">
+                  <span className="text-xs text-muted-foreground font-medium">
+                    {selectedMixedModes.length === 6
+                      ? t.allModesSelected
+                      : `${selectedMixedModes.length} / 6 ${t.modesSelectedCount}`}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIsMixedModesDialogOpen(false)}
+                    className="px-5 py-2 text-xs font-semibold rounded-lg bg-accent text-white hover:opacity-90 transition-opacity cursor-pointer"
+                  >
+                    {t.done}
+                  </button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </>
         )}
 

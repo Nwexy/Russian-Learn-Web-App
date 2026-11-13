@@ -4,6 +4,12 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-13
+- Footer'dan FAQ linki kaldirildi.
+- Gramer ornek aciklamalari (note) cift dilli hale getirildi (noteTr/noteEn).
+- Mixed Mode icin "Modlari Sec" ozelligi eklendi, en az 2 mod secme zorunlulugu getirildi.
+- Genel dil tutarliligi kontrol edildi.
+
+## 2026-11-13
 - Gramer mini alistirmalari sayfa icinden cikarilip pop-up (modal) seklinde gosterilmeye baslandi.
 - Siteye ilk kez girenler icin FAQ yonlendirme katmani (onboarding) eklendi.
 - Gramer sayfasinda arayuz dili Ingilizce secildiginde kalan Turkce metinler duzeltildi.

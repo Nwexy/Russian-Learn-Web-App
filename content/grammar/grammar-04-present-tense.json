@@ -5,7 +5,9 @@
   "titleEn": "Present Tense Verb Conjugations",
   "summaryTr": "Rusça'da fiiller şimdiki zamanda iki ana gruba (I. grup ve II. grup) ayrılarak çekimlenir. читать (okumak) ve говорить (konuşmak) fiilleriyle çekim kuralları.",
   "summaryEn": "Russian verbs in the present tense follow two main conjugation patterns: Group I (-ать/-ять) and Group II (-ить). Patterns illustrated with читать (to read) and говорить (to speak).",
-  "relatedUnits": ["unit-01-greetings"],
+  "relatedUnits": [
+    "unit-01-greetings"
+  ],
   "sections": [
     {
       "type": "text",
@@ -14,32 +16,88 @@
     },
     {
       "type": "table",
-      "headersTr": ["Zamir", "I. Grup: читать (okumak)", "II. Grup: говорить (konuşmak)"],
-      "headersEn": ["Pronoun", "Group I: читать (to read)", "Group II: говорить (to speak)"],
+      "headersTr": [
+        "Zamir",
+        "I. Grup: читать (okumak)",
+        "II. Grup: говорить (konuşmak)"
+      ],
+      "headersEn": [
+        "Pronoun",
+        "Group I: читать (to read)",
+        "Group II: говорить (to speak)"
+      ],
       "rows": [
         {
-          "cellsTr": ["я (ben)", "читаю (okuyorum)", "говорю (konuşuyorum)"],
-          "cellsEn": ["я (I)", "читаю (I read)", "говорю (I speak)"]
+          "cellsTr": [
+            "я (ben)",
+            "читаю (okuyorum)",
+            "говорю (konuşuyorum)"
+          ],
+          "cellsEn": [
+            "я (I)",
+            "читаю (I read)",
+            "говорю (I speak)"
+          ]
         },
         {
-          "cellsTr": ["ты (sen)", "читаешь (okuyorsun)", "говоришь (konuşuyorsun)"],
-          "cellsEn": ["ты (you)", "читаешь (you read)", "говоришь (you speak)"]
+          "cellsTr": [
+            "ты (sen)",
+            "читаешь (okuyorsun)",
+            "говоришь (konuşuyorsun)"
+          ],
+          "cellsEn": [
+            "ты (you)",
+            "читаешь (you read)",
+            "говоришь (you speak)"
+          ]
         },
         {
-          "cellsTr": ["он / она / оно (o)", "читает (okuyor)", "говорит (konuşuyor)"],
-          "cellsEn": ["он / она / оно (he/she/it)", "читает (reads)", "говорит (speaks)"]
+          "cellsTr": [
+            "он / она / оно (o)",
+            "читает (okuyor)",
+            "говорит (konuşuyor)"
+          ],
+          "cellsEn": [
+            "он / она / оно (he/she/it)",
+            "читает (reads)",
+            "говорит (speaks)"
+          ]
         },
         {
-          "cellsTr": ["мы (biz)", "читаем (okuyoruz)", "говорим (konuşuyoruz)"],
-          "cellsEn": ["мы (we)", "читаем (we read)", "говорим (we speak)"]
+          "cellsTr": [
+            "мы (biz)",
+            "читаем (okuyoruz)",
+            "говорим (konuşuyoruz)"
+          ],
+          "cellsEn": [
+            "мы (we)",
+            "читаем (we read)",
+            "говорим (we speak)"
+          ]
         },
         {
-          "cellsTr": ["вы (siz)", "читаете (okuyorsunuz)", "говорите (konuşuyorsunuz)"],
-          "cellsEn": ["вы (you pl./formal)", "читаете (you read)", "говорите (you speak)"]
+          "cellsTr": [
+            "вы (siz)",
+            "читаете (okuyorsunuz)",
+            "говорите (konuşuyorsunuz)"
+          ],
+          "cellsEn": [
+            "вы (you pl./formal)",
+            "читаете (you read)",
+            "говорите (you speak)"
+          ]
         },
         {
-          "cellsTr": ["они (onlar)", "читают (okuyorlar)", "говорят (konuşuyorlar)"],
-          "cellsEn": ["они (they)", "читают (they read)", "говорят (they speak)"]
+          "cellsTr": [
+            "они (onlar)",
+            "читают (okuyorlar)",
+            "говорят (konuşuyorlar)"
+          ],
+          "cellsEn": [
+            "они (they)",
+            "читают (they read)",
+            "говорят (they speak)"
+          ]
         }
       ]
     },
@@ -51,12 +109,48 @@
     {
       "type": "examples",
       "items": [
-        { "ru": "Я читаю книгу.", "tr": "Kitap okuyorum.", "en": "I am reading a book.", "note": "читать -> читаю" },
-        { "ru": "Ты говоришь по-русски?", "tr": "Rusça konuşuyor musun?", "en": "Do you speak Russian?", "note": "говорить -> говоришь" },
-        { "ru": "Он читает газету.", "tr": "O gazete okuyor.", "en": "He is reading a newspaper.", "note": "читать -> читает" },
-        { "ru": "Мы говорим по-турецки.", "tr": "Türkçe konuşuyoruz.", "en": "We speak Turkish.", "note": "говорить -> говорим" },
-        { "ru": "Вы читаете быстро.", "tr": "Hızlı okuyorsunuz.", "en": "You read quickly.", "note": "читать -> читаете" },
-        { "ru": "Они говорят тихо.", "tr": "Onlar sessiz konuşuyorlar.", "en": "They speak quietly.", "note": "говорить -> говорят" }
+        {
+          "ru": "Я читаю книгу.",
+          "tr": "Kitap okuyorum.",
+          "en": "I am reading a book.",
+          "noteTr": "читать -> читаю",
+          "noteEn": "читать -> читаю"
+        },
+        {
+          "ru": "Ты говоришь по-русски?",
+          "tr": "Rusça konuşuyor musun?",
+          "en": "Do you speak Russian?",
+          "noteTr": "говорить -> говоришь",
+          "noteEn": "говорить -> говоришь"
+        },
+        {
+          "ru": "Он читает газету.",
+          "tr": "O gazete okuyor.",
+          "en": "He is reading a newspaper.",
+          "noteTr": "читать -> читает",
+          "noteEn": "читать -> читает"
+        },
+        {
+          "ru": "Мы говорим по-турецки.",
+          "tr": "Türkçe konuşuyoruz.",
+          "en": "We speak Turkish.",
+          "noteTr": "говорить -> говорим",
+          "noteEn": "говорить -> говорим"
+        },
+        {
+          "ru": "Вы читаете быстро.",
+          "tr": "Hızlı okuyorsunuz.",
+          "en": "You read quickly.",
+          "noteTr": "читать -> читаете",
+          "noteEn": "читать -> читаете"
+        },
+        {
+          "ru": "Они говорят тихо.",
+          "tr": "Onlar sessiz konuşuyorlar.",
+          "en": "They speak quietly.",
+          "noteTr": "говорить -> говорят",
+          "noteEn": "говорить -> говорят"
+        }
       ]
     }
   ],
@@ -65,8 +159,18 @@
       "type": "multipleChoice",
       "questionTr": "«Я ... книгу.» (читать fiilinin doğru çekimi hangisidir?)",
       "questionEn": "«Я ... книгу.» (Which is the correct conjugation of the verb читать?)",
-      "optionsTr": ["читает", "читаю", "читаем", "читаешь"],
-      "optionsEn": ["читает", "читаю", "читаем", "читаешь"],
+      "optionsTr": [
+        "читает",
+        "читаю",
+        "читаем",
+        "читаешь"
+      ],
+      "optionsEn": [
+        "читает",
+        "читаю",
+        "читаем",
+        "читаешь"
+      ],
       "correctIndex": 1,
       "explanationTr": "«я» zamiri için I. grup çekim eki -ю/-у'dur: «я читаю».",
       "explanationEn": "For «я», the 1st person ending is -ю: «я читаю»."
@@ -75,8 +179,18 @@
       "type": "multipleChoice",
       "questionTr": "«Мы ... по-русски.» (говорить fiilinin doğru çekimi hangisidir?)",
       "questionEn": "«Мы ... по-русски.» (Which is the correct conjugation of the verb говорить?)",
-      "optionsTr": ["говорит", "говорим", "говорите", "говорят"],
-      "optionsEn": ["говорит", "говорим", "говорите", "говорят"],
+      "optionsTr": [
+        "говорит",
+        "говорим",
+        "говорите",
+        "говорят"
+      ],
+      "optionsEn": [
+        "говорит",
+        "говорим",
+        "говорите",
+        "говорят"
+      ],
       "correctIndex": 1,
       "explanationTr": "«мы» zamiri için II. grup eki -им'dir: «мы говорим».",
       "explanationEn": "For «мы», the 1st person plural ending is -им: «мы говорим»."
@@ -85,8 +199,18 @@
       "type": "multipleChoice",
       "questionTr": "«Ты ...» (читать fiili için sen çekimi hangisidir?)",
       "questionEn": "«Ты ...» (Which is the 2nd person singular 'you' form of читать?)",
-      "optionsTr": ["читаешь", "читает", "читаете", "читаю"],
-      "optionsEn": ["читаешь", "читает", "читаете", "читаю"],
+      "optionsTr": [
+        "читаешь",
+        "читает",
+        "читаете",
+        "читаю"
+      ],
+      "optionsEn": [
+        "читаешь",
+        "читает",
+        "читаете",
+        "читаю"
+      ],
       "correctIndex": 0,
       "explanationTr": "«ты» zamiri için I. grup eki -ешь'tir: «ты читаешь».",
       "explanationEn": "For «ты», the ending is -ешь: «ты читаешь»."
@@ -95,8 +219,18 @@
       "type": "multipleChoice",
       "questionTr": "II. grup (-ить) fiillerin çekiminde (ты, он, мы, вы) hangi ünlü harf baskındır?",
       "questionEn": "In the conjugation of Group II (-ить) verbs (ты, он, мы, вы), which vowel letter is dominant?",
-      "optionsTr": ["е", "и", "а", "о"],
-      "optionsEn": ["е", "и", "а", "о"],
+      "optionsTr": [
+        "е",
+        "и",
+        "а",
+        "о"
+      ],
+      "optionsEn": [
+        "е",
+        "и",
+        "а",
+        "о"
+      ],
       "correctIndex": 1,
       "explanationTr": "II. grup fiillerde -ишь, -ит, -им, -ите ekleriyle 'и' harfi baskındır.",
       "explanationEn": "In Group II, 'и' is prominent (-ишь, -ит, -им, -ите)."
@@ -105,8 +239,18 @@
       "type": "multipleChoice",
       "questionTr": "«Они ... газету.» (читать fiili için onlar çekimi hangisidir?)",
       "questionEn": "«Они ... газету.» (Which is the 3rd person plural 'they' form of читать?)",
-      "optionsTr": ["читает", "читают", "читаем", "читаешь"],
-      "optionsEn": ["читает", "читают", "читаем", "читаешь"],
+      "optionsTr": [
+        "читает",
+        "читают",
+        "читаем",
+        "читаешь"
+      ],
+      "optionsEn": [
+        "читает",
+        "читают",
+        "читаем",
+        "читаешь"
+      ],
       "correctIndex": 1,
       "explanationTr": "«они» zamiri için I. grup eki -ют/-ут'tur: «они читают».",
       "explanationEn": "For «они», the 3rd person plural ending is -ют: «они читают»."
@@ -115,8 +259,18 @@
       "type": "multipleChoice",
       "questionTr": "«Он ... по-русски.» (говорить fiilinin doğru çekimi hangisidir?)",
       "questionEn": "«Он ... по-русски.» (Which is the correct conjugation of the verb говорить?)",
-      "optionsTr": ["говорит", "говорю", "говоришь", "говорим"],
-      "optionsEn": ["говорит", "говорю", "говоришь", "говорим"],
+      "optionsTr": [
+        "говорит",
+        "говорю",
+        "говоришь",
+        "говорим"
+      ],
+      "optionsEn": [
+        "говорит",
+        "говорю",
+        "говоришь",
+        "говорим"
+      ],
       "correctIndex": 0,
       "explanationTr": "«он» zamiri için II. grup eki -ит'tir: «он говорит».",
       "explanationEn": "For «он», the 3rd person singular ending is -ит: «он говорит»."
@@ -125,8 +279,18 @@
       "type": "multipleChoice",
       "questionTr": "«Вы ... по-турецки?» (говорить fiilinin siz çekimi hangisidir?)",
       "questionEn": "«Вы ... по-турецки?» (Which is the 2nd person plural 'you' form of говорить?)",
-      "optionsTr": ["говоришь", "говорим", "говорите", "говорят"],
-      "optionsEn": ["говоришь", "говорим", "говорите", "говорят"],
+      "optionsTr": [
+        "говоришь",
+        "говорим",
+        "говорите",
+        "говорят"
+      ],
+      "optionsEn": [
+        "говоришь",
+        "говорим",
+        "говорите",
+        "говорят"
+      ],
       "correctIndex": 2,
       "explanationTr": "«вы» zamiri için II. grup eki -ите'dir: «вы говорите».",
       "explanationEn": "For «вы», the 2nd person plural ending is -ите: «вы говорите»."
@@ -135,8 +299,18 @@
       "type": "multipleChoice",
       "questionTr": "I. grup fiillerin çekiminde (ты, он, мы, вы) hangi ünlü harf baskındır?",
       "questionEn": "In the conjugation of Group I verbs (ты, он, мы, вы), which vowel letter is dominant?",
-      "optionsTr": ["е", "и", "у", "ы"],
-      "optionsEn": ["е", "и", "у", "ы"],
+      "optionsTr": [
+        "е",
+        "и",
+        "у",
+        "ы"
+      ],
+      "optionsEn": [
+        "е",
+        "и",
+        "у",
+        "ы"
+      ],
       "correctIndex": 0,
       "explanationTr": "I. grup fiillerde -ешь, -ет, -ем, -ете ekleriyle 'е' harfi baskındır.",
       "explanationEn": "In Group I, 'е' is prominent (-ешь, -ет, -ем, -ете)."

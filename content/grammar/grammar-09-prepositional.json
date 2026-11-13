@@ -5,7 +5,14 @@
   "titleEn": "Prepositional Case",
   "summaryTr": "Rusça'da bulunma hâli (Предложный падеж), nerede (Где?) ve ne hakkında (О ком? / О чём?) sorularına cevap verir. İsimler genellikle -е eki alır ve 'в' veya 'на' edatlarıyla kullanılır.",
   "summaryEn": "In Russian, the Prepositional case (Предложный падеж) answers 'Where?' (Где?) and 'About whom/what?' (О ком? / О чём?). Nouns usually take the ending -е and are used with prepositions 'в' and 'на'.",
-  "relatedUnits": ["unit-10", "unit-10-time", "unit-11", "unit-11-house", "unit-12", "unit-12-city"],
+  "relatedUnits": [
+    "unit-10",
+    "unit-10-time",
+    "unit-11",
+    "unit-11-house",
+    "unit-12",
+    "unit-12-city"
+  ],
   "sections": [
     {
       "type": "text",
@@ -19,40 +26,136 @@
     },
     {
       "type": "table",
-      "headersTr": ["Cinsiyet", "Yalın Hâl (Kim? / Ne?)", "Bulunma Hâli (Nerede? - Где?)", "Edat & Kural"],
-      "headersEn": ["Gender", "Nominative (Who? / What?)", "Prepositional (Where? - Где?)", "Preposition & Rule"],
+      "headersTr": [
+        "Cinsiyet",
+        "Yalın Hâl (Kim? / Ne?)",
+        "Bulunma Hâli (Nerede? - Где?)",
+        "Edat & Kural"
+      ],
+      "headersEn": [
+        "Gender",
+        "Nominative (Who? / What?)",
+        "Prepositional (Where? - Где?)",
+        "Preposition & Rule"
+      ],
       "rows": [
         {
-          "cellsTr": ["Eril (Ünsüz)", "дом, стол", "в доме, на столе", "+ е"],
-          "cellsEn": ["Masculine (Consonant)", "дом, стол", "в доме, на столе", "+ е"]
+          "cellsTr": [
+            "Eril (Ünsüz)",
+            "дом, стол",
+            "в доме, на столе",
+            "+ е"
+          ],
+          "cellsEn": [
+            "Masculine (Consonant)",
+            "дом, стол",
+            "в доме, на столе",
+            "+ е"
+          ]
         },
         {
-          "cellsTr": ["Dişil (-а)", "Москва, комната", "в Москве, в комнате", "-а -> -е"],
-          "cellsEn": ["Feminine (-а)", "Москва, комната", "в Москве, в комнате", "-а -> -е"]
+          "cellsTr": [
+            "Dişil (-а)",
+            "Москва, комната",
+            "в Москве, в комнате",
+            "-а -> -е"
+          ],
+          "cellsEn": [
+            "Feminine (-а)",
+            "Москва, комната",
+            "в Москве, в комнате",
+            "-а -> -е"
+          ]
         },
         {
-          "cellsTr": ["Dişil (-я)", "деревня, неделя", "в деревне, на неделе", "-я -> -е"],
-          "cellsEn": ["Feminine (-я)", "деревня, неделя", "в деревне, на неделе", "-я -> -е"]
+          "cellsTr": [
+            "Dişil (-я)",
+            "деревня, неделя",
+            "в деревне, на неделе",
+            "-я -> -е"
+          ],
+          "cellsEn": [
+            "Feminine (-я)",
+            "деревня, неделя",
+            "в деревне, на неделе",
+            "-я -> -е"
+          ]
         },
         {
-          "cellsTr": ["Nötr (-о)", "окно, письмо", "на окне, в письме", "-о -> -е"],
-          "cellsEn": ["Neuter (-о)", "окно, письмо", "на окне, в письме", "-о -> -е"]
+          "cellsTr": [
+            "Nötr (-о)",
+            "окно, письмо",
+            "на окне, в письме",
+            "-о -> -е"
+          ],
+          "cellsEn": [
+            "Neuter (-о)",
+            "окно, письмо",
+            "на окне, в письме",
+            "-о -> -е"
+          ]
         },
         {
-          "cellsTr": ["İstisna (-ия / -ие)", "Россия, здание", "в России, в здании", "-ия / -ие -> -ии"],
-          "cellsEn": ["Exception (-ия / -ие)", "Россия, здание", "в России, в здании", "-ия / -ие -> -ии"]
+          "cellsTr": [
+            "İstisna (-ия / -ие)",
+            "Россия, здание",
+            "в России, в здании",
+            "-ия / -ие -> -ии"
+          ],
+          "cellsEn": [
+            "Exception (-ия / -ие)",
+            "Россия, здание",
+            "в России, в здании",
+            "-ия / -ие -> -ии"
+          ]
         }
       ]
     },
     {
       "type": "examples",
       "items": [
-        { "ru": "Мы сейчас живём в Москве.", "tr": "Biz şu anda Moskova'da yaşıyoruz.", "en": "We currently live in Moscow.", "note": "Москва -> в Москве (şehir, kapalı alan / dişil -е)" },
-        { "ru": "Книга лежит на столе.", "tr": "Kitap masanın üzerinde duruyor.", "en": "The book is lying on the table.", "note": "стол -> на столе (yüzey / eril +е)" },
-        { "ru": "Отец сейчас на работе.", "tr": "Babam şu an işte.", "en": "Father is at work right now.", "note": "работа -> на работе (etkinlik/görev / dişil -е)" },
-        { "ru": "Дети играют в комнате.", "tr": "Çocuklar odada oynuyorlar.", "en": "Children are playing in the room.", "note": "комната -> в комнате (kapalı oda / dişil -е)" },
-        { "ru": "Вчера мы были на концерте.", "tr": "Dün konserdeydik.", "en": "Yesterday we were at the concert.", "note": "концерт -> на концерте (etkinlik / eril +е)" },
-        { "ru": "На улице сегодня тепло.", "tr": "Bugün dışarıda (sokakta) hava ılık.", "en": "It is warm outside (on the street) today.", "note": "улица -> на улице (açık alan / dişil -е)" }
+        {
+          "ru": "Мы сейчас живём в Москве.",
+          "tr": "Biz şu anda Moskova'da yaşıyoruz.",
+          "en": "We currently live in Moscow.",
+          "noteTr": "Москва -> в Москве (şehir, kapalı alan / dişil -е)",
+          "noteEn": "Москва -> в Москве (city, enclosed space / feminine -е)"
+        },
+        {
+          "ru": "Книга лежит на столе.",
+          "tr": "Kitap masanın üzerinde duruyor.",
+          "en": "The book is lying on the table.",
+          "noteTr": "стол -> на столе (yüzey / eril +е)",
+          "noteEn": "стол -> на столе (surface / masculine +е)"
+        },
+        {
+          "ru": "Отец сейчас на работе.",
+          "tr": "Babam şu an işte.",
+          "en": "Father is at work right now.",
+          "noteTr": "работа -> на работе (etkinlik/görev / dişil -е)",
+          "noteEn": "работа -> на работе (activity/work / feminine -е)"
+        },
+        {
+          "ru": "Дети играют в комнате.",
+          "tr": "Çocuklar odada oynuyorlar.",
+          "en": "Children are playing in the room.",
+          "noteTr": "комната -> в комнате (kapalı oda / dişil -е)",
+          "noteEn": "комната -> в комнате (enclosed room / feminine -е)"
+        },
+        {
+          "ru": "Вчера мы были на концерте.",
+          "tr": "Dün konserdeydik.",
+          "en": "Yesterday we were at the concert.",
+          "noteTr": "концерт -> на концерте (etkinlik / eril +е)",
+          "noteEn": "концерт -> на концерте (event / masculine +е)"
+        },
+        {
+          "ru": "На улице сегодня тепло.",
+          "tr": "Bugün dışarıda (sokakta) hava ılık.",
+          "en": "It is warm outside (on the street) today.",
+          "noteTr": "улица -> на улице (açık alan / dişil -е)",
+          "noteEn": "улица -> на улице (open space / feminine -е)"
+        }
       ]
     }
   ],
@@ -61,8 +164,18 @@
       "type": "multipleChoice",
       "questionTr": "«Где ты живёшь? — Я живу в ... (Москва).» Doğru çekim hangisidir?",
       "questionEn": "«Где ты живёшь? — Я живу в ... (Москва).» Which is the correct form?",
-      "optionsTr": ["Москва", "Москве", "Москву", "Москвой"],
-      "optionsEn": ["Москва", "Москве", "Москву", "Москвой"],
+      "optionsTr": [
+        "Москва",
+        "Москве",
+        "Москву",
+        "Москвой"
+      ],
+      "optionsEn": [
+        "Москва",
+        "Москве",
+        "Москву",
+        "Москвой"
+      ],
       "correctIndex": 1,
       "explanationTr": "-а ile biten şehir isimleri bulunma hâlinde -е eki alır: «в Москве».",
       "explanationEn": "Feminine city names ending in -а take -е in prepositional case: «в Москве»."
@@ -71,8 +184,18 @@
       "type": "multipleChoice",
       "questionTr": "«Книга лежит на ... (стол).» Boşluğa hangisi gelmelidir?",
       "questionEn": "«Книга лежит на ... (стол).» Which form should fill the blank?",
-      "optionsTr": ["столе", "стол", "стола", "столу"],
-      "optionsEn": ["столе", "стол", "стола", "столу"],
+      "optionsTr": [
+        "столе",
+        "стол",
+        "стола",
+        "столу"
+      ],
+      "optionsEn": [
+        "столе",
+        "стол",
+        "стола",
+        "столу"
+      ],
       "correctIndex": 0,
       "explanationTr": "Yüzey belirten 'на' edatı ile eril isim -е eki alır: «на столе».",
       "explanationEn": "With preposition 'на' denoting a surface, masculine nouns take -е: «на столе»."
@@ -81,8 +204,18 @@
       "type": "multipleChoice",
       "questionTr": "«Мы сейчас находимся в ... (дом).» Doğru seçenek hangisidir?",
       "questionEn": "«Мы сейчас находимся в ... (дом).» Which option is correct?",
-      "optionsTr": ["дома", "дому", "доме", "дом"],
-      "optionsEn": ["дома", "дому", "доме", "дом"],
+      "optionsTr": [
+        "дома",
+        "дому",
+        "доме",
+        "дом"
+      ],
+      "optionsEn": [
+        "дома",
+        "дому",
+        "доме",
+        "дом"
+      ],
       "correctIndex": 2,
       "explanationTr": "Eril 'дом' kelimesi bulunma hâlinde -е alır: «в доме».",
       "explanationEn": "Masculine noun 'дом' takes -е in prepositional case: «в доме»."
@@ -91,8 +224,18 @@
       "type": "multipleChoice",
       "questionTr": "Açık alanlar, yüzeyler ve etkinlikler (örn: cadde, masa, konser) için genellikle hangi edat kullanılır?",
       "questionEn": "Which preposition is typically used for open spaces, surfaces, and events (e.g. street, table, concert)?",
-      "optionsTr": ["в", "на", "о", "из"],
-      "optionsEn": ["в", "на", "о", "из"],
+      "optionsTr": [
+        "в",
+        "на",
+        "о",
+        "из"
+      ],
+      "optionsEn": [
+        "в",
+        "на",
+        "о",
+        "из"
+      ],
       "correctIndex": 1,
       "explanationTr": "Yüzeyler, açık alanlar ve etkinlikler için 'на' edatı kullanılır.",
       "explanationEn": "Surfaces, open spaces, and events typically take the preposition 'на'."
@@ -101,8 +244,18 @@
       "type": "multipleChoice",
       "questionTr": "«Анна сейчас на ... (работа).» Doğru tamamlama hangisidir?",
       "questionEn": "«Анна сейчас на ... (работа).» Which is the correct completion?",
-      "optionsTr": ["работе", "работу", "работа", "работой"],
-      "optionsEn": ["работе", "работу", "работа", "работой"],
+      "optionsTr": [
+        "работе",
+        "работу",
+        "работа",
+        "работой"
+      ],
+      "optionsEn": [
+        "работе",
+        "работу",
+        "работа",
+        "работой"
+      ],
       "correctIndex": 0,
       "explanationTr": "-а ile biten dişil 'работа' kelimesi bulunma hâlinde -е alır: «на работе».",
       "explanationEn": "Feminine noun 'работа' takes -е in prepositional case: «на работе»."
@@ -111,8 +264,18 @@
       "type": "multipleChoice",
       "questionTr": "«Они гуляют в ... (парк).» Cümlesindeki boşluğa ne gelmelidir?",
       "questionEn": "«Они гуляют в ... (парк).» What should fill the blank?",
-      "optionsTr": ["парка", "парке", "парку", "парком"],
-      "optionsEn": ["парка", "парке", "парку", "парком"],
+      "optionsTr": [
+        "парка",
+        "парке",
+        "парку",
+        "парком"
+      ],
+      "optionsEn": [
+        "парка",
+        "парке",
+        "парку",
+        "парком"
+      ],
       "correctIndex": 1,
       "explanationTr": "Eril 'парк' kelimesi -е eki alarak «в парке» olur.",
       "explanationEn": "Masculine noun 'парк' takes -е to form «в парке»."
@@ -121,8 +284,18 @@
       "type": "multipleChoice",
       "questionTr": "Bulunma hâli (Предложный падеж) temel olarak hangi soruya cevap verir?",
       "questionEn": "Which question does the Prepositional case (Предложный падеж) primarily answer?",
-      "optionsTr": ["Куда? (Nereye?)", "Откуда? (Nereden?)", "Где? (Nerede?)", "Когда? (Ne zaman?)"],
-      "optionsEn": ["Куда? (Where to?)", "Откуда? (Where from?)", "Где? (Where?)", "Когда? (When?)"],
+      "optionsTr": [
+        "Куда? (Nereye?)",
+        "Откуда? (Nereden?)",
+        "Где? (Nerede?)",
+        "Когда? (Ne zaman?)"
+      ],
+      "optionsEn": [
+        "Куда? (Where to?)",
+        "Откуда? (Where from?)",
+        "Где? (Where?)",
+        "Когда? (When?)"
+      ],
       "correctIndex": 2,
       "explanationTr": "Bulunma hâli mekân ve konum belirterek 'Где?' (Nerede?) sorusuna cevap verir.",
       "explanationEn": "The prepositional case primarily indicates location and answers 'Где?' (Where?)."
@@ -131,8 +304,18 @@
       "type": "multipleChoice",
       "questionTr": "«Дети учатся в ... (школа).» Doğru tamamlama hangisidir?",
       "questionEn": "«Дети учатся в ... (школа).» Which is the correct completion?",
-      "optionsTr": ["школу", "школе", "школы", "школой"],
-      "optionsEn": ["школу", "школе", "школы", "школой"],
+      "optionsTr": [
+        "школу",
+        "школе",
+        "школы",
+        "школой"
+      ],
+      "optionsEn": [
+        "школу",
+        "школе",
+        "школы",
+        "школой"
+      ],
       "correctIndex": 1,
       "explanationTr": "'школа' kelimesi bulunma hâlinde -е eki alır: «в школе».",
       "explanationEn": "'школа' takes the -е ending in the prepositional case: «в школе»."

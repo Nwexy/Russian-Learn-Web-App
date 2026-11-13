@@ -109,6 +109,15 @@ export interface GrammarProgress {
   completedAt?: Date;
 }
 
+/** Gramer örneği yapısı */
+export interface GrammarExample {
+  ru: string;
+  tr: string;
+  en: string;
+  noteTr?: string;
+  noteEn?: string;
+}
+
 /** Gramer içerik bölümleri */
 export type GrammarSection =
   | { type: "text"; bodyTr: string; bodyEn: string }
@@ -120,7 +129,7 @@ export type GrammarSection =
     }
   | {
       type: "examples";
-      items: { ru: string; tr: string; en: string; note?: string }[];
+      items: GrammarExample[];
     };
 
 /** Gramer mini alıştırma sorusu */

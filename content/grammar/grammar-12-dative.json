@@ -5,7 +5,12 @@
   "titleEn": "Dative Case",
   "summaryTr": "Rusça'da yönelme hâli (Дательный падеж) 'kime/neye' (Кому? Чему?) yönelindiğini, birine yaş söylemeyi ('Мне 25 лет') ve beğenileri ('нравится') ifade eder. İsimler -у, -ю, -е eklerini alır.",
   "summaryEn": "In Russian, the Dative case (Дательный падеж) indicates the indirect object ('To whom/what?' - Кому? Чему?), expressing age ('Мне 25 лет'), and likes with 'нравится'. Nouns take endings -у, -ю, -е.",
-  "relatedUnits": ["unit-12", "unit-12-city", "unit-14", "unit-14-body"],
+  "relatedUnits": [
+    "unit-12",
+    "unit-12-city",
+    "unit-14",
+    "unit-14-body"
+  ],
   "sections": [
     {
       "type": "text",
@@ -19,40 +24,136 @@
     },
     {
       "type": "table",
-      "headersTr": ["Cinsiyet / Zamir", "Yalın Hâl (Именительный)", "Datif Hâli (Дательный)", "Ek Kuralı"],
-      "headersEn": ["Gender / Pronoun", "Nominative (Именительный)", "Dative (Дательный)", "Ending Rule"],
+      "headersTr": [
+        "Cinsiyet / Zamir",
+        "Yalın Hâl (Именительный)",
+        "Datif Hâli (Дательный)",
+        "Ek Kuralı"
+      ],
+      "headersEn": [
+        "Gender / Pronoun",
+        "Nominative (Именительный)",
+        "Dative (Дательный)",
+        "Ending Rule"
+      ],
       "rows": [
         {
-          "cellsTr": ["Eril (Ünsüz)", "брат, врач", "брату, врачу", "+ у"],
-          "cellsEn": ["Masculine (Consonant)", "брат, врач", "брату, врачу", "+ у"]
+          "cellsTr": [
+            "Eril (Ünsüz)",
+            "брат, врач",
+            "брату, врачу",
+            "+ у"
+          ],
+          "cellsEn": [
+            "Masculine (Consonant)",
+            "брат, врач",
+            "брату, врачу",
+            "+ у"
+          ]
         },
         {
-          "cellsTr": ["Eril (-й / -ь)", "учитель", "учителю", "-й / -ь -> -ю"],
-          "cellsEn": ["Masculine (-й / -ь)", "учитель", "учителю", "-й / -ь -> -ю"]
+          "cellsTr": [
+            "Eril (-й / -ь)",
+            "учитель",
+            "учителю",
+            "-й / -ь -> -ю"
+          ],
+          "cellsEn": [
+            "Masculine (-й / -ь)",
+            "учитель",
+            "учителю",
+            "-й / -ь -> -ю"
+          ]
         },
         {
-          "cellsTr": ["Dişil (-а / -я)", "мама, сестра", "маме, сестре", "-а / -я -> -е"],
-          "cellsEn": ["Feminine (-а / -я)", "мама, сестра", "маме, сестре", "-а / -я -> -е"]
+          "cellsTr": [
+            "Dişil (-а / -я)",
+            "мама, сестра",
+            "маме, сестре",
+            "-а / -я -> -е"
+          ],
+          "cellsEn": [
+            "Feminine (-а / -я)",
+            "мама, сестра",
+            "маме, сестре",
+            "-а / -я -> -е"
+          ]
         },
         {
-          "cellsTr": ["Nötr (-о / -е)", "окно, море", "окну, морю", "-о -> -у, -е -> -ю"],
-          "cellsEn": ["Neuter (-о / -е)", "окно, море", "окну, морю", "-о -> -у, -е -> -ю"]
+          "cellsTr": [
+            "Nötr (-о / -е)",
+            "окно, море",
+            "окну, морю",
+            "-о -> -у, -е -> -ю"
+          ],
+          "cellsEn": [
+            "Neuter (-о / -е)",
+            "окно, море",
+            "окну, морю",
+            "-о -> -у, -е -> -ю"
+          ]
         },
         {
-          "cellsTr": ["Zamirler (я, ты, он, она)", "я, ты, он, она", "мне, тебе, ему, ей", "Özel zamir formları"],
-          "cellsEn": ["Pronouns (I, you, he, she)", "я, ты, он, она", "мне, тебе, ему, ей", "Special pronoun forms"]
+          "cellsTr": [
+            "Zamirler (я, ты, он, она)",
+            "я, ты, он, она",
+            "мне, тебе, ему, ей",
+            "Özel zamir formları"
+          ],
+          "cellsEn": [
+            "Pronouns (I, you, he, she)",
+            "я, ты, он, она",
+            "мне, тебе, ему, ей",
+            "Special pronoun forms"
+          ]
         }
       ]
     },
     {
       "type": "examples",
       "items": [
-        { "ru": "Я сейчас иду к врачу.", "tr": "Şimdi doktora gidiyorum.", "en": "I am going to the doctor now.", "note": "врач -> к врачу (к edatı + datif eril -у)" },
-        { "ru": "Мне двадцать пять лет.", "tr": "Yirmi beş yaşındayım.", "en": "I am twenty-five years old.", "note": "я -> мне (yaş ifadesinde datif)" },
-        { "ru": "Моему брату двадцать лет.", "tr": "Erkek kardeşim yirmi yaşında.", "en": "My brother is twenty years old.", "note": "брат -> брату (eril isimle yaş bildirme)" },
-        { "ru": "Ему очень нравится этот город.", "tr": "Bu şehir onun çok hoşuna gidiyor.", "en": "He really likes this city.", "note": "он -> ему (нравится kalıbı)" },
-        { "ru": "Я часто звоню другу.", "tr": "Arkadaşımı sık sık ararım.", "en": "I often call my friend.", "note": "друг -> другу (звонить + datif)" },
-        { "ru": "Анна помогает маме на кухне.", "tr": "Anna mutfakta annesine yardım ediyor.", "en": "Anna helps her mom in the kitchen.", "note": "мама -> маме (помогать + dişil -е)" }
+        {
+          "ru": "Я сейчас иду к врачу.",
+          "tr": "Şimdi doktora gidiyorum.",
+          "en": "I am going to the doctor now.",
+          "noteTr": "врач -> к врачу (к edatı + datif eril -у)",
+          "noteEn": "врач -> к врачу (preposition к + dative masculine -у)"
+        },
+        {
+          "ru": "Мне двадцать пять лет.",
+          "tr": "Yirmi beş yaşındayım.",
+          "en": "I am twenty-five years old.",
+          "noteTr": "я -> мне (yaş ifadesinde datif)",
+          "noteEn": "я -> мне (dative in age expression)"
+        },
+        {
+          "ru": "Моему брату двадцать лет.",
+          "tr": "Erkek kardeşim yirmi yaşında.",
+          "en": "My brother is twenty years old.",
+          "noteTr": "брат -> брату (eril isimle yaş bildirme)",
+          "noteEn": "брат -> брату (expressing age with masculine noun)"
+        },
+        {
+          "ru": "Ему очень нравится этот город.",
+          "tr": "Bu şehir onun çok hoşuna gidiyor.",
+          "en": "He really likes this city.",
+          "noteTr": "он -> ему (нравится kalıbı)",
+          "noteEn": "он -> ему (нравится construction)"
+        },
+        {
+          "ru": "Я часто звоню другу.",
+          "tr": "Arkadaşımı sık sık ararım.",
+          "en": "I often call my friend.",
+          "noteTr": "друг -> другу (звонить + datif)",
+          "noteEn": "друг -> другу (звонить + dative)"
+        },
+        {
+          "ru": "Анна помогает маме на кухне.",
+          "tr": "Anna mutfakta annesine yardım ediyor.",
+          "en": "Anna helps her mom in the kitchen.",
+          "noteTr": "мама -> маме (помогать + dişil -е)",
+          "noteEn": "мама -> маме (помогать + feminine -е)"
+        }
       ]
     }
   ],
@@ -61,8 +162,18 @@
       "type": "multipleChoice",
       "questionTr": "«Я иду к ... (врач).» Boşluğa hangi datif formu gelmelidir?",
       "questionEn": "«Я иду к ... (врач).» Which dative form should fill the blank?",
-      "optionsTr": ["врача", "врачу", "врачом", "враче"],
-      "optionsEn": ["врача", "врачу", "врачом", "враче"],
+      "optionsTr": [
+        "врача",
+        "врачу",
+        "врачом",
+        "враче"
+      ],
+      "optionsEn": [
+        "врача",
+        "врачу",
+        "врачом",
+        "враче"
+      ],
       "correctIndex": 1,
       "explanationTr": "'к' edatından sonra eril isim datif hâlde -у alır: «к врачу».",
       "explanationEn": "After the preposition 'к', masculine nouns take -у in the dative case: «к врачу»."
@@ -71,8 +182,18 @@
       "type": "multipleChoice",
       "questionTr": "'Ben 20 yaşındayım' cümlesi Rusça'da nasıl söylenir?",
       "questionEn": "How do you say 'I am 20 years old' in Russian?",
-      "optionsTr": ["Я двадцать лет", "Меня двадцать лет", "Мне двадцать лет", "Мной двадцать лет"],
-      "optionsEn": ["Я двадцать лет", "Меня двадцать лет", "Мне двадцать лет", "Мной двадцать лет"],
+      "optionsTr": [
+        "Я двадцать лет",
+        "Меня двадцать лет",
+        "Мне двадцать лет",
+        "Мной двадцать лет"
+      ],
+      "optionsEn": [
+        "Я двадцать лет",
+        "Меня двадцать лет",
+        "Мне двадцать лет",
+        "Мной двадцать лет"
+      ],
       "correctIndex": 2,
       "explanationTr": "Rusça'da yaş belirtirken 'я' zamiri datif hâle geçer ve 'мне' olur: «Мне 20 лет».",
       "explanationEn": "When stating age in Russian, the pronoun 'я' changes to the dative 'мне': «Мне 20 лет»."
@@ -81,8 +202,18 @@
       "type": "multipleChoice",
       "questionTr": "«Сестра помогает ... (мама).» Cümlesinde boşluğa hangisi gelmelidir?",
       "questionEn": "«Сестра помогает ... (мама).» Which form should fill the blank?",
-      "optionsTr": ["маму", "маме", "мамы", "мамой"],
-      "optionsEn": ["маму", "маме", "мамы", "мамой"],
+      "optionsTr": [
+        "маму",
+        "маме",
+        "мамы",
+        "мамой"
+      ],
+      "optionsEn": [
+        "маму",
+        "маме",
+        "мамы",
+        "мамой"
+      ],
       "correctIndex": 1,
       "explanationTr": "'помогать' (yardım etmek) fiilinden sonra dişil isim datif olarak -е alır: «помогает маме».",
       "explanationEn": "After the verb 'помогать' (to help), feminine nouns take -е in the dative: «помогает маме»."
@@ -91,8 +222,18 @@
       "type": "multipleChoice",
       "questionTr": "«... нравится эта музыка.» ('O - erkek' zamirinin datif hali hangisidir?)",
       "questionEn": "«... нравится эта музыка.» (Which is the dative form of the pronoun 'he'? )",
-      "optionsTr": ["Он", "Его", "Ему", "Им"],
-      "optionsEn": ["Он", "Его", "Ему", "Им"],
+      "optionsTr": [
+        "Он",
+        "Его",
+        "Ему",
+        "Им"
+      ],
+      "optionsEn": [
+        "Он",
+        "Его",
+        "Ему",
+        "Им"
+      ],
       "correctIndex": 2,
       "explanationTr": "'он' zamirinin datif hâli 'ему' şeklindedir: «Ему нравится».",
       "explanationEn": "The dative form of the pronoun 'он' is 'ему': «Ему нравится»."
@@ -101,8 +242,18 @@
       "type": "multipleChoice",
       "questionTr": "«Я звоню ... (друг).» Boşluğa hangi kelime gelmelidir?",
       "questionEn": "«Я звоню ... (друг).» Which word should fill the blank?",
-      "optionsTr": ["другу", "друга", "другом", "друге"],
-      "optionsEn": ["другу", "друга", "другом", "друге"],
+      "optionsTr": [
+        "другу",
+        "друга",
+        "другом",
+        "друге"
+      ],
+      "optionsEn": [
+        "другу",
+        "друга",
+        "другом",
+        "друге"
+      ],
       "correctIndex": 0,
       "explanationTr": "'звонить' (telefon etmek) fiili datif alır ve eril isim -у alır: «звоню другу».",
       "explanationEn": "The verb 'звонить' (to call) governs the dative case, and masculine nouns take -у: «звоню другу»."
@@ -111,8 +262,18 @@
       "type": "multipleChoice",
       "questionTr": "Datif hâli (Дательный падеж) temel olarak hangi soruya cevap verir?",
       "questionEn": "Which question does the Dative case primarily answer?",
-      "optionsTr": ["Кому? / Чему? (Kime? / Neye?)", "Кого? / Чего? (Kimin? / Neyin?)", "Кем? / Чем? (Kiminle? / Neyle?)", "Где? (Nerede?)"],
-      "optionsEn": ["Кому? / Чему? (To whom? / To what?)", "Кого? / Чего? (Of whom? / Of what?)", "Кем? / Чем? (With whom? / With what?)", "Где? (Where?)"],
+      "optionsTr": [
+        "Кому? / Чему? (Kime? / Neye?)",
+        "Кого? / Чего? (Kimin? / Neyin?)",
+        "Кем? / Чем? (Kiminle? / Neyle?)",
+        "Где? (Nerede?)"
+      ],
+      "optionsEn": [
+        "Кому? / Чему? (To whom? / To what?)",
+        "Кого? / Чего? (Of whom? / Of what?)",
+        "Кем? / Чем? (With whom? / With what?)",
+        "Где? (Where?)"
+      ],
       "correctIndex": 0,
       "explanationTr": "Datif yönelme ve hedef bildirerek 'Кому? Чему?' (Kime? Neye?) sorularına cevap verir.",
       "explanationEn": "The Dative case indicates orientation and indirect object, answering 'Кому? Чему?'."
@@ -121,8 +282,18 @@
       "type": "multipleChoice",
       "questionTr": "«Брат ... (25 лет).» Kardeşin yaşını belirtirken 'брат' ismi hangi formda olmalıdır?",
       "questionEn": "When expressing the brother's age, what form must the noun 'брат' take?",
-      "optionsTr": ["Брат двадцать пять лет", "Брату двадцать пять лет", "Брата двадцать пять лет", "Братом двадцать пять лет"],
-      "optionsEn": ["Брат двадцать пять лет", "Брату двадцать пять лет", "Брата двадцать пять лет", "Братом двадцать пять лет"],
+      "optionsTr": [
+        "Брат двадцать пять лет",
+        "Брату двадцать пять лет",
+        "Брата двадцать пять лет",
+        "Братом двадцать пять лет"
+      ],
+      "optionsEn": [
+        "Брат двадцать пять лет",
+        "Брату двадцать пять лет",
+        "Брата двадцать пять лет",
+        "Братом двадцать пять лет"
+      ],
       "correctIndex": 1,
       "explanationTr": "Yaş bildiriminde isim datif olmalıdır: «Брату 25 лет».",
       "explanationEn": "In age expressions, the person takes the dative case: «Брату 25 лет»."
@@ -131,8 +302,18 @@
       "type": "multipleChoice",
       "questionTr": "«она» (o - kadın) şahıs zamirinin datif biçimi hangisidir?",
       "questionEn": "What is the dative form of the personal pronoun «она» (she)?",
-      "optionsTr": ["её", "ей", "ею", "ней"],
-      "optionsEn": ["её", "ей", "ею", "ней"],
+      "optionsTr": [
+        "её",
+        "ей",
+        "ею",
+        "ней"
+      ],
+      "optionsEn": [
+        "её",
+        "ей",
+        "ею",
+        "ней"
+      ],
       "correctIndex": 1,
       "explanationTr": "'она' zamirinin yönelme (datif) hâli 'ей' şeklindedir (örn: Ей нравится).",
       "explanationEn": "The dative form of 'она' is 'ей' (e.g. Ей нравится)."

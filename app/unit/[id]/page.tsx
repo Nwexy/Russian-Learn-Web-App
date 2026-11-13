@@ -227,7 +227,7 @@ export default function UnitPage() {
                   <span className="item-type-badge" style={{ marginBottom: 0 }}>{item.type}</span>
                   <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                     {isNumber && (
-                      <span className="item-number-badge" style={{ position: "static" }} title={`Sayı: ${item.numberValue}`}>
+                      <span className="item-number-badge" style={{ position: "static" }} title={`${t.numberBadgeTitle} ${item.numberValue}`}>
                         {item.numberValue}
                       </span>
                     )}

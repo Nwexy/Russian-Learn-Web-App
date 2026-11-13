@@ -5,7 +5,9 @@
   "titleEn": "Personal Pronouns",
   "summaryTr": "Rusça temel şahıs zamirleri: я (ben), ты (sen), он (o - eril), она (o - dişil), оно (o - nötr), мы (biz), вы (siz), они (onlar).",
   "summaryEn": "Basic Russian personal pronouns: я (I), ты (you), он (he), она (she), оно (it), мы (we), вы (you pl./formal), они (they).",
-  "relatedUnits": ["unit-01-greetings"],
+  "relatedUnits": [
+    "unit-01-greetings"
+  ],
   "sections": [
     {
       "type": "text",
@@ -14,40 +16,130 @@
     },
     {
       "type": "table",
-      "headersTr": ["Zamir", "Türkçe Karşılığı", "İngilizce Karşılığı", "Kullanım / Not"],
-      "headersEn": ["Pronoun", "Turkish", "English", "Usage / Note"],
+      "headersTr": [
+        "Zamir",
+        "Türkçe Karşılığı",
+        "İngilizce Karşılığı",
+        "Kullanım / Not"
+      ],
+      "headersEn": [
+        "Pronoun",
+        "Turkish",
+        "English",
+        "Usage / Note"
+      ],
       "rows": [
         {
-          "cellsTr": ["я", "ben", "I", "1. tekil şahıs"],
-          "cellsEn": ["я", "ben", "I", "1st person singular"]
+          "cellsTr": [
+            "я",
+            "ben",
+            "I",
+            "1. tekil şahıs"
+          ],
+          "cellsEn": [
+            "я",
+            "ben",
+            "I",
+            "1st person singular"
+          ]
         },
         {
-          "cellsTr": ["ты", "sen", "you (informal)", "2. tekil şahıs (samimi, arkadaşlar/aile)"],
-          "cellsEn": ["ты", "sen", "you (informal)", "2nd person singular (informal/friends)"]
+          "cellsTr": [
+            "ты",
+            "sen",
+            "you (informal)",
+            "2. tekil şahıs (samimi, arkadaşlar/aile)"
+          ],
+          "cellsEn": [
+            "ты",
+            "sen",
+            "you (informal)",
+            "2nd person singular (informal/friends)"
+          ]
         },
         {
-          "cellsTr": ["он", "o (eril)", "he", "3. tekil şahıs eril (erkekler ve eril isimler)"],
-          "cellsEn": ["он", "o (eril)", "he", "3rd person singular masculine"]
+          "cellsTr": [
+            "он",
+            "o (eril)",
+            "he",
+            "3. tekil şahıs eril (erkekler ve eril isimler)"
+          ],
+          "cellsEn": [
+            "он",
+            "o (eril)",
+            "he",
+            "3rd person singular masculine"
+          ]
         },
         {
-          "cellsTr": ["она", "o (dişil)", "she", "3. tekil şahıs dişil (kadınlar ve dişil isimler)"],
-          "cellsEn": ["она", "o (dişil)", "she", "3rd person singular feminine"]
+          "cellsTr": [
+            "она",
+            "o (dişil)",
+            "she",
+            "3. tekil şahıs dişil (kadınlar ve dişil isimler)"
+          ],
+          "cellsEn": [
+            "она",
+            "o (dişil)",
+            "she",
+            "3rd person singular feminine"
+          ]
         },
         {
-          "cellsTr": ["оно", "o (nötr)", "it", "3. tekil şahıs nötr (nötr cins isimler)"],
-          "cellsEn": ["оно", "o (nötr)", "it", "3rd person singular neuter"]
+          "cellsTr": [
+            "оно",
+            "o (nötr)",
+            "it",
+            "3. tekil şahıs nötr (nötr cins isimler)"
+          ],
+          "cellsEn": [
+            "оно",
+            "o (nötr)",
+            "it",
+            "3rd person singular neuter"
+          ]
         },
         {
-          "cellsTr": ["мы", "biz", "we", "1. çoğul şahıs"],
-          "cellsEn": ["мы", "biz", "we", "1st person plural"]
+          "cellsTr": [
+            "мы",
+            "biz",
+            "we",
+            "1. çoğul şahıs"
+          ],
+          "cellsEn": [
+            "мы",
+            "biz",
+            "we",
+            "1st person plural"
+          ]
         },
         {
-          "cellsTr": ["вы", "siz", "you (formal/plural)", "2. çoğul şahıs veya saygı/resmi hitap"],
-          "cellsEn": ["вы", "siz", "you (formal/plural)", "2nd person plural or polite/formal address"]
+          "cellsTr": [
+            "вы",
+            "siz",
+            "you (formal/plural)",
+            "2. çoğul şahıs veya saygı/resmi hitap"
+          ],
+          "cellsEn": [
+            "вы",
+            "siz",
+            "you (formal/plural)",
+            "2nd person plural or polite/formal address"
+          ]
         },
         {
-          "cellsTr": ["они", "onlar", "they", "3. çoğul şahıs (tüm cinsler için)"],
-          "cellsEn": ["они", "onlar", "they", "3rd person plural (all genders)"]
+          "cellsTr": [
+            "они",
+            "onlar",
+            "they",
+            "3. çoğul şahıs (tüm cinsler için)"
+          ],
+          "cellsEn": [
+            "они",
+            "onlar",
+            "they",
+            "3rd person plural (all genders)"
+          ]
         }
       ]
     },
@@ -59,14 +151,62 @@
     {
       "type": "examples",
       "items": [
-        { "ru": "Я здесь.", "tr": "Ben buradayım.", "en": "I am here.", "note": "я = ben" },
-        { "ru": "Ты дома?", "tr": "Sen evde misin?", "en": "Are you home?", "note": "ты = sen" },
-        { "ru": "Он врач.", "tr": "O doktor.", "en": "He is a doctor.", "note": "он = o (eril)" },
-        { "ru": "Она учитель.", "tr": "O öğretmen.", "en": "She is a teacher.", "note": "она = o (dişil)" },
-        { "ru": "Оно там.", "tr": "O orada.", "en": "It is there.", "note": "оно = o (nötr)" },
-        { "ru": "Мы друзья.", "tr": "Biz arkadaşız.", "en": "We are friends.", "note": "мы = biz" },
-        { "ru": "Вы готовы?", "tr": "Hazır mısınız?", "en": "Are you ready?", "note": "вы = siz" },
-        { "ru": "Они студенты.", "tr": "Onlar öğrenci.", "en": "They are students.", "note": "они = onlar" }
+        {
+          "ru": "Я здесь.",
+          "tr": "Ben buradayım.",
+          "en": "I am here.",
+          "noteTr": "я = ben",
+          "noteEn": "я = I"
+        },
+        {
+          "ru": "Ты дома?",
+          "tr": "Sen evde misin?",
+          "en": "Are you home?",
+          "noteTr": "ты = sen",
+          "noteEn": "ты = you (informal)"
+        },
+        {
+          "ru": "Он врач.",
+          "tr": "O doktor.",
+          "en": "He is a doctor.",
+          "noteTr": "он = o (eril)",
+          "noteEn": "он = he (masculine)"
+        },
+        {
+          "ru": "Она учитель.",
+          "tr": "O öğretmen.",
+          "en": "She is a teacher.",
+          "noteTr": "она = o (dişil)",
+          "noteEn": "она = she (feminine)"
+        },
+        {
+          "ru": "Оно там.",
+          "tr": "O orada.",
+          "en": "It is there.",
+          "noteTr": "оно = o (nötr)",
+          "noteEn": "оно = it (neuter)"
+        },
+        {
+          "ru": "Мы друзья.",
+          "tr": "Biz arkadaşız.",
+          "en": "We are friends.",
+          "noteTr": "мы = biz",
+          "noteEn": "мы = we"
+        },
+        {
+          "ru": "Вы готовы?",
+          "tr": "Hazır mısınız?",
+          "en": "Are you ready?",
+          "noteTr": "вы = siz",
+          "noteEn": "вы = you (plural/formal)"
+        },
+        {
+          "ru": "Они студенты.",
+          "tr": "Onlar öğrenci.",
+          "en": "They are students.",
+          "noteTr": "они = onlar",
+          "noteEn": "они = they"
+        }
       ]
     }
   ],
@@ -75,8 +215,18 @@
       "type": "multipleChoice",
       "questionTr": "Rusça'da 'Biz' anlamına gelen şahıs zamiri hangisidir?",
       "questionEn": "Which personal pronoun means 'We' in Russian?",
-      "optionsTr": ["мы", "вы", "они", "ты"],
-      "optionsEn": ["мы", "вы", "они", "ты"],
+      "optionsTr": [
+        "мы",
+        "вы",
+        "они",
+        "ты"
+      ],
+      "optionsEn": [
+        "мы",
+        "вы",
+        "они",
+        "ты"
+      ],
       "correctIndex": 0,
       "explanationTr": "«мы» = biz demektir.",
       "explanationEn": "«мы» means 'we'."
@@ -85,8 +235,18 @@
       "type": "multipleChoice",
       "questionTr": "Dişil bir nesne veya kadın için 'O' zamiri hangisidir?",
       "questionEn": "Which pronoun is 'She / It' for a feminine object or female person?",
-      "optionsTr": ["он", "она", "оно", "они"],
-      "optionsEn": ["он", "она", "оно", "они"],
+      "optionsTr": [
+        "он",
+        "она",
+        "оно",
+        "они"
+      ],
+      "optionsEn": [
+        "он",
+        "она",
+        "оно",
+        "они"
+      ],
       "correctIndex": 1,
       "explanationTr": "«она» kadınlar ve dişil isimler için kullanılır.",
       "explanationEn": "«она» is used for feminine nouns and women."
@@ -95,8 +255,18 @@
       "type": "multipleChoice",
       "questionTr": "Resmi veya kibar hitapta tek bir kişiye hitap ederken hangi zamir kullanılır?",
       "questionEn": "Which pronoun is used to address a single person formally or politely?",
-      "optionsTr": ["ты", "вы", "он", "мы"],
-      "optionsEn": ["ты", "вы", "он", "мы"],
+      "optionsTr": [
+        "ты",
+        "вы",
+        "он",
+        "мы"
+      ],
+      "optionsEn": [
+        "ты",
+        "вы",
+        "он",
+        "мы"
+      ],
       "correctIndex": 1,
       "explanationTr": "«вы» zamiri kibar ve resmi hitapta tek kişi için de kullanılır.",
       "explanationEn": "«вы» is used for formal/polite address to a single person."
@@ -105,8 +275,18 @@
       "type": "multipleChoice",
       "questionTr": "«они» zamirinin Türkçe karşılığı nedir?",
       "questionEn": "What is the meaning of the pronoun «они»?",
-      "optionsTr": ["biz", "siz", "onlar", "sen"],
-      "optionsEn": ["we", "you", "they", "you (informal)"],
+      "optionsTr": [
+        "biz",
+        "siz",
+        "onlar",
+        "sen"
+      ],
+      "optionsEn": [
+        "we",
+        "you",
+        "they",
+        "you (informal)"
+      ],
       "correctIndex": 2,
       "explanationTr": "«они» = onlar demektir.",
       "explanationEn": "«они» means 'they'."
@@ -115,8 +295,18 @@
       "type": "multipleChoice",
       "questionTr": "Rusça'da 'Ben' anlamına gelen şahıs zamiri hangisidir?",
       "questionEn": "Which personal pronoun means 'I' in Russian?",
-      "optionsTr": ["ты", "я", "мы", "он"],
-      "optionsEn": ["ты", "я", "мы", "он"],
+      "optionsTr": [
+        "ты",
+        "я",
+        "мы",
+        "он"
+      ],
+      "optionsEn": [
+        "ты",
+        "я",
+        "мы",
+        "он"
+      ],
       "correctIndex": 1,
       "explanationTr": "«я» = ben anlamına gelir.",
       "explanationEn": "«я» means 'I'."
@@ -125,8 +315,18 @@
       "type": "multipleChoice",
       "questionTr": "«оно» zamiri ne tür isimlerin yerine kullanılır?",
       "questionEn": "What kind of nouns does the pronoun «оно» replace?",
-      "optionsTr": ["Eril isimler", "Dişil isimler", "Nötr isimler", "Çoğul isimler"],
-      "optionsEn": ["Masculine nouns", "Feminine nouns", "Neuter nouns", "Plural nouns"],
+      "optionsTr": [
+        "Eril isimler",
+        "Dişil isimler",
+        "Nötr isimler",
+        "Çoğul isimler"
+      ],
+      "optionsEn": [
+        "Masculine nouns",
+        "Feminine nouns",
+        "Neuter nouns",
+        "Plural nouns"
+      ],
       "correctIndex": 2,
       "explanationTr": "«оно» 3. tekil şahıs nötr cins zamiridir.",
       "explanationEn": "«оно» is the 3rd person singular neuter pronoun."
@@ -135,8 +335,18 @@
       "type": "multipleChoice",
       "questionTr": "Samimi bir arkadaşınıza 'Sen' demek için hangi zamiri kullanırsınız?",
       "questionEn": "Which pronoun do you use to say informal 'You' to a friend?",
-      "optionsTr": ["вы", "ты", "мы", "они"],
-      "optionsEn": ["вы", "ты", "мы", "они"],
+      "optionsTr": [
+        "вы",
+        "ты",
+        "мы",
+        "они"
+      ],
+      "optionsEn": [
+        "вы",
+        "ты",
+        "мы",
+        "они"
+      ],
       "correctIndex": 1,
       "explanationTr": "«ты» arkadaş ve aile arasında samimi 'sen' hitabıdır.",
       "explanationEn": "«ты» is the informal 'you'."
@@ -145,8 +355,18 @@
       "type": "multipleChoice",
       "questionTr": "Erkek bir kişi veya eril bir isim için 'O' zamiri hangisidir?",
       "questionEn": "Which pronoun is 'He / It' for a male person or masculine noun?",
-      "optionsTr": ["он", "она", "оно", "они"],
-      "optionsEn": ["он", "она", "оно", "они"],
+      "optionsTr": [
+        "он",
+        "она",
+        "оно",
+        "они"
+      ],
+      "optionsEn": [
+        "он",
+        "она",
+        "оно",
+        "они"
+      ],
       "correctIndex": 0,
       "explanationTr": "«он» eril 3. tekil şahıs zamiridir.",
       "explanationEn": "«он» is the 3rd person singular masculine pronoun."

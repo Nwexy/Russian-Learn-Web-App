@@ -253,6 +253,7 @@ export default function GrammarDetailPage() {
                 <div className="grammar-examples-grid">
                   {sec.items.map((item, itemIdx) => {
                     const translation = uiLang === "tr" ? item.tr : item.en;
+                    const noteText = uiLang === "tr" ? item.noteTr : item.noteEn;
                     return (
                       <div key={itemIdx} className="grammar-example-card">
                         <div className="grammar-example-top">
@@ -260,8 +261,8 @@ export default function GrammarDetailPage() {
                           <SpeakButton text={item.ru} size="sm" />
                         </div>
                         <div className="grammar-example-tr">{translation}</div>
-                        {item.note && (
-                          <div className="grammar-example-note">{item.note}</div>
+                        {noteText && (
+                          <div className="grammar-example-note">{noteText}</div>
                         )}
                       </div>
                     );

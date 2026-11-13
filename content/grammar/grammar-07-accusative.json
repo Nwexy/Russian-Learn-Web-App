@@ -5,7 +5,14 @@
   "titleEn": "Accusative Case",
   "summaryTr": "Rusça'da geçişli fiillerin doğrudan nesnesi belirtme hâlinde (Винительный падеж) kullanılır. Dişil isimlerde -а -> -у, -я -> -ю değişimi olur.",
   "summaryEn": "In Russian, direct objects of transitive verbs take the Accusative case (Винительный падеж). Feminine nouns change -а -> -у, -я -> -ю.",
-  "relatedUnits": ["unit-05", "unit-05-verbs", "unit-07", "unit-07-food", "unit-13", "unit-13-clothes"],
+  "relatedUnits": [
+    "unit-05",
+    "unit-05-verbs",
+    "unit-07",
+    "unit-07-food",
+    "unit-13",
+    "unit-13-clothes"
+  ],
   "sections": [
     {
       "type": "text",
@@ -19,40 +26,136 @@
     },
     {
       "type": "table",
-      "headersTr": ["Kategori", "Yalın Hâl (Kim? / Ne?)", "Belirtme Hâli (Kimi? / Neyi?)", "Kural"],
-      "headersEn": ["Category", "Nominative (Who? / What?)", "Accusative (Whom? / What?)", "Rule"],
+      "headersTr": [
+        "Kategori",
+        "Yalın Hâl (Kim? / Ne?)",
+        "Belirtme Hâli (Kimi? / Neyi?)",
+        "Kural"
+      ],
+      "headersEn": [
+        "Category",
+        "Nominative (Who? / What?)",
+        "Accusative (Whom? / What?)",
+        "Rule"
+      ],
       "rows": [
         {
-          "cellsTr": ["Dişil (-а)", "мама, книга", "маму, книгу", "-а -> -у"],
-          "cellsEn": ["Feminine (-а)", "мама, книга", "маму, книгу", "-а -> -у"]
+          "cellsTr": [
+            "Dişil (-а)",
+            "мама, книга",
+            "маму, книгу",
+            "-а -> -у"
+          ],
+          "cellsEn": [
+            "Feminine (-а)",
+            "мама, книга",
+            "маму, книгу",
+            "-а -> -у"
+          ]
         },
         {
-          "cellsTr": ["Dişil (-я)", "песня, неделя", "песню, неделю", "-я -> -ю"],
-          "cellsEn": ["Feminine (-я)", "песня, неделя", "песню, неделю", "-я -> -ю"]
+          "cellsTr": [
+            "Dişil (-я)",
+            "песня, неделя",
+            "песню, неделю",
+            "-я -> -ю"
+          ],
+          "cellsEn": [
+            "Feminine (-я)",
+            "песня, неделя",
+            "песню, неделю",
+            "-я -> -ю"
+          ]
         },
         {
-          "cellsTr": ["Eril Cansız", "стол, город", "стол, город", "Değişmez (Yalın ile aynı)"],
-          "cellsEn": ["Inanimate Masculine", "стол, город", "стол, город", "Unchanged (Same as Nom.)"]
+          "cellsTr": [
+            "Eril Cansız",
+            "стол, город",
+            "стол, город",
+            "Değişmez (Yalın ile aynı)"
+          ],
+          "cellsEn": [
+            "Inanimate Masculine",
+            "стол, город",
+            "стол, город",
+            "Unchanged (Same as Nom.)"
+          ]
         },
         {
-          "cellsTr": ["Eril Canlı", "брат, друг", "брата, друга", "Ünsüz + а"],
-          "cellsEn": ["Animate Masculine", "брат, друг", "брата, друга", "Consonant + а"]
+          "cellsTr": [
+            "Eril Canlı",
+            "брат, друг",
+            "брата, друга",
+            "Ünsüz + а"
+          ],
+          "cellsEn": [
+            "Animate Masculine",
+            "брат, друг",
+            "брата, друга",
+            "Consonant + а"
+          ]
         },
         {
-          "cellsTr": ["Nötr", "окно, море", "окно, море", "Değişmez (Yalın ile aynı)"],
-          "cellsEn": ["Neuter", "окно, море", "окно, море", "Unchanged (Same as Nom.)"]
+          "cellsTr": [
+            "Nötr",
+            "окно, море",
+            "окно, море",
+            "Değişmez (Yalın ile aynı)"
+          ],
+          "cellsEn": [
+            "Neuter",
+            "окно, море",
+            "окно, море",
+            "Unchanged (Same as Nom.)"
+          ]
         }
       ]
     },
     {
       "type": "examples",
       "items": [
-        { "ru": "Я читаю книгу.", "tr": "Kitap okuyorum.", "en": "I am reading a book.", "note": "книга -> книгу (dişil -у)" },
-        { "ru": "Я вижу брата.", "tr": "Erkek kardeşimi görüyorum.", "en": "I see my brother.", "note": "брат -> брата (eril canlı -а)" },
-        { "ru": "Он купил новый стол.", "tr": "Yeni bir masa satın aldı.", "en": "He bought a new table.", "note": "стол -> стол (eril cansız değişmez)" },
-        { "ru": "Мы очень любим маму.", "tr": "Annemizi çok seviyoruz.", "en": "We love mom very much.", "note": "мама -> маму (dişil -у)" },
-        { "ru": "Она слушает песню.", "tr": "Şarkıyı dinliyor.", "en": "She is listening to the song.", "note": "песня -> песню (dişil -ю)" },
-        { "ru": "Вы видите это окно?", "tr": "Bu pencereyi görüyor musunuz?", "en": "Do you see this window?", "note": "окно -> окно (nötr değişmez)" }
+        {
+          "ru": "Я читаю книгу.",
+          "tr": "Kitap okuyorum.",
+          "en": "I am reading a book.",
+          "noteTr": "книга -> книгу (dişil -у)",
+          "noteEn": "книга -> книгу (feminine -у)"
+        },
+        {
+          "ru": "Я вижу брата.",
+          "tr": "Erkek kardeşimi görüyorum.",
+          "en": "I see my brother.",
+          "noteTr": "брат -> брата (eril canlı -а)",
+          "noteEn": "брат -> брата (masculine animate -а)"
+        },
+        {
+          "ru": "Он купил новый стол.",
+          "tr": "Yeni bir masa satın aldı.",
+          "en": "He bought a new table.",
+          "noteTr": "стол -> стол (eril cansız değişmez)",
+          "noteEn": "стол -> стол (masculine inanimate unchanged)"
+        },
+        {
+          "ru": "Мы очень любим маму.",
+          "tr": "Annemizi çok seviyoruz.",
+          "en": "We love mom very much.",
+          "noteTr": "мама -> маму (dişil -у)",
+          "noteEn": "мама -> маму (feminine -у)"
+        },
+        {
+          "ru": "Она слушает песню.",
+          "tr": "Şarkıyı dinliyor.",
+          "en": "She is listening to the song.",
+          "noteTr": "песня -> песню (dişil -ю)",
+          "noteEn": "песня -> песню (feminine -ю)"
+        },
+        {
+          "ru": "Вы видите это окно?",
+          "tr": "Bu pencereyi görüyor musunuz?",
+          "en": "Do you see this window?",
+          "noteTr": "окно -> окно (nötr değişmez)",
+          "noteEn": "окно -> окно (neuter unchanged)"
+        }
       ]
     }
   ],
@@ -61,8 +164,18 @@
       "type": "multipleChoice",
       "questionTr": "«Я читаю ... (книга).» Cümlesindeki doğru hâl hangisidir?",
       "questionEn": "«Я читаю ... (книга).» What is the correct form in this sentence?",
-      "optionsTr": ["книга", "книгу", "книги", "книге"],
-      "optionsEn": ["книга", "книгу", "книги", "книге"],
+      "optionsTr": [
+        "книга",
+        "книгу",
+        "книги",
+        "книге"
+      ],
+      "optionsEn": [
+        "книга",
+        "книгу",
+        "книги",
+        "книге"
+      ],
       "correctIndex": 1,
       "explanationTr": "«книга» dişil bir kelimedir ve akuzatifte -у alır: «Я читаю книгу».",
       "explanationEn": "«книга» is feminine and takes -у in the accusative: «Я читаю книгу»."
@@ -71,8 +184,18 @@
       "type": "multipleChoice",
       "questionTr": "«Я вижу ... (брат).» Canlı eril isim akuzatifte hangi eki alır?",
       "questionEn": "«Я вижу ... (брат).» Which ending does an animate masculine noun take in the accusative?",
-      "optionsTr": ["брат", "брата", "брату", "братом"],
-      "optionsEn": ["брат", "брата", "брату", "братом"],
+      "optionsTr": [
+        "брат",
+        "брата",
+        "брату",
+        "братом"
+      ],
+      "optionsEn": [
+        "брат",
+        "брата",
+        "брату",
+        "братом"
+      ],
       "correctIndex": 1,
       "explanationTr": "Canlı eril isimler akuzatifte -а eki alır: «Я вижу брата».",
       "explanationEn": "Animate masculine nouns take -а in the accusative: «Я вижу брата»."
@@ -81,8 +204,18 @@
       "type": "multipleChoice",
       "questionTr": "«Он делает ... (работа).» Cümlesinde boşluğa hangisi gelmelidir?",
       "questionEn": "«Он делает ... (работа).» Which form should fill the blank?",
-      "optionsTr": ["работу", "работа", "работы", "работе"],
-      "optionsEn": ["работу", "работа", "работы", "работе"],
+      "optionsTr": [
+        "работу",
+        "работа",
+        "работы",
+        "работе"
+      ],
+      "optionsEn": [
+        "работу",
+        "работа",
+        "работы",
+        "работе"
+      ],
       "correctIndex": 0,
       "explanationTr": "-а ile biten dişil isim akuzatifte -у alır: «работу».",
       "explanationEn": "Feminine nouns in -а change to -у in the accusative: «работу»."
@@ -91,8 +224,18 @@
       "type": "multipleChoice",
       "questionTr": "Cansız eril isimler (örn: стол, город) akuzatifte nasıl değişir?",
       "questionEn": "How do inanimate masculine nouns (e.g. стол, город) change in the accusative?",
-      "optionsTr": ["-а eki alır", "-у eki alır", "Hiç değişmez (yalın hâl ile aynı kalır)", "-е eki alır"],
-      "optionsEn": ["Takes ending -а", "Takes ending -у", "Does not change (remains identical to nominative)", "Takes ending -е"],
+      "optionsTr": [
+        "-а eki alır",
+        "-у eki alır",
+        "Hiç değişmez (yalın hâl ile aynı kalır)",
+        "-е eki alır"
+      ],
+      "optionsEn": [
+        "Takes ending -а",
+        "Takes ending -у",
+        "Does not change (remains identical to nominative)",
+        "Takes ending -е"
+      ],
       "correctIndex": 2,
       "explanationTr": "Cansız eril ve tüm nötr isimler akuzatifte yalın hâlleriyle aynı kalır.",
       "explanationEn": "Inanimate masculine and all neuter nouns remain unchanged in the accusative."
@@ -101,8 +244,18 @@
       "type": "multipleChoice",
       "questionTr": "«Я люблю ... (мама).» Boşluğa hangi kelime gelmelidir?",
       "questionEn": "«Я люблю ... (мама).» Which word should fill the blank?",
-      "optionsTr": ["мама", "маму", "маме", "мамы"],
-      "optionsEn": ["мама", "маму", "маме", "мамы"],
+      "optionsTr": [
+        "мама",
+        "маму",
+        "маме",
+        "мамы"
+      ],
+      "optionsEn": [
+        "мама",
+        "маму",
+        "маме",
+        "мамы"
+      ],
       "correctIndex": 1,
       "explanationTr": "«мама» dişil ismi akuzatifte -у alır: «Я люблю маму».",
       "explanationEn": "«мама» is feminine and takes -у in the accusative: «Я люблю маму»."
@@ -111,8 +264,18 @@
       "type": "multipleChoice",
       "questionTr": "«Мы слушаем ... (песня).» Boşluğa hangi kelime gelmelidir?",
       "questionEn": "«Мы слушаем ... (песня).» Which word should fill the blank?",
-      "optionsTr": ["песня", "песню", "песни", "песне"],
-      "optionsEn": ["песня", "песню", "песни", "песне"],
+      "optionsTr": [
+        "песня",
+        "песню",
+        "песни",
+        "песне"
+      ],
+      "optionsEn": [
+        "песня",
+        "песню",
+        "песни",
+        "песне"
+      ],
       "correctIndex": 1,
       "explanationTr": "-я ile biten dişil isim akuzatifte -ю alır: «песню».",
       "explanationEn": "Feminine nouns ending in -я take -ю in the accusative: «песню»."
@@ -121,8 +284,18 @@
       "type": "multipleChoice",
       "questionTr": "«Они видят ... (друг).» Canlı eril isim akuzatifte nasıl çekimlenir?",
       "questionEn": "«Они видят ... (друг).» How is the animate masculine noun conjugated in the accusative?",
-      "optionsTr": ["друг", "друга", "другу", "другом"],
-      "optionsEn": ["друг", "друга", "другу", "другом"],
+      "optionsTr": [
+        "друг",
+        "друга",
+        "другу",
+        "другом"
+      ],
+      "optionsEn": [
+        "друг",
+        "друга",
+        "другу",
+        "другом"
+      ],
       "correctIndex": 1,
       "explanationTr": "Canlı eril isimler akuzatifte -а alır: «друга».",
       "explanationEn": "Animate masculine nouns take -а in the accusative: «друга»."
@@ -131,8 +304,18 @@
       "type": "multipleChoice",
       "questionTr": "Nötr isimler (örn: окно, море) akuzatifte nasıl değişir?",
       "questionEn": "How do neuter nouns (e.g. окно, море) change in the accusative?",
-      "optionsTr": ["-у eki alır", "-а eki alır", "Değişmez (yalın hâl ile aynı kalır)", "-е eki düşer"],
-      "optionsEn": ["Takes ending -у", "Takes ending -а", "Does not change (remains identical to nominative)", "Ending -е is dropped"],
+      "optionsTr": [
+        "-у eki alır",
+        "-а eki alır",
+        "Değişmez (yalın hâl ile aynı kalır)",
+        "-е eki düşer"
+      ],
+      "optionsEn": [
+        "Takes ending -у",
+        "Takes ending -а",
+        "Does not change (remains identical to nominative)",
+        "Ending -е is dropped"
+      ],
       "correctIndex": 2,
       "explanationTr": "Nötr isimler akuzatifte yalın hâlleriyle tamamen aynı kalır.",
       "explanationEn": "Neuter nouns remain identical to their nominative forms in the accusative."

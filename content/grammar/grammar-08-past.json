@@ -5,7 +5,10 @@
   "titleEn": "Past Tense",
   "summaryTr": "Rusça'da geçmiş zaman fiilin mastar ekini (-ть) atıp yerine cinsiyete göre ek getirilmesiyle yapılır: -л (eril), -ла (dişil), -ло (nötr), -ли (çoğul).",
   "summaryEn": "In Russian, the past tense is formed by replacing the infinitive suffix (-ть) with gender/number endings: -л (masc.), -ла (fem.), -ло (neut.), -ли (plural).",
-  "relatedUnits": ["unit-05", "unit-05-verbs"],
+  "relatedUnits": [
+    "unit-05",
+    "unit-05-verbs"
+  ],
   "sections": [
     {
       "type": "text",
@@ -19,36 +22,132 @@
     },
     {
       "type": "table",
-      "headersTr": ["Cinsiyet / Sayı", "Ek", "читать (okumak)", "говорить (konuşmak)", "Anlam"],
-      "headersEn": ["Gender / Number", "Ending", "читать (to read)", "говорить (to speak)", "Meaning"],
+      "headersTr": [
+        "Cinsiyet / Sayı",
+        "Ek",
+        "читать (okumak)",
+        "говорить (konuşmak)",
+        "Anlam"
+      ],
+      "headersEn": [
+        "Gender / Number",
+        "Ending",
+        "читать (to read)",
+        "говорить (to speak)",
+        "Meaning"
+      ],
       "rows": [
         {
-          "cellsTr": ["Eril (Мужской)", "-л", "читал", "говорил", "okudu / konuştu"],
-          "cellsEn": ["Masculine (Мужской)", "-л", "читал", "говорил", "read / spoke"]
+          "cellsTr": [
+            "Eril (Мужской)",
+            "-л",
+            "читал",
+            "говорил",
+            "okudu / konuştu"
+          ],
+          "cellsEn": [
+            "Masculine (Мужской)",
+            "-л",
+            "читал",
+            "говорил",
+            "read / spoke"
+          ]
         },
         {
-          "cellsTr": ["Dişil (Женский)", "-ла", "читала", "говорила", "okudu / konuştu"],
-          "cellsEn": ["Feminine (Женский)", "-ла", "читала", "говорила", "read / spoke"]
+          "cellsTr": [
+            "Dişil (Женский)",
+            "-ла",
+            "читала",
+            "говорила",
+            "okudu / konuştu"
+          ],
+          "cellsEn": [
+            "Feminine (Женский)",
+            "-ла",
+            "читала",
+            "говорила",
+            "read / spoke"
+          ]
         },
         {
-          "cellsTr": ["Nötr (Средний)", "-ло", "читало", "говорило", "okudu / konuştu"],
-          "cellsEn": ["Neuter (Средний)", "-ло", "читало", "говорило", "read / spoke"]
+          "cellsTr": [
+            "Nötr (Средний)",
+            "-ло",
+            "читало",
+            "говорило",
+            "okudu / konuştu"
+          ],
+          "cellsEn": [
+            "Neuter (Средний)",
+            "-ло",
+            "читало",
+            "говорило",
+            "read / spoke"
+          ]
         },
         {
-          "cellsTr": ["Çoğul (Все роды)", "-ли", "читали", "говорили", "okudular / konuştular"],
-          "cellsEn": ["Plural (All genders)", "-ли", "читали", "говорили", "read / spoke"]
+          "cellsTr": [
+            "Çoğul (Все роды)",
+            "-ли",
+            "читали",
+            "говорили",
+            "okudular / konuştular"
+          ],
+          "cellsEn": [
+            "Plural (All genders)",
+            "-ли",
+            "читали",
+            "говорили",
+            "read / spoke"
+          ]
         }
       ]
     },
     {
       "type": "examples",
       "items": [
-        { "ru": "Вчера я читал книгу.", "tr": "Dün kitap okudum (erkek).", "en": "Yesterday I read a book (male).", "note": "Eril özne (-л)" },
-        { "ru": "Анна вчера читала журнал.", "tr": "Anna dün dergi okudu.", "en": "Anna read a magazine yesterday.", "note": "Dişil özne (-ла)" },
-        { "ru": "Мы вчера долго говорили.", "tr": "Dün uzun süre konuştuk.", "en": "Yesterday we talked for a long time.", "note": "Çoğul özne (-ли)" },
-        { "ru": "Мой брат работал в Москве.", "tr": "Erkek kardeşim Moskova'da çalıştı.", "en": "My brother worked in Moscow.", "note": "Eril özne (-л)" },
-        { "ru": "Где ты жила раньше?", "tr": "Eskiden nerede yaşıyordun (kadına)?", "en": "Where did you live before (to a female)?", "note": "Dişil özne (-ла)" },
-        { "ru": "Они не знали об этом.", "tr": "Bunu bilmiyorlardı.", "en": "They did not know about this.", "note": "Çoğul özne (-ли)" }
+        {
+          "ru": "Вчера я читал книгу.",
+          "tr": "Dün kitap okudum (erkek).",
+          "en": "Yesterday I read a book (male).",
+          "noteTr": "Eril özne (-л)",
+          "noteEn": "Masculine subject (-л)"
+        },
+        {
+          "ru": "Анна вчера читала журнал.",
+          "tr": "Anna dün dergi okudu.",
+          "en": "Anna read a magazine yesterday.",
+          "noteTr": "Dişil özne (-ла)",
+          "noteEn": "Feminine subject (-ла)"
+        },
+        {
+          "ru": "Мы вчера долго говорили.",
+          "tr": "Dün uzun süre konuştuk.",
+          "en": "Yesterday we talked for a long time.",
+          "noteTr": "Çoğul özne (-ли)",
+          "noteEn": "Plural subject (-ли)"
+        },
+        {
+          "ru": "Мой брат работал в Москве.",
+          "tr": "Erkek kardeşim Moskova'da çalıştı.",
+          "en": "My brother worked in Moscow.",
+          "noteTr": "Eril özne (-л)",
+          "noteEn": "Masculine subject (-л)"
+        },
+        {
+          "ru": "Где ты жила раньше?",
+          "tr": "Eskiden nerede yaşıyordun (kadına)?",
+          "en": "Where did you live before (to a female)?",
+          "noteTr": "Dişil özne (-ла)",
+          "noteEn": "Feminine subject (-ла)"
+        },
+        {
+          "ru": "Они не знали об этом.",
+          "tr": "Bunu bilmiyorlardı.",
+          "en": "They did not know about this.",
+          "noteTr": "Çoğul özne (-ли)",
+          "noteEn": "Plural subject (-ли)"
+        }
       ]
     }
   ],
@@ -57,8 +156,18 @@
       "type": "multipleChoice",
       "questionTr": "«Анна вчера весь день ... (читать).» Boşluğa hangi form gelmelidir?",
       "questionEn": "«Анна вчера весь день ... (читать).» Which form should fill the blank?",
-      "optionsTr": ["читал", "читала", "читало", "читали"],
-      "optionsEn": ["читал", "читала", "читало", "читали"],
+      "optionsTr": [
+        "читал",
+        "читала",
+        "читало",
+        "читали"
+      ],
+      "optionsEn": [
+        "читал",
+        "читала",
+        "читало",
+        "читали"
+      ],
       "correctIndex": 1,
       "explanationTr": "Özne Anna (dişil) olduğu için fiil -ла eki alır: «читала».",
       "explanationEn": "The subject Anna is feminine, so the past tense ending is -ла: «читала»."
@@ -67,8 +176,18 @@
       "type": "multipleChoice",
       "questionTr": "«Иван вчера ... (работать) в офисе.» Boşluğa hangi form gelmelidir?",
       "questionEn": "«Иван вчера ... (работать) в офисе.» Which form should fill the blank?",
-      "optionsTr": ["работал", "работала", "работало", "работали"],
-      "optionsEn": ["работал", "работала", "работало", "работали"],
+      "optionsTr": [
+        "работал",
+        "работала",
+        "работало",
+        "работали"
+      ],
+      "optionsEn": [
+        "работал",
+        "работала",
+        "работало",
+        "работали"
+      ],
       "correctIndex": 0,
       "explanationTr": "Özne İvan (eril) olduğu için fiil -л eki alır: «работал».",
       "explanationEn": "The subject Ivan is masculine, so the past tense ending is -л: «работал»."
@@ -77,8 +196,18 @@
       "type": "multipleChoice",
       "questionTr": "«Мы вчера ... (видеть) старого друга.» Çoğul özne için hangi ek gelir?",
       "questionEn": "«Мы вчера ... (видеть) старого друга.» Which ending is used for a plural subject?",
-      "optionsTr": ["видел", "видела", "видело", "видели"],
-      "optionsEn": ["видел", "видела", "видело", "видели"],
+      "optionsTr": [
+        "видел",
+        "видела",
+        "видело",
+        "видели"
+      ],
+      "optionsEn": [
+        "видел",
+        "видела",
+        "видело",
+        "видели"
+      ],
       "correctIndex": 3,
       "explanationTr": "Çoğul öznelerle (мы, вы, они) geçmiş zamanda -ли eki kullanılır: «видели».",
       "explanationEn": "With plural subjects (мы, вы, они), the past tense ending is -ли: «видели»."
@@ -87,8 +216,18 @@
       "type": "multipleChoice",
       "questionTr": "Bir kadın 'Ben biliyordum' derken hangisini söylemelidir?",
       "questionEn": "Which one should a female speaker say for 'I knew'?",
-      "optionsTr": ["Я знал", "Я знала", "Я знало", "Я знали"],
-      "optionsEn": ["Я знал", "Я знала", "Я знало", "Я знали"],
+      "optionsTr": [
+        "Я знал",
+        "Я знала",
+        "Я знало",
+        "Я знали"
+      ],
+      "optionsEn": [
+        "Я знал",
+        "Я знала",
+        "Я знало",
+        "Я знали"
+      ],
       "correctIndex": 1,
       "explanationTr": "Kadın konuşmacı için geçmiş zaman eki -ла'dır: «Я знала».",
       "explanationEn": "A female speaker uses the feminine past tense ending -ла: «Я знала»."
@@ -97,8 +236,18 @@
       "type": "multipleChoice",
       "questionTr": "Bir erkek 'Ben konuştum' derken hangisini söylemelidir?",
       "questionEn": "Which one should a male speaker say for 'I spoke'?",
-      "optionsTr": ["Я говорил", "Я говорила", "Я говорило", "Я говорили"],
-      "optionsEn": ["Я говорил", "Я говорила", "Я говорило", "Я говорили"],
+      "optionsTr": [
+        "Я говорил",
+        "Я говорила",
+        "Я говорило",
+        "Я говорили"
+      ],
+      "optionsEn": [
+        "Я говорил",
+        "Я говорила",
+        "Я говорило",
+        "Я говорили"
+      ],
       "correctIndex": 0,
       "explanationTr": "Erkek konuşmacı için geçmiş zaman eki -л'dir: «Я говорил».",
       "explanationEn": "A male speaker uses the masculine past tense ending -л: «Я говорил»."
@@ -107,8 +256,18 @@
       "type": "multipleChoice",
       "questionTr": "«Они долго ... (думать).» Çoğul özne için geçmiş zaman formu hangisidir?",
       "questionEn": "«Они долго ... (думать).» Which is the past tense form for a plural subject?",
-      "optionsTr": ["думал", "думала", "думало", "думали"],
-      "optionsEn": ["думал", "думала", "думало", "думали"],
+      "optionsTr": [
+        "думал",
+        "думала",
+        "думало",
+        "думали"
+      ],
+      "optionsEn": [
+        "думал",
+        "думала",
+        "думало",
+        "думали"
+      ],
       "correctIndex": 3,
       "explanationTr": "Çoğul öznelerde geçmiş zaman eki -ли'dir: «Они думали».",
       "explanationEn": "For plural subjects, the past tense ending is -ли: «Они думали»."
@@ -117,8 +276,18 @@
       "type": "multipleChoice",
       "questionTr": "«Письмо ... (быть) на столе.» Nötr özne için 'быть' fiilinin geçmiş zaman formu hangisidir?",
       "questionEn": "«Письмо ... (быть) на столе.» Which is the past tense form of 'быть' for a neuter subject?",
-      "optionsTr": ["был", "была", "было", "были"],
-      "optionsEn": ["был", "была", "было", "были"],
+      "optionsTr": [
+        "был",
+        "была",
+        "было",
+        "были"
+      ],
+      "optionsEn": [
+        "был",
+        "была",
+        "было",
+        "были"
+      ],
       "correctIndex": 2,
       "explanationTr": "«письмо» nötr bir isim olduğu için fiil -ло eki alır: «было».",
       "explanationEn": "«письмо» is neuter, so the past tense ending is -ло: «было»."
@@ -127,8 +296,18 @@
       "type": "multipleChoice",
       "questionTr": "Rusça'da geçmiş zaman eki eril tekil özneler için hangisidir?",
       "questionEn": "Which is the Russian past tense ending for masculine singular subjects?",
-      "optionsTr": ["-л", "-ла", "-ло", "-ли"],
-      "optionsEn": ["-л", "-ла", "-ло", "-ли"],
+      "optionsTr": [
+        "-л",
+        "-ла",
+        "-ло",
+        "-ли"
+      ],
+      "optionsEn": [
+        "-л",
+        "-ла",
+        "-ло",
+        "-ли"
+      ],
       "correctIndex": 0,
       "explanationTr": "Eril tekil özneler için geçmiş zaman eki -л'dir.",
       "explanationEn": "The masculine singular past tense ending is -л."

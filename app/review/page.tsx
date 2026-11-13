@@ -353,7 +353,7 @@ function ReviewContent() {
       <div className="flashcard">
         <div style={{ position: "absolute", top: "1rem", right: "1rem", display: "flex", alignItems: "center", gap: "0.5rem", zIndex: 10 }}>
           {currentCard.numberValue !== undefined && (
-            <span className="item-number-badge" style={{ position: "static" }} title={`Sayı: ${currentCard.numberValue}`}>
+            <span className="item-number-badge" style={{ position: "static" }} title={`${t.numberBadgeTitle} ${currentCard.numberValue}`}>
               {currentCard.numberValue}
             </span>
           )}
@@ -407,7 +407,7 @@ function ReviewContent() {
                     </span>
                   )}
                   <span className="extra-word-pill">
-                    {uiLang === "tr" ? "Cümleden Ekstra Kelime" : "Sentence Extra Word"}
+                    {t.sentenceExtraWord}
                   </span>
                 </div>
 

@@ -263,6 +263,24 @@ export interface Messages {
   onboardingFaqTooltip: string;
   goToFaq: string;
   close: string;
+
+  // Faz 11.7 — Mixed Mode & Ekstra İyileştirmeler
+  selectModes: string;
+  selectAtLeastTwoModes: string;
+  mixedModesModalTitle: string;
+  mixedModesModalDesc: string;
+  allModesSelected: string;
+  modesSelectedCount: string;
+  done: string;
+  noExampleSentences: string;
+  questionCountTooltip: string;
+  questionsLabel: string;
+  micPermissionDenied: string;
+  speechNotDetected: string;
+  speechRecognitionError: string;
+  numberBadgeTitle: string;
+  sentenceExtraWord: string;
+  mixedModeDesc: string;
 }
 
 /** Tüm çeviriler */
@@ -515,6 +533,24 @@ const messages: Record<Lang, Messages> = {
     onboardingFaqTooltip: "Rusça öğrenmeye yeni mi başladın? Başlamadan önce Sıkça Sorulan Sorular (FAQ) kısmına göz atmalısın!",
     goToFaq: "FAQ'ya Git",
     close: "Kapat",
+
+    // Faz 11.7 — Mixed Mode & Ekstra İyileştirmeler
+    selectModes: "Modları Seç",
+    selectAtLeastTwoModes: "Lütfen en az 2 mod seçin.",
+    mixedModesModalTitle: "Karışık Mod Türleri",
+    mixedModesModalDesc: "Alıştırmada yer almasını istediğiniz en az 2 modu seçin.",
+    allModesSelected: "Tüm Modlar Aktif",
+    modesSelectedCount: "mod seçildi",
+    done: "Tamam",
+    noExampleSentences: "Örnek cümle bulunmuyor",
+    questionCountTooltip: "Alıştırma oturumundaki soru veya çift sayısı",
+    questionsLabel: "Soru",
+    micPermissionDenied: "Mikrofon izni verilmedi. Lütfen tarayıcı ayarlarından mikrofona izin verin.",
+    speechNotDetected: "Ses algılanamadı. Lütfen tekrar deneyin.",
+    speechRecognitionError: "Konuşma tanıma hatası. Lütfen tekrar deneyin.",
+    numberBadgeTitle: "Sayı:",
+    sentenceExtraWord: "Cümleden Ekstra Kelime",
+    mixedModeDesc: "Çoktan seçmeli, boşluk doldurma, eşleştirme, dinleme, konuşma ve cümle kurma sorularını rastgele harmanlar.",
   },
 
   en: {
@@ -765,6 +801,24 @@ const messages: Record<Lang, Messages> = {
     onboardingFaqTooltip: "New to learning Russian? Check out the Frequently Asked Questions (FAQ) before getting started!",
     goToFaq: "Go to FAQ",
     close: "Close",
+
+    // Faz 11.7 — Mixed Mode & Ekstra İyileştirmeler
+    selectModes: "Select Modes",
+    selectAtLeastTwoModes: "Please select at least 2 modes.",
+    mixedModesModalTitle: "Mixed Mode Types",
+    mixedModesModalDesc: "Select at least 2 modes you want to include in the practice.",
+    allModesSelected: "All Modes Active",
+    modesSelectedCount: "modes selected",
+    done: "Done",
+    noExampleSentences: "No example sentences",
+    questionCountTooltip: "Number of questions or pairs in the practice session",
+    questionsLabel: "Questions",
+    micPermissionDenied: "Microphone permission denied. Please allow microphone access in browser settings.",
+    speechNotDetected: "No speech detected. Please try again.",
+    speechRecognitionError: "Speech recognition error. Please try again.",
+    numberBadgeTitle: "Number:",
+    sentenceExtraWord: "Sentence Extra Word",
+    mixedModeDesc: "Randomly blends multiple choice, fill in the blank, matching, listening, speaking, and sentence building.",
   },
 };
 

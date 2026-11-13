@@ -5,7 +5,12 @@
   "titleEn": "Instrumental Case",
   "summaryTr": "Rusça'da araç ve birliktelik hâli (Творительный падеж), 'kiminle' (С кем?), 'neyle' (С чем? / Чем?) sorularına cevap verir. Birliktelik için 'с' edatıyla, vasıta için edatsız kullanılır. İsimler -ом, -ем, -ой, -ей eklerini alır.",
   "summaryEn": "In Russian, the Instrumental case (Творительный падеж) expresses companionship ('With whom?' - С кем?) and instruments ('With what?' - Чем?). It uses preposition 'с' for accompaniment. Nouns take endings -ом, -ем, -ой, -ей.",
-  "relatedUnits": ["unit-04", "unit-04-family", "unit-07", "unit-07-food"],
+  "relatedUnits": [
+    "unit-04",
+    "unit-04-family",
+    "unit-07",
+    "unit-07-food"
+  ],
   "sections": [
     {
       "type": "text",
@@ -19,40 +24,136 @@
     },
     {
       "type": "table",
-      "headersTr": ["Cinsiyet", "Yalın Hâl (Именительный)", "Enstrümantal (Творительный)", "Ek Kuralı"],
-      "headersEn": ["Gender", "Nominative (Именительный)", "Instrumental (Творительный)", "Ending Rule"],
+      "headersTr": [
+        "Cinsiyet",
+        "Yalın Hâl (Именительный)",
+        "Enstrümantal (Творительный)",
+        "Ek Kuralı"
+      ],
+      "headersEn": [
+        "Gender",
+        "Nominative (Именительный)",
+        "Instrumental (Творительный)",
+        "Ending Rule"
+      ],
       "rows": [
         {
-          "cellsTr": ["Eril (Sert ünsüz)", "друг, чай", "с другом, с чаем", "+ ом / + ем"],
-          "cellsEn": ["Masculine (Hard cons.)", "друг, чай", "с другом, с чаем", "+ ом / + ем"]
+          "cellsTr": [
+            "Eril (Sert ünsüz)",
+            "друг, чай",
+            "с другом, с чаем",
+            "+ ом / + ем"
+          ],
+          "cellsEn": [
+            "Masculine (Hard cons.)",
+            "друг, чай",
+            "с другом, с чаем",
+            "+ ом / + ем"
+          ]
         },
         {
-          "cellsTr": ["Dişil (-а)", "сестра, мама", "с сестрой, с мамой", "-а -> -ой"],
-          "cellsEn": ["Feminine (-а)", "сестра, мама", "с сестрой, с мамой", "-а -> -ой"]
+          "cellsTr": [
+            "Dişil (-а)",
+            "сестра, мама",
+            "с сестрой, с мамой",
+            "-а -> -ой"
+          ],
+          "cellsEn": [
+            "Feminine (-а)",
+            "сестра, мама",
+            "с сестрой, с мамой",
+            "-а -> -ой"
+          ]
         },
         {
-          "cellsTr": ["Dişil (-я / -ь)", "неделя, дверь", "неделей, дверью", "-я -> -ей, -ь -> -ью"],
-          "cellsEn": ["Feminine (-я / -ь)", "неделя, дверь", "неделей, дверью", "-я -> -ей, -ь -> -ью"]
+          "cellsTr": [
+            "Dişil (-я / -ь)",
+            "неделя, дверь",
+            "неделей, дверью",
+            "-я -> -ей, -ь -> -ью"
+          ],
+          "cellsEn": [
+            "Feminine (-я / -ь)",
+            "неделя, дверь",
+            "неделей, дверью",
+            "-я -> -ей, -ь -> -ью"
+          ]
         },
         {
-          "cellsTr": ["Nötr (-о / -е)", "молоко, море", "с молоком, морем", "-о -> -ом, -е -> -ем"],
-          "cellsEn": ["Neuter (-о / -е)", "молоко, море", "с молоком, морем", "-о -> -ом, -е -> -ем"]
+          "cellsTr": [
+            "Nötr (-о / -е)",
+            "молоко, море",
+            "с молоком, морем",
+            "-о -> -ом, -е -> -ем"
+          ],
+          "cellsEn": [
+            "Neuter (-о / -е)",
+            "молоко, море",
+            "с молоком, морем",
+            "-о -> -ом, -е -> -ем"
+          ]
         },
         {
-          "cellsTr": ["Zamir (я, ты, он)", "я, ты, он", "со мной, с тобой, с ним", "Özel zamir formları"],
-          "cellsEn": ["Pronoun (I, you, he)", "я, ты, он", "со мной, с тобой, с ним", "Special pronoun forms"]
+          "cellsTr": [
+            "Zamir (я, ты, он)",
+            "я, ты, он",
+            "со мной, с тобой, с ним",
+            "Özel zamir formları"
+          ],
+          "cellsEn": [
+            "Pronoun (I, you, he)",
+            "я, ты, он",
+            "со мной, с тобой, с ним",
+            "Special pronoun forms"
+          ]
         }
       ]
     },
     {
       "type": "examples",
       "items": [
-        { "ru": "Я гуляю в парке с другом.", "tr": "Arkadaşımla parkta yürüyorum.", "en": "I am walking in the park with a friend.", "note": "друг -> с другом (eril +ом birliktelik)" },
-        { "ru": "Студент пишет письмо ручкой.", "tr": "Öğrenci tükenmez kalemle mektup yazıyor.", "en": "The student is writing a letter with a pen.", "note": "ручка -> ручкой (edatsız vasıta/araç)" },
-        { "ru": "Утром я пью чай с сахаром.", "tr": "Sabah şekerli çay içerim.", "en": "In the morning I drink tea with sugar.", "note": "сахар -> с сахаром (yiyecek karışımı)" },
-        { "ru": "Анна пьёт чёрный кофе с молоком.", "tr": "Anna sütlü sade kahve içer.", "en": "Anna drinks black coffee with milk.", "note": "молоко -> с молоком (nötr +ом)" },
-        { "ru": "Мы долго говорили с сестрой.", "tr": "Kız kardeşimle uzun süre konuştuk.", "en": "We spoke with my sister for a long time.", "note": "сестра -> с сестрой (dişil -ой birliktelik)" },
-        { "ru": "Мой старший брат работает врачом.", "tr": "Ağabeyim doktor olarak çalışıyor.", "en": "My older brother works as a doctor.", "note": "врач -> врачом (meslek bildirme)" }
+        {
+          "ru": "Я гуляю в парке с другом.",
+          "tr": "Arkadaşımla parkta yürüyorum.",
+          "en": "I am walking in the park with a friend.",
+          "noteTr": "друг -> с другом (eril +ом birliktelik)",
+          "noteEn": "друг -> с другом (masculine +ом accompaniment)"
+        },
+        {
+          "ru": "Студент пишет письмо ручкой.",
+          "tr": "Öğrenci tükenmez kalemle mektup yazıyor.",
+          "en": "The student is writing a letter with a pen.",
+          "noteTr": "ручка -> ручкой (edatsız vasıta/araç)",
+          "noteEn": "ручка -> ручкой (instrument/tool without preposition)"
+        },
+        {
+          "ru": "Утром я пью чай с сахаром.",
+          "tr": "Sabah şekerli çay içerim.",
+          "en": "In the morning I drink tea with sugar.",
+          "noteTr": "сахар -> с сахаром (yiyecek karışımı)",
+          "noteEn": "сахар -> с сахаром (food combination)"
+        },
+        {
+          "ru": "Анна пьёт чёрный кофе с молоком.",
+          "tr": "Anna sütlü sade kahve içer.",
+          "en": "Anna drinks black coffee with milk.",
+          "noteTr": "молоко -> с молоком (nötr +ом)",
+          "noteEn": "молоко -> с молоком (neuter +ом)"
+        },
+        {
+          "ru": "Мы долго говорили с сестрой.",
+          "tr": "Kız kardeşimle uzun süre konuştuk.",
+          "en": "We spoke with my sister for a long time.",
+          "noteTr": "сестра -> с сестрой (dişil -ой birliktelik)",
+          "noteEn": "сестра -> с сестрой (feminine -ой accompaniment)"
+        },
+        {
+          "ru": "Мой старший брат работает врачом.",
+          "tr": "Ağabeyim doktor olarak çalışıyor.",
+          "en": "My older brother works as a doctor.",
+          "noteTr": "врач -> врачом (meslek bildirme)",
+          "noteEn": "врач -> врачом (profession predicate)"
+        }
       ]
     }
   ],
@@ -61,8 +162,18 @@
       "type": "multipleChoice",
       "questionTr": "«Я гуляю в парке с ... (друг).» Cümlesindeki doğru enstrümantal form hangisidir?",
       "questionEn": "«Я гуляю в парке с ... (друг).» What is the correct instrumental form in this sentence?",
-      "optionsTr": ["друга", "другу", "другом", "друге"],
-      "optionsEn": ["друга", "другу", "другом", "друге"],
+      "optionsTr": [
+        "друга",
+        "другу",
+        "другом",
+        "друге"
+      ],
+      "optionsEn": [
+        "друга",
+        "другу",
+        "другом",
+        "друге"
+      ],
       "correctIndex": 2,
       "explanationTr": "'с' edatıyla birlikte eril isim enstrümantal hâlde -ом eki alır: «с другом».",
       "explanationEn": "With preposition 'с', masculine nouns take -ом in the instrumental case: «с другом»."
@@ -71,8 +182,18 @@
       "type": "multipleChoice",
       "questionTr": "«Анна пишет письмо ... (ручка).» Boşluğa hangi kelime gelmelidir?",
       "questionEn": "«Анна пишет письмо ... (ручка).» Which word should fill the blank?",
-      "optionsTr": ["ручку", "ручкой", "ручке", "ручки"],
-      "optionsEn": ["ручку", "ручкой", "ручке", "ручки"],
+      "optionsTr": [
+        "ручку",
+        "ручкой",
+        "ручке",
+        "ручки"
+      ],
+      "optionsEn": [
+        "ручку",
+        "ручкой",
+        "ручке",
+        "ручки"
+      ],
       "correctIndex": 1,
       "explanationTr": "Yazı aracı belirtilirken edat kullanılmaz, dişil isim -ой eki alır: «ручкой».",
       "explanationEn": "When stating a writing instrument, no preposition is used and the feminine noun takes -ой: «ручкой»."
@@ -81,8 +202,18 @@
       "type": "multipleChoice",
       "questionTr": "«Я люблю пить кофе с ... (молоко).» Cümlesinde boşluğa hangisi gelmelidir?",
       "questionEn": "«Я люблю пить кофе с ... (молоко).» Which form should fill the blank?",
-      "optionsTr": ["молоком", "молока", "молоку", "молоке"],
-      "optionsEn": ["молоком", "молока", "молоку", "молоке"],
+      "optionsTr": [
+        "молоком",
+        "молока",
+        "молоку",
+        "молоке"
+      ],
+      "optionsEn": [
+        "молоком",
+        "молока",
+        "молоку",
+        "молоке"
+      ],
       "correctIndex": 0,
       "explanationTr": "'с' edatından sonra nötr 'молоко' ismi -ом alır: «с молоком».",
       "explanationEn": "After 'с', the neuter noun 'молоко' takes -ом: «с молоком»."
@@ -91,8 +222,18 @@
       "type": "multipleChoice",
       "questionTr": "«Мы говорили с ... (сестра).» Cümlesinde boşluğa hangisi gelmelidir?",
       "questionEn": "«Мы говорили с ... (сестра).» Which form should fill the blank?",
-      "optionsTr": ["сестру", "сестре", "сестрой", "сестры"],
-      "optionsEn": ["сестру", "сестре", "сестрой", "сестры"],
+      "optionsTr": [
+        "сестру",
+        "сестре",
+        "сестрой",
+        "сестры"
+      ],
+      "optionsEn": [
+        "сестру",
+        "сестре",
+        "сестрой",
+        "сестры"
+      ],
       "correctIndex": 2,
       "explanationTr": "Dişil -а ile biten isim enstrümantal hâlde -ой alır: «с сестрой».",
       "explanationEn": "A feminine noun ending in -а takes -ой in the instrumental case: «с сестрой»."
@@ -101,8 +242,18 @@
       "type": "multipleChoice",
       "questionTr": "«Иван работает ... (врач).» Meslek bildiren boşluğa hangisi gelmelidir?",
       "questionEn": "«Иван работает ... (врач).» Which form expressing profession should fill the blank?",
-      "optionsTr": ["врач", "врачом", "врача", "врачу"],
-      "optionsEn": ["врач", "врачом", "врача", "врачу"],
+      "optionsTr": [
+        "врач",
+        "врачом",
+        "врача",
+        "врачу"
+      ],
+      "optionsEn": [
+        "врач",
+        "врачом",
+        "врача",
+        "врачу"
+      ],
       "correctIndex": 1,
       "explanationTr": "'работать' fiilinden sonra meslek enstrümantal hâlde gelir: «работает врачом».",
       "explanationEn": "After 'работать', the profession takes the instrumental case: «работает врачом»."
@@ -111,8 +262,18 @@
       "type": "multipleChoice",
       "questionTr": "«Ты пойдёшь в кино со ...?» ('Ben' zamirinin enstrümantal hali hangisidir?)",
       "questionEn": "«Ты пойдёшь в кино со ...?» (Which is the instrumental form of the pronoun 'I'?)",
-      "optionsTr": ["меня", "мне", "мной", "мною"],
-      "optionsEn": ["меня", "мне", "мной", "мною"],
+      "optionsTr": [
+        "меня",
+        "мне",
+        "мной",
+        "мною"
+      ],
+      "optionsEn": [
+        "меня",
+        "мне",
+        "мной",
+        "мною"
+      ],
       "correctIndex": 2,
       "explanationTr": "'я' şahıs zamirinin enstrümantal hâli 'со мной' şeklindedir.",
       "explanationEn": "The instrumental form of the 1st person pronoun 'я' is 'со мной'."
@@ -121,8 +282,18 @@
       "type": "multipleChoice",
       "questionTr": "Enstrümantal Hâli (Творительный падеж) temel olarak hangi sorulara cevap verir?",
       "questionEn": "Which questions does the Instrumental case primarily answer?",
-      "optionsTr": ["С кем? / С чем? / Чем? (Kiminle? / Neyle?)", "Куда? / Где? (Nereye? / Nerede?)", "Кого? / Чего? (Kimi? / Neyi?)", "Кому? / Чему? (Kime? / Neye?)"],
-      "optionsEn": ["С кем? / С чем? / Чем? (With whom? / With what?)", "Куда? / Где? (Where to? / Where?)", "Кого? / Чего? (Whom? / What?)", "Кому? / Чему? (To whom? / To what?)"],
+      "optionsTr": [
+        "С кем? / С чем? / Чем? (Kiminle? / Neyle?)",
+        "Куда? / Где? (Nereye? / Nerede?)",
+        "Кого? / Чего? (Kimi? / Neyi?)",
+        "Кому? / Чему? (Kime? / Neye?)"
+      ],
+      "optionsEn": [
+        "С кем? / С чем? / Чем? (With whom? / With what?)",
+        "Куда? / Где? (Where to? / Where?)",
+        "Кого? / Чего? (Whom? / What?)",
+        "Кому? / Чему? (To whom? / To what?)"
+      ],
       "correctIndex": 0,
       "explanationTr": "Enstrümantal hâli birliktelik ve araç belirterek 'С кем? С чем? Чем?' sorularına cevap verir.",
       "explanationEn": "The Instrumental case indicates accompaniment and means, answering 'С кем? С чем? Чем?'."
@@ -131,8 +302,18 @@
       "type": "multipleChoice",
       "questionTr": "«чай с ... (сахар).» Cümlesindeki doğru tamamlama hangisidir?",
       "questionEn": "«чай с ... (сахар).» Which is the correct completion in this phrase?",
-      "optionsTr": ["сахаром", "сахара", "сахару", "сахаре"],
-      "optionsEn": ["сахаром", "сахара", "сахару", "сахаре"],
+      "optionsTr": [
+        "сахаром",
+        "сахара",
+        "сахару",
+        "сахаре"
+      ],
+      "optionsEn": [
+        "сахаром",
+        "сахара",
+        "сахару",
+        "сахаре"
+      ],
       "correctIndex": 0,
       "explanationTr": "Eril 'сахар' ismi 'с' edatıyla birlikte -ом alır: «с сахаром».",
       "explanationEn": "The masculine noun 'сахар' takes -ом with 'с': «с сахаром»."
