@@ -32,6 +32,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { FaqOnboarding } from "@/components/faq-onboarding";
 import type { Item, Review, UnitStatus, Progress } from "@/types";
 
 export default function HomePage() {
@@ -115,6 +116,9 @@ export default function HomePage() {
 
   return (
     <div className="page-container">
+      {/* Ilk ziyaretci FAQ Onboarding katmani */}
+      <FaqOnboarding />
+
       {/* Hero bölümü */}
       <section className="hero">
         <span className="hero-emoji" style={{ display: "inline-flex", justifyContent: "center", alignItems: "center" }}>

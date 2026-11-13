@@ -3,6 +3,11 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-11-13
+- Gramer mini alistirmalari sayfa icinden cikarilip pop-up (modal) seklinde gosterilmeye baslandi.
+- Siteye ilk kez girenler icin FAQ yonlendirme katmani (onboarding) eklendi.
+- Gramer sayfasinda arayuz dili Ingilizce secildiginde kalan Turkce metinler duzeltildi.
+
 ## 2026-10-30
 - Kullanicilarin kilitli uniteleri onay vererek acmasini saglayan "Kilidi Asma" ozelligi eklendi.
 - Uygulamanin nasil kullanilacagini anlatan detayli bir SSS (FAQ) sayfasi eklendi.

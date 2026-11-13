@@ -249,6 +249,20 @@ export interface Messages {
   faqA6: string;
   faqQ7: string;
   faqA7: string;
+
+  // Faz 11.6 — Gramer Modal, Ceviri ve Onboarding
+  startExercise: string;
+  examples: string;
+  example: string;
+  gender: string;
+  rule: string;
+  grammarNotFound: string;
+  congratulationsPassed: string;
+  failedTryAgain: string;
+  grammarSubtitle: string;
+  onboardingFaqTooltip: string;
+  goToFaq: string;
+  close: string;
 }
 
 /** Tüm çeviriler */
@@ -479,14 +493,28 @@ const messages: Record<Lang, Messages> = {
     faqA2: "Evet, kilitli bir üniteye tıkladığınızda onay vererek o üniteyi açabilirsiniz.",
     faqQ3: "Dil ayarları nasıl çalışır?",
     faqA3: "Arayüz dili uygulamanın menülerini değiştirir. Çeviri dili ise Rusça kelimelerin hangi dilde karşılığını göreceğinizi belirler.",
-    faqQ4: "Review ve Include All Words nedir?",
-    faqA4: "Review, SRS algoritmasıyla kelimeleri unutmadan tekrar etmenizi sağlar. Include All Words açıkken, örnek cümlelerin içindeki ekstra kelimeler de havuza dahil edilir.",
+    faqQ4: "Tekrar ve Bütün Kelimeleri Dahil Et nedir?",
+    faqA4: "Tekrar, SRS algoritmasıyla kelimeleri unutmadan tekrar etmenizi sağlar. Bütün Kelimeleri Dahil Et açıkken, örnek cümlelerin içindeki ekstra kelimeler de havuza dahil edilir.",
     faqQ5: "Mistakes (Yanlışlarım) nasıl çalışır?",
-    faqA5: "Testlerde veya pratiklerde yanlış yaptığınız sorular buraya kaydedilir. Bir soruyu doğru yapana kadar burada kalır.",
-    faqQ6: "Practice ve Test arasındaki fark nedir?",
-    faqA6: "Practice sınırsız ve serbest çalışma modudur, üniteyi tamamlamaz. Test ise üniteyi geçmek için çözmeniz gereken sınavdır.",
+    faqA5: "Testlerde veya alıştırmalarda yanlış yaptığınız sorular buraya kaydedilir. Bir soruyu doğru yapana kadar burada kalır.",
+    faqQ6: "Alıştırmalar ve Test arasındaki fark nedir?",
+    faqA6: "Alıştırmalar sınırsız ve serbest çalışma modudur, üniteyi tamamlamaz. Test ise üniteyi geçmek için çözmeniz gereken sınavdır.",
     faqQ7: "Verilerimi nasıl yedeklerim?",
     faqA7: "Ayarlar sayfasından 'Verileri Yedekle' diyerek JSON dosyası olarak indirebilir ve başka bir cihazda 'Yedekten Geri Yükle' ile açabilirsiniz.",
+
+    // Faz 11.6 — Gramer Modal, Ceviri ve Onboarding
+    startExercise: "Alıştırmayı Başlat",
+    examples: "Örnekler",
+    example: "Örnek",
+    gender: "Cinsiyet",
+    rule: "Kural",
+    grammarNotFound: "Gramer notu bulunamadı.",
+    congratulationsPassed: "Tebrikler, geçtiniz",
+    failedTryAgain: "Kaldınız, tekrar deneyin",
+    grammarSubtitle: "Temel Rusça dilbilgisi kuralları, tablolar ve mini alıştırmalar.",
+    onboardingFaqTooltip: "Rusça öğrenmeye yeni mi başladın? Başlamadan önce Sıkça Sorulan Sorular (FAQ) kısmına göz atmalısın!",
+    goToFaq: "FAQ'ya Git",
+    close: "Kapat",
   },
 
   en: {
@@ -723,6 +751,20 @@ const messages: Record<Lang, Messages> = {
     faqA6: "Practice is an unlimited free study mode that does not complete a unit. Test is the exam you must pass to successfully complete the unit.",
     faqQ7: "How do I backup my data?",
     faqA7: "You can download a JSON file by clicking 'Export Data' in the Settings page, and restore it on another device using 'Import Data'.",
+
+    // Faz 11.6 — Gramer Modal, Ceviri ve Onboarding
+    startExercise: "Start Exercise",
+    examples: "Examples",
+    example: "Example",
+    gender: "Gender",
+    rule: "Rule",
+    grammarNotFound: "Grammar note not found.",
+    congratulationsPassed: "Congratulations, you passed",
+    failedTryAgain: "Failed, try again",
+    grammarSubtitle: "Essential Russian grammar rules, reference tables, and mini exercises.",
+    onboardingFaqTooltip: "New to learning Russian? Check out the Frequently Asked Questions (FAQ) before getting started!",
+    goToFaq: "Go to FAQ",
+    close: "Close",
   },
 };
 

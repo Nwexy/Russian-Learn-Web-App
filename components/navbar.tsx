@@ -137,6 +137,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/faq"
+            id="navbar-faq-link"
             className={`navbar-link ${isActive("/faq") ? "navbar-link-active" : ""}`}
           >
             <svg

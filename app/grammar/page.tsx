@@ -62,11 +62,7 @@ export default function GrammarPage() {
 
       <div className="page-header">
         <h1 className="page-title">{t.grammarNotes}</h1>
-        <p className="page-subtitle">
-          {uiLang === "tr"
-            ? "Temel Rusça dilbilgisi kuralları, tablolar ve mini alıştırmalar."
-            : "Essential Russian grammar rules, reference tables, and mini exercises."}
-        </p>
+        <p className="page-subtitle">{t.grammarSubtitle}</p>
       </div>
 
       {/* İlerleme çubuğu */}

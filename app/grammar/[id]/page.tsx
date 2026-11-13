@@ -3,7 +3,7 @@
  * İçeriği (metin, tablo, örnekler) sırayla render eder.
  * Örneklerde seslendirme butonu (SpeakButton) yer alır.
  * Sayfa açıldığında markViewed(noteId) çalışır.
- * Mini alıştırmalar tek tek çözülür, tümü doğruysa markCompleted(noteId) çağrılır.
+ * Mini alıştırmalar pop-up (modal) içinde çözülür, 6/8 barajı geçildiğinde markCompleted(noteId) çağrılır.
  */
 
 "use client";
@@ -16,6 +16,13 @@ import { markViewed, markCompleted, getGrammarProgress } from "@/lib/grammar-pro
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { SpeakButton } from "@/components/SpeakButton";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import type { GrammarProgress, MiniExercise } from "@/types";
 
 /** Fisher-Yates karistirma algoritmasi */
@@ -69,7 +76,8 @@ export default function GrammarDetailPage() {
 
   const [progress, setProgress] = useState<GrammarProgress | null>(null);
 
-  // Mini alıştırma durumları
+  // Mini alıştırma durumları ve modal kontrolü
+  const [isExerciseOpen, setIsExerciseOpen] = useState<boolean>(false);
   const [activeExercises, setActiveExercises] = useState<MiniExercise[]>([]);
   const [exerciseIndex, setExerciseIndex] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -108,9 +116,7 @@ export default function GrammarDetailPage() {
           {t.backToGrammar}
         </Link>
         <div className="empty-state">
-          <p className="empty-state-text">
-            {uiLang === "tr" ? "Gramer notu bulunamadı." : "Grammar note not found."}
-          </p>
+          <p className="empty-state-text">{t.grammarNotFound}</p>
         </div>
       </div>
     );
@@ -159,6 +165,10 @@ export default function GrammarDetailPage() {
     setHasAnswered(false);
     setCorrectCount(0);
     setExerciseFinished(false);
+  };
+
+  const handleOpenExerciseModal = () => {
+    setIsExerciseOpen(true);
   };
 
   return (
@@ -238,7 +248,7 @@ export default function GrammarDetailPage() {
                     color: "var(--text-primary)",
                   }}
                 >
-                  {uiLang === "tr" ? "Örnekler" : "Examples"}
+                  {t.examples}
                 </h3>
                 <div className="grammar-examples-grid">
                   {sec.items.map((item, itemIdx) => {
@@ -265,161 +275,209 @@ export default function GrammarDetailPage() {
         })}
       </div>
 
-      {/* Mini alıştırmalar bölümü */}
+      {/* Sayfanın En Altındaki Büyük ve Şık Alıştırmayı Başlat Butonu */}
       {exercises.length > 0 && (
-        <section className="grammar-exercise-box">
-          <div
+        <div style={{ marginTop: "3rem", textAlign: "center" }}>
+          <button
+            type="button"
+            onClick={handleOpenExerciseModal}
+            className="practice-btn practice-btn-primary"
             style={{
-              display: "flex",
+              display: "inline-flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              marginBottom: "1rem",
-              borderBottom: "1px solid var(--border)",
-              paddingBottom: "0.75rem",
+              justifyContent: "center",
+              gap: "0.75rem",
+              fontSize: "1.1rem",
+              fontWeight: 700,
+              padding: "1rem 2.5rem",
+              borderRadius: "1rem",
+              boxShadow: "0 8px 24px rgba(59, 130, 246, 0.25)",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
             }}
           >
-            <h3
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: 700,
-                color: "var(--text-primary)",
-                margin: 0,
-              }}
+            <svg
+              style={{ width: "22px", height: "22px" }}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={2.2}
             >
-              {t.miniExercise}
-            </h3>
-            {!exerciseFinished && (
-              <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-                {exerciseIndex + 1} / {exercises.length}
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>{t.startExercise}</span>
+            {progress?.completed && (
+              <span
+                className="unit-status-badge unit-status-completed"
+                style={{ fontSize: "0.75rem", padding: "0.2rem 0.6rem", marginLeft: "0.5rem" }}
+              >
+                {t.grammarCompleted}
               </span>
             )}
-          </div>
+          </button>
+        </div>
+      )}
 
-          {!exerciseFinished ? (
-            <div>
-              <div className="grammar-exercise-question">
-                {uiLang === "en"
-                  ? (currentEx.questionEn || currentEx.question)
-                  : (currentEx.questionTr || currentEx.question)}
-              </div>
-
-              <div className="grammar-options-grid">
-                {(uiLang === "en"
-                  ? (currentEx.optionsEn || currentEx.options)
-                  : (currentEx.optionsTr || currentEx.options)
-                ).map((opt, optIdx) => {
-                  let optCls = "grammar-option-btn";
-                  if (hasAnswered) {
-                    if (optIdx === currentEx.correctIndex) {
-                      optCls += " grammar-option-correct";
-                    } else if (optIdx === selectedOption) {
-                      optCls += " grammar-option-wrong";
-                    }
-                  }
-
-                  return (
-                    <button
-                      key={optIdx}
-                      type="button"
-                      className={optCls}
-                      disabled={hasAnswered}
-                      onClick={() => handleSelectOption(optIdx)}
-                    >
-                      {opt}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Geri bildirim ve sonraki buton */}
-              {hasAnswered && (
-                <div>
-                  <div
-                    className={`grammar-feedback-box ${
-                      selectedOption === currentEx.correctIndex
-                        ? "grammar-feedback-correct"
-                        : "grammar-feedback-wrong"
-                    }`}
-                  >
-                    <strong>
-                      {selectedOption === currentEx.correctIndex
-                        ? t.correct
-                        : t.wrong}
-                      :{" "}
-                    </strong>
-                    {uiLang === "tr"
-                      ? currentEx.explanationTr
-                      : currentEx.explanationEn}
-                  </div>
-
-                  <div style={{ textAlign: "right", marginTop: "1rem" }}>
-                    <button
-                      type="button"
-                      className="practice-btn practice-btn-primary"
-                      onClick={handleNextQuestion}
-                    >
-                      {exerciseIndex + 1 < exercises.length ? t.next : t.check}
-                    </button>
-                  </div>
-                </div>
+      {/* Mini Alıştırma Pop-Up (Modal) */}
+      <Dialog open={isExerciseOpen} onOpenChange={setIsExerciseOpen}>
+        <DialogContent className="max-w-xl">
+          <DialogHeader>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingRight: "1.5rem" }}>
+              <DialogTitle>{t.miniExercise}</DialogTitle>
+              {!exerciseFinished && exercises.length > 0 && (
+                <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 600 }}>
+                  {exerciseIndex + 1} / {exercises.length}
+                </span>
               )}
             </div>
-          ) : (
-            /* Sonuç Ekranı */
-            <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
-              <div
-                style={{
-                  fontSize: "1.5rem",
-                  fontWeight: 800,
-                  color: "var(--text-primary)",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                {t.result}
-              </div>
-              <p
-                style={{
-                  fontSize: "1.1rem",
-                  color: "var(--text-secondary)",
-                  marginBottom: "1rem",
-                }}
-              >
-                {t.correctAnswers}: {correctCount} / {exercises.length} ({exercises.length > 0 ? Math.round((correctCount / exercises.length) * 100) : 0}%)
-              </p>
+            <DialogDescription className="sr-only">
+              {title} - {t.miniExercise}
+            </DialogDescription>
+          </DialogHeader>
 
-              {correctCount >= 6 ? (
-                <div style={{ marginBottom: "1.5rem" }}>
-                  <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--success, #16a34a)", marginBottom: "0.75rem" }}>
-                    {uiLang === "tr" ? "Tebrikler, geçtiniz" : "Congratulations, you passed"}
-                  </div>
-                  <span className="unit-status-badge unit-status-completed" style={{ fontSize: "0.9rem", padding: "0.4rem 1rem" }}>
-                    {t.lessonComplete}
-                  </span>
+          {exercises.length > 0 && (
+            !exerciseFinished ? (
+              <div>
+                <div className="grammar-exercise-question" style={{ marginTop: "0.5rem" }}>
+                  {uiLang === "en"
+                    ? (currentEx.questionEn || currentEx.question)
+                    : (currentEx.questionTr || currentEx.question)}
                 </div>
-              ) : (
-                <div style={{ marginBottom: "1.5rem" }}>
-                  <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--danger, #dc2626)", marginBottom: "0.75rem" }}>
-                    {uiLang === "tr" ? "Kaldınız, tekrar deneyin" : "Failed, try again"}
+
+                <div className="grammar-options-grid">
+                  {(uiLang === "en"
+                    ? (currentEx.optionsEn || currentEx.options)
+                    : (currentEx.optionsTr || currentEx.options)
+                  ).map((opt, optIdx) => {
+                    let optCls = "grammar-option-btn";
+                    if (hasAnswered) {
+                      if (optIdx === currentEx.correctIndex) {
+                        optCls += " grammar-option-correct";
+                      } else if (optIdx === selectedOption) {
+                        optCls += " grammar-option-wrong";
+                      }
+                    }
+
+                    return (
+                      <button
+                        key={optIdx}
+                        type="button"
+                        className={optCls}
+                        disabled={hasAnswered}
+                        onClick={() => handleSelectOption(optIdx)}
+                      >
+                        {opt}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Geri bildirim ve sonraki buton */}
+                {hasAnswered && (
+                  <div style={{ marginTop: "1rem" }}>
+                    <div
+                      className={`grammar-feedback-box ${
+                        selectedOption === currentEx.correctIndex
+                          ? "grammar-feedback-correct"
+                          : "grammar-feedback-wrong"
+                      }`}
+                    >
+                      <strong>
+                        {selectedOption === currentEx.correctIndex
+                          ? t.correct
+                          : t.wrong}
+                        :{" "}
+                      </strong>
+                      {uiLang === "tr"
+                        ? currentEx.explanationTr
+                        : currentEx.explanationEn}
+                    </div>
+
+                    <div style={{ textAlign: "right", marginTop: "1rem" }}>
+                      <button
+                        type="button"
+                        className="practice-btn practice-btn-primary"
+                        onClick={handleNextQuestion}
+                      >
+                        {exerciseIndex + 1 < exercises.length ? t.next : t.check}
+                      </button>
+                    </div>
                   </div>
+                )}
+              </div>
+            ) : (
+              /* Sonuç Ekranı */
+              <div style={{ textAlign: "center", padding: "1.5rem 0" }}>
+                <div
+                  style={{
+                    fontSize: "1.5rem",
+                    fontWeight: 800,
+                    color: "var(--text-primary)",
+                    marginBottom: "0.5rem",
+                  }}
+                >
+                  {t.result}
+                </div>
+                <p
+                  style={{
+                    fontSize: "1.1rem",
+                    color: "var(--text-secondary)",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  {t.correctAnswers}: {correctCount} / {exercises.length} ({exercises.length > 0 ? Math.round((correctCount / exercises.length) * 100) : 0}%)
+                </p>
+
+                {correctCount >= 6 ? (
+                  <div style={{ marginBottom: "1.5rem" }}>
+                    <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--success, #16a34a)", marginBottom: "0.75rem" }}>
+                      {t.congratulationsPassed}
+                    </div>
+                    <span className="unit-status-badge unit-status-completed" style={{ fontSize: "0.9rem", padding: "0.4rem 1rem" }}>
+                      {t.lessonComplete}
+                    </span>
+                  </div>
+                ) : (
+                  <div style={{ marginBottom: "1.5rem" }}>
+                    <div style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--danger, #dc2626)", marginBottom: "0.75rem" }}>
+                      {t.failedTryAgain}
+                    </div>
+                    <button
+                      type="button"
+                      className="practice-btn practice-btn-secondary"
+                      onClick={handleRestartExercise}
+                    >
+                      {t.tryAgain}
+                    </button>
+                  </div>
+                )}
+
+                <div style={{ display: "flex", justifyContent: "center", gap: "0.75rem", marginTop: "1rem" }}>
                   <button
                     type="button"
                     className="practice-btn practice-btn-secondary"
-                    onClick={handleRestartExercise}
+                    onClick={() => setIsExerciseOpen(false)}
                   >
-                    {uiLang === "tr" ? "Tekrar Dene" : t.tryAgain}
+                    {t.close}
                   </button>
+                  <Link href="/grammar" className="practice-btn practice-btn-primary">
+                    {t.backToGrammar}
+                  </Link>
                 </div>
-              )}
-
-              <div>
-                <Link href="/grammar" className="practice-btn practice-btn-primary">
-                  {t.backToGrammar}
-                </Link>
               </div>
-            </div>
+            )
           )}
-        </section>
-      )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
