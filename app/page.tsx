@@ -22,8 +22,7 @@ import { getAllGrammarProgress } from "@/lib/grammar-progress";
 import { FlagRu } from "@/components/icons/flag-icons";
 import { Lock } from "lucide-react";
 import { RatingGuidePopover } from "@/components/rating-guide-popover";
-import {
-  AlertDialog,
+import { AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
@@ -33,6 +32,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { FaqOnboarding } from "@/components/faq-onboarding";
+import { HomeGuide } from "@/components/HomeGuide";
 import type { Item, Review, UnitStatus, Progress } from "@/types";
 
 export default function HomePage() {
@@ -136,6 +136,9 @@ export default function HomePage() {
         <h1 className="hero-title">{t.appName}</h1>
         <p className="hero-desc">{t.heroDesc}</p>
       </section>
+
+      {/* PC Yeni Başlayanlar Rehberi (Swiper) */}
+      <HomeGuide />
 
       {/* Bugünün Tekrarı kartı */}
       <section className="review-banner">

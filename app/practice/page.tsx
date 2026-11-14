@@ -1370,21 +1370,27 @@ export default function PracticePage() {
               })}
             </div>
 
-            {/* Başlat Butonu Alanı */}
-            <div className="flex flex-col items-center justify-center my-8 gap-2">
-              <button
-                type="button"
-                className="px-8 py-3.5 text-base font-semibold rounded-xl bg-accent text-white hover:opacity-90 transition-all shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed min-w-[220px] cursor-pointer"
-                onClick={startExercise}
-                disabled={!hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)}
-              >
-                {t.start}
-              </button>
-              {exerciseType === "mixed" && selectedMixedModes.length < 2 && (
-                <p className="text-xs font-semibold text-rose-500 animate-pulse">
-                  {t.selectAtLeastTwoModes}
-                </p>
-              )}
+            {/* Sabit (Sticky) Başlat Butonu Alanı (Faz 11.8) */}
+            <div className="sticky bottom-6 z-40 w-full max-w-lg mx-auto my-6 px-4">
+              <div className="p-3 rounded-2xl bg-card/85 backdrop-blur-md border border-border/80 shadow-2xl flex flex-col items-center gap-1.5 transition-all">
+                <button
+                  type="button"
+                  className={`w-full max-w-md mx-auto py-4 px-8 text-lg font-bold rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                    !hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)
+                      ? "bg-muted text-muted-foreground opacity-60 cursor-not-allowed shadow-none"
+                      : "bg-accent hover:opacity-95 shadow-lg shadow-accent/50 hover:shadow-xl hover:shadow-accent/60 active:scale-[0.99] animate-pulse"
+                  }`}
+                  onClick={startExercise}
+                  disabled={!hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)}
+                >
+                  <span>{t.start}</span>
+                </button>
+                {exerciseType === "mixed" && selectedMixedModes.length < 2 && (
+                  <p className="text-xs font-semibold text-rose-500 animate-pulse text-center">
+                    {t.selectAtLeastTwoModes}
+                  </p>
+                )}
+              </div>
             </div>
 
             {/* Karışık Mod Seçimi Modal (Faz 11.7) */}

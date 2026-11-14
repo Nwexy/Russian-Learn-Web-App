@@ -3,6 +3,10 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-11-14
+- Ana sayfaya (sadece PC'de gorunecek) yeni baslayanlar icin Swiper rehberi eklendi.
+- Practice sayfasindaki "Baslat" butonu, ekranin altina sabitlenerek (sticky) ve animasyon eklenerek daha gorunur hale getirildi.
+
 ## 2026-11-13
 - Footer'dan FAQ linki kaldirildi.
 - Gramer ornek aciklamalari (note) cift dilli hale getirildi (noteTr/noteEn).

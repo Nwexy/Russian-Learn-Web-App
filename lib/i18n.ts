@@ -281,6 +281,15 @@ export interface Messages {
   numberBadgeTitle: string;
   sentenceExtraWord: string;
   mixedModeDesc: string;
+
+  // Faz 11.8 — Ana Sayfa PC Rehberi (Swiper)
+  welcomeTitle: string;
+  welcomeDesc: string;
+  progressTitle: string;
+  progressDesc: string;
+  reviewTitle: string;
+  reviewDesc: string;
+  dismissGuide: string;
 }
 
 /** Tüm çeviriler */
@@ -551,6 +560,15 @@ const messages: Record<Lang, Messages> = {
     numberBadgeTitle: "Sayı:",
     sentenceExtraWord: "Cümleden Ekstra Kelime",
     mixedModeDesc: "Çoktan seçmeli, boşluk doldurma, eşleştirme, dinleme, konuşma ve cümle kurma sorularını rastgele harmanlar.",
+
+    // Faz 11.8 — Ana Sayfa PC Rehberi (Swiper)
+    welcomeTitle: "Hoş Geldiniz!",
+    welcomeDesc: "Derse başlamak için aşağıdaki ünitelere tıklayın.",
+    progressTitle: "Nasıl İlerlenir?",
+    progressDesc: "Dersleri bitirin, testleri geçin ve yeni ünitelerin kilidini açın.",
+    reviewTitle: "Tekrar Etmeyi Unutmayın!",
+    reviewDesc: "Öğrendiklerinizi unutmamak için her gün Review kısmına göz atın.",
+    dismissGuide: "Rehberi Kapat",
   },
 
   en: {
@@ -774,7 +792,7 @@ const messages: Record<Lang, Messages> = {
     faqTitle: "Frequently Asked Questions",
     faqSubtitle: "Frequently asked questions about the app and learning process",
     faqQ1: "Where should I start?",
-    faqA1: "Start with the alphabet and progress in order. Follow the Lesson -> Test -> Review cycle.",
+    faqA1: "Start with the alphabet and progress in units step by step. Follow the Unit Lessons -> Review Cycle -> Go To Practice try all of the question type -> Learn some grammar",
     faqQ2: "Can I skip units?",
     faqA2: "Yes, when you click on a locked unit, you can confirm to unlock and access it directly.",
     faqQ3: "How do language settings work?",
@@ -784,7 +802,7 @@ const messages: Record<Lang, Messages> = {
     faqQ5: "How does Mistakes work?",
     faqA5: "Questions you answer incorrectly in tests or practice sessions are saved here. They remain until you answer them correctly.",
     faqQ6: "What is the difference between Practice and Test?",
-    faqA6: "Practice is an unlimited free study mode that does not complete a unit. Test is the exam you must pass to successfully complete the unit.",
+    faqA6: "Practice is an unlimited free study mode that does not require to complete a unit. Test is the exam you must pass to successfully complete the unit.",
     faqQ7: "How do I backup my data?",
     faqA7: "You can download a JSON file by clicking 'Export Data' in the Settings page, and restore it on another device using 'Import Data'.",
 
@@ -819,6 +837,15 @@ const messages: Record<Lang, Messages> = {
     numberBadgeTitle: "Number:",
     sentenceExtraWord: "Sentence Extra Word",
     mixedModeDesc: "Randomly blends multiple choice, fill in the blank, matching, listening, speaking, and sentence building.",
+
+    // Faz 11.8 — Ana Sayfa PC Rehberi (Swiper)
+    welcomeTitle: "Welcome!",
+    welcomeDesc: "Click on the units below to start learning.",
+    progressTitle: "How to Progress?",
+    progressDesc: "Complete lessons, pass tests, and unlock new units.",
+    reviewTitle: "Don't Forget to Review!",
+    reviewDesc: "Check the Review section daily to retain what you've learned.",
+    dismissGuide: "Dismiss Guide",
   },
 };
 
