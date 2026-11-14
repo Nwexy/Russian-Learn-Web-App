@@ -3623,53 +3623,74 @@ body {
 }
 
 /* ========================================
-   Faz 11.8: HomeGuide Swiper Özel Stilleri
+   Faz 11.8 & 11.9: HomeGuide Swiper Özel Stilleri
    ======================================== */
 .home-guide-swiper .swiper-button-prev,
 .home-guide-swiper .swiper-button-next {
-  width: 32px;
-  height: 32px;
-  border-radius: 9999px;
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  transition: all 0.2s ease;
+  display: none !important;
 }
 
-.home-guide-swiper .swiper-button-prev:hover,
-.home-guide-swiper .swiper-button-next:hover {
-  background-color: var(--bg-card-hover);
-  color: var(--accent);
-  border-color: var(--accent);
-}
+@media (min-width: 768px) {
+  .home-guide-swiper .swiper-button-prev,
+  .home-guide-swiper .swiper-button-next {
+    display: flex !important;
+    width: 32px;
+    height: 32px;
+    border-radius: 9999px;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+  }
 
-.home-guide-swiper .swiper-button-prev {
-  left: 6px;
-}
+  .home-guide-swiper .swiper-button-prev:hover,
+  .home-guide-swiper .swiper-button-next:hover {
+    background-color: var(--bg-card-hover);
+    color: var(--accent);
+    border-color: var(--accent);
+  }
 
-.home-guide-swiper .swiper-button-next {
-  right: 6px;
-}
+  .home-guide-swiper .swiper-button-prev {
+    left: 6px;
+  }
 
-.home-guide-swiper .swiper-button-prev::after,
-.home-guide-swiper .swiper-button-next::after {
-  font-size: 13px !important;
-  font-weight: 700;
+  .home-guide-swiper .swiper-button-next {
+    right: 6px;
+  }
+
+  .home-guide-swiper .swiper-button-prev::after,
+  .home-guide-swiper .swiper-button-next::after {
+    font-size: 13px !important;
+    font-weight: 700;
+  }
 }
 
 .home-guide-swiper .swiper-pagination-bullet {
   background: var(--text-secondary);
   opacity: 0.35;
   transition: all 0.25s ease;
-  width: 7px;
-  height: 7px;
+  width: 6px;
+  height: 6px;
+}
+
+@media (min-width: 640px) {
+  .home-guide-swiper .swiper-pagination-bullet {
+    width: 7px;
+    height: 7px;
+  }
 }
 
 .home-guide-swiper .swiper-pagination-bullet-active {
   background: var(--accent);
   opacity: 1;
-  width: 20px;
+  width: 16px;
   border-radius: 9999px;
+}
+
+@media (min-width: 640px) {
+  .home-guide-swiper .swiper-pagination-bullet-active {
+    width: 20px;
+  }
 }
 
 

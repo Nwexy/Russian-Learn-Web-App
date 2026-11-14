@@ -515,7 +515,7 @@ const messages: Record<Lang, Messages> = {
     faqTitle: "Sıkça Sorulan Sorular",
     faqSubtitle: "Uygulama ve öğrenme süreciyle ilgili merak edilenler",
     faqQ1: "Nereden başlanmalı?",
-    faqA1: "Alfabe ile başlayın, sırayla ilerleyin. Ders -> Test -> Review döngüsünü takip edin.",
+    faqA1: "Alfabe ile başlayın, sırayla ilerleyin. Ders -> Gün Tekrarı -> Alıştırma Tiplerini Çöz -> Gramer Çalış",
     faqQ2: "Üniteleri atlayabilir miyim?",
     faqA2: "Evet, kilitli bir üniteye tıkladığınızda onay vererek o üniteyi açabilirsiniz.",
     faqQ3: "Dil ayarları nasıl çalışır?",

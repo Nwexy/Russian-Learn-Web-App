@@ -4,6 +4,10 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-14
+- Practice sayfasindaki Baslat butonunun arkasindaki siyah/opak arka plan kaldirildi.
+- Ana sayfadaki rehberin (Swiper) mobil cihazlarda da gorunmesi saglandi ve mobil tasarimi uyarlandi.
+
+## 2026-11-14
 - Ana sayfaya (sadece PC'de gorunecek) yeni baslayanlar icin Swiper rehberi eklendi.
 - Practice sayfasindaki "Baslat" butonu, ekranin altina sabitlenerek (sticky) ve animasyon eklenerek daha gorunur hale getirildi.
 

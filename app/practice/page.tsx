@@ -1370,27 +1370,25 @@ export default function PracticePage() {
               })}
             </div>
 
-            {/* Sabit (Sticky) Başlat Butonu Alanı (Faz 11.8) */}
-            <div className="sticky bottom-6 z-40 w-full max-w-lg mx-auto my-6 px-4">
-              <div className="p-3 rounded-2xl bg-card/85 backdrop-blur-md border border-border/80 shadow-2xl flex flex-col items-center gap-1.5 transition-all">
-                <button
-                  type="button"
-                  className={`w-full max-w-md mx-auto py-4 px-8 text-lg font-bold rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-                    !hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)
-                      ? "bg-muted text-muted-foreground opacity-60 cursor-not-allowed shadow-none"
-                      : "bg-accent hover:opacity-95 shadow-lg shadow-accent/50 hover:shadow-xl hover:shadow-accent/60 active:scale-[0.99] animate-pulse"
-                  }`}
-                  onClick={startExercise}
-                  disabled={!hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)}
-                >
-                  <span>{t.start}</span>
-                </button>
-                {exerciseType === "mixed" && selectedMixedModes.length < 2 && (
-                  <p className="text-xs font-semibold text-rose-500 animate-pulse text-center">
-                    {t.selectAtLeastTwoModes}
-                  </p>
-                )}
-              </div>
+            {/* Sabit (Sticky) Başlat Butonu Alanı (Faz 11.9: Şeffaf Arka Plan) */}
+            <div className="sticky bottom-6 z-40 w-full max-w-md mx-auto my-6 px-4 flex flex-col items-center gap-2 pointer-events-none">
+              <button
+                type="button"
+                className={`pointer-events-auto w-full py-4 px-8 text-lg font-bold rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
+                  !hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)
+                    ? "bg-muted text-muted-foreground opacity-60 cursor-not-allowed shadow-none"
+                    : "bg-accent hover:opacity-95 shadow-lg shadow-accent/50 hover:shadow-xl hover:shadow-accent/60 active:scale-[0.99] animate-pulse"
+                }`}
+                onClick={startExercise}
+                disabled={!hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)}
+              >
+                <span>{t.start}</span>
+              </button>
+              {exerciseType === "mixed" && selectedMixedModes.length < 2 && (
+                <p className="pointer-events-auto text-xs font-semibold text-rose-500 animate-pulse text-center">
+                  {t.selectAtLeastTwoModes}
+                </p>
+              )}
             </div>
 
             {/* Karışık Mod Seçimi Modal (Faz 11.7) */}
