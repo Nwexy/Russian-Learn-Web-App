@@ -4,6 +4,7 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-16
+- Bosluk Doldurma alistirmalarinda, cevap kontrol edildiginde bosluk (___) alaninin dogru (yesil) veya yanlis (kirmizi) cevapla doldurulmasi saglandi.
 - Mobilde unitelere hizli erisim icin "Uniteye Atlama" butonu ve pop-up'i eklendi.
 - PC'de unitelere hizli erisim icin sol kenara (DeepSeek tarzi) hover ile acilan yan menu eklendi.
 

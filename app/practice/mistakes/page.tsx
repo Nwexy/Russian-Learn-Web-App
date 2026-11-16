@@ -17,7 +17,7 @@ import { getHighlightedTranslation } from "@/lib/exercises";
 import { getAllUnits, getUnitById } from "@/lib/content";
 import { speak, isTTSSupported, initVoices } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import { Mic, Volume2 } from "lucide-react";
 import {
@@ -515,8 +515,19 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{sentence}</span>
-            <SpeakButton text={sentence} size="sm" />
+            <span>
+              {renderSentenceWithBlank(
+                sentence,
+                revealed,
+                isCorrect,
+                correctWord,
+                answer
+              )}
+            </span>
+            <SpeakButton
+              text={revealed ? sentence.replace(/_{2,}/g, correctWord) : sentence}
+              size="sm"
+            />
           </div>
           {currentItem && shouldShowPronunciation(revealed) && <PronunciationText item={currentItem} />}
           {fullTranslation && (

@@ -23,7 +23,7 @@ import type { MixedQuestion } from "@/lib/exercises";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported, initVoices } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
@@ -368,8 +368,19 @@ export default function UnitPracticePage() {
         {header}
         <div className="flashcard">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{fb.sentenceWithBlank}</span>
-            <SpeakButton text={fb.sentenceWithBlank} size="sm" />
+            <span>
+              {renderSentenceWithBlank(
+                fb.sentenceWithBlank,
+                revealed,
+                isCorrect,
+                fb.correctWord,
+                answer
+              )}
+            </span>
+            <SpeakButton
+              text={revealed ? fb.sentenceWithBlank.replace(/_{2,}/g, fb.correctWord) : fb.sentenceWithBlank}
+              size="sm"
+            />
           </div>
           {shouldShowPronunciation(revealed) && <PronunciationText item={fb.item} />}
           {(fb.fullTranslation || fb.hintSentence) && (

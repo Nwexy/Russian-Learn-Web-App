@@ -61,3 +61,77 @@ export function renderHighlightedText(
   });
 }
 
+/**
+ * Faz 12.1: Boşluk doldurma cümlesindeki (sentenceWithBlank) "___" alanını:
+ * - Henüz cevap verilmemişse (isSubmitted === false): "___" olarak bırakır.
+ * - Cevap verilmişse ve DOĞRU ise: doğru kelimeyi yeşil renkte (text-emerald-500 font-bold underline) gösterir.
+ * - Cevap verilmişse ve YANLIŞ ise: kullanıcının yanlış cevabını kırmızı üstü çizili (text-rose-500 line-through),
+ *   hemen ardından doğru kelimeyi yeşil renkte (text-emerald-500 font-bold underline) gösterir.
+ */
+export function renderSentenceWithBlank(
+  sentence: string,
+  isSubmitted: boolean,
+  isCorrect: boolean | null,
+  correctWord: string,
+  userAnswer?: string
+): React.ReactNode {
+  if (!sentence) return null;
+
+  // Boşluk karakterlerini bul (___ veya daha fazla alt çizgi)
+  const regex = /_{2,}/;
+  const match = regex.exec(sentence);
+
+  if (!match) {
+    return sentence;
+  }
+
+  const before = sentence.slice(0, match.index);
+  const after = sentence.slice(match.index + match[0].length);
+
+  if (!isSubmitted) {
+    return (
+      <>
+        {before}
+        <span className="font-semibold underline underline-offset-4 decoration-muted-foreground/60">
+          ___
+        </span>
+        {after}
+      </>
+    );
+  }
+
+  // Submitted: Doğru cevap
+  if (isCorrect) {
+    return (
+      <>
+        {before}
+        <span className="text-emerald-500 font-bold underline decoration-2 underline-offset-4">
+          {correctWord}
+        </span>
+        {after}
+      </>
+    );
+  }
+
+  // Submitted: Yanlış cevap
+  const trimmedUser = (userAnswer || "").trim();
+
+  return (
+    <>
+      {before}
+      <span className="inline-flex items-baseline gap-1.5">
+        {trimmedUser && (
+          <span className="text-rose-500 line-through font-semibold decoration-2">
+            {trimmedUser}
+          </span>
+        )}
+        <span className="text-emerald-500 font-bold underline decoration-2 underline-offset-4">
+          {correctWord}
+        </span>
+      </span>
+      {after}
+    </>
+  );
+}
+
+

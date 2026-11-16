@@ -73,7 +73,7 @@ import {
 } from "@/lib/speech";
 import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation, renderHighlightedText } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item, ExerciseType } from "@/types";
 
@@ -1634,8 +1634,19 @@ export default function PracticePage() {
           {mixedHeader}
           <div className="flashcard">
             <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-              <span>{fb.sentenceWithBlank}</span>
-              <SpeakButton text={fb.sentenceWithBlank} size="sm" />
+              <span>
+                {renderSentenceWithBlank(
+                  fb.sentenceWithBlank,
+                  mixedRevealed,
+                  mixedIsCorrect,
+                  fb.correctWord,
+                  mixedAnswer
+                )}
+              </span>
+              <SpeakButton
+                text={mixedRevealed ? fb.sentenceWithBlank.replace(/_{2,}/g, fb.correctWord) : fb.sentenceWithBlank}
+                size="sm"
+              />
             </div>
             {shouldShowPronunciation(mixedRevealed) && <PronunciationText item={fb.item} />}
             {(fb.fullTranslation || fb.hintSentence) && (
@@ -2115,8 +2126,19 @@ export default function PracticePage() {
 
         <div className="flashcard">
           <div className="flashcard-ru" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{q.sentenceWithBlank}</span>
-            <SpeakButton text={q.sentenceWithBlank} size="sm" />
+            <span>
+              {renderSentenceWithBlank(
+                q.sentenceWithBlank,
+                fbRevealed,
+                fbCorrect,
+                q.correctWord,
+                fbAnswer
+              )}
+            </span>
+            <SpeakButton
+              text={fbRevealed ? q.sentenceWithBlank.replace(/_{2,}/g, q.correctWord) : q.sentenceWithBlank}
+              size="sm"
+            />
           </div>
           {shouldShowPronunciation(fbRevealed) && <PronunciationText item={q.item} />}
           {(q.fullTranslation || q.hintSentence) && (

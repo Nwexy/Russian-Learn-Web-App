@@ -82,11 +82,11 @@ export function getRussianVoice(): SpeechSynthesisVoice | null {
  *
  * @param text - Okunacak metin
  * @param lang - BCP-47 dil kodu (varsayılan: "ru-RU")
- * @param options - Gecikme süresi (varsayılan: 500ms) veya callback seçenekleri
+ * @param options - Gecikme süresi (varsayılan: 0ms) veya callback seçenekleri
  *
  * Davranış:
  *  - Önceki konuşmaları hemen iptal eder (kuyruğu temizler).
- *  - Kelimeyi söylemeden önce yarım saniye (500ms) bekler (doğal duraklama sağlar ve ilk hece kesilmesini önler).
+ *  - Metni gecikmesiz olarak hemen seslendirir.
  *  - Önceden yüklenmiş Rusça sesini doğrudan atayarak arama gecikmesini sıfırlar.
  *  - Hız: 0.9 (yeni başlayanlar için ideal tempo).
  *  - Tarayıcı TTS desteklemiyorsa sessizce döner.
@@ -100,7 +100,7 @@ export function speak(
 
   const opts: SpeakOptions =
     typeof options === "number" ? { delayMs: options } : options || {};
-  const delayMs = opts.delayMs !== undefined ? opts.delayMs : 500;
+  const delayMs = opts.delayMs !== undefined ? opts.delayMs : 0;
 
   // Ses henüz hafızaya alınmadıysa tekrar dene
   if (!russianVoice) {
