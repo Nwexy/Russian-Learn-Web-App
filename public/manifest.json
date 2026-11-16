@@ -1,7 +1,7 @@
 {
   "name": "Learn Russian",
   "short_name": "Rusça",
-  "description": "A1-A2 Russian learning app with SRS and grammar.",
+  "description": "A0-A1+ Russian learning.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f172a",

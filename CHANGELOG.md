@@ -3,6 +3,10 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-11-16
+- Mobilde unitelere hizli erisim icin "Uniteye Atlama" butonu ve pop-up'i eklendi.
+- PC'de unitelere hizli erisim icin sol kenara (DeepSeek tarzi) hover ile acilan yan menu eklendi.
+
 ## 2026-11-14
 - Practice sayfasindaki Baslat butonunun arkasindaki siyah/opak arka plan kaldirildi.
 - Ana sayfadaki rehberin (Swiper) mobil cihazlarda da gorunmesi saglandi ve mobil tasarimi uyarlandi.

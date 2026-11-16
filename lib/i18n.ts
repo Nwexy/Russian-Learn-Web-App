@@ -290,6 +290,13 @@ export interface Messages {
   reviewTitle: string;
   reviewDesc: string;
   dismissGuide: string;
+
+  // Faz 12.0 — Erişilebilirlik ve Hızlı Erişim
+  jumpToUnit: string;
+  unitList: string;
+  openUnits: string;
+  lockedUnits: string;
+  navHelp: string;
 }
 
 /** Tüm çeviriler */
@@ -569,6 +576,13 @@ const messages: Record<Lang, Messages> = {
     reviewTitle: "Tekrar Etmeyi Unutmayın!",
     reviewDesc: "Öğrendiklerinizi unutmamak için her gün Review kısmına göz atın.",
     dismissGuide: "Rehberi Kapat",
+
+    // Faz 12.0 — Erişilebilirlik ve Hızlı Erişim
+    jumpToUnit: "Üniteye Atla",
+    unitList: "Ünite Listesi",
+    openUnits: "Açık Üniteler",
+    lockedUnits: "Kilitli Üniteler",
+    navHelp: "İstediğiniz üniteye hızlıca geçiş yapın",
   },
 
   en: {
@@ -842,10 +856,17 @@ const messages: Record<Lang, Messages> = {
     welcomeTitle: "Welcome!",
     welcomeDesc: "Click on the units below to start learning.",
     progressTitle: "How to Progress?",
-    progressDesc: "Complete lessons, pass tests, and unlock new units.",
+    progressDesc: "Complete lessons, pass tests, and unlock new units, practice all modes and check your mistakes",
     reviewTitle: "Don't Forget to Review!",
     reviewDesc: "Check the Review section daily to retain what you've learned.",
     dismissGuide: "Dismiss Guide",
+
+    // Faz 12.0 — Accessibility & Quick Navigation
+    jumpToUnit: "Jump to Unit",
+    unitList: "Unit List",
+    openUnits: "Unlocked Units",
+    lockedUnits: "Locked Units",
+    navHelp: "Quickly navigate to any unit",
   },
 };
 

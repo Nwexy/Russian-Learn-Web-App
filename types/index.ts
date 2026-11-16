@@ -85,6 +85,16 @@ export interface UnitData {
   items: RawItem[];
 }
 
+/** Navigasyon ve listeleme için özet ünite bilgisi */
+export interface Unit {
+  id: string;
+  titleTr: string;
+  titleEn: string;
+  level: string;
+  itemCount: number;
+  hasExercises?: boolean;
+}
+
 /** Alıştırma tipleri */
 export type ExerciseType = "multipleChoice" | "fillBlank" | "matching" | "listening" | "speaking" | "wordBank";
 

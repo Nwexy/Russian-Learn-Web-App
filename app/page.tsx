@@ -20,7 +20,7 @@ import { getUnitStatus, isUnitUnlocked, setForceUnlocked } from "@/lib/progress"
 import { loadGrammarNotes } from "@/lib/grammar";
 import { getAllGrammarProgress } from "@/lib/grammar-progress";
 import { FlagRu } from "@/components/icons/flag-icons";
-import { Lock } from "lucide-react";
+import { Lock, Map, CheckCircle2, Clock, Circle } from "lucide-react";
 import { RatingGuidePopover } from "@/components/rating-guide-popover";
 import { AlertDialog,
   AlertDialogAction,
@@ -31,8 +31,16 @@ import { AlertDialog,
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { FaqOnboarding } from "@/components/faq-onboarding";
 import { HomeGuide } from "@/components/HomeGuide";
+import { DesktopUnitNav } from "@/components/DesktopUnitNav";
 import type { Item, Review, UnitStatus, Progress } from "@/types";
 
 export default function HomePage() {
@@ -49,6 +57,7 @@ export default function HomePage() {
   const [allProgress, setAllProgress] = useState<Progress[]>([]);
   const [selectedLockedUnitId, setSelectedLockedUnitId] = useState<string | null>(null);
   const [unlockDialogOpen, setUnlockDialogOpen] = useState<boolean>(false);
+  const [mobileJumpOpen, setMobileJumpOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState(true);
 
   const handleLockedClick = (unitId: string) => {
@@ -119,6 +128,14 @@ export default function HomePage() {
       {/* Ilk ziyaretci FAQ Onboarding katmani */}
       <FaqOnboarding />
 
+      {/* PC Sol Kenar Hızlı Ünite Menüsü (Faz 12.0) */}
+      <DesktopUnitNav
+        units={units}
+        unitStatuses={unitStatuses}
+        allProgress={allProgress}
+        onLockedClick={handleLockedClick}
+      />
+
       {/* Hero bölümü */}
       <section className="hero">
         <span className="hero-emoji" style={{ display: "inline-flex", justifyContent: "center", alignItems: "center" }}>
@@ -139,6 +156,21 @@ export default function HomePage() {
 
       {/* PC Yeni Başlayanlar Rehberi (Swiper) */}
       <HomeGuide />
+
+      {/* Mobil Üniteye Atlama Butonu (Faz 12.0) */}
+      <div className="md:hidden mb-4">
+        <button
+          type="button"
+          onClick={() => setMobileJumpOpen(true)}
+          className="w-full py-3.5 px-4 rounded-xl border border-border/80 bg-card hover:bg-secondary/70 hover:border-accent/60 text-foreground font-semibold flex items-center justify-center gap-2.5 transition-all shadow-sm active:scale-[0.99] cursor-pointer"
+        >
+          <Map className="w-5 h-5 text-accent" />
+          <span className="text-base">{t.jumpToUnit}</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-accent/15 text-accent font-bold ml-1">
+            {units.length}
+          </span>
+        </button>
+      </div>
 
       {/* Bugünün Tekrarı kartı */}
       <section className="review-banner">
@@ -365,6 +397,99 @@ export default function HomePage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Mobil Üniteye Atlama Pop-up (Faz 12.0) */}
+      <Dialog open={mobileJumpOpen} onOpenChange={setMobileJumpOpen}>
+        <DialogContent className="max-w-md w-[92vw] p-5 rounded-2xl max-h-[85vh] flex flex-col">
+          <DialogHeader className="text-left pb-2.5 border-b border-border/60">
+            <DialogTitle className="flex items-center gap-2 text-lg">
+              <Map className="w-5 h-5 text-accent" />
+              <span>{t.unitList}</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              {t.navHelp}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Ünite Listesi */}
+          <div className="overflow-y-auto flex-1 space-y-2 py-2 pr-1 max-h-[60vh] custom-scrollbar">
+            {units.map((unit) => {
+              const isUnlocked = isUnitUnlocked(unit.id, units, allProgress);
+              const status = unitStatuses[unit.id] || "notStarted";
+
+              const statusBadgeText = !isUnlocked
+                ? t.unitLocked
+                : status === "completed"
+                  ? t.completed
+                  : status === "inProgress"
+                    ? t.inProgress
+                    : t.notStarted;
+
+              const statusBadgeCls = !isUnlocked
+                ? "bg-muted text-muted-foreground border-border/60"
+                : status === "completed"
+                  ? "bg-emerald-500/15 text-emerald-500 border-emerald-500/30"
+                  : status === "inProgress"
+                    ? "bg-amber-500/15 text-amber-500 border-amber-500/30"
+                    : "bg-secondary text-muted-foreground border-border/60";
+
+              return (
+                <div
+                  key={unit.id}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    setMobileJumpOpen(false);
+                    if (!isUnlocked) {
+                      handleLockedClick(unit.id);
+                    } else {
+                      router.push(`/unit/${unit.id}`);
+                    }
+                  }}
+                  className={`w-full p-3 rounded-xl border flex items-center justify-between gap-3 text-left transition-all cursor-pointer ${
+                    !isUnlocked
+                      ? "opacity-60 bg-muted/20 border-border/60 hover:opacity-85"
+                      : "bg-card border-border hover:border-accent/60 hover:bg-secondary/50 active:scale-[0.99] shadow-xs"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center shrink-0">
+                      {!isUnlocked ? (
+                        <Lock className="w-4 h-4 text-muted-foreground" />
+                      ) : status === "completed" ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      ) : status === "inProgress" ? (
+                        <Clock className="w-4 h-4 text-amber-500" />
+                      ) : (
+                        <Circle className="w-4 h-4 text-muted-foreground/60" />
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 mb-0.5">
+                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-secondary text-foreground">
+                          {unit.level}
+                        </span>
+                        <h4 className="text-sm font-semibold truncate text-foreground">
+                          {getUnitTitle(unit, uiLang)}
+                        </h4>
+                      </div>
+                      <p className="text-[11px] text-muted-foreground">
+                        {unit.itemCount} {t.items}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 flex items-center gap-2">
+                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full border ${statusBadgeCls}`}>
+                      {statusBadgeText}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
