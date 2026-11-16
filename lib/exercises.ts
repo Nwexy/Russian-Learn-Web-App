@@ -8,7 +8,7 @@
  *  4. Dinleme (Listening)
  */
 
-import type { Item, Lang, ExerciseType } from "@/types";
+import type { Item, Lang, ExerciseType, MultipleChoiceVariant } from "@/types";
 
 /* ========================================
    Soru tipleri
@@ -20,13 +20,18 @@ export type McDirection = "ru-to-target" | "target-to-ru";
 /** RU→çeviri yönünün seçilme olasılığı (kalanı ters yön) */
 const RU_TO_TARGET_PROBABILITY = 0.7;
 
+/** Cümle içi boşluk doldurma varyantının seçilme olasılığı (Faz 12.2: %40) */
+const SENTENCE_BLANK_PROBABILITY = 0.40;
+
 /** Çoktan seçmeli soru */
 export interface MultipleChoiceQuestion {
   item: Item;
-  question: string;         // ru-to-target: Rusça kelime, target-to-ru: çeviri
+  question: string;         // ru-to-target: Rusça kelime, target-to-ru: çeviri, sentenceBlank: cümle
   options: string[];        // 4 şık (yöne göre çeviri dilinde veya Rusça)
   correctIndex: number;     // Doğru şıkkın indeksi
   direction: McDirection;   // Soru yönü
+  variant?: MultipleChoiceVariant;  // Faz 12.2: Soru varyantı ("word" | "sentenceBlank")
+  hint?: string;            // Faz 12.2: sentenceBlank için tam cümle çevirisi
 }
 
 /** Boşluk doldurma sorusu */
@@ -266,15 +271,91 @@ export function makeSentenceWithBlank(sentence: string, targetWord: string): str
   return sentence.trimEnd() + " ___";
 }
 
+/**
+ * Faz 12.2: Cümle içinde hedef kelimeyi arar, "___" ile değiştirir ve hedef kelimenin
+ * cümledeki gerçek formunu (veya tam eşleşmesini) döndürür.
+ * Bulunamazsa null döner (hata vermemek için standart "word" moduna fallback yapılır).
+ */
+export function makeSentenceBlankWithTarget(
+  sentence: string,
+  targetWord: string
+): { sentenceWithBlank: string; correctWord: string } | null {
+  if (!sentence || !targetWord) return null;
+
+  // Hedef kelime varyantlarını ayıkla (örn: "друг / подруga" -> ["друг", "подруга"])
+  // Parantez içi açıklamaları temizle: "(он) читает" -> "читает"
+  const candidates = targetWord
+    .split("/")
+    .map((w) => w.replace(/\(.*?\)/g, "").trim())
+    .filter(Boolean);
+
+  if (candidates.length === 0) candidates.push(targetWord.trim());
+
+  // 1. Tam Eşleşme (Exact Match) — tek kelime veya kelime öbeği
+  for (const cand of candidates) {
+    const pattern = cand
+      .split("")
+      .map((ch) => {
+        if (ch === "е" || ch === "ё") return "[её]";
+        if (ch === "Е" || ch === "Ё") return "[ЕЁ]";
+        return escapeRegex(ch);
+      })
+      .join("");
+
+    const rxExact = new RegExp(`(?<![а-яёА-ЯЁa-zA-Z0-9])${pattern}(?![а-яёА-ЯЁa-zA-Z0-9])`, "iu");
+    const match = rxExact.exec(sentence);
+    if (match) {
+      return {
+        sentenceWithBlank: sentence.replace(rxExact, "___"),
+        correctWord: match[0],
+      };
+    }
+  }
+
+  // Cümleyi kelimelere ve aradaki işaretlere/boşluklara ayır
+  const tokens = sentence.split(/([а-яёА-ЯЁa-zA-Z0-9-]+)/);
+
+  // 2. Kök Eşleşmesi (Stem Match) — çekimli formlar (örn: дом -> доме, зелёный -> зелёная)
+  for (const cand of candidates) {
+    const normCand = normalizeRu(cand);
+    const stemLengths: number[] = [];
+    if (normCand.length >= 4) stemLengths.push(4);
+    if (normCand.length >= 3) stemLengths.push(3);
+
+    for (const len of stemLengths) {
+      const stem = normCand.slice(0, len);
+      let foundIndex = -1;
+      for (let i = 0; i < tokens.length; i++) {
+        if (/[а-яёА-ЯЁa-zA-Z]/.test(tokens[i])) {
+          if (normalizeRu(tokens[i]).startsWith(stem)) {
+            foundIndex = i;
+            break;
+          }
+        }
+      }
+      if (foundIndex !== -1) {
+        const foundWord = tokens[foundIndex];
+        const res = [...tokens];
+        res[foundIndex] = "___";
+        return {
+          sentenceWithBlank: res.join(""),
+          correctWord: foundWord,
+        };
+      }
+    }
+  }
+
+  return null;
+}
+
 /* ========================================
    Çoktan Seçmeli (Multiple Choice)
    ======================================== */
 
 /**
  * Çoktan seçmeli sorular üretir.
- * Her soru için rastgele yön seçilir:
- *  - %70 ru-to-target: soru Rusça, şıklar çeviri dilinde
- *  - %30 target-to-ru: soru çeviri dilinde, şıklar Rusça
+ * Faz 12.2: Soruların %40'ı "Cümle İçi Boşluk Doldurma" (sentenceBlank),
+ * %60'ı standart "Kelime Çevirisi" (word) formatında üretilir.
  *
  * @param items - Tüm kelime öğeleri
  * @param lang  - Çeviri dili
@@ -293,6 +374,47 @@ export function generateMultipleChoice(
   const selected = selectBalancedItems(eligible, questionCount);
 
   return selected.map((item) => {
+    // Faz 12.2: %40 ihtimalle "sentenceBlank" formatını dene
+    const trySentenceBlank = Math.random() < SENTENCE_BLANK_PROBABILITY;
+
+    if (trySentenceBlank && item.exampleRu && item.exampleRu.trim()) {
+      const blankDetails = makeSentenceBlankWithTarget(item.exampleRu, item.ru);
+      if (blankDetails) {
+        const correctAnswer = blankDetails.correctWord;
+        const hint =
+          lang === "tr"
+            ? (item.exampleTr || item.exampleEn || item.tr || "")
+            : (item.exampleEn || item.exampleTr || item.en || "");
+
+        // Yanlış şıklar: Rusça kelimeler (aynı havuzdan, doğru cevap hariç)
+        const distractors: string[] = [];
+        for (const other of shuffle(eligible.filter((i) => i.id !== item.id))) {
+          const text = other.ru;
+          if (text !== correctAnswer && !distractors.includes(text)) {
+            distractors.push(text);
+          }
+          if (distractors.length === 3) break;
+        }
+
+        // Eğer en az 3 çeldirici bulunduysa sentenceBlank üret
+        if (distractors.length === 3) {
+          const options = shuffle([correctAnswer, ...distractors]);
+          const correctIndex = options.indexOf(correctAnswer);
+
+          return {
+            item,
+            question: blankDetails.sentenceWithBlank,
+            options,
+            correctIndex,
+            direction: "ru-to-target",
+            variant: "sentenceBlank",
+            hint,
+          };
+        }
+      }
+    }
+
+    // Standart "word" formatı (%60 veya fallback)
     const direction: McDirection =
       Math.random() < RU_TO_TARGET_PROBABILITY ? "ru-to-target" : "target-to-ru";
 
@@ -322,6 +444,7 @@ export function generateMultipleChoice(
       options,
       correctIndex,
       direction,
+      variant: "word",
     };
   });
 }

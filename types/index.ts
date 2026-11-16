@@ -98,6 +98,9 @@ export interface Unit {
 /** Alıştırma tipleri */
 export type ExerciseType = "multipleChoice" | "fillBlank" | "matching" | "listening" | "speaking" | "wordBank";
 
+/** Çoktan seçmeli soru varyantı (Faz 12.2) */
+export type MultipleChoiceVariant = "word" | "sentenceBlank";
+
 /** Yanlış yapılan soru kaydı (Dexie mistakes tablosu) */
 export interface Mistake {
   id?: number;               // auto-increment

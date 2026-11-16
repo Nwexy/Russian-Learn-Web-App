@@ -17,7 +17,7 @@ import { generateMultipleChoice } from "@/lib/exercises";
 import { setTestComplete, getProgress } from "@/lib/progress";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderSentenceWithBlank } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
@@ -28,6 +28,8 @@ interface TestQuestion {
   options: string[];
   correctIndex: number;
   direction: "ru-to-target" | "target-to-ru";
+  variant?: "word" | "sentenceBlank";
+  hint?: string;
 }
 
 type Phase = "intro" | "active" | "result";
@@ -105,6 +107,8 @@ export default function TestPage() {
       options: q.options,
       correctIndex: q.correctIndex,
       direction: q.direction,
+      variant: q.variant,
+      hint: q.hint,
     }));
 
     setQuestions(testQs);
@@ -139,6 +143,8 @@ export default function TestPage() {
           options: q.options,
           correctIndex: q.correctIndex,
           direction: q.direction,
+          variant: q.variant,
+          hint: q.hint,
         },
         userAnswer: q.options[selectedIdx],
         correctAnswer: q.options[q.correctIndex],
@@ -254,7 +260,8 @@ export default function TestPage() {
      ======================================== */
   const q = questions[index];
   const feedbackMeaning = `${q.item.ru} ${t.meaningEquals} ${getMeaning(q.item)}`;
-  const ruQuestion = q.direction !== "target-to-ru";
+  const isSentenceBlank = q.variant === "sentenceBlank";
+  const ruQuestion = q.direction !== "target-to-ru" || isSentenceBlank;
 
   const handleSelect = async (idx: number) => {
     if (revealed) return;
@@ -274,11 +281,33 @@ export default function TestPage() {
 
       <div className="flashcard">
         <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-          <span>{q.question}</span>
-          {ruQuestion && q.question && <SpeakButton text={q.question} size="sm" />}
+          <span>
+            {isSentenceBlank
+              ? renderSentenceWithBlank(
+                  q.question,
+                  revealed,
+                  isCorrect,
+                  q.options[q.correctIndex],
+                  mcSelected !== null && mcSelected !== q.correctIndex ? q.options[mcSelected] : undefined
+                )
+              : q.question}
+          </span>
+          {ruQuestion && q.question && (
+            <SpeakButton
+              text={
+                isSentenceBlank && revealed
+                  ? q.question.replace(/_{2,}/g, q.options[q.correctIndex])
+                  : q.question
+              }
+              size="sm"
+            />
+          )}
         </div>
-        {ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
-        <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
+        {isSentenceBlank && q.hint && <p className="practice-hint">{q.hint}</p>}
+        {!isSentenceBlank && ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
+        <p className="practice-instruction">
+          {isSentenceBlank ? t.chooseAnswer : ruQuestion ? t.chooseAnswer : t.chooseRussian}
+        </p>
       </div>
 
       <div className="mc-options">

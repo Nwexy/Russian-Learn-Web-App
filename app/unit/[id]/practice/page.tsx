@@ -303,7 +303,8 @@ export default function UnitPracticePage() {
   /* ---------- Çoktan Seçmeli ---------- */
   if (q.kind === "multipleChoice") {
     const mc = q.data;
-    const ruQuestion = mc.direction === "ru-to-target";
+    const isSentenceBlank = mc.variant === "sentenceBlank";
+    const ruQuestion = mc.direction !== "target-to-ru" || isSentenceBlank;
     const handleSelect = async (idx: number) => {
       if (revealed) return;
       setMcSelected(idx);
@@ -311,7 +312,14 @@ export default function UnitPracticePage() {
         idx === mc.correctIndex,
         "multipleChoice",
         mc.item.id,
-        { question: mc.question, options: mc.options, correctIndex: mc.correctIndex, direction: mc.direction },
+        {
+          question: mc.question,
+          options: mc.options,
+          correctIndex: mc.correctIndex,
+          direction: mc.direction,
+          variant: mc.variant,
+          hint: mc.hint,
+        },
         mc.options[idx],
         mc.options[mc.correctIndex]
       );
@@ -322,11 +330,33 @@ export default function UnitPracticePage() {
         {header}
         <div className="flashcard">
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{mc.question}</span>
-            {ruQuestion && <SpeakButton text={mc.question} size="sm" />}
+            <span>
+              {isSentenceBlank
+                ? renderSentenceWithBlank(
+                    mc.question,
+                    revealed,
+                    mcSelected === mc.correctIndex,
+                    mc.options[mc.correctIndex],
+                    mcSelected !== null && mcSelected !== mc.correctIndex ? mc.options[mcSelected] : undefined
+                  )
+                : mc.question}
+            </span>
+            {ruQuestion && (
+              <SpeakButton
+                text={
+                  isSentenceBlank && revealed
+                    ? mc.question.replace(/_{2,}/g, mc.options[mc.correctIndex])
+                    : mc.question
+                }
+                size="sm"
+              />
+            )}
           </div>
-          {ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={mc.item} />}
-          <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
+          {isSentenceBlank && mc.hint && <p className="practice-hint">{mc.hint}</p>}
+          {!isSentenceBlank && ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={mc.item} />}
+          <p className="practice-instruction">
+            {isSentenceBlank ? t.chooseAnswer : ruQuestion ? t.chooseAnswer : t.chooseRussian}
+          </p>
         </div>
         <div className="mc-options">
           {mc.options.map((opt, idx) => {

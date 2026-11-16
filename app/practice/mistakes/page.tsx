@@ -425,7 +425,9 @@ export default function MistakesPage() {
     const options = Array.isArray(qd.options) ? (qd.options as string[]) : [mistake.correctAnswer];
     const correctIdx = typeof qd.correctIndex === "number" ? qd.correctIndex : 0;
     const question = (qd.question as string) || currentItem?.ru || mistake.correctAnswer;
-    const ruQuestion = qd.direction !== "target-to-ru";
+    const isSentenceBlank = qd.variant === "sentenceBlank";
+    const hint = (qd.hint as string) || "";
+    const ruQuestion = qd.direction !== "target-to-ru" || isSentenceBlank;
 
     const handleSelect = async (idx: number) => {
       if (revealed) return;
@@ -446,13 +448,35 @@ export default function MistakesPage() {
 
         <div className="flashcard">
           <div className={ruQuestion ? "flashcard-ru" : "flashcard-ru flashcard-target"} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-            <span>{question}</span>
-            {ruQuestion && <SpeakButton text={question} size="sm" />}
+            <span>
+              {isSentenceBlank
+                ? renderSentenceWithBlank(
+                    question,
+                    revealed,
+                    mcSelected === correctIdx,
+                    options[correctIdx],
+                    mcSelected !== null && mcSelected !== correctIdx ? options[mcSelected] : undefined
+                  )
+                : question}
+            </span>
+            {ruQuestion && (
+              <SpeakButton
+                text={
+                  isSentenceBlank && revealed
+                    ? question.replace(/_{2,}/g, options[correctIdx])
+                    : question
+                }
+                size="sm"
+              />
+            )}
           </div>
-          {ruQuestion && currentItem && shouldShowPronunciation(revealed) && (
+          {isSentenceBlank && hint && <p className="practice-hint">{hint}</p>}
+          {!isSentenceBlank && ruQuestion && currentItem && shouldShowPronunciation(revealed) && (
             <PronunciationText item={currentItem} />
           )}
-          <p className="practice-instruction">{ruQuestion ? t.chooseAnswer : t.chooseRussian}</p>
+          <p className="practice-instruction">
+            {isSentenceBlank ? t.chooseAnswer : ruQuestion ? t.chooseAnswer : t.chooseRussian}
+          </p>
         </div>
 
         <div className="mc-options">
