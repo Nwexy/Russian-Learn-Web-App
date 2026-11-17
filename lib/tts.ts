@@ -58,11 +58,22 @@ export function isTTSSupported(): boolean {
 
 /**
  * Cihazda yerel bir Rusça ses bulunup bulunmadığını kontrol eder.
+ * Test / Simülasyon: URL'de ?fallback=1 veya localStorage'da forceFallbackTts="true"
+ * tanımlanmışsa yerel ses yok sayılarak doğrudan ResponsiveVoice test edilebilir.
  */
 export function hasRussianVoice(): boolean {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) {
     return false;
   }
+  try {
+    if (
+      localStorage.getItem("forceFallbackTts") === "true" ||
+      new URLSearchParams(window.location.search).get("fallback") === "1"
+    ) {
+      return false;
+    }
+  } catch {}
+
   try {
     const voices = window.speechSynthesis.getVoices();
     if (voices && voices.length > 0) {
