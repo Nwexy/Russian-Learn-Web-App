@@ -5,6 +5,7 @@
 
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 import { ThemeProvider } from "@/components/theme-provider";
@@ -13,6 +14,8 @@ import { DatabaseInit } from "@/components/database-init";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { PwaRegister } from "@/components/pwa-register";
+import { Toaster } from "@/components/ui/sonner";
+import { TtsFallbackNotifier } from "@/components/tts-fallback-notifier";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -50,6 +53,10 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
       </head>
       <body className="min-h-screen flex flex-col antialiased">
+        <Script
+          src="https://code.responsivevoice.org/responsivevoice.js"
+          strategy="afterInteractive"
+        />
         <PwaRegister />
         <ThemeProvider>
           <LangProvider>
@@ -57,6 +64,8 @@ export default function RootLayout({
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />
+            <Toaster position="top-right" richColors />
+            <TtsFallbackNotifier />
           </LangProvider>
         </ThemeProvider>
       </body>

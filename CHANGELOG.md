@@ -3,6 +3,10 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-11-18
+- Cihazinda Rusca ses paketi olmayan kullanicilar icin ResponsiveVoice tabanli yedek TTS sistemi eklendi.
+- Ses paketi eksik oldugunda kullaniciya bildirim (toast) gosterilmesi saglandi.
+
 ## 2026-11-16
 - Coktan Secmeli moduna ve Unite Testlerine "Cumle Ici Bosluk Doldurma" varyasyonu eklendi (%40 oraninda).
 - Bosluk Doldurma alistirmalarinda, cevap kontrol edildiginde bosluk (___) alaninin dogru (yesil) veya yanlis (kirmizi) cevapla doldurulmasi saglandi.

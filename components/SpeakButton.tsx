@@ -17,7 +17,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { speak, isTTSSupported, initVoices } from "@/lib/tts";
+import { speak, isTTSSupported, initVoices, hasRussianVoice, notifyTtsFallbackIfNeeded } from "@/lib/tts";
 
 export interface SpeakButtonProps {
   text: string;
@@ -51,6 +51,11 @@ export function SpeakButton({
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     e.preventDefault();
+
+    if ((lang === "ru-RU" || lang.startsWith("ru")) && !hasRussianVoice()) {
+      notifyTtsFallbackIfNeeded();
+    }
+
     setIsActive(true);
 
     const fallbackTimeout = setTimeout(() => {
