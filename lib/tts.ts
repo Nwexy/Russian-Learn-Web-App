@@ -37,8 +37,17 @@ let isVoicesListening = false;
 let voicesLoaded = false;
 let voicesReadyListeners: Array<() => void> = [];
 let speakTimer: ReturnType<typeof setTimeout> | null = null;
+let currentFallbackAudio: HTMLAudioElement | null = null;
 
 const TTS_FALLBACK_STORAGE_KEY = "ttsFallbackNotified";
+const RESPONSIVE_VOICE_KEY = "FQ9r4hgY";
+
+// ResponsiveVoice kütüphanesinin anahtar eksik hatası vermesini engelle
+if (typeof window !== "undefined") {
+  try {
+    (window as unknown as { rvApiKey?: string }).rvApiKey = RESPONSIVE_VOICE_KEY;
+  } catch {}
+}
 
 export interface SpeakOptions {
   delayMs?: number;
@@ -218,8 +227,63 @@ export function getRussianVoice(): SpeechSynthesisVoice | null {
 }
 
 /**
+ * ResponsiveVoice getvoice.php servisi üzerinden Audio nesnesi ile doğrudan oynatma yapar.
+ * JS kütüphanesine bağımlı kalmadan sesi doğrudan tarayıcı ses motoruyla çalar.
+ */
+export function playAudioFallback(
+  text: string,
+  lang: string = "ru-RU",
+  opts: SpeakOptions = {}
+): boolean {
+  if (typeof window === "undefined" || !text) return false;
+
+  try {
+    if (currentFallbackAudio) {
+      try {
+        currentFallbackAudio.pause();
+        currentFallbackAudio.currentTime = 0;
+      } catch {}
+      currentFallbackAudio = null;
+    }
+
+    const tl = lang.toLowerCase().startsWith("ru") ? "ru" : "en";
+    const url = `https://code.responsivevoice.org/getvoice.php?t=${encodeURIComponent(text)}&tl=${tl}&key=${RESPONSIVE_VOICE_KEY}`;
+
+    const audio = new Audio(url);
+    currentFallbackAudio = audio;
+
+    if (opts.onStart) {
+      audio.onplay = () => opts.onStart?.();
+    }
+    if (opts.onEnd) {
+      audio.onended = () => {
+        currentFallbackAudio = null;
+        opts.onEnd?.();
+      };
+    }
+    if (opts.onError) {
+      audio.onerror = () => {
+        currentFallbackAudio = null;
+        opts.onError?.();
+      };
+    }
+
+    audio.play().catch((err) => {
+      console.error("[TTS] Audio fallback oynatma hatası:", err);
+      opts.onError?.();
+    });
+
+    return true;
+  } catch (err) {
+    console.error("[TTS] Audio fallback başlatılamadı:", err);
+    opts.onError?.();
+    return false;
+  }
+}
+
+/**
  * ResponsiveVoice üzerinden metni seslendirir.
- * Başarılı başlatıldıysa true, kütüphane henüz hazır değilse veya hata oluşursa false döner.
+ * Başarılı başlatıldıysa true, kütüphane henüz hazır değilse veya hata oluşursa doğrudan Audio fallback'e geçer.
  */
 export function speakWithResponsiveVoice(
   text: string,
@@ -230,15 +294,8 @@ export function speakWithResponsiveVoice(
 
   const rv = window.responsiveVoice;
   if (!rv || typeof rv.speak !== "function") {
-    // Kütüphane yüklenirken hafif gecikme olursa 300ms sonra bir kez daha dene
-    setTimeout(() => {
-      if (window.responsiveVoice && typeof window.responsiveVoice.speak === "function") {
-        speakWithResponsiveVoice(text, lang, opts);
-      } else {
-        opts.onError?.();
-      }
-    }, 300);
-    return false;
+    // Kütüphane yüklenirken gecikme olursa anında doğrudan Audio fallback'i kullan
+    return playAudioFallback(text, lang, opts);
   }
 
   try {
@@ -256,14 +313,14 @@ export function speakWithResponsiveVoice(
       onstart: opts.onStart,
       onend: opts.onEnd,
       onerror: () => {
-        opts.onError?.();
+        // ResponsiveVoice hata verirse doğrudan Audio fallback ile kurtar
+        playAudioFallback(text, lang, opts);
       },
     });
     return true;
   } catch (err) {
-    console.error("[TTS] ResponsiveVoice hatası:", err);
-    opts.onError?.();
-    return false;
+    console.error("[TTS] ResponsiveVoice hatası, Audio fallback deneniyor:", err);
+    return playAudioFallback(text, lang, opts);
   }
 }
 
@@ -319,6 +376,14 @@ export function speak(
       try {
         window.responsiveVoice.cancel();
       } catch {}
+    }
+
+    if (currentFallbackAudio) {
+      try {
+        currentFallbackAudio.pause();
+        currentFallbackAudio.currentTime = 0;
+      } catch {}
+      currentFallbackAudio = null;
     }
   }
 

@@ -54,7 +54,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen flex flex-col antialiased">
         <Script
-          src="https://code.responsivevoice.org/responsivevoice.js"
+          src="https://code.responsivevoice.org/responsivevoice.js?key=FQ9r4hgY"
           strategy="afterInteractive"
         />
         <PwaRegister />
