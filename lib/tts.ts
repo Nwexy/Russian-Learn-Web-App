@@ -329,14 +329,15 @@ export function speakWithResponsiveVoice(
  *
  * @param text - Okunacak metin
  * @param lang - BCP-47 dil kodu (varsayılan: "ru-RU")
- * @param options - Gecikme süresi (varsayılan: 0ms) veya callback seçenekleri
+ * @param options - Gecikme süresi (varsayılan: 325ms) veya callback seçenekleri
  *
  * Çalışma Mantığı:
  *  1. Önceki konuşmaları (hem SpeechSynthesis hem ResponsiveVoice) hemen iptal eder.
- *  2. Rusça bir metin isteniyorsa ve yerel cihazda Rusça ses paketi YOKSA:
+ *  2. Kelimeyi söylemeden önce 325ms bekler (doğal duraklama sağlar ve ilk hece kesilmesini önler).
+ *  3. Rusça bir metin isteniyorsa ve yerel cihazda Rusça ses paketi YOKSA:
  *     - Kullanıcıya ilk seferde toast bildirimi gösterir.
  *     - ResponsiveVoice ile seslendirir.
- *  3. Yerel Rusça ses paketi VARSA:
+ *  4. Yerel Rusça ses paketi VARSA:
  *     - window.speechSynthesis ile seslendirir.
  *     - Eğer yerel oynatma esnasında hata (onerror) oluşursa, otomatik olarak ResponsiveVoice yedeğine geçer.
  */
@@ -349,7 +350,7 @@ export function speak(
 
   const opts: SpeakOptions =
     typeof options === "number" ? { delayMs: options } : options || {};
-  const delayMs = opts.delayMs !== undefined ? opts.delayMs : 0;
+  const delayMs = opts.delayMs !== undefined ? opts.delayMs : 325;
 
   // Ses henüz hafızaya alınmadıysa tekrar dene
   if (!russianVoice) {

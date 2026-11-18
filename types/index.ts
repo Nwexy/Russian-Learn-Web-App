@@ -101,6 +101,12 @@ export type ExerciseType = "multipleChoice" | "fillBlank" | "matching" | "listen
 /** Çoktan seçmeli soru varyantı (Faz 12.2) */
 export type MultipleChoiceVariant = "word" | "sentenceBlank";
 
+/** Cümle Kurma (Word Bank) kelime token'ı (Faz 12.4) */
+export interface WordToken {
+  id: string;
+  word: string;
+}
+
 /** Yanlış yapılan soru kaydı (Dexie mistakes tablosu) */
 export interface Mistake {
   id?: number;               // auto-increment

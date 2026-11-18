@@ -4,6 +4,8 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-18
+- Multiple Choice (Cumle Ici) sorularinda ipucu cumlesindeki hedef kelimenin yesil vurgulanmasi saglandi.
+- Word Bank (Cumle Kurma) moduna @dnd-kit ile surukle-birak ozelligi eklendi. Kelimeler artik istenilen siraya birakilabiliyor ve kendi aralarinda yer degistirebiliyor.
 - Cihazinda Rusca ses paketi olmayan kullanicilar icin ResponsiveVoice tabanli yedek TTS sistemi eklendi.
 - Ses paketi eksik oldugunda kullaniciya bildirim (toast) gosterilmesi saglandi.
 

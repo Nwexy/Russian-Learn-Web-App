@@ -352,7 +352,9 @@ export default function UnitPracticePage() {
               />
             )}
           </div>
-          {isSentenceBlank && mc.hint && <p className="practice-hint">{mc.hint}</p>}
+          {isSentenceBlank && mc.hint && (
+            <p className="practice-hint">{renderHighlightedText(mc.hint, true)}</p>
+          )}
           {!isSentenceBlank && ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={mc.item} />}
           <p className="practice-instruction">
             {isSentenceBlank ? t.chooseAnswer : ruQuestion ? t.chooseAnswer : t.chooseRussian}

@@ -10,7 +10,7 @@
  *  - label: Özel buton etiketi (opsiyonel)
  *
  * Tıklanınca lib/tts.ts speak(text, lang) fonksiyonunu çağırır.
- * Ses süresi boyunca buton üzerinde "..." gösterir.
+ * Konuşma başlamadan önceki 325ms bekleme ve ses süresi boyunca buton üzerinde "..." gösterir.
  * Tarayıcı TTS desteklemiyorsa render edilmez.
  */
 
@@ -63,7 +63,7 @@ export function SpeakButton({
     }, Math.max(3000, text.length * 300));
 
     speak(text, lang, {
-      delayMs: 0,
+      delayMs: 325,
       onEnd: () => {
         clearTimeout(fallbackTimeout);
         setIsActive(false);

@@ -381,10 +381,8 @@ export function generateMultipleChoice(
       const blankDetails = makeSentenceBlankWithTarget(item.exampleRu, item.ru);
       if (blankDetails) {
         const correctAnswer = blankDetails.correctWord;
-        const hint =
-          lang === "tr"
-            ? (item.exampleTr || item.exampleEn || item.tr || "")
-            : (item.exampleEn || item.exampleTr || item.en || "");
+        // Faz 12.4: İpucu cümlesinde hedef kelimenin çevirisini {kelime} şeklinde vurgula
+        const hint = getHighlightedTranslation(item, lang);
 
         // Yanlış şıklar: Rusça kelimeler (aynı havuzdan, doğru cevap hariç)
         const distractors: string[] = [];

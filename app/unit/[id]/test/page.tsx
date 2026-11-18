@@ -17,7 +17,7 @@ import { generateMultipleChoice } from "@/lib/exercises";
 import { setTestComplete, getProgress } from "@/lib/progress";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation, renderSentenceWithBlank } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderSentenceWithBlank, renderHighlightedText } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
@@ -303,7 +303,9 @@ export default function TestPage() {
             />
           )}
         </div>
-        {isSentenceBlank && q.hint && <p className="practice-hint">{q.hint}</p>}
+        {isSentenceBlank && q.hint && (
+          <p className="practice-hint">{renderHighlightedText(q.hint, true)}</p>
+        )}
         {!isSentenceBlank && ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={q.item} />}
         <p className="practice-instruction">
           {isSentenceBlank ? t.chooseAnswer : ruQuestion ? t.chooseAnswer : t.chooseRussian}
