@@ -73,7 +73,7 @@ import {
 } from "@/lib/speech";
 import { recordMistake, removeMistakeByKey, getMistakeCount } from "@/lib/mistakes";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank, renderMcHint } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import { WordBankDnd } from "@/components/WordBankDnd";
 import type { Item, ExerciseType, WordToken } from "@/types";
@@ -1608,7 +1608,9 @@ export default function PracticePage() {
               )}
             </div>
             {isSentenceBlank && mc.hint && (
-              <p className="practice-hint">{renderHighlightedText(mc.hint, true)}</p>
+              <p className="practice-hint">
+                {renderMcHint(mc.hint, mixedRevealed, mixedMcSelected === mc.correctIndex)}
+              </p>
             )}
             {!isSentenceBlank && ruQuestion && shouldShowPronunciation(mixedRevealed) && <PronunciationText item={mc.item} />}
             <p className="practice-instruction">
@@ -2072,7 +2074,9 @@ export default function PracticePage() {
             )}
           </div>
           {isSentenceBlank && q.hint && (
-            <p className="practice-hint">{renderHighlightedText(q.hint, true)}</p>
+            <p className="practice-hint">
+              {renderMcHint(q.hint, mcRevealed, mcSelected === q.correctIndex)}
+            </p>
           )}
           {!isSentenceBlank && ruQuestion && shouldShowPronunciation(mcRevealed) && <PronunciationText item={q.item} />}
           <p className="practice-instruction">

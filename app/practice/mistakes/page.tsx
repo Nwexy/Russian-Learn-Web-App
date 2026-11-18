@@ -17,7 +17,7 @@ import { getHighlightedTranslation } from "@/lib/exercises";
 import { getAllUnits, getUnitById } from "@/lib/content";
 import { speak, isTTSSupported, initVoices } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank, renderMcHint } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import { WordBankDnd } from "@/components/WordBankDnd";
 import { Mic, Volume2 } from "lucide-react";
@@ -462,7 +462,9 @@ export default function MistakesPage() {
             )}
           </div>
           {isSentenceBlank && hint && (
-            <p className="practice-hint">{renderHighlightedText(hint, true)}</p>
+            <p className="practice-hint">
+              {renderMcHint(hint, revealed, mcSelected === correctIdx)}
+            </p>
           )}
           {!isSentenceBlank && ruQuestion && currentItem && shouldShowPronunciation(revealed) && (
             <PronunciationText item={currentItem} />

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion, LayoutGroup } from "framer-motion";
 import {
   DndContext,
   closestCenter,
@@ -30,16 +31,30 @@ export interface WordBankDndProps {
   onUnpickWord?: (token: WordToken) => void;
   disabled?: boolean;
   emptyPlaceholder?: string;
+  layoutGroupId?: string;
 }
 
 interface SortablePillProps {
   token: WordToken;
   variant: "selected" | "available";
   disabled?: boolean;
+  isDragActive?: boolean;
   onClick?: () => void;
 }
 
-function SortableWordPill({ token, variant, disabled, onClick }: SortablePillProps) {
+const wbSpring = {
+  type: "spring",
+  stiffness: 350,
+  damping: 28,
+} as const;
+
+function SortableWordPill({
+  token,
+  variant,
+  disabled,
+  isDragActive = false,
+  onClick,
+}: SortablePillProps) {
   const {
     attributes,
     listeners,
@@ -53,15 +68,21 @@ function SortableWordPill({ token, variant, disabled, onClick }: SortablePillPro
   });
 
   const style: React.CSSProperties = {
-    transform: CSS.Translate.toString(transform),
-    transition,
+    // Sürükleme esnasında dnd-kit transform'u geçerlidir; sürükleme yokken framer-motion layout FLIP animasyonu çalışır
+    transform: isDragActive && transform ? CSS.Translate.toString(transform) : undefined,
+    transition: isDragActive ? transition : undefined,
     opacity: isDragging ? 0.35 : 1,
     touchAction: "none",
   };
 
   return (
-    <button
+    <motion.button
       ref={setNodeRef}
+      layoutId={`wb-tok-${token.id}`}
+      layout={!isDragActive}
+      transition={wbSpring}
+      whileHover={!disabled && !isDragActive ? { scale: 1.04 } : undefined}
+      whileTap={!disabled && !isDragActive ? { scale: 0.96 } : undefined}
       style={style}
       {...attributes}
       {...listeners}
@@ -73,7 +94,7 @@ function SortableWordPill({ token, variant, disabled, onClick }: SortablePillPro
       }`}
     >
       {token.word}
-    </button>
+    </motion.button>
   );
 }
 
@@ -110,6 +131,7 @@ export function WordBankDnd({
   onUnpickWord,
   disabled = false,
   emptyPlaceholder = "Kelimeleri sırasıyla seçin",
+  layoutGroupId,
 }: WordBankDndProps) {
   const [activeToken, setActiveToken] = useState<WordToken | null>(null);
 
@@ -231,6 +253,8 @@ export function WordBankDnd({
     }
   };
 
+  const isDragActive = activeToken !== null;
+
   return (
     <DndContext
       sensors={sensors}
@@ -238,49 +262,53 @@ export function WordBankDnd({
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
     >
-      <div className="wb-container">
-        {/* Üst Kısım: Cevap Alanı (Drop Zone & Sortable) */}
-        <DroppableZone id="answer-zone" className="wb-drop-zone" isDropTargetActive={!disabled}>
-          {selectedTokens.length === 0 ? (
-            <span className="text-sm text-muted-foreground select-none italic py-1 px-2">
-              {emptyPlaceholder}
-            </span>
-          ) : (
+      <LayoutGroup id={layoutGroupId || "wb-dnd"}>
+        <div className="wb-container">
+          {/* Üst Kısım: Cevap Alanı (Drop Zone & Sortable) */}
+          <DroppableZone id="answer-zone" className="wb-drop-zone" isDropTargetActive={!disabled}>
+            {selectedTokens.length === 0 ? (
+              <span className="text-sm text-muted-foreground select-none italic py-1 px-2">
+                {emptyPlaceholder}
+              </span>
+            ) : (
+              <SortableContext
+                items={selectedTokens.map((t) => t.id)}
+                strategy={rectSortingStrategy}
+              >
+                {selectedTokens.map((tok) => (
+                  <SortableWordPill
+                    key={tok.id}
+                    token={tok}
+                    variant="selected"
+                    disabled={disabled}
+                    isDragActive={isDragActive}
+                    onClick={() => handlePillClick(tok, "selected")}
+                  />
+                ))}
+              </SortableContext>
+            )}
+          </DroppableZone>
+
+          {/* Alt Kısım: Kelime Bankası Havuzu (Droppable) */}
+          <DroppableZone id="bank-zone" className="wb-pool-zone" isDropTargetActive={!disabled}>
             <SortableContext
-              items={selectedTokens.map((t) => t.id)}
+              items={bankTokens.map((t) => t.id)}
               strategy={rectSortingStrategy}
             >
-              {selectedTokens.map((tok) => (
+              {bankTokens.map((tok) => (
                 <SortableWordPill
                   key={tok.id}
                   token={tok}
-                  variant="selected"
+                  variant="available"
                   disabled={disabled}
-                  onClick={() => handlePillClick(tok, "selected")}
+                  isDragActive={isDragActive}
+                  onClick={() => handlePillClick(tok, "bank")}
                 />
               ))}
             </SortableContext>
-          )}
-        </DroppableZone>
-
-        {/* Alt Kısım: Kelime Bankası Havuzu (Droppable) */}
-        <DroppableZone id="bank-zone" className="wb-pool-zone" isDropTargetActive={!disabled}>
-          <SortableContext
-            items={bankTokens.map((t) => t.id)}
-            strategy={rectSortingStrategy}
-          >
-            {bankTokens.map((tok) => (
-              <SortableWordPill
-                key={tok.id}
-                token={tok}
-                variant="available"
-                disabled={disabled}
-                onClick={() => handlePillClick(tok, "bank")}
-              />
-            ))}
-          </SortableContext>
-        </DroppableZone>
-      </div>
+          </DroppableZone>
+        </div>
+      </LayoutGroup>
 
       {/* Sürükleme esnasında havada süzülen aktif kelime */}
       <DragOverlay adjustScale={false}>
@@ -301,3 +329,4 @@ export function WordBankDnd({
 }
 
 export default WordBankDnd;
+

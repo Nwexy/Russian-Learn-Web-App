@@ -23,7 +23,7 @@ import type { MixedQuestion } from "@/lib/exercises";
 import { recordMistake, removeMistakeByKey } from "@/lib/mistakes";
 import { speak, isTTSSupported, initVoices } from "@/lib/tts";
 import { PronunciationText } from "@/components/pronunciation-text";
-import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank } from "@/lib/exercises-ui";
+import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank, renderMcHint } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import type { Item } from "@/types";
 
@@ -353,7 +353,9 @@ export default function UnitPracticePage() {
             )}
           </div>
           {isSentenceBlank && mc.hint && (
-            <p className="practice-hint">{renderHighlightedText(mc.hint, true)}</p>
+            <p className="practice-hint">
+              {renderMcHint(mc.hint, revealed, mcSelected === mc.correctIndex)}
+            </p>
           )}
           {!isSentenceBlank && ruQuestion && shouldShowPronunciation(revealed) && <PronunciationText item={mc.item} />}
           <p className="practice-instruction">

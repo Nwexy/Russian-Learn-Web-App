@@ -32,33 +32,71 @@ export function shouldShowPronunciation(
 
 import React from "react";
 
+export type HighlightStatus = boolean | "correct" | "wrong" | "neutral";
+
 /**
- * "{kelime}" kalıplarını soru aşamasında normal, cevap aşamasında yeşil/vurgulu render eder.
+ * "{kelime}" kalıplarını duruma göre renklendirir:
+ * - neutral / false: Normal metin rengi (text-muted-foreground / cümlenin kalanıyla uyumlu)
+ * - correct / true: Yeşil renk (text-emerald-500 font-bold underline)
+ * - wrong: Kırmızı renk (text-rose-500 font-bold underline)
+ *
  * Örn: "store opens at {nine}"
  */
 export function renderHighlightedText(
   text?: string | null,
-  highlighted: boolean = true
+  status: HighlightStatus = true
 ): React.ReactNode {
   if (!text) return null;
   const parts = text.split(/(\{.*?\})/g);
   return parts.map((part, i) => {
     if (part.startsWith("{") && part.endsWith("}")) {
-      if (highlighted) {
+      if (status === "wrong") {
         return (
-          <span key={i} className="fill-highlight">
+          <span
+            key={i}
+            className="text-rose-500 dark:text-rose-400 font-bold underline decoration-2 underline-offset-4"
+          >
             {part}
           </span>
         );
       }
+      if (status === true || status === "correct") {
+        return (
+          <span
+            key={i}
+            className="text-emerald-500 dark:text-emerald-400 font-bold underline decoration-2 underline-offset-4"
+          >
+            {part}
+          </span>
+        );
+      }
+      // Nötr durum (cevap verilmeden önce): gri/muted metin rengi
       return (
-        <span key={i} className="fill-normal">
+        <span key={i} className="text-muted-foreground font-semibold">
           {part}
         </span>
       );
     }
     return <React.Fragment key={i}>{part}</React.Fragment>;
   });
+}
+
+/**
+ * Faz 12.5: Çoktan seçmeli (sentenceBlank) ipucunu kullanıcı cevap durumuna göre render eder:
+ * - Henüz cevap verilmediyse (!isAnswered): nötr (gri/muted)
+ * - Cevap verildi ve doğruysa (isAnswered && isCorrect): yeşil
+ * - Cevap verildi ve yanlışsa (isAnswered && !isCorrect): kırmızı
+ */
+export function renderMcHint(
+  hint?: string | null,
+  isAnswered: boolean = false,
+  isCorrect?: boolean | null
+): React.ReactNode {
+  if (!hint) return null;
+  if (!isAnswered) {
+    return renderHighlightedText(hint, "neutral");
+  }
+  return renderHighlightedText(hint, isCorrect ? "correct" : "wrong");
 }
 
 /**
