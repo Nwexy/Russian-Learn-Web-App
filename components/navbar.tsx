@@ -7,9 +7,9 @@
 
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
@@ -19,6 +19,26 @@ export function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const { uiLang } = useLang();
   const t = getMessages(uiLang);
+
+  const [hasSeenNewModes, setHasSeenNewModes] = useState(true);
+
+  useEffect(() => {
+    const checkSeen = () => {
+      try {
+        const seen = localStorage.getItem("hasSeenNewModes") === "true";
+        setHasSeenNewModes(seen);
+      } catch {
+        setHasSeenNewModes(true);
+      }
+    };
+    checkSeen();
+    window.addEventListener("newModesSeen", checkSeen);
+    window.addEventListener("storage", checkSeen);
+    return () => {
+      window.removeEventListener("newModesSeen", checkSeen);
+      window.removeEventListener("storage", checkSeen);
+    };
+  }, []);
 
   /** Aktif sayfa kontrolü */
   const isActive = (path: string) => pathname === path;
@@ -76,7 +96,7 @@ export function Navbar() {
           </Link>
           <Link
             href="/practice"
-            className={`navbar-link ${isActive("/practice") ? "navbar-link-active" : ""}`}
+            className={`navbar-link relative ${isActive("/practice") ? "navbar-link-active" : ""}`}
           >
             <svg
               className="navbar-icon"
@@ -92,6 +112,11 @@ export function Navbar() {
               />
             </svg>
             <span>{t.practice}</span>
+            {!hasSeenNewModes && (
+              <span className="navbar-new-badge" aria-label="New Modes">
+                {t.newModesBadge || "New Modes!"}
+              </span>
+            )}
           </Link>
           <Link
             href="/grammar"
@@ -111,13 +136,6 @@ export function Navbar() {
               />
             </svg>
             <span>{t.grammar}</span>
-          </Link>
-          <Link
-            href="/test-yourself"
-            className={`navbar-link ${isActive("/test-yourself") ? "navbar-link-active" : ""}`}
-          >
-            <Sparkles className="navbar-icon" size={18} strokeWidth={2} />
-            <span>{t.testYourself}</span>
           </Link>
           <Link
             href="/settings"

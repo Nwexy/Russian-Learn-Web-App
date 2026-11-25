@@ -4,6 +4,10 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- Yerel Monkeytype projesindeki 10 parmak hizi testi Rusca'ya uyarlandi ve Practice sayfasina eklendi.
+- Test Yourself (AI Grammar Analysis) Navbar'dan kaldirilip Practice sayfasina tasindi.
+- Practice sayfasina ve Navbar'a dikkat cekici "New Modes!" etiketi eklendi.
+- Yeni modlar Karisik Mod'a (Mixed Mode) dahil edilmedi, ayri bir bolumde sunuldu.
 - Test Yourself sayfasinda Gemini API'nin secili arayuz/ceviri diline gore cevap vermesi saglandi.
 - Analysis Result kismina cümlenin tamaminin cevirisi eklendi.
 - "Test Yourself" sayfasi eklendi.

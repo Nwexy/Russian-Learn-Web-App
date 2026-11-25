@@ -34,6 +34,8 @@ import {
   Trophy,
   CheckCircle2,
   BookOpen,
+  Keyboard,
+  Sparkles,
 } from "lucide-react";
 import {
   Dialog,
@@ -133,6 +135,22 @@ export default function PracticePage() {
     "wordBank",
   ]);
   const [isMixedModesDialogOpen, setIsMixedModesDialogOpen] = useState(false);
+
+  // Faz 13.2 — Yeni Modlar Badge Görüldü Mantığı
+  const [showNewModesBadge, setShowNewModesBadge] = useState(false);
+
+  useEffect(() => {
+    try {
+      const hasSeen = localStorage.getItem("hasSeenNewModes") === "true";
+      if (!hasSeen) {
+        setShowNewModesBadge(true);
+        localStorage.setItem("hasSeenNewModes", "true");
+        window.dispatchEvent(new Event("newModesSeen"));
+      }
+    } catch {
+      // Ignore localStorage error
+    }
+  }, []);
 
   const toggleMixedMode = (mode: ExerciseType) => {
     setSelectedMixedModes((prev) => {
@@ -1359,6 +1377,72 @@ export default function PracticePage() {
                   </div>
                 );
               })}
+            </div>
+
+            {/* Faz 13.2: Yeni Modlar / New Modes */}
+            <div className="w-full max-w-3xl mx-auto mt-10 mb-8 pt-8 border-t border-border/60">
+              <div className="flex items-center gap-3 mb-4">
+                <h2 className="text-xl font-extrabold text-foreground tracking-tight">
+                  {t.newModes}
+                </h2>
+                {showNewModesBadge && (
+                  <span className="new-modes-badge">
+                    {t.newModesBadge || "New Modes!"}
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Kart 1: Typing Speed (Monkeytype) */}
+                <Link
+                  href="/practice/typing"
+                  className="p-5 sm:p-6 rounded-2xl border-2 border-border bg-card hover:bg-card-hover hover:border-primary/50 transition-all cursor-pointer flex flex-col gap-3 group shadow-sm hover:shadow-md"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <Keyboard className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                        {t.typingSpeedTest}
+                      </h3>
+                      {showNewModesBadge && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-500 border border-rose-500/30">
+                          NEW
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {t.typingSpeedDesc}
+                    </p>
+                  </div>
+                </Link>
+
+                {/* Kart 2: AI Grammar Analysis (Test Yourself) */}
+                <Link
+                  href="/practice/test-yourself"
+                  className="p-5 sm:p-6 rounded-2xl border-2 border-border bg-card hover:bg-card-hover hover:border-primary/50 transition-all cursor-pointer flex flex-col gap-3 group shadow-sm hover:shadow-md"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
+                        {t.aiGrammarAnalysis}
+                      </h3>
+                      {showNewModesBadge && (
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-500 border border-rose-500/30">
+                          NEW
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {t.aiGrammarDesc}
+                    </p>
+                  </div>
+                </Link>
+              </div>
             </div>
 
             {/* Sabit (Sticky) Başlat Butonu Alanı (Faz 11.9: Şeffaf Arka Plan) */}

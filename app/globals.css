@@ -3642,5 +3642,79 @@ body {
   background-color: var(--accent);
 }
 
+/* ========================================
+   Faz 13.2: New Modes Badge & Monkeytype
+   ======================================== */
+@keyframes newBadgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(244, 63, 94, 0.6), 0 0 16px rgba(244, 63, 94, 0.4);
+  }
+  50% {
+    transform: scale(1.06);
+    box-shadow: 0 0 14px rgba(244, 63, 94, 0.9), 0 0 24px rgba(244, 63, 94, 0.6);
+  }
+}
+
+.new-modes-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  animation: newBadgePulse 1.8s ease-in-out infinite;
+  user-select: none;
+}
+
+.navbar-new-badge {
+  position: absolute;
+  top: -8px;
+  right: -14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 10px rgba(244, 63, 94, 0.7);
+  animation: newBadgePulse 1.8s ease-in-out infinite;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 20;
+}
+
+@keyframes monkeyCaretBlink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.monkey-caret {
+  width: 2.5px;
+  height: 2rem;
+  background-color: var(--color-primary, #6366f1);
+  position: absolute;
+  border-radius: 2px;
+  animation: monkeyCaretBlink 1s ease-in-out infinite;
+  transition: left 0.1s ease-out, top 0.1s ease-out, transform 0.18s ease-in-out;
+  z-index: 10;
+  pointer-events: none;
+}
+
+
 
 

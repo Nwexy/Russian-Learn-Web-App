@@ -306,6 +306,24 @@ export interface Messages {
   analysisResult: string;
   testYourselfDesc: string;
   enterRussianSentence: string;
+
+  // Faz 13.2 — Monkeytype (10 Parmak Testi) ve Yeni Modlar
+  newModes: string;
+  newModesBadge: string;
+  typingSpeedTest: string;
+  typingSpeedDesc: string;
+  aiGrammarAnalysis: string;
+  aiGrammarDesc: string;
+  typingWpm: string;
+  typingAccuracy: string;
+  typingRaw: string;
+  typingCharacters: string;
+  typingConsistency: string;
+  typingTime: string;
+  typingWords: string;
+  restartTest: string;
+  clickToFocus: string;
+  shiftEnterRestart: string;
 }
 
 /** Tüm çeviriler */
@@ -601,6 +619,24 @@ const messages: Record<Lang, Messages> = {
     analysisResult: "Analiz Sonucu",
     testYourselfDesc: "Herhangi bir Rusça kelime veya cümleyi yapay zeka ile kelime kelime analiz edin.",
     enterRussianSentence: "Analiz edilecek Rusça metni buraya yazın...",
+
+    // Faz 13.2 — Monkeytype (10 Parmak Testi) ve Yeni Modlar
+    newModes: "Yeni Modlar",
+    newModesBadge: "New Modes!",
+    typingSpeedTest: "10 Parmak Hız Testi",
+    typingSpeedDesc: "Rusça 10 parmak yazma hızını ve doğruluğunu test edin.",
+    aiGrammarAnalysis: "AI Gramer Analizi",
+    aiGrammarDesc: "Yazdığınız herhangi bir cümlenin gramerini yapay zeka ile analiz edin.",
+    typingWpm: "dak/kel",
+    typingAccuracy: "doğruluk",
+    typingRaw: "sade",
+    typingCharacters: "karakterler",
+    typingConsistency: "tutarlılık",
+    typingTime: "süre",
+    typingWords: "kelime",
+    restartTest: "Yeniden Başlat",
+    clickToFocus: "Yazmaya başlamak için buraya dokunun",
+    shiftEnterRestart: "Yeniden başlatmak için Shift + Enter",
   },
 
   en: {
@@ -894,6 +930,24 @@ const messages: Record<Lang, Messages> = {
     analysisResult: "Analysis Result",
     testYourselfDesc: "Analyze any Russian word or sentence word-by-word with AI.",
     enterRussianSentence: "Enter Russian text to analyze here...",
+
+    // Faz 13.2 — Monkeytype (10 Parmak Testi) ve Yeni Modlar
+    newModes: "New Modes",
+    newModesBadge: "New Modes!",
+    typingSpeedTest: "Typing Speed Test",
+    typingSpeedDesc: "Test your Russian 10-finger typing speed and accuracy.",
+    aiGrammarAnalysis: "AI Grammar Analysis",
+    aiGrammarDesc: "Analyze any Russian sentence grammar with artificial intelligence.",
+    typingWpm: "wpm",
+    typingAccuracy: "accuracy",
+    typingRaw: "raw",
+    typingCharacters: "characters",
+    typingConsistency: "consistency",
+    typingTime: "time",
+    typingWords: "words",
+    restartTest: "Restart Test",
+    clickToFocus: "Click here to focus and type",
+    shiftEnterRestart: "Shift + Enter to restart",
   },
 };
 
