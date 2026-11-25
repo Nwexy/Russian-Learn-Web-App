@@ -1,467 +1,1400 @@
 "use client";
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { RotateCcw, ArrowLeft, Clock, Zap, Target } from "lucide-react";
+import {
+  Chart,
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Filler,
+  Tooltip,
+} from "chart.js";
+import { languageData, type LanguageItem } from "@/lib/speedtype-words";
+import "./speedtype.css";
+
 import type { Item, Lang } from "@/types";
-import { getMessages } from "@/lib/i18n";
 
-const RUSSIAN_VOCABULARY_POOL = [
-  "дом", "стол", "книга", "мама", "папа", "окно", "собака", "кот", "работа", "школа",
-  "время", "человек", "день", "ночь", "город", "вода", "чай", "кофе", "хлеб", "сыр",
-  "друг", "сестра", "брат", "язык", "слово", "мир", "жизнь", "рука", "голова", "глаз",
-  "место", "часть", "неделя", "месяц", "год", "дело", "вопрос", "ответ", "улица", "машина",
-  "поезд", "дорога", "парк", "кино", "театр", "музыка", "песня", "фильм", "письмо", "телефон",
-  "компьютер", "утро", "вечер", "сегодня", "завтра", "вчера", "здесь", "там", "хорошо", "плохо",
-  "быстро", "медленно", "много", "мало", "новый", "старый", "большой", "маленький", "красивый", "добрый",
-  "умный", "белый", "черный", "красный", "синий", "зеленый", "желтый", "первый", "второй", "третий",
-  "читать", "писать", "говорить", "смотреть", "слушать", "знать", "думать", "жить", "работать", "учить",
-  "любить", "видеть", "делать", "идти", "ехать", "пить", "есть", "спать", "купить", "открыть",
-  "закрыть", "ждать", "помнить", "спросить", "ответить", "играть", "гулять", "понимать", "помогать", "солнце",
-  "небо", "море", "река", "лес", "зима", "весна", "лето", "осень", "погода", "дождь",
-  "снег", "ветер", "тепло", "холодно", "правда", "друг", "правда", "песня", "урок", "ручка"
-];
+// Register Chart.js components
+Chart.register(
+  LineController,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Filler,
+  Tooltip
+);
 
-interface SpeedTypeTestProps {
+export interface SpeedTypeTestProps {
+  onExit?: () => void;
+  initialLanguage?: string;
   items?: Item[];
-  uiLang: Lang;
-  onExit: () => void;
+  uiLang?: Lang;
 }
 
-export function SpeedTypeTest({ items = [], uiLang, onExit }: SpeedTypeTestProps) {
-  const t = getMessages(uiLang);
+type Mode = "time" | "words";
+type TimeOption = 15 | 30 | 60 | 120;
+type WordsOption = 10 | 25 | 50 | 100;
+type ActiveView = "solo" | "race";
+type RaceScreenState = "username" | "waiting" | "race" | "results";
 
-  const [duration, setDuration] = useState<15 | 30 | 60>(30);
-  const [timeLeft, setTimeLeft] = useState<number>(30);
-  const [isActive, setIsActive] = useState<boolean>(false);
-  const [isFinished, setIsFinished] = useState<boolean>(false);
+const OPPONENT_NAMES = [
+  "Alexey", "Daria", "Mikhail", "Anna", "Vladimir",
+  "Sofia", "Dmitry", "Elena", "Ivan", "Polina", "Nikita", "Olga"
+];
 
-  const [words, setWords] = useState<string[]>([]);
-  const [currentWordIdx, setCurrentWordIdx] = useState<number>(0);
-  const [currentInput, setCurrentInput] = useState<string>("");
-  const [wordHistories, setWordHistories] = useState<Array<{ input: string; isCorrect: boolean }>>([]);
+export function SpeedTypeTest({
+  onExit,
+  initialLanguage = "russian",
+  items,
+  uiLang,
+}: SpeedTypeTestProps) {
+  // Config
+  const [mode, setMode] = useState<Mode>("time");
+  const [timeSetting, setTimeSetting] = useState<TimeOption>(30);
+  const [wordsSetting, setWordsSetting] = useState<WordsOption>(25);
+  const [punctuation, setPunctuation] = useState<boolean>(false);
+  const [numbers, setNumbers] = useState<boolean>(false);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(initialLanguage);
 
-  const [totalKeyStrokes, setTotalKeyStrokes] = useState<number>(0);
-  const [correctKeyStrokes, setCorrectKeyStrokes] = useState<number>(0);
-  const [startTime, setStartTime] = useState<number | null>(null);
+  // View state
+  const [activeView, setActiveView] = useState<ActiveView>("solo");
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const wordContainerRef = useRef<HTMLDivElement>(null);
-  const activeWordRef = useRef<HTMLSpanElement>(null);
+  // Language modal
+  const [isLangModalOpen, setIsLangModalOpen] = useState<boolean>(false);
+  const [langSearch, setLangSearch] = useState<string>("");
 
-  // Kelime listesi üret
-  const generateWordsList = useCallback(() => {
-    const itemWords = items
-      .filter((i) => i.ru && typeof i.ru === "string")
-      .map((i) => i.ru.trim().toLowerCase())
-      .filter((w) => /^[а-яё]+$/i.test(w) && w.length >= 2 && w.length <= 12);
+  // Game state
+  const [gameWords, setGameWords] = useState<string[]>([]);
+  const [timerDisplay, setTimerDisplay] = useState<string>("30");
+  const [isRunning, setIsRunning] = useState<boolean>(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [showResult, setShowResult] = useState<boolean>(false);
 
-    const sourcePool = itemWords.length >= 20 ? itemWords : RUSSIAN_VOCABULARY_POOL;
-    const shuffled: string[] = [];
-    while (shuffled.length < 120) {
-      const copy = [...sourcePool].sort(() => 0.5 - Math.random());
-      shuffled.push(...copy);
+  // Result stats
+  const [finalWpm, setFinalWpm] = useState<number>(0);
+  const [finalAcc, setFinalAcc] = useState<number>(0);
+  const [finalRaw, setFinalRaw] = useState<number>(0);
+  const [finalChars, setFinalChars] = useState<string>("0/0/0/0");
+  const [finalType, setFinalType] = useState<string>("time 30");
+  const [finalConsistency, setFinalConsistency] = useState<number>(0);
+
+  // DOM refs
+  const wordsElRef = useRef<HTMLDivElement>(null);
+  const inputElRef = useRef<HTMLInputElement>(null);
+  const caretElRef = useRef<HTMLDivElement>(null);
+  const chartCanvasRef = useRef<HTMLCanvasElement>(null);
+  const chartInstanceRef = useRef<Chart | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // Mutable typing game progress refs (to prevent re-rendering entire layout on every keystroke)
+  const typingStateRef = useRef({
+    wordIdx: 0,
+    charIdx: 0,
+    correct: 0,
+    incorrect: 0,
+    extra: 0,
+    missed: 0,
+    total: 0,
+    startTime: 0,
+    wpmHistory: [] as number[],
+    timer: 30,
+    intervalId: null as NodeJS.Timeout | null,
+    running: false,
+  });
+
+  /* ==========================================================================
+     AUDIO FEEDBACK (Web Audio API)
+     ========================================================================== */
+  const playSound = useCallback((freq: number, dur: number) => {
+    if (!soundEnabled) return;
+    try {
+      if (!audioCtxRef.current) {
+        const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        audioCtxRef.current = new AudioContextClass();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === "suspended") {
+        ctx.resume();
+      }
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + dur);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + dur);
+    } catch {
+      // Audio autoplay policy fallback
     }
-    return shuffled.slice(0, 120);
-  }, [items]);
+  }, [soundEnabled]);
 
-  // Testi sıfırla
-  const resetTest = useCallback(
-    (newDuration?: 15 | 30 | 60) => {
-      const dur = newDuration ?? duration;
-      setDuration(dur);
-      setTimeLeft(dur);
-      setIsActive(false);
-      setIsFinished(false);
-      setCurrentWordIdx(0);
-      setCurrentInput("");
-      setWordHistories([]);
-      setTotalKeyStrokes(0);
-      setCorrectKeyStrokes(0);
-      setStartTime(null);
-      setWords(generateWordsList());
+  /* ==========================================================================
+     LINE HEIGHT & CARET CALCULATION
+     ========================================================================== */
+  const getLineHeight = useCallback(() => {
+    const wordsEl = wordsElRef.current;
+    if (!wordsEl || wordsEl.children.length < 2) return 48;
+    const first = wordsEl.children[0] as HTMLElement;
+    for (let i = 1; i < wordsEl.children.length; i++) {
+      const el = wordsEl.children[i] as HTMLElement;
+      if (el.offsetTop > first.offsetTop) {
+        return el.offsetTop - first.offsetTop;
+      }
+    }
+    return 48;
+  }, []);
 
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 50);
-    },
-    [duration, generateWordsList]
-  );
+  const updateCaret = useCallback(() => {
+    const wordsEl = wordsElRef.current;
+    const caretEl = caretElRef.current;
+    if (!wordsEl || !caretEl) return;
 
-  // İlk yüklemede kelimeleri oluştur
-  useEffect(() => {
-    resetTest();
-  }, [resetTest]);
+    const { wordIdx, charIdx } = typingStateRef.current;
+    const wordEl = wordsEl.children[wordIdx] as HTMLElement;
+    if (!wordEl) return;
 
-  // Sayacı yönet
-  useEffect(() => {
-    if (!isActive || isFinished) return;
+    requestAnimationFrame(() => {
+      const lineHeight = getLineHeight();
+      const currentWordTop = wordEl.offsetTop;
+      const currentLine = Math.round(currentWordTop / lineHeight);
+      const targetScrollLine = Math.max(0, currentLine - 1);
+      const targetOffset = targetScrollLine * lineHeight;
 
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          setIsActive(false);
-          setIsFinished(true);
-          return 0;
+      const letterEl = wordEl.children[charIdx] as HTMLElement;
+      const caretHeight = caretEl.offsetHeight || 28;
+      let top: number, left: number;
+
+      if (letterEl) {
+        top = wordEl.offsetTop + letterEl.offsetTop + (letterEl.offsetHeight - caretHeight) / 2;
+        left = wordEl.offsetLeft + letterEl.offsetLeft;
+      } else {
+        const last = wordEl.lastElementChild as HTMLElement;
+        if (last) {
+          top = wordEl.offsetTop + last.offsetTop + (last.offsetHeight - caretHeight) / 2;
+          left = wordEl.offsetLeft + last.offsetLeft + last.offsetWidth;
+        } else {
+          top = wordEl.offsetTop + (wordEl.offsetHeight - caretHeight) / 2;
+          left = wordEl.offsetLeft;
         }
-        return prev - 1;
+      }
+
+      caretEl.style.top = `${top}px`;
+      caretEl.style.left = `${left}px`;
+      wordsEl.style.transform = `translateY(-${targetOffset}px)`;
+      caretEl.style.transform = `translateY(-${targetOffset}px)`;
+    });
+  }, [getLineHeight]);
+
+  /* ==========================================================================
+     WORD GENERATION & RENDERING
+     ========================================================================== */
+  const generateWords = useCallback((lang: string, m: Mode, punc: boolean, num: boolean, wCount: number) => {
+    const dict = languageData.find((l) => l.id === lang) || languageData[0];
+    const source = dict.words;
+    const count = m === "words" ? wCount : 100;
+    const generated: string[] = [];
+
+    for (let i = 0; i < count; i++) {
+      let w = source[Math.floor(Math.random() * source.length)];
+      if (punc && Math.random() < 0.2) {
+        const p = ".,:;?!-"[Math.floor(Math.random() * 7)];
+        w = Math.random() < 0.5 ? w + p : p + w;
+      }
+      if (num && Math.random() < 0.1) {
+        w = String(Math.floor(Math.random() * 1000));
+      }
+      generated.push(w);
+    }
+    return generated;
+  }, []);
+
+  const addWords = useCallback(() => {
+    const dict = languageData.find((l) => l.id === selectedLanguage) || languageData[0];
+    const source = dict.words;
+    const wordsEl = wordsElRef.current;
+    if (!wordsEl) return;
+
+    const newWords: string[] = [];
+    for (let i = 0; i < 20; i++) {
+      let w = source[Math.floor(Math.random() * source.length)];
+      if (punctuation && Math.random() < 0.2) {
+        const p = ".,:;?!-"[Math.floor(Math.random() * 7)];
+        w = Math.random() < 0.5 ? w + p : p + w;
+      }
+      if (numbers && Math.random() < 0.1) {
+        w = String(Math.floor(Math.random() * 1000));
+      }
+      newWords.push(w);
+
+      const div = document.createElement("div");
+      div.className = "word";
+      w.split("").forEach((c) => {
+        const span = document.createElement("span");
+        span.className = "letter";
+        span.textContent = c;
+        div.appendChild(span);
       });
+      wordsEl.appendChild(div);
+    }
+
+    setGameWords((prev) => [...prev, ...newWords]);
+  }, [selectedLanguage, punctuation, numbers]);
+
+  /* ==========================================================================
+     START & END GAME LOGIC
+     ========================================================================== */
+  const endGame = useCallback(() => {
+    const state = typingStateRef.current;
+    if (state.intervalId) {
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+    }
+    state.running = false;
+    setIsRunning(false);
+
+    const sec = (Date.now() - state.startTime) / 1000;
+    const min = sec / 60;
+    const safeMin = Math.max(min, 0.1);
+
+    const wpm = Math.round((state.correct + state.wordIdx) / 4.8 / safeMin) || 0;
+    const rawWpm = Math.round((state.total + state.wordIdx) / 4.8 / safeMin) || 0;
+    const acc = state.total > 0 ? Math.round((state.correct / state.total) * 100) : 0;
+
+    let cons = 0;
+    if (state.wpmHistory.length > 1) {
+      const mean = state.wpmHistory.reduce((a, b) => a + b, 0) / state.wpmHistory.length;
+      const std = Math.sqrt(
+        state.wpmHistory.reduce((a, b) => a + (b - mean) ** 2, 0) / state.wpmHistory.length
+      );
+      cons = Math.max(0, Math.round(100 - (std / mean) * 100));
+    }
+
+    setFinalWpm(wpm);
+    setFinalAcc(acc);
+    setFinalRaw(rawWpm);
+    setFinalChars(`${state.correct}/${state.incorrect}/${state.extra}/${state.missed}`);
+    setFinalType(`${mode} ${mode === "time" ? timeSetting : wordsSetting}`);
+    setFinalConsistency(cons);
+    setShowResult(true);
+
+    // Render chart
+    setTimeout(() => {
+      if (chartCanvasRef.current) {
+        if (chartInstanceRef.current) {
+          chartInstanceRef.current.destroy();
+        }
+        const ctx = chartCanvasRef.current.getContext("2d");
+        if (ctx) {
+          chartInstanceRef.current = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: state.wpmHistory.map((_, i) => i + 1),
+              datasets: [
+                {
+                  label: "WPM",
+                  data: state.wpmHistory,
+                  borderColor: "#8c9eff",
+                  backgroundColor: "rgba(140,158,255,0.12)",
+                  tension: 0.4,
+                  fill: true,
+                  borderWidth: 3,
+                  pointRadius: 2,
+                  pointHoverRadius: 5,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: { color: "rgba(255, 255, 255, 0.05)" },
+                  ticks: { color: "#8a8b8c" },
+                },
+                x: {
+                  display: false,
+                },
+              },
+              plugins: {
+                legend: { display: false },
+                tooltip: {
+                  backgroundColor: "#2c2c2f",
+                  titleColor: "#e2e2e6",
+                  bodyColor: "#8c9eff",
+                  borderColor: "rgba(255,255,255,0.1)",
+                  borderWidth: 1,
+                },
+              },
+            },
+          });
+        }
+      }
+    }, 120);
+  }, [mode, timeSetting, wordsSetting]);
+
+  const updateWpm = useCallback(() => {
+    const state = typingStateRef.current;
+    const sec = (Date.now() - state.startTime) / 1000;
+    if (sec < 1) return;
+    const currentWpm = Math.round((state.correct + state.wordIdx) / 4.8 / (sec / 60));
+    state.wpmHistory.push(currentWpm);
+  }, []);
+
+  const startGame = useCallback(() => {
+    const state = typingStateRef.current;
+    state.running = true;
+    state.startTime = Date.now();
+    state.timer = timeSetting;
+    setIsRunning(true);
+
+    state.intervalId = setInterval(() => {
+      if (mode === "time") {
+        state.timer--;
+        setTimerDisplay(String(state.timer));
+        if (state.timer <= 0) {
+          endGame();
+        }
+      } else {
+        setTimerDisplay(`${state.wordIdx}/${wordsSetting}`);
+      }
+      updateWpm();
     }, 1000);
+  }, [mode, timeSetting, wordsSetting, endGame, updateWpm]);
 
-    return () => clearInterval(timer);
-  }, [isActive, isFinished]);
+  /* ==========================================================================
+     INIT / RESET
+     ========================================================================== */
+  const init = useCallback(() => {
+    const state = typingStateRef.current;
+    if (state.intervalId) {
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+    }
+    state.running = false;
+    state.wordIdx = 0;
+    state.charIdx = 0;
+    state.correct = 0;
+    state.incorrect = 0;
+    state.extra = 0;
+    state.missed = 0;
+    state.total = 0;
+    state.wpmHistory = [];
 
-  // Aktif kelime değiştikçe görünür alanda tut (auto-scroll)
+    const newWords = generateWords(selectedLanguage, mode, punctuation, numbers, wordsSetting);
+    setGameWords(newWords);
+    setIsRunning(false);
+    setShowResult(false);
+    setIsFocused(false);
+
+    setTimerDisplay(mode === "time" ? String(timeSetting) : `0/${wordsSetting}`);
+
+    if (inputElRef.current) {
+      inputElRef.current.value = "";
+      inputElRef.current.blur();
+    }
+
+    if (wordsElRef.current) {
+      wordsElRef.current.style.transform = "translateY(0px)";
+    }
+    if (caretElRef.current) {
+      caretElRef.current.style.transform = "translateY(0px)";
+    }
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        updateCaret();
+      });
+    });
+  }, [selectedLanguage, mode, punctuation, numbers, wordsSetting, timeSetting, generateWords, updateCaret]);
+
+  // Initial mount & settings change reset
   useEffect(() => {
-    if (activeWordRef.current && wordContainerRef.current) {
-      const container = wordContainerRef.current;
-      const activeEl = activeWordRef.current;
-      const containerTop = container.offsetTop;
-      const elementTop = activeEl.offsetTop;
-      const relativeTop = elementTop - containerTop;
-
-      if (relativeTop > 70) {
-        container.scrollTo({
-          top: relativeTop - 35,
-          behavior: "smooth",
-        });
-      } else if (container.scrollTop > 0 && relativeTop <= 35) {
-        container.scrollTo({
-          top: 0,
-          behavior: "smooth",
-        });
-      }
+    if (activeView === "solo") {
+      init();
     }
-  }, [currentWordIdx]);
+  }, [activeView, init]);
 
-  // Tuş dinleyicisi
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (isFinished) return;
+  /* ==========================================================================
+     KEY HANDLING
+     ========================================================================== */
+  const handleKey = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    const state = typingStateRef.current;
+    if (!isFocused) return;
 
-    // Yazmaya başlandığı an süre başlasın
-    if (!isActive && !isFinished && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
-      setIsActive(true);
-      setStartTime(Date.now());
+    if (!state.running && e.key.length === 1) {
+      startGame();
     }
 
-    const currentTargetWord = words[currentWordIdx] || "";
+    const wordsEl = wordsElRef.current;
+    if (!wordsEl) return;
 
-    // 1. Boşluk (Space) ile bir sonraki kelimeye geçiş
-    if (e.key === " ") {
-      e.preventDefault();
-      if (currentInput.trim().length === 0) return;
+    const currentWordStr = gameWords[state.wordIdx];
+    const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
+    if (!wordEl || !currentWordStr) return;
 
-      const isWordCorrect = currentInput.trim() === currentTargetWord;
-      setWordHistories((prev) => [
-        ...prev,
-        { input: currentInput.trim(), isCorrect: isWordCorrect },
-      ]);
-
-      // Boşluk basımı da toplam tuş vuruşuna dahil
-      setTotalKeyStrokes((prev) => prev + 1);
-      if (isWordCorrect) {
-        setCorrectKeyStrokes((prev) => prev + 1); // bonus doğru space
-      }
-
-      setCurrentWordIdx((prev) => prev + 1);
-      setCurrentInput("");
-      return;
-    }
-
-    // 2. Backspace ile harf silme
     if (e.key === "Backspace") {
-      if (currentInput.length > 0) {
-        setCurrentInput((prev) => prev.slice(0, -1));
+      const isCtrl = e.ctrlKey;
+      if (state.charIdx > 0) {
+        if (isCtrl) {
+          // Ctrl + Backspace: Delete whole word up to start
+          while (state.charIdx > 0) {
+            state.charIdx--;
+            const el = wordEl.children[state.charIdx] as HTMLElement;
+            if (el.classList.contains("correct")) state.correct--;
+            if (el.classList.contains("incorrect")) state.incorrect--;
+            if (el.classList.contains("extra")) {
+              el.remove();
+              state.extra--;
+            } else {
+              el.className = "letter";
+            }
+          }
+        } else {
+          // Single backspace
+          state.charIdx--;
+          const el = wordEl.children[state.charIdx] as HTMLElement;
+          if (el.classList.contains("correct")) state.correct--;
+          if (el.classList.contains("incorrect")) state.incorrect--;
+          if (el.classList.contains("extra")) {
+            el.remove();
+            state.extra--;
+          } else {
+            el.className = "letter";
+          }
+        }
+        playSound(600, 0.05);
+      } else if (state.wordIdx > 0) {
+        // Backspace to previous word if previous word has error
+        const prevWordEl = wordsEl.children[state.wordIdx - 1] as HTMLElement;
+        if (prevWordEl && prevWordEl.classList.contains("error")) {
+          state.wordIdx--;
+          prevWordEl.classList.remove("error");
+          state.charIdx = prevWordEl.children.length;
+          updateCaret();
+        }
       }
-      return;
-    }
-
-    // 3. Normal karakter girişi
-    if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+    } else if (e.key === " ") {
       e.preventDefault();
-      const nextChar = e.key.toLowerCase();
-      const charIndex = currentInput.length;
 
-      setTotalKeyStrokes((prev) => prev + 1);
+      const hasErrors = Array.from(wordEl.children).some(
+        (c) => c.classList.contains("incorrect") || c.classList.contains("extra")
+      );
 
-      if (charIndex < currentTargetWord.length) {
-        if (nextChar === currentTargetWord[charIndex].toLowerCase()) {
-          setCorrectKeyStrokes((prev) => prev + 1);
+      for (let i = state.charIdx; i < currentWordStr.length; i++) {
+        const letterEl = wordEl.children[i] as HTMLElement;
+        if (letterEl) {
+          letterEl.classList.add("incorrect");
+          state.missed++;
         }
       }
 
-      setCurrentInput((prev) => prev + nextChar);
+      if (hasErrors || state.charIdx < currentWordStr.length) {
+        wordEl.classList.add("error");
+      }
+
+      state.wordIdx++;
+      state.charIdx = 0;
+      playSound(600, 0.05);
+
+      if (mode === "words" && state.wordIdx >= wordsSetting) {
+        endGame();
+        return;
+      }
+
+      if (mode === "time" && state.wordIdx > gameWords.length - 20) {
+        addWords();
+      }
+    } else if (e.key.length === 1) {
+      const target = currentWordStr[state.charIdx];
+      const el = wordEl.children[state.charIdx] as HTMLElement;
+
+      if (el) {
+        if (e.key === target) {
+          el.classList.add("correct");
+          state.correct++;
+          playSound(600, 0.05);
+        } else {
+          el.classList.add("incorrect");
+          state.incorrect++;
+          playSound(200, 0.1);
+        }
+        state.total++;
+        state.charIdx++;
+
+        if (mode === "words" && state.wordIdx === wordsSetting - 1 && state.charIdx === currentWordStr.length) {
+          endGame();
+          return;
+        }
+      } else {
+        // Max 1 extra character limit
+        const currentExtras = wordEl.querySelectorAll(".extra").length;
+        if (currentExtras < 1) {
+          const span = document.createElement("span");
+          span.className = "letter extra incorrect";
+          span.textContent = e.key;
+          wordEl.appendChild(span);
+          state.charIdx++;
+          state.extra++;
+          state.incorrect++;
+          playSound(200, 0.1);
+        }
+      }
+    }
+
+    updateCaret();
+  }, [isFocused, gameWords, mode, wordsSetting, playSound, updateCaret, endGame, addWords, startGame]);
+
+  // Global keyboard shortcuts (Shift+Enter or Escape to restart)
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (isLangModalOpen) {
+        if (e.key === "Escape") setIsLangModalOpen(false);
+        return;
+      }
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        init();
+        return;
+      }
+
+      if (e.shiftKey && e.key === "Enter") {
+        e.preventDefault();
+        init();
+        return;
+      }
+
+      if (isFocused && inputElRef.current) {
+        inputElRef.current.focus();
+      }
+    };
+
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, [isLangModalOpen, isFocused, init]);
+
+  // Focus click handler
+  const handleGameContainerClick = () => {
+    setIsFocused(true);
+    if (inputElRef.current) {
+      inputElRef.current.focus();
     }
   };
 
-  // İstatistik hesaplamaları
-  const elapsedSec = duration - timeLeft;
-  const elapsedMin = Math.max(elapsedSec / 60, 0.05);
-  const currentWpm = Math.max(0, Math.round(correctKeyStrokes / 5 / elapsedMin));
-  const currentAccuracy =
-    totalKeyStrokes > 0 ? Math.min(100, Math.round((correctKeyStrokes / totalKeyStrokes) * 100)) : 100;
+  /* ==========================================================================
+     RACE MODE LOGIC & SIMULATION
+     ========================================================================== */
+  const [raceScreen, setRaceScreen] = useState<RaceScreenState>("username");
+  const [raceUsername, setRaceUsername] = useState<string>("Player");
+  const [raceLanguage, setRaceLanguage] = useState<string>("russian");
+  const [raceOpponent, setRaceOpponent] = useState<string>("Alexey");
+  const [raceWords, setRaceWords] = useState<string[]>([]);
+  const [countdown, setCountdown] = useState<number | string>(3);
+  const [isCountdownActive, setIsCountdownActive] = useState<boolean>(false);
+  const [raceTimer, setRaceTimer] = useState<number>(60);
+  const [racePlayerWpm, setRacePlayerWpm] = useState<number>(0);
+  const [raceOpponentWpm, setRaceOpponentWpm] = useState<number>(0);
+  const [raceOpponentProgress, setRaceOpponentProgress] = useState<number>(0);
+  const [racePlayerResult, setRacePlayerResult] = useState({ wpm: 0, acc: 0, raw: 0, isWinner: false, isTie: false });
+  const [raceOpponentResult, setRaceOpponentResult] = useState({ wpm: 0, acc: 0, raw: 0 });
+
+  const raceStateRef = useRef({
+    wordIdx: 0,
+    charIdx: 0,
+    correct: 0,
+    incorrect: 0,
+    total: 0,
+    startTime: 0,
+    timer: 60,
+    intervalId: null as NodeJS.Timeout | null,
+    opponentIntervalId: null as NodeJS.Timeout | null,
+    running: false,
+    playerDone: false,
+  });
+
+  const raceWordsElRef = useRef<HTMLDivElement>(null);
+  const raceCaretElRef = useRef<HTMLDivElement>(null);
+  const raceInputRef = useRef<HTMLInputElement>(null);
+
+  const updateRaceCaret = useCallback(() => {
+    const wordsEl = raceWordsElRef.current;
+    const caretEl = raceCaretElRef.current;
+    if (!wordsEl || !caretEl) return;
+
+    const { wordIdx, charIdx } = raceStateRef.current;
+    const wordEl = wordsEl.children[wordIdx] as HTMLElement;
+    if (!wordEl) return;
+
+    requestAnimationFrame(() => {
+      const letterEl = wordEl.children[charIdx] as HTMLElement;
+      let top: number, left: number;
+      if (letterEl) {
+        top = wordEl.offsetTop + letterEl.offsetTop + (letterEl.offsetHeight - 26) / 2;
+        left = wordEl.offsetLeft + letterEl.offsetLeft;
+      } else {
+        const last = wordEl.lastElementChild as HTMLElement;
+        if (last) {
+          top = wordEl.offsetTop + last.offsetTop + (last.offsetHeight - 26) / 2;
+          left = wordEl.offsetLeft + last.offsetLeft + last.offsetWidth;
+        } else {
+          top = wordEl.offsetTop + (wordEl.offsetHeight - 26) / 2;
+          left = wordEl.offsetLeft;
+        }
+      }
+      caretEl.style.top = `${top}px`;
+      caretEl.style.left = `${left}px`;
+    });
+  }, []);
+
+  const endRace = useCallback(() => {
+    const state = raceStateRef.current;
+    if (state.intervalId) clearInterval(state.intervalId);
+    if (state.opponentIntervalId) clearInterval(state.opponentIntervalId);
+    state.running = false;
+
+    const sec = Math.max((Date.now() - state.startTime) / 1000, 1);
+    const min = sec / 60;
+    const pWpm = Math.round((state.correct + state.wordIdx) / 4.8 / min) || 0;
+    const pRaw = Math.round((state.total + state.wordIdx) / 4.8 / min) || 0;
+    const pAcc = state.total > 0 ? Math.round((state.correct / state.total) * 100) : 0;
+
+    const oppWpm = Math.floor(Math.random() * 25) + 40; // 40-65 realistic WPM
+    const oppRaw = oppWpm + Math.floor(Math.random() * 5);
+    const oppAcc = Math.floor(Math.random() * 8) + 92;
+
+    const isWinner = pWpm > oppWpm;
+    const isTie = pWpm === oppWpm;
+
+    setRacePlayerResult({ wpm: pWpm, acc: pAcc, raw: pRaw, isWinner, isTie });
+    setRaceOpponentResult({ wpm: oppWpm, acc: oppAcc, raw: oppRaw });
+    setRaceScreen("results");
+  }, []);
+
+  const startRace = useCallback(() => {
+    const state = raceStateRef.current;
+    state.running = true;
+    state.startTime = Date.now();
+    state.timer = 60;
+    state.wordIdx = 0;
+    state.charIdx = 0;
+    state.correct = 0;
+    state.incorrect = 0;
+    state.total = 0;
+    setRaceTimer(60);
+    setRacePlayerWpm(0);
+    setRaceOpponentWpm(0);
+    setRaceOpponentProgress(0);
+
+    if (raceInputRef.current) {
+      raceInputRef.current.disabled = false;
+      raceInputRef.current.focus();
+    }
+
+    // Player timer interval
+    state.intervalId = setInterval(() => {
+      state.timer--;
+      setRaceTimer(state.timer);
+      const sec = (Date.now() - state.startTime) / 1000;
+      if (sec >= 1) {
+        const curWpm = Math.round((state.correct + state.wordIdx) / 4.8 / (sec / 60));
+        setRacePlayerWpm(curWpm);
+      }
+      if (state.timer <= 0) {
+        endRace();
+      }
+    }, 1000);
+
+    // Opponent simulation interval (human-like typing progression)
+    let oppProg = 0;
+    const oppSpeedFactor = (Math.random() * 0.4 + 0.8) / 60; // 48-72 wpm average target
+    state.opponentIntervalId = setInterval(() => {
+      if (!state.running) return;
+      oppProg += oppSpeedFactor * 1.5;
+      if (oppProg > 100) oppProg = 100;
+      setRaceOpponentProgress(Math.round(oppProg));
+      setRaceOpponentWpm(Math.round(oppProg * 0.58 + Math.random() * 3));
+      if (oppProg >= 100 && state.playerDone) {
+        endRace();
+      }
+    }, 100);
+  }, [endRace]);
+
+  const startRaceCountdown = useCallback(() => {
+    setRaceScreen("race");
+    setIsCountdownActive(true);
+    let count = 3;
+    setCountdown(count);
+
+    const countInterval = setInterval(() => {
+      count--;
+      if (count > 0) {
+        setCountdown(count);
+      } else if (count === 0) {
+        setCountdown("GO!");
+      } else {
+        clearInterval(countInterval);
+        setIsCountdownActive(false);
+        startRace();
+      }
+    }, 900);
+  }, [startRace]);
+
+  const handleStartRacing = useCallback(() => {
+    setRaceScreen("waiting");
+    // Pick random opponent
+    const randomOpp = OPPONENT_NAMES[Math.floor(Math.random() * OPPONENT_NAMES.length)];
+    setRaceOpponent(randomOpp);
+
+    // Generate shared word list
+    const sharedWords = generateWords(raceLanguage, "words", false, false, 50);
+    setRaceWords(sharedWords);
+
+    // Simulate matchmaking delay
+    setTimeout(() => {
+      startRaceCountdown();
+    }, 1600);
+  }, [raceLanguage, generateWords, startRaceCountdown]);
+
+  const handleRaceKey = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    const state = raceStateRef.current;
+    if (!state.running) return;
+
+    const wordsEl = raceWordsElRef.current;
+    if (!wordsEl) return;
+
+    const currentWordStr = raceWords[state.wordIdx];
+    const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
+    if (!wordEl || !currentWordStr) return;
+
+    if (e.key === "Backspace") {
+      if (state.charIdx > 0) {
+        state.charIdx--;
+        const el = wordEl.children[state.charIdx] as HTMLElement;
+        if (el.classList.contains("correct")) state.correct--;
+        if (el.classList.contains("incorrect")) state.incorrect--;
+        el.className = "letter";
+        playSound(600, 0.05);
+      }
+    } else if (e.key === " ") {
+      e.preventDefault();
+      for (let i = state.charIdx; i < currentWordStr.length; i++) {
+        const letterEl = wordEl.children[i] as HTMLElement;
+        if (letterEl) letterEl.classList.add("incorrect");
+      }
+      state.wordIdx++;
+      state.charIdx = 0;
+      playSound(600, 0.05);
+
+      if (state.wordIdx >= raceWords.length) {
+        state.playerDone = true;
+        endRace();
+        return;
+      }
+    } else if (e.key.length === 1) {
+      const target = currentWordStr[state.charIdx];
+      const el = wordEl.children[state.charIdx] as HTMLElement;
+      if (el) {
+        if (e.key === target) {
+          el.classList.add("correct");
+          state.correct++;
+          playSound(600, 0.05);
+        } else {
+          el.classList.add("incorrect");
+          state.incorrect++;
+          playSound(200, 0.1);
+        }
+        state.total++;
+        state.charIdx++;
+
+        if (state.wordIdx === raceWords.length - 1 && state.charIdx === currentWordStr.length) {
+          state.playerDone = true;
+          endRace();
+          return;
+        }
+      }
+    }
+
+    updateRaceCaret();
+  }, [raceWords, playSound, updateRaceCaret, endRace]);
+
+  const currentLangObj = languageData.find((l) => l.id === selectedLanguage) || languageData[0];
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-6 px-4 flex flex-col items-center select-none font-mono">
-      {/* Üst Navigasyon ve Kontroller */}
-      <div className="w-full flex items-center justify-between mb-8 pb-4 border-b border-border/50">
-        <button
-          type="button"
-          onClick={onExit}
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-        >
-          <ArrowLeft size={16} />
-          <span>{t.backToHome}</span>
-        </button>
-
-        {/* Süre Seçenekleri */}
-        {!isFinished && (
-          <div className="flex items-center gap-1.5 p-1 rounded-xl bg-card border border-border">
-            <Clock size={15} className="text-muted-foreground ml-2 mr-1" />
-            {([15, 30, 60] as const).map((sec) => (
-              <button
-                key={sec}
-                type="button"
-                onClick={() => resetTest(sec)}
-                className={`px-3 py-1 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  duration === sec
-                    ? "bg-primary text-primary-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
-                }`}
-              >
-                {sec}s
-              </button>
-            ))}
-          </div>
-        )}
-
-        <button
-          type="button"
-          onClick={() => resetTest()}
-          title={t.restartTest}
-          className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-secondary border border-border/40 transition-colors cursor-pointer"
-        >
-          <RotateCcw size={16} />
-        </button>
-      </div>
-
-      {/* SONUÇ EKRANI (Test bittiğinde) */}
-      {isFinished ? (
-        <div className="w-full max-w-2xl bg-card border border-border rounded-3xl p-8 sm:p-10 shadow-2xl text-center space-y-8 animate-in fade-in zoom-in-95 duration-200">
-          <div className="space-y-2">
-            <span className="text-xs font-extrabold uppercase tracking-widest text-primary">
-              MonkeyType Speed Test
-            </span>
-            <h2 className="text-3xl font-black text-foreground tracking-tight">
-              {uiLang === "tr" ? "Test Tamamlandı" : "Test Completed"}
-            </h2>
-          </div>
-
-          {/* Büyük İstatistik Kartları */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            <div className="p-5 rounded-2xl bg-secondary/50 border border-border flex flex-col items-center justify-center">
-              <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5 mb-1">
-                <Zap size={14} className="text-primary" />
-                {t.wpm}
-              </span>
-              <span className="text-4xl sm:text-5xl font-black text-primary">
-                {currentWpm}
-              </span>
-            </div>
-
-            <div className="p-5 rounded-2xl bg-secondary/50 border border-border flex flex-col items-center justify-center">
-              <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5 mb-1">
-                <Target size={14} className="text-emerald-500" />
-                {t.accuracy}
-              </span>
-              <span className="text-4xl sm:text-5xl font-black text-emerald-500">
-                %{currentAccuracy}
-              </span>
-            </div>
-
-            <div className="col-span-2 sm:col-span-1 p-5 rounded-2xl bg-secondary/50 border border-border flex flex-col items-center justify-center">
-              <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold flex items-center gap-1.5 mb-1">
-                <Clock size={14} className="text-amber-500" />
-                {uiLang === "tr" ? "Süre" : "Time"}
-              </span>
-              <span className="text-4xl sm:text-5xl font-black text-foreground">
-                {duration}s
-              </span>
-            </div>
-          </div>
-
-          {/* Detay Bilgileri */}
-          <div className="flex items-center justify-around py-3 px-6 rounded-xl bg-background/50 border border-border/60 text-xs text-muted-foreground">
-            <div>
-              <span className="font-semibold text-foreground mr-1.5">
-                {correctKeyStrokes}
-              </span>
-              doğru harf
-            </div>
-            <div>•</div>
-            <div>
-              <span className="font-semibold text-foreground mr-1.5">
-                {Math.max(0, totalKeyStrokes - correctKeyStrokes)}
-              </span>
-              yanlış harf
-            </div>
-            <div>•</div>
-            <div>
-              <span className="font-semibold text-foreground mr-1.5">
-                {wordHistories.filter((w) => w.isCorrect).length}/{wordHistories.length}
-              </span>
-              tam kelime
-            </div>
-          </div>
-
-          {/* Butonlar */}
-          <div className="flex items-center justify-center gap-4 pt-2">
-            <button
-              type="button"
-              onClick={() => resetTest()}
-              className="px-8 py-3.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-base shadow-lg transition-all cursor-pointer flex items-center gap-2"
-            >
-              <RotateCcw size={18} />
-              <span>{t.restartTest}</span>
-            </button>
-            <button
-              type="button"
-              onClick={onExit}
-              className="px-6 py-3.5 rounded-xl border border-border text-foreground hover:bg-secondary font-semibold text-base transition-colors cursor-pointer"
-            >
-              <span>{t.backToHome}</span>
-            </button>
-          </div>
-        </div>
-      ) : (
-        /* AKTİF YAZMA ALANI */
-        <div
-          onClick={() => inputRef.current?.focus()}
-          className="w-full flex flex-col items-center cursor-text"
-        >
-          {/* Canlı Sayaç ve İstatistik Şeridi */}
-          <div className="w-full flex items-center justify-between mb-6 px-2 text-xl font-bold">
-            <div className="flex items-center gap-2 text-primary font-black text-3xl">
-              <span>{timeLeft}</span>
-              <span className="text-xs uppercase text-muted-foreground font-semibold">
-                {t.timeLeft}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-6 text-sm text-muted-foreground font-semibold">
-              <div>
-                WPM: <span className="text-foreground font-bold text-base">{currentWpm}</span>
-              </div>
-              <div>
-                ACC: <span className="text-foreground font-bold text-base">%{currentAccuracy}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Gizli Odaklanma Inputu */}
-          <input
-            ref={inputRef}
-            type="text"
-            value={currentInput}
-            onChange={() => {}}
-            onKeyDown={handleKeyDown}
-            autoFocus
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck="false"
-            className="absolute opacity-0 pointer-events-none w-0 h-0"
-            aria-label="SpeedType input"
-          />
-
-          {/* Kelimeler Izgarası / Akış Kutusu */}
-          <div
-            ref={wordContainerRef}
-            className="w-full min-h-[160px] max-h-[190px] overflow-hidden rounded-2xl p-6 bg-card/60 border border-border/70 backdrop-blur-sm shadow-inner flex flex-wrap gap-x-3.5 gap-y-3 text-2xl sm:text-3xl leading-relaxed tracking-wider transition-all"
+    <div className="w-full relative flex flex-col items-center">
+      {/* Optional Top Exit Button */}
+      {onExit && (
+        <div className="w-full max-w-[1200px] flex justify-start px-6 pt-4">
+          <button
+            type="button"
+            onClick={onExit}
+            className="flex items-center gap-2 text-sm font-semibold text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors cursor-pointer bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg border border-white/10"
           >
-            {words.map((word, wIdx) => {
-              const isPast = wIdx < currentWordIdx;
-              const isCurrent = wIdx === currentWordIdx;
-              const history = wordHistories[wIdx];
-
-              if (isPast) {
-                return (
-                  <span
-                    key={wIdx}
-                    className={`transition-colors ${
-                      history?.isCorrect
-                        ? "text-muted-foreground/60"
-                        : "text-rose-500 underline decoration-rose-500/60 decoration-2"
-                    }`}
-                  >
-                    {word}
-                  </span>
-                );
-              }
-
-              if (isCurrent) {
-                const targetLetters = word.split("");
-                const typedLetters = currentInput.split("");
-
-                return (
-                  <span
-                    key={wIdx}
-                    ref={activeWordRef}
-                    className="relative font-bold text-foreground inline-flex items-center"
-                  >
-                    {targetLetters.map((char, cIdx) => {
-                      let colorClass = "text-muted-foreground/40";
-                      if (cIdx < typedLetters.length) {
-                        colorClass =
-                          typedLetters[cIdx] === char
-                            ? "text-primary dark:text-emerald-400 font-extrabold"
-                            : "text-rose-500 bg-rose-500/15 rounded-sm";
-                      }
-
-                      return (
-                        <span key={cIdx} className={`relative ${colorClass}`}>
-                          {cIdx === typedLetters.length && (
-                            <span className="absolute left-0 -top-1 bottom-0 w-[2.5px] bg-primary animate-pulse" />
-                          )}
-                          {char}
-                        </span>
-                      );
-                    })}
-
-                    {/* Hedef kelimeden fazla yazılan harfler */}
-                    {typedLetters.length > targetLetters.length &&
-                      typedLetters.slice(targetLetters.length).map((extraChar, eIdx) => (
-                        <span
-                          key={targetLetters.length + eIdx}
-                          className="text-rose-400 bg-rose-500/20 rounded-sm"
-                        >
-                          {extraChar}
-                        </span>
-                      ))}
-
-                    {typedLetters.length >= targetLetters.length && (
-                      <span className="inline-block w-[2.5px] h-6 bg-primary animate-pulse ml-0.5" />
-                    )}
-                  </span>
-                );
-              }
-
-              // Gelecek kelimeler
-              return (
-                <span key={wIdx} className="text-muted-foreground/35">
-                  {word}
-                </span>
-              );
-            })}
-          </div>
-
-          {/* Alt İpucu */}
-          <div className="w-full flex items-center justify-between text-xs text-muted-foreground/70 mt-4 px-2">
-            <span>{t.typingTestInstruction}</span>
-            <span>Space: sonraki kelime • Backspace: sil</span>
-          </div>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            <span>Back</span>
+          </button>
         </div>
       )}
+
+      {/* ====================================================================
+          VIEW 1: SOLO SPEEDTYPE (MONKEYTYPE STYLE)
+          ==================================================================== */}
+      {activeView === "solo" && (
+        <div id="game-wrapper">
+          {/* Config Bar */}
+          <div
+            className="config-bar"
+            id="config-bar"
+            style={{
+              opacity: isRunning ? 0.3 : 1,
+              pointerEvents: isRunning ? "none" : "auto",
+              display: showResult ? "none" : "flex",
+            }}
+          >
+            <div className="config-group">
+              <button
+                type="button"
+                className={`config-btn ${mode === "time" ? "active" : ""}`}
+                onClick={() => {
+                  setMode("time");
+                  init();
+                }}
+              >
+                time
+              </button>
+              <button
+                type="button"
+                className={`config-btn ${mode === "words" ? "active" : ""}`}
+                onClick={() => {
+                  setMode("words");
+                  init();
+                }}
+              >
+                words
+              </button>
+            </div>
+
+            <div className="config-divider" />
+
+            {mode === "time" ? (
+              <div className="config-group">
+                {([15, 30, 60, 120] as TimeOption[]).map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    className={`config-btn ${timeSetting === t ? "active" : ""}`}
+                    onClick={() => {
+                      setTimeSetting(t);
+                      init();
+                    }}
+                  >
+                    {t}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="config-group">
+                {([10, 25, 50, 100] as WordsOption[]).map((w) => (
+                  <button
+                    key={w}
+                    type="button"
+                    className={`config-btn ${wordsSetting === w ? "active" : ""}`}
+                    onClick={() => {
+                      setWordsSetting(w);
+                      init();
+                    }}
+                  >
+                    {w}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            <div className="config-divider" />
+
+            <div className="config-group">
+              <button
+                type="button"
+                className={`config-btn ${punctuation ? "active" : ""}`}
+                onClick={() => {
+                  setPunctuation(!punctuation);
+                  init();
+                }}
+              >
+                punct
+              </button>
+              <button
+                type="button"
+                className={`config-btn ${numbers ? "active" : ""}`}
+                onClick={() => {
+                  setNumbers(!numbers);
+                  init();
+                }}
+              >
+                numbers
+              </button>
+            </div>
+
+            <div className="config-divider" />
+
+            <div className="config-group">
+              <button
+                type="button"
+                className={`icon-btn ${soundEnabled ? "active" : ""}`}
+                onClick={() => setSoundEnabled(!soundEnabled)}
+                aria-label="Toggle Sound"
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                  {soundEnabled ? (
+                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+                  ) : (
+                    <line x1="23" y1="9" x2="17" y2="15" />
+                  )}
+                </svg>
+              </button>
+            </div>
+
+            <div className="config-divider" />
+
+            <div className="config-group">
+              <button
+                type="button"
+                className="race-link cursor-pointer"
+                onClick={() => {
+                  setActiveView("race");
+                  setRaceScreen("username");
+                }}
+              >
+                🏁 Race
+              </button>
+            </div>
+          </div>
+
+          {/* Game Area */}
+          {!showResult && (
+            <div id="game-container" onClick={handleGameContainerClick}>
+              {/* Language Label (Globe icon above words) */}
+              <div
+                className="language-label"
+                id="language-label"
+                onClick={() => setIsLangModalOpen(true)}
+                style={{
+                  opacity: isRunning ? 0.3 : 1,
+                  pointerEvents: isRunning ? "none" : "auto",
+                }}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="2" y1="12" x2="22" y2="12" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                </svg>
+                <span id="langDisplay">{currentLangObj.name.toLowerCase()}</span>
+              </div>
+
+              {/* Stats / Timer (Appears smoothly centered above words) */}
+              <div className={`stats-container ${isRunning ? "visible" : ""}`} id="live-stats">
+                <span id="timer">{timerDisplay}</span>
+              </div>
+
+              {/* Words Container */}
+              <div id="typing-area">
+                <div ref={caretElRef} id="caret" className="caret" />
+                <div ref={wordsElRef} id="words">
+                  {gameWords.map((word, wIdx) => (
+                    <div key={wIdx} className="word">
+                      {word.split("").map((c, cIdx) => (
+                        <span key={cIdx} className="letter">
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Focus Overlay */}
+                <div className={`focus-overlay ${isFocused ? "hidden" : ""}`}>
+                  <div className="focus-message">Click here to focus</div>
+                </div>
+              </div>
+
+              {/* Hidden Input to capture keystrokes cleanly */}
+              <input
+                ref={inputElRef}
+                type="text"
+                id="hidden-input"
+                autoComplete="off"
+                autoCapitalize="off"
+                spellCheck="false"
+                onKeyDown={handleKey}
+                onChange={() => {
+                  if (inputElRef.current) inputElRef.current.value = "";
+                }}
+              />
+
+              {/* Restart Button Below Typing Area */}
+              <div className="game-restart-section">
+                <button
+                  type="button"
+                  id="game-restart-btn"
+                  className="icon-restart-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    init();
+                  }}
+                  aria-label="Restart"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 2v6h-6" />
+                    <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
+                    <path d="M3 22v-6h6" />
+                    <path d="M21 12a9 9 0 0 1-15 6.7L3 16" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Result Screen */}
+          {showResult && (
+            <div id="result-screen" className="visible">
+              <div className="result-top">
+                <div className="result-main-stats">
+                  <div className="big-stat">
+                    <div className="title">wpm</div>
+                    <div className="value">{finalWpm}</div>
+                  </div>
+                  <div className="big-stat">
+                    <div className="title">acc</div>
+                    <div className="value">{finalAcc}%</div>
+                  </div>
+                </div>
+                <div id="chart-container">
+                  <canvas ref={chartCanvasRef} id="wpmChart" />
+                </div>
+              </div>
+
+              <div className="result-details">
+                <div className="detail-stat">
+                  <div className="title">test type</div>
+                  <div className="value">{finalType}</div>
+                </div>
+                <div className="detail-stat">
+                  <div className="title">raw</div>
+                  <div className="value">{finalRaw}</div>
+                </div>
+                <div className="detail-stat">
+                  <div className="title">characters</div>
+                  <div className="value">{finalChars}</div>
+                </div>
+                <div className="detail-stat">
+                  <div className="title">consistency</div>
+                  <div className="value">{finalConsistency}%</div>
+                </div>
+              </div>
+
+              <div className="result-actions">
+                <button
+                  type="button"
+                  className="restart-btn"
+                  onClick={init}
+                  aria-label="Restart Test"
+                >
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M23 4v6h-6" />
+                    <path d="M1 20v-6h6" />
+                    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+                  </svg>
+                </button>
+                <div className="key-hint">
+                  <kbd>Shift</kbd> + <kbd>Enter</kbd> to restart
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ====================================================================
+          VIEW 2: RACE MODE (ONLINE / OPPONENT SIMULATION)
+          ==================================================================== */}
+      {activeView === "race" && (
+        <div id="race-wrapper">
+          {/* Screen 1: Username & Language Screen */}
+          {raceScreen === "username" && (
+            <div className="race-screen active">
+              <div className="username-container">
+                <h1 className="race-title">🏁 Online Race</h1>
+                <p className="race-subtitle">Enter your username to start racing</p>
+
+                <input
+                  type="text"
+                  className="username-input"
+                  value={raceUsername}
+                  onChange={(e) => setRaceUsername(e.target.value)}
+                  placeholder="Your username"
+                  maxLength={20}
+                  autoComplete="off"
+                />
+
+                <div className="language-selection">
+                  <div className="custom-select-wrapper">
+                    <div className="custom-select">
+                      <select
+                        value={raceLanguage}
+                        onChange={(e) => setRaceLanguage(e.target.value)}
+                        className="custom-select-trigger w-full cursor-pointer bg-[#2a2d3a] border-2 border-[#3a3d4a] rounded-xl text-white outline-none"
+                      >
+                        <option value="russian">🇷🇺 Russian</option>
+                        <option value="english">🇺🇸 English</option>
+                        <option value="turkish">🇹🇷 Turkish</option>
+                        <option value="python">🐍 Python</option>
+                        <option value="csharp">👾 C#</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  className="race-btn"
+                  onClick={handleStartRacing}
+                >
+                  Start Racing
+                </button>
+
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveView("solo");
+                      init();
+                    }}
+                    className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors"
+                  >
+                    ← Back to Solo Practice
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Screen 2: Waiting / Matchmaking */}
+          {raceScreen === "waiting" && (
+            <div className="race-screen active">
+              <div className="waiting-container">
+                <div className="loading-spinner" />
+                <h2 className="text-2xl font-bold mb-2">Finding opponent...</h2>
+                <p className="text-[#8a8b8c]">Please wait while we match you with another player</p>
+              </div>
+            </div>
+          )}
+
+          {/* Screen 3: Active Race */}
+          {raceScreen === "race" && (
+            <div id="race-screen" className="race-screen active">
+              {/* Countdown Overlay */}
+              {isCountdownActive && (
+                <div className="countdown-overlay">
+                  <div className="countdown-number">{countdown}</div>
+                </div>
+              )}
+
+              {/* Player Panel */}
+              <div className={`player-panel ${isCountdownActive ? "blur-content" : ""}`}>
+                <div className="race-header">
+                  <div className="race-info">
+                    <span className="text-white">{raceUsername || "You"}</span>
+                    <span className="vs-text">VS</span>
+                    <span className="text-[#8a8b8c]">{raceOpponent}</span>
+                  </div>
+                  <div className="race-stats">
+                    <span>{raceTimer}s</span>
+                    <span>{racePlayerWpm} WPM</span>
+                  </div>
+                </div>
+
+                <div id="race-game-container">
+                  <div ref={raceCaretElRef} id="race-caret" className="caret" />
+                  <div ref={raceWordsElRef} id="race-words">
+                    {raceWords.map((word, wIdx) => (
+                      <div key={wIdx} className="word">
+                        {word.split("").map((c, cIdx) => (
+                          <span key={cIdx} className="letter">
+                            {c}
+                          </span>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                  <input
+                    ref={raceInputRef}
+                    type="text"
+                    id="race-input"
+                    autoComplete="off"
+                    autoCapitalize="off"
+                    spellCheck="false"
+                    onKeyDown={handleRaceKey}
+                    onChange={() => {
+                      if (raceInputRef.current) raceInputRef.current.value = "";
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Opponent Panel */}
+              <div className="opponent-panel">
+                <div className="opponent-header">
+                  <span>{raceOpponent}</span>
+                  <span>{raceOpponentWpm} WPM</span>
+                </div>
+                <div className="opponent-progress">
+                  <div className="progress-bar">
+                    <div
+                      className="progress-fill"
+                      style={{ width: `${raceOpponentProgress}%` }}
+                    />
+                  </div>
+                  <span id="opp-progress-text">{raceOpponentProgress}%</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Screen 4: Race Results */}
+          {raceScreen === "results" && (
+            <div className="race-screen active">
+              <h1 className="results-title">Race Results</h1>
+
+              <div className="results-container">
+                {/* Your Results */}
+                <div className="result-panel your-result">
+                  <div className="result-header">
+                    <h2>{raceUsername || "You"}</h2>
+                    <div className={`result-badge ${racePlayerResult.isWinner ? "winner" : racePlayerResult.isTie ? "tie" : "loser"}`}>
+                      {racePlayerResult.isWinner ? "WINNER" : racePlayerResult.isTie ? "TIE" : "LOSER"}
+                    </div>
+                  </div>
+                  <div className="result-stats">
+                    <div className="stat">
+                      <span className="stat-label">WPM</span>
+                      <span className="stat-value">{racePlayerResult.wpm}</span>
+                    </div>
+                    <div className="stat">
+                      <span className="stat-label">Accuracy</span>
+                      <span className="stat-value">{racePlayerResult.acc}%</span>
+                    </div>
+                    <div className="stat">
+                      <span className="stat-label">Raw</span>
+                      <span className="stat-value">{racePlayerResult.raw}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Opponent Results */}
+                <div className="result-panel opponent-result">
+                  <div className="result-header">
+                    <h2>{raceOpponent}</h2>
+                    <div className={`result-badge ${!racePlayerResult.isWinner && !racePlayerResult.isTie ? "winner" : racePlayerResult.isTie ? "tie" : "loser"}`}>
+                      {!racePlayerResult.isWinner && !racePlayerResult.isTie ? "WINNER" : racePlayerResult.isTie ? "TIE" : "LOSER"}
+                    </div>
+                  </div>
+                  <div className="result-stats">
+                    <div className="stat">
+                      <span className="stat-label">WPM</span>
+                      <span className="stat-value">{raceOpponentResult.wpm}</span>
+                    </div>
+                    <div className="stat">
+                      <span className="stat-label">Accuracy</span>
+                      <span className="stat-value">{raceOpponentResult.acc}%</span>
+                    </div>
+                    <div className="stat">
+                      <span className="stat-label">Raw</span>
+                      <span className="stat-value">{raceOpponentResult.raw}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center gap-3">
+                <button
+                  type="button"
+                  className="race-btn px-8 max-w-xs"
+                  onClick={handleStartRacing}
+                >
+                  Race Again
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveView("solo");
+                    init();
+                  }}
+                  className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors mt-2"
+                >
+                  ← Back to Solo Practice
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ====================================================================
+          LANGUAGE MODAL (Pop-up from Globe Click)
+          ==================================================================== */}
+      <div
+        className={`modal-overlay ${isLangModalOpen ? "active" : ""}`}
+        onClick={(e) => {
+          if (e.target === e.currentTarget) setIsLangModalOpen(false);
+        }}
+      >
+        <div className="lang-modal">
+          <div className="modal-search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            </svg>
+            <input
+              type="text"
+              placeholder="Type to search..."
+              value={langSearch}
+              onChange={(e) => setLangSearch(e.target.value)}
+              autoFocus
+            />
+          </div>
+          <div className="lang-list">
+            {languageData
+              .filter((l) => l.name.toLowerCase().includes(langSearch.toLowerCase()))
+              .map((l) => (
+                <div
+                  key={l.id}
+                  className={`lang-item ${l.id === selectedLanguage ? "selected" : ""}`}
+                  onClick={() => {
+                    setSelectedLanguage(l.id);
+                    setIsLangModalOpen(false);
+                    init();
+                  }}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <polyline points="20 6 9 17 4 12" />
+                  </svg>
+                  <span>{l.name}</span>
+                </div>
+              ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

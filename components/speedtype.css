@@ -1,0 +1,1057 @@
+/* ==========================================================================
+   SpeedTypeApp Styles — Directly ported from Nwexy SpeedType (game.css & Race)
+   ========================================================================== */
+
+:root {
+  --st-main-color: #8c9eff;
+  --st-sub-color: #8a8b8c;
+  --st-bg-color: #1a1a1d;
+  --st-text-color: #e2e2e6;
+  --st-error-color: #ff5252;
+  --st-error-extra-color: #c62828;
+  --st-modal-bg: #2c2c2f;
+}
+
+#game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 60vh;
+  font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  padding-top: clamp(20px, 6vh, 60px);
+  padding-bottom: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  color: var(--st-text-color);
+  position: relative;
+}
+
+/* Config Bar */
+.config-bar {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px 14px;
+  border-radius: 10px;
+  margin-bottom: 2rem;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.3s, pointer-events 0.3s;
+  flex-wrap: wrap;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.config-btn {
+  background-color: transparent !important;
+  border: none;
+  color: var(--st-sub-color);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.config-btn:hover {
+  color: var(--st-text-color);
+  background-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.config-btn.active {
+  color: var(--st-main-color);
+  font-weight: 700;
+  background-color: rgba(140, 158, 255, 0.08) !important;
+}
+
+.config-group {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.config-group.hidden {
+  display: none;
+}
+
+.config-divider {
+  width: 2px;
+  height: 16px;
+  background-color: var(--st-sub-color);
+  opacity: 0.3;
+  border-radius: 2px;
+  margin: 0 5px;
+}
+
+/* Sound / Icon Toggle */
+.icon-btn {
+  padding: 0.4rem;
+  cursor: pointer;
+  color: var(--st-sub-color);
+  transition: color 0.2s, transform 0.15s;
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+}
+
+.icon-btn.active {
+  color: var(--st-main-color);
+}
+
+.icon-btn:hover {
+  color: var(--st-text-color);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Race Link / Mode Switch */
+.race-link {
+  color: var(--st-main-color);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 4px 12px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(140, 158, 255, 0.08);
+  border: 1px solid rgba(140, 158, 255, 0.2);
+  cursor: pointer;
+}
+
+.race-link:hover {
+  background-color: rgba(140, 158, 255, 0.16);
+  transform: translateY(-1px);
+}
+
+/* Language Label — MonkeyType style above words */
+.language-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--st-sub-color);
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+  cursor: pointer;
+  transition: color 0.2s, opacity 0.3s ease;
+  user-select: none;
+}
+
+.language-label:hover {
+  color: var(--st-text-color);
+}
+
+.language-label svg {
+  opacity: 0.7;
+}
+
+.language-label:hover svg {
+  opacity: 1;
+}
+
+#langDisplay {
+  font-size: 0.85rem;
+  color: inherit;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* Stats (Timer / Word counter) */
+.stats-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--st-main-color);
+  margin-bottom: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  transform: translateY(-10px);
+  height: 48px;
+  align-items: center;
+}
+
+.stats-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Game Container */
+#game-container {
+  position: relative;
+  width: 100%;
+  margin-bottom: 0;
+}
+
+#typing-area {
+  position: relative;
+  width: 100%;
+  height: calc(1.5rem * 2 * 3 + 10px); /* 3 visible lines */
+  overflow: hidden;
+}
+
+#words {
+  font-size: 1.5rem;
+  line-height: 2;
+  transition: transform 0.2s ease-in-out;
+  position: relative;
+  user-select: none;
+  cursor: default;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  padding: 5px 0;
+  width: 100%;
+}
+
+.word {
+  margin: 0 12px 0 0;
+  color: var(--st-sub-color);
+  display: inline-block;
+  position: relative;
+  border-bottom: 2px solid transparent;
+  line-height: 2;
+  white-space: nowrap;
+}
+
+.word.error {
+  border-bottom: 2px solid #ca4754;
+}
+
+.letter {
+  position: relative;
+}
+
+.letter.correct {
+  color: var(--st-text-color);
+}
+
+.letter.incorrect {
+  color: var(--st-error-color);
+}
+
+.letter.extra {
+  color: var(--st-error-extra-color);
+  opacity: 0.7;
+}
+
+/* Caret */
+.caret {
+  width: 2.5px;
+  height: 1.8rem;
+  background-color: var(--st-main-color);
+  position: absolute;
+  top: 5px;
+  left: 0;
+  border-radius: 2px;
+  animation: caretBlink 1s ease-in-out infinite;
+  transition: left 0.1s ease-out, top 0.1s ease-out, transform 0.2s ease-in-out;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@keyframes caretBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+#hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  top: -100px;
+}
+
+/* Focus Overlay */
+.focus-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  cursor: pointer;
+  z-index: 15;
+  transition: opacity 0.15s ease;
+}
+
+.focus-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.focus-message {
+  font-size: 1.05rem;
+  color: var(--st-text-color);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 18px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Restart Section */
+.game-restart-section {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  position: relative;
+}
+
+.icon-restart-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--st-sub-color);
+  padding: 8px;
+  border-radius: 6px;
+  transition: color 0.15s, transform 0.15s, background-color 0.15s;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-restart-btn:hover {
+  color: var(--st-text-color);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.icon-restart-btn:active {
+  transform: scale(0.9);
+}
+
+/* Result Screen */
+#result-screen {
+  display: none;
+  width: 100%;
+  max-width: 1100px;
+  color: var(--st-text-color);
+  animation: fadeInResult 0.4s ease;
+}
+
+#result-screen.visible {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeInResult {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result-top {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 3.5rem;
+  width: 100%;
+  margin-bottom: 2.5rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  .result-top {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}
+
+.result-main-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 160px;
+}
+
+.big-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.big-stat .title {
+  font-size: 1.4rem;
+  color: var(--st-sub-color);
+  margin-bottom: 0;
+  line-height: 1;
+}
+
+.big-stat .value {
+  font-size: 4.8rem;
+  color: var(--st-main-color);
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+#chart-container {
+  width: 100%;
+  height: 280px;
+  background: transparent;
+  position: relative;
+}
+
+.result-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  margin-bottom: 2.5rem;
+  padding: 20px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.detail-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.detail-stat .title {
+  font-size: 0.85rem;
+  color: var(--st-sub-color);
+  margin-bottom: 4px;
+}
+
+.detail-stat .value {
+  font-size: 1.7rem;
+  color: var(--st-text-color);
+  font-weight: 600;
+}
+
+.result-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+.restart-btn {
+  background: none;
+  color: var(--st-sub-color);
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  transition: color 0.15s, transform 0.15s;
+  outline: none;
+  border-radius: 6px;
+}
+
+.restart-btn:hover {
+  color: var(--st-text-color);
+  background-color: rgba(255, 255, 255, 0.06);
+  transform: rotate(45deg);
+}
+
+.key-hint {
+  color: var(--st-sub-color);
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+.key-hint kbd {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  font-family: inherit;
+}
+
+/* Language Selection Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+
+.lang-modal {
+  background: var(--st-modal-bg);
+  width: 90%;
+  max-width: 480px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  max-height: 480px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transform: translateY(-10px);
+  transition: transform 0.2s ease;
+}
+
+.modal-overlay.active .lang-modal {
+  transform: translateY(0);
+}
+
+.modal-search {
+  padding: 1rem 1.25rem;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.modal-search input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--st-text-color);
+  font-size: 1.1rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.modal-search input::placeholder {
+  color: var(--st-sub-color);
+  opacity: 0.6;
+}
+
+.modal-search svg {
+  color: var(--st-sub-color);
+}
+
+.lang-list {
+  overflow-y: auto;
+  padding: 0.5rem 0;
+  max-height: 380px;
+}
+
+.lang-item {
+  padding: 0.75rem 1.5rem;
+  cursor: pointer;
+  color: var(--st-sub-color);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.lang-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--st-text-color);
+}
+
+.lang-item.selected {
+  color: var(--st-main-color);
+  font-weight: 700;
+  background: rgba(140, 158, 255, 0.12);
+}
+
+.lang-item svg {
+  margin-right: 0.6rem;
+  opacity: 0;
+}
+
+.lang-item.selected svg {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   RACE MODE STYLES — Ported directly from SpeedTypeApp/Views/Race/Index.cshtml
+   ========================================================================== */
+
+#race-wrapper {
+  width: 100%;
+  min-height: 70vh;
+  color: #e4e6eb;
+  padding: 10px 0;
+  font-family: 'Roboto Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.race-screen {
+  display: none;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.race-screen.active {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.username-container {
+  text-align: center;
+  max-width: 560px;
+  width: 100%;
+  padding: 2.5rem 2rem;
+  background: rgba(42, 45, 58, 0.6);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
+}
+
+.race-title {
+  font-size: 2.6rem;
+  font-weight: 800;
+  margin-bottom: 0.75rem;
+  background: linear-gradient(135deg, #8c9eff 0%, #667eea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.race-subtitle {
+  font-size: 1.05rem;
+  color: #8a8b8c;
+  margin-bottom: 2rem;
+}
+
+.username-input {
+  width: 100%;
+  padding: 1.1rem 1.5rem;
+  font-size: 1.3rem;
+  background: #2a2d3a;
+  border: 2px solid #3a3d4a;
+  border-radius: 12px;
+  color: #e4e6eb;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.username-input:focus {
+  outline: none;
+  border-color: #8c9eff;
+  box-shadow: 0 0 20px rgba(140, 158, 255, 0.3);
+}
+
+.language-selection {
+  margin-bottom: 1.75rem;
+  width: 100%;
+  position: relative;
+}
+
+.custom-select-wrapper {
+  position: relative;
+  user-select: none;
+  width: 100%;
+}
+
+.custom-select {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: #e4e6eb;
+  background: #2a2d3a;
+  border: 2px solid #3a3d4a;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-select-trigger:hover {
+  border-color: #667eea;
+}
+
+.custom-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #2a2d3a;
+  border: 2px solid #3a3d4a;
+  border-top: 0;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.custom-option {
+  padding: 0.85rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #e4e6eb;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border-top: 1px solid #3a3d4a;
+  display: flex;
+  align-items: center;
+}
+
+.custom-option:first-child {
+  border-top: none;
+}
+
+.custom-option:hover {
+  background-color: #3b3f51;
+  color: #8c9eff;
+}
+
+.custom-option.selected {
+  background-color: rgba(140, 158, 255, 0.15);
+  color: #8c9eff;
+  font-weight: 700;
+}
+
+.race-btn {
+  width: 100%;
+  padding: 1.1rem;
+  font-size: 1.15rem;
+  background: linear-gradient(135deg, #8c9eff 0%, #667eea 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.race-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(140, 158, 255, 0.4);
+}
+
+/* Waiting Screen */
+.waiting-container {
+  text-align: center;
+  padding: 3rem;
+}
+
+.loading-spinner {
+  width: 70px;
+  height: 70px;
+  border: 5px solid #3a3d4a;
+  border-top-color: #8c9eff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 2rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Active Race Layout */
+#race-screen.active {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 1100px;
+  position: relative;
+}
+
+.countdown-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+}
+
+.countdown-number {
+  font-size: 8rem;
+  font-weight: 900;
+  color: var(--st-main-color);
+  animation: countdownPop 0.8s cubic-bezier(0.1, 0.7, 1.0, 0.1) infinite;
+}
+
+@keyframes countdownPop {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+.blur-content {
+  filter: blur(5px);
+  transition: filter 0.3s ease;
+}
+
+.player-panel {
+  background: #2a2d3a;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.race-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #3a3d4a;
+  align-items: center;
+}
+
+.race-info {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.vs-text {
+  color: #8c9eff;
+  font-weight: 800;
+}
+
+.race-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #8c9eff;
+}
+
+#race-game-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 10px 0;
+  height: calc(1.6rem * 2 * 3 + 10px);
+}
+
+#race-words {
+  font-size: 1.5rem;
+  width: 100%;
+  line-height: 2;
+  height: 9rem;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  cursor: default;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  padding: 5px 0;
+  transition: transform 0.2s ease-in-out;
+}
+
+#race-words .word {
+  margin: 0 12px 0 0;
+  color: var(--st-sub-color);
+  display: inline-block;
+  position: relative;
+  line-height: 2;
+}
+
+#race-words .letter {
+  position: relative;
+}
+
+#race-words .letter.correct {
+  color: var(--st-text-color);
+}
+
+#race-words .letter.incorrect {
+  color: var(--st-error-color);
+}
+
+#race-words .letter.extra {
+  color: var(--st-error-extra-color);
+  opacity: 0.7;
+}
+
+/* Opponent Panel */
+.opponent-panel {
+  background: #2a2d3a;
+  border-radius: 12px;
+  padding: 20px 24px;
+  border: 2px solid #3a3d4a;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.opponent-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  color: #8a8b8c;
+  font-weight: 600;
+}
+
+.opponent-progress {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 24px;
+  background: #1f222e;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #8c9eff 100%);
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+#opp-progress-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  min-width: 50px;
+  color: #8c9eff;
+}
+
+/* Results Screen */
+.results-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  font-weight: 800;
+}
+
+.results-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 2rem;
+  width: 100%;
+  max-width: 860px;
+}
+
+@media (max-width: 640px) {
+  .results-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.result-panel {
+  background: #2a2d3a;
+  padding: 24px;
+  border-radius: 12px;
+  border: 3px solid transparent;
+}
+
+.your-result {
+  border-color: #8c9eff;
+  background: rgba(140, 158, 255, 0.05);
+}
+
+.opponent-result {
+  border-color: #3a3d4a;
+}
+
+.result-header {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.result-header h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.result-badge {
+  font-size: 1.8rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin-top: 8px;
+}
+
+.result-badge.winner {
+  color: #00d4aa;
+}
+
+.result-badge.loser {
+  color: #ff5252;
+}
+
+.result-badge.tie {
+  color: #8c9eff;
+}
+
+.result-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #1f222e;
+  border-radius: 8px;
+  align-items: center;
+}
+
+.stat-label {
+  color: #8a8b8c;
+  font-size: 0.95rem;
+}
+
+.stat-value {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: #8c9eff;
+}

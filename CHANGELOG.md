@@ -4,14 +4,9 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
-- Navbar'daki SpeedType ve Grammar Test linkleri kaldirilip Practice sayfasina tasindi.
-- SpeedType modu MonkeyType tarzinda (WPM, Accuracy, canli harf renklendirmesi) tamamen yeniden kodlandi.
-- SpeedType ve Grammar Test modlarinin diger modlarla (ozellikle Mixed Mode) birlestirilmesi engellendi.
-- Test Yourself sayfasinda Gemini API'nin secili arayuz/ceviri diline gore cevap vermesi saglandi.
-- Analysis Result kismina cümlenin tamaminin cevirisi eklendi.
-- "Test Yourself" sayfasi eklendi.
-- Gemini API kullanilarak Rusca kelime ve cumlelerin gramer analizi yapilabiliyor.
-- Navbar'a Test Yourself linki eklendi.
+- SpeedTypeApp (.NET projesi) tasarimi, ses efektleri, MonkeyType 3 satir kaydirma mantigi, WPM hesaplamasi, Chart.js grafikleri ve Race moduyla birebir siteye aktarildi.
+- Practice sayfasinda SpeedType ve Grammar Test ozel mod olarak ayristirildi.
+- /speed-type rotasi uzerinden bagimsiz calisabilen tam ekran hiz testi sayfasi eklendi.
 
 ## 2026-11-18
 - Multiple Choice sorularinda ipucu metnindeki hedef kelimenin rengi, cevap verilene kadar notr (gri), cevap verildikten sonra dogruysa yesil, yanlissa kirmizi olacak sekilde duzeltildi.
