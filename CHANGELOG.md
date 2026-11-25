@@ -4,6 +4,7 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- SpeedType Yaris (Race) moduna gercek zamanli 1v1 cok oyunculu (multiplayer) eslesme, anlik rakip ilerlemesi ve sonuclar karsilastirmasi (SSE backend) eklendi.
 - Test Yourself navbar'dan kaldirildi, Practice sayfasina bagimsiz bir buton olarak eklendi.
 - SpeedType dil listesi (Russian/English 1k, 5k, 10k) olarak guncellendi.
 - SpeedType'ta Rusca (ы, с, й, ц) harflerinin bosluk gerektirmeden yazilmasini engelleyen klavye (composition) hatasi giderildi.

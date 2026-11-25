@@ -506,7 +506,7 @@ export default function PracticePage() {
         console.error("recordMistake error:", err);
       }
     }
-    getMistakeCount().then(setMistakeCount).catch(() => {});
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   const handleMixedNext = () => {
@@ -595,7 +595,7 @@ export default function PracticePage() {
         console.error("recordMistake error:", err);
       }
     }
-    getMistakeCount().then(setMistakeCount).catch(() => {});
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   const handleMcNext = () => {
@@ -643,7 +643,7 @@ export default function PracticePage() {
         console.error("recordMistake error:", err);
       }
     }
-    getMistakeCount().then(setMistakeCount).catch(() => {});
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   const handleFbNext = () => {
@@ -720,7 +720,7 @@ export default function PracticePage() {
         } catch (err) {
           console.error("recordMistake error:", err);
         }
-        getMistakeCount().then(setMistakeCount).catch(() => {});
+        getMistakeCount().then(setMistakeCount).catch(() => { });
       }
       setTimeout(() => {
         setMatchSelectedLeft(null);
@@ -764,7 +764,7 @@ export default function PracticePage() {
         console.error("recordMistake error:", err);
       }
     }
-    getMistakeCount().then(setMistakeCount).catch(() => {});
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   const handleListenNext = () => {
@@ -826,7 +826,7 @@ export default function PracticePage() {
         } catch (err) {
           console.error("recordMistake error:", err);
         }
-        getMistakeCount().then(setMistakeCount).catch(() => {});
+        getMistakeCount().then(setMistakeCount).catch(() => { });
       }
     } catch (err: unknown) {
       setMixedSpeakingListening(false);
@@ -888,7 +888,7 @@ export default function PracticePage() {
           console.error("recordMistake error:", err);
         }
       }
-      getMistakeCount().then(setMistakeCount).catch(() => {});
+      getMistakeCount().then(setMistakeCount).catch(() => { });
     } catch (err: unknown) {
       setSpeakingListening(false);
       const errMsg = err instanceof Error ? err.message : String(err);
@@ -970,7 +970,7 @@ export default function PracticePage() {
         console.error("recordMistake error:", err);
       }
     }
-    getMistakeCount().then(setMistakeCount).catch(() => {});
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   const handleWbNext = () => {
@@ -1081,13 +1081,12 @@ export default function PracticePage() {
                     return (
                       <label
                         key={u.id}
-                        className={`flex items-center gap-3 p-2 rounded-lg transition-colors text-sm ${
-                          !isCompleted
-                            ? "opacity-60 cursor-not-allowed bg-transparent text-muted-foreground"
-                            : isAllUnits
+                        className={`flex items-center gap-3 p-2 rounded-lg transition-colors text-sm ${!isCompleted
+                          ? "opacity-60 cursor-not-allowed bg-transparent text-muted-foreground"
+                          : isAllUnits
                             ? "opacity-75 cursor-not-allowed bg-transparent text-foreground"
                             : "hover:bg-card-hover cursor-pointer text-foreground"
-                        }`}
+                          }`}
                         title={!isCompleted ? t.mustCompleteLessonFirst : undefined}
                       >
                         <input
@@ -1248,11 +1247,10 @@ export default function PracticePage() {
                 key={cnt}
                 type="button"
                 onClick={() => setQuestionCount(cnt)}
-                className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
-                  questionCount === cnt
-                    ? "bg-accent text-white shadow-sm ring-2 ring-accent/30"
-                    : "bg-secondary text-foreground/80 hover:bg-secondary/80 hover:text-foreground border border-border"
-                }`}
+                className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${questionCount === cnt
+                  ? "bg-accent text-white shadow-sm ring-2 ring-accent/30"
+                  : "bg-secondary text-foreground/80 hover:bg-secondary/80 hover:text-foreground border border-border"
+                  }`}
               >
                 {cnt}
               </button>
@@ -1281,11 +1279,10 @@ export default function PracticePage() {
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") setExerciseType("mixed");
                 }}
-                className={`col-span-full p-6 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-2.5 ${
-                  exerciseType === "mixed"
-                    ? "border-accent bg-accent/10 shadow-lg ring-2 ring-accent/30"
-                    : "border-border bg-card hover:bg-card-hover hover:border-accent/40"
-                }`}
+                className={`col-span-full p-6 rounded-2xl border-2 transition-all cursor-pointer flex flex-col items-center text-center gap-2.5 ${exerciseType === "mixed"
+                  ? "border-accent bg-accent/10 shadow-lg ring-2 ring-accent/30"
+                  : "border-border bg-card hover:bg-card-hover hover:border-accent/40"
+                  }`}
               >
                 <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center shadow-inner mb-0.5 text-accent">
                   <Shuffle className="w-7 h-7" />
@@ -1336,13 +1333,12 @@ export default function PracticePage() {
                         setExerciseType(tp.key);
                       }
                     }}
-                    className={`col-span-1 p-6 rounded-2xl border-2 transition-all flex flex-col items-center text-center gap-2 ${
-                      isDisabled
-                        ? "opacity-50 cursor-not-allowed border-border bg-card/40"
-                        : isSelected
+                    className={`col-span-1 p-6 rounded-2xl border-2 transition-all flex flex-col items-center text-center gap-2 ${isDisabled
+                      ? "opacity-50 cursor-not-allowed border-border bg-card/40"
+                      : isSelected
                         ? "border-accent bg-accent/10 shadow-lg ring-2 ring-accent/30 cursor-pointer"
                         : "border-border bg-card hover:bg-card-hover hover:border-accent/40 cursor-pointer"
-                    }`}
+                      }`}
                   >
                     <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center text-2xl mb-0.5">
                       {tp.icon}
@@ -1354,8 +1350,8 @@ export default function PracticePage() {
                         {tp.key === "speaking"
                           ? t.micNotSupported
                           : tp.key === "wordBank"
-                          ? t.noExampleSentences
-                          : t.ttsNotSupported}
+                            ? t.noExampleSentences
+                            : t.ttsNotSupported}
                       </span>
                     )}
                   </div>
@@ -1367,11 +1363,10 @@ export default function PracticePage() {
             <div className="sticky bottom-6 z-40 w-full max-w-md mx-auto my-6 px-4 flex flex-col items-center gap-2 pointer-events-none">
               <button
                 type="button"
-                className={`pointer-events-auto w-full py-4 px-8 text-lg font-bold rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-                  !hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)
-                    ? "bg-muted text-muted-foreground opacity-60 cursor-not-allowed shadow-none"
-                    : "bg-accent hover:opacity-95 shadow-lg shadow-accent/50 hover:shadow-xl hover:shadow-accent/60 active:scale-[0.99] animate-pulse"
-                }`}
+                className={`pointer-events-auto w-full py-4 px-8 text-lg font-bold rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${!hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)
+                  ? "bg-muted text-muted-foreground opacity-60 cursor-not-allowed shadow-none"
+                  : "bg-accent hover:opacity-95 shadow-lg shadow-accent/50 hover:shadow-xl hover:shadow-accent/60 active:scale-[0.99] animate-pulse"
+                  }`}
                 onClick={startExercise}
                 disabled={!hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)}
               >
@@ -1407,9 +1402,6 @@ export default function PracticePage() {
                       <h3 className="text-base font-bold text-foreground group-hover:text-accent transition-colors">
                         {t.speedType}
                       </h3>
-                      <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
-                        Speed
-                      </span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                       {t.speedTypeDesc}
@@ -1429,9 +1421,6 @@ export default function PracticePage() {
                       <h3 className="text-base font-bold text-foreground group-hover:text-accent transition-colors">
                         {t.testYourself}
                       </h3>
-                      <span className="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">
-                        AI
-                      </span>
                     </div>
                     <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
                       {t.testYourselfDesc}
@@ -1456,19 +1445,17 @@ export default function PracticePage() {
                       <div
                         key={tp.key}
                         onClick={() => toggleMixedMode(tp.key)}
-                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${
-                          isChecked
-                            ? "border-accent bg-accent/10 shadow-sm"
-                            : "border-border bg-card/60 hover:bg-card hover:border-accent/30 opacity-70"
-                        }`}
+                        className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${isChecked
+                          ? "border-accent bg-accent/10 shadow-sm"
+                          : "border-border bg-card/60 hover:bg-card hover:border-accent/30 opacity-70"
+                          }`}
                       >
                         <div className="flex items-center gap-3">
                           <div
-                            className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${
-                              isChecked
-                                ? "bg-accent text-white"
-                                : "bg-secondary text-muted-foreground"
-                            }`}
+                            className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${isChecked
+                              ? "bg-accent text-white"
+                              : "bg-secondary text-muted-foreground"
+                              }`}
                           >
                             {tp.icon}
                           </div>
@@ -1484,7 +1471,7 @@ export default function PracticePage() {
                         <input
                           type="checkbox"
                           checked={isChecked}
-                          onChange={() => {}}
+                          onChange={() => { }}
                           className="w-4 h-4 rounded border-border text-accent focus:ring-accent cursor-pointer"
                         />
                       </div>
@@ -1647,12 +1634,12 @@ export default function PracticePage() {
               <span>
                 {isSentenceBlank
                   ? renderSentenceWithBlank(
-                      mc.question,
-                      mixedRevealed,
-                      mixedMcSelected === mc.correctIndex,
-                      mc.options[mc.correctIndex],
-                      mixedMcSelected !== null && mixedMcSelected !== mc.correctIndex ? mc.options[mixedMcSelected] : undefined
-                    )
+                    mc.question,
+                    mixedRevealed,
+                    mixedMcSelected === mc.correctIndex,
+                    mc.options[mc.correctIndex],
+                    mixedMcSelected !== null && mixedMcSelected !== mc.correctIndex ? mc.options[mixedMcSelected] : undefined
+                  )
                   : mc.question}
               </span>
               {ruQuestion && (
@@ -1796,7 +1783,7 @@ export default function PracticePage() {
             } catch (err) {
               console.error("recordMistake error:", err);
             }
-            getMistakeCount().then(setMistakeCount).catch(() => {});
+            getMistakeCount().then(setMistakeCount).catch(() => { });
           }
           setTimeout(() => {
             setMixedMatchLeft(null);
@@ -1949,21 +1936,20 @@ export default function PracticePage() {
               type="button"
               onClick={() => handleMixedSpeakingMicToggle(sq)}
               disabled={mixedRevealed && mixedIsCorrect === true}
-              className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${
-                mixedSpeakingListening
-                  ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
-                  : mixedRevealed && mixedIsCorrect === true
+              className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${mixedSpeakingListening
+                ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
+                : mixedRevealed && mixedIsCorrect === true
                   ? "bg-emerald-600 text-white cursor-default"
                   : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
-              }`}
+                }`}
             >
               <Mic className={`w-5 h-5 ${mixedSpeakingListening ? "animate-bounce" : ""}`} />
               <span>
                 {mixedSpeakingListening
                   ? t.listeningState
                   : mixedIsCorrect === false
-                  ? t.tryAgain
-                  : t.startSpeaking}
+                    ? t.tryAgain
+                    : t.startSpeaking}
               </span>
             </button>
 
@@ -2113,12 +2099,12 @@ export default function PracticePage() {
             <span>
               {isSentenceBlank
                 ? renderSentenceWithBlank(
-                    q.question,
-                    mcRevealed,
-                    mcSelected === q.correctIndex,
-                    q.options[q.correctIndex],
-                    mcSelected !== null && mcSelected !== q.correctIndex ? q.options[mcSelected] : undefined
-                  )
+                  q.question,
+                  mcRevealed,
+                  mcSelected === q.correctIndex,
+                  q.options[q.correctIndex],
+                  mcSelected !== null && mcSelected !== q.correctIndex ? q.options[mcSelected] : undefined
+                )
                 : q.question}
             </span>
             {ruQuestion && (
@@ -2423,21 +2409,20 @@ export default function PracticePage() {
             type="button"
             onClick={handleSpeakingMicToggle}
             disabled={speakingRevealed && speakingCorrect === true}
-            className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${
-              speakingListening
-                ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
-                : speakingRevealed && speakingCorrect === true
+            className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${speakingListening
+              ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
+              : speakingRevealed && speakingCorrect === true
                 ? "bg-emerald-600 text-white cursor-default"
                 : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
-            }`}
+              }`}
           >
             <Mic className={`w-5 h-5 ${speakingListening ? "animate-bounce" : ""}`} />
             <span>
               {speakingListening
                 ? t.listeningState
                 : speakingCorrect === false
-                ? t.tryAgain
-                : t.startSpeaking}
+                  ? t.tryAgain
+                  : t.startSpeaking}
             </span>
           </button>
 

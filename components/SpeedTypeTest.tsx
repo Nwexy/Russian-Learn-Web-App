@@ -38,7 +38,7 @@ type Mode = "time" | "words";
 type TimeOption = 15 | 30 | 60 | 120;
 type WordsOption = 10 | 25 | 50 | 100;
 type ActiveView = "solo" | "race";
-type RaceScreenState = "username" | "race" | "results";
+type RaceScreenState = "username" | "waiting" | "race" | "results";
 
 export function SpeedTypeTest({
   onExit,
@@ -261,7 +261,7 @@ export function SpeedTypeTest({
   }, [selectedLanguage, punctuation, numbers]);
 
   /* ==========================================================================
-     START & END GAME LOGIC
+     START & END GAME LOGIC (SOLO MODE)
      ========================================================================== */
   const endGame = useCallback(() => {
     const state = typingStateRef.current;
@@ -438,7 +438,6 @@ export function SpeedTypeTest({
 
   /* ==========================================================================
      KEY & COMPOSITION HANDLING (SOLO MODE)
-     Solves the Cyrillic mnemonic/composition bug (ы, с, й, ц, and consecutive ый)
      ========================================================================== */
   const handleSoloBackspace = useCallback(
     (isCtrl: boolean) => {
@@ -506,7 +505,6 @@ export function SpeedTypeTest({
     const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
     if (!wordEl || !currentWordStr) return;
 
-    // Do not skip words with empty space
     if (state.charIdx === 0) return;
 
     const hasErrors = Array.from(wordEl.children).some(
@@ -695,19 +693,39 @@ export function SpeedTypeTest({
   };
 
   /* ==========================================================================
-     RACE MODE LOGIC (SOLO TIME TRIAL — AI BOTS REMOVED)
+     RACE MODE LOGIC (REAL MULTIPLAYER 1V1 OVER SERVER-SENT EVENTS)
      ========================================================================== */
+  const playerIdRef = useRef<string>("");
+  const raceIdRef = useRef<string>("");
+  const eventSourceRef = useRef<EventSource | null>(null);
+
   const [raceScreen, setRaceScreen] = useState<RaceScreenState>("username");
   const [raceUsername, setRaceUsername] = useState<string>("Player");
   const [raceLanguage, setRaceLanguage] = useState<string>(
     languageData.some((l) => l.id === selectedLanguage) ? selectedLanguage : "russian_1k"
   );
+  const [raceOpponent, setRaceOpponent] = useState<string>("Opponent");
   const [raceWords, setRaceWords] = useState<string[]>([]);
   const [countdown, setCountdown] = useState<number | string>(3);
   const [isCountdownActive, setIsCountdownActive] = useState<boolean>(false);
   const [raceTimer, setRaceTimer] = useState<number>(60);
   const [racePlayerWpm, setRacePlayerWpm] = useState<number>(0);
-  const [racePlayerResult, setRacePlayerResult] = useState({ wpm: 0, acc: 0, raw: 0 });
+  const [raceOpponentWpm, setRaceOpponentWpm] = useState<number>(0);
+  const [raceOpponentProgress, setRaceOpponentProgress] = useState<number>(0);
+  const [isWaitingForOpponent, setIsWaitingForOpponent] = useState<boolean>(false);
+
+  const [racePlayerResult, setRacePlayerResult] = useState({
+    wpm: 0,
+    acc: 0,
+    raw: 0,
+    isWinner: false,
+    isTie: false,
+  });
+  const [raceOpponentResult, setRaceOpponentResult] = useState({
+    wpm: 0,
+    acc: 0,
+    raw: 0,
+  });
 
   const raceStateRef = useRef({
     wordIdx: 0,
@@ -727,6 +745,19 @@ export function SpeedTypeTest({
   const raceCaretElRef = useRef<HTMLDivElement>(null);
   const raceInputRef = useRef<HTMLInputElement>(null);
   const isRaceComposingRef = useRef<boolean>(false);
+
+  // Initialize unique player ID
+  useEffect(() => {
+    if (!playerIdRef.current) {
+      playerIdRef.current = "p_" + Math.random().toString(36).slice(2, 9);
+    }
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+    };
+  }, []);
 
   const updateRaceCaret = useCallback(() => {
     const areaEl = raceAreaRef.current;
@@ -768,6 +799,26 @@ export function SpeedTypeTest({
     });
   }, []);
 
+  // Send live progress over HTTP POST to backend
+  const sendLiveProgress = useCallback(
+    (wpm: number, progress: number, charIndex: number) => {
+      if (!raceIdRef.current || !playerIdRef.current) return;
+      fetch("/api/race", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "progress",
+          playerId: playerIdRef.current,
+          raceId: raceIdRef.current,
+          wpm,
+          progress,
+          charIndex,
+        }),
+      }).catch(() => {});
+    },
+    []
+  );
+
   const endRace = useCallback(() => {
     const state = raceStateRef.current;
     if (state.intervalId) {
@@ -782,8 +833,22 @@ export function SpeedTypeTest({
     const pRaw = Math.round((state.total + state.wordIdx) / 4.8 / min) || 0;
     const pAcc = state.total > 0 ? Math.round((state.correct / state.total) * 100) : 0;
 
-    setRacePlayerResult({ wpm: pWpm, acc: pAcc, raw: pRaw });
-    setRaceScreen("results");
+    const res = { wpm: pWpm, acc: pAcc, raw: pRaw };
+    setRacePlayerResult((prev) => ({ ...prev, ...res }));
+    setIsWaitingForOpponent(true);
+
+    if (raceIdRef.current && playerIdRef.current) {
+      fetch("/api/race", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "finish",
+          playerId: playerIdRef.current,
+          raceId: raceIdRef.current,
+          result: res,
+        }),
+      }).catch(() => {});
+    }
   }, []);
 
   const startRace = useCallback(() => {
@@ -796,6 +861,7 @@ export function SpeedTypeTest({
     state.correct = 0;
     state.incorrect = 0;
     state.total = 0;
+    state.playerDone = false;
     setRaceTimer(60);
     setRacePlayerWpm(0);
 
@@ -811,6 +877,11 @@ export function SpeedTypeTest({
       if (sec >= 1) {
         const curWpm = Math.round((state.correct + state.wordIdx) / 4.8 / (sec / 60));
         setRacePlayerWpm(curWpm);
+        const curProg = Math.min(
+          Math.round((state.wordIdx / Math.max(raceWords.length, 1)) * 100),
+          100
+        );
+        sendLiveProgress(curWpm, curProg, state.charIdx);
       }
       if (state.timer <= 0) {
         endRace();
@@ -820,7 +891,7 @@ export function SpeedTypeTest({
     requestAnimationFrame(() => {
       updateRaceCaret();
     });
-  }, [endRace, updateRaceCaret]);
+  }, [raceWords.length, endRace, sendLiveProgress, updateRaceCaret]);
 
   const startRaceCountdown = useCallback(() => {
     setRaceScreen("race");
@@ -842,12 +913,78 @@ export function SpeedTypeTest({
     }, 900);
   }, [startRace]);
 
+  // Connect Server-Sent Events to the real-time matchmaking hub
+  const connectRaceSse = useCallback(
+    (onConnected?: () => void) => {
+      if (eventSourceRef.current) {
+        if (eventSourceRef.current.readyState === EventSource.OPEN) {
+          onConnected?.();
+          return;
+        }
+        eventSourceRef.current.close();
+      }
+
+      const es = new EventSource(`/api/race?playerId=${playerIdRef.current}`);
+      eventSourceRef.current = es;
+
+      es.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === "Connected") {
+            onConnected?.();
+          } else if (data.type === "Waiting") {
+            setRaceScreen("waiting");
+          } else if (data.type === "MatchFound") {
+            raceIdRef.current = data.raceId;
+            setRaceOpponent(data.opponentName);
+            setRaceWords(data.words);
+            setRaceOpponentProgress(0);
+            setRaceOpponentWpm(0);
+            startRaceCountdown();
+          } else if (data.type === "OpponentProgress") {
+            setRaceOpponentWpm(data.wpm);
+            setRaceOpponentProgress(data.progress);
+          } else if (data.type === "BothFinished") {
+            setIsWaitingForOpponent(false);
+            setRacePlayerResult({
+              ...data.yourResult,
+              isWinner: data.isWinner,
+              isTie: data.isTie,
+            });
+            setRaceOpponentResult(data.oppResult);
+            setRaceScreen("results");
+          } else if (data.type === "OpponentDisconnected") {
+            setIsWaitingForOpponent(false);
+            alert("Opponent disconnected!");
+            setRaceScreen("username");
+          }
+        } catch {
+          // ignore keepalive pings
+        }
+      };
+
+      es.onerror = () => {
+        // SSE automatic reconnect
+      };
+    },
+    [startRaceCountdown]
+  );
+
   const handleStartRacing = useCallback(() => {
-    // Generate words from the exact 6 language datasets
-    const words = generateWords(raceLanguage, "words", false, false, 80);
-    setRaceWords(words);
-    startRaceCountdown();
-  }, [raceLanguage, generateWords, startRaceCountdown]);
+    setRaceScreen("waiting");
+    connectRaceSse(() => {
+      fetch("/api/race", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "join",
+          playerId: playerIdRef.current,
+          username: raceUsername || "Player",
+          language: raceLanguage,
+        }),
+      }).catch(() => {});
+    });
+  }, [connectRaceSse, raceUsername, raceLanguage]);
 
   const handleRaceBackspace = useCallback(() => {
     const state = raceStateRef.current;
@@ -892,13 +1029,21 @@ export function SpeedTypeTest({
     state.charIdx = 0;
     playSound(600, 0.05);
 
+    const sec = Math.max((Date.now() - state.startTime) / 1000, 1);
+    const curWpm = Math.round((state.correct + state.wordIdx) / 4.8 / (sec / 60));
+    const curProg = Math.min(
+      Math.round((state.wordIdx / Math.max(raceWords.length, 1)) * 100),
+      100
+    );
+    sendLiveProgress(curWpm, curProg, state.charIdx);
+
     if (state.wordIdx >= raceWords.length) {
       state.playerDone = true;
       endRace();
       return;
     }
     updateRaceCaret();
-  }, [raceWords, playSound, endRace, updateRaceCaret]);
+  }, [raceWords, playSound, endRace, updateRaceCaret, sendLiveProgress]);
 
   const handleRaceChar = useCallback(
     (char: string) => {
@@ -1330,7 +1475,7 @@ export function SpeedTypeTest({
       )}
 
       {/* ====================================================================
-          VIEW 2: RACE MODE (SOLO SPEED TRIAL — NO AI BOTS)
+          VIEW 2: RACE MODE (REAL 1V1 MULTIPLAYER MATCHMAKING)
           ==================================================================== */}
       {activeView === "race" && (
         <div id="race-wrapper">
@@ -1338,8 +1483,8 @@ export function SpeedTypeTest({
           {raceScreen === "username" && (
             <div className="race-screen active">
               <div className="username-container">
-                <h1 className="race-title">Race Mode</h1>
-                <p className="race-subtitle">Enter your username and select a language</p>
+                <h1 className="race-title">Online 1v1 Race</h1>
+                <p className="race-subtitle">Enter your username to race against another player live</p>
 
                 <input
                   type="text"
@@ -1390,7 +1535,37 @@ export function SpeedTypeTest({
             </div>
           )}
 
-          {/* Screen 2: Active Race */}
+          {/* Screen 2: Waiting / Matchmaking Screen */}
+          {raceScreen === "waiting" && (
+            <div className="race-screen active">
+              <div className="waiting-container">
+                <div className="loading-spinner" />
+                <h2 className="text-2xl font-bold mb-2">Finding opponent...</h2>
+                <p className="text-[#8a8b8c]">Please wait while we match you with another player</p>
+                <div className="mt-6">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      fetch("/api/race", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          action: "leave",
+                          playerId: playerIdRef.current,
+                        }),
+                      }).catch(() => {});
+                      setRaceScreen("username");
+                    }}
+                    className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors"
+                  >
+                    Cancel Matchmaking
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Screen 3: Active Race (1v1 Live) */}
           {raceScreen === "race" && (
             <div id="race-screen" className="race-screen active">
               {/* Countdown Overlay */}
@@ -1407,7 +1582,10 @@ export function SpeedTypeTest({
                     <span className="text-white font-bold text-lg">
                       {raceUsername || "Player"}
                     </span>
-                    <span className="race-mode-badge">60s Speed Trial</span>
+                    <span className="vs-text">VS</span>
+                    <span className="text-[#8a8b8c] font-bold text-lg">
+                      {raceOpponent || "Opponent"}
+                    </span>
                   </div>
                   <div className="race-stats">
                     <span className="race-timer-stat">{raceTimer}s</span>
@@ -1447,41 +1625,115 @@ export function SpeedTypeTest({
                     onCompositionEnd={handleRaceCompositionEnd}
                   />
                 </div>
+
+                {/* Opponent Live Progress Panel */}
+                <div className="opponent-panel mt-6">
+                  <div className="opponent-header">
+                    <span>{raceOpponent}</span>
+                    <span>{raceOpponentWpm} WPM</span>
+                  </div>
+                  <div className="opponent-progress">
+                    <div className="progress-bar">
+                      <div
+                        className="progress-fill"
+                        style={{ width: `${raceOpponentProgress}%` }}
+                      />
+                    </div>
+                    <span id="opp-progress-text">{raceOpponentProgress}%</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}
 
-          {/* Screen 3: Race Results */}
+          {/* Screen 4: Race Results (1v1 Head-to-Head Comparison) */}
           {raceScreen === "results" && (
             <div className="race-screen active">
               <h1 className="results-title">Race Results</h1>
 
-              <div className="results-container flex justify-center max-w-md mx-auto">
-                <div className="result-panel your-result w-full">
-                  <div className="result-header">
-                    <h2>{raceUsername || "Player"}</h2>
-                    <div className="result-badge winner">COMPLETED</div>
+              {isWaitingForOpponent ? (
+                <div className="waiting-container">
+                  <div className="loading-spinner" />
+                  <h2 className="text-2xl font-bold mb-2">Waiting for opponent to finish...</h2>
+                  <p className="text-[#8a8b8c]">
+                    Your WPM: {racePlayerResult.wpm} | Accuracy: {racePlayerResult.acc}%
+                  </p>
+                </div>
+              ) : (
+                <div className="results-container">
+                  {/* Your Results */}
+                  <div className="result-panel your-result">
+                    <div className="result-header">
+                      <h2>{raceUsername || "You"}</h2>
+                      <div
+                        className={`result-badge ${
+                          racePlayerResult.isWinner
+                            ? "winner"
+                            : racePlayerResult.isTie
+                            ? "tie"
+                            : "loser"
+                        }`}
+                      >
+                        {racePlayerResult.isWinner
+                          ? "WINNER"
+                          : racePlayerResult.isTie
+                          ? "TIE"
+                          : "LOSER"}
+                      </div>
+                    </div>
+                    <div className="result-stats">
+                      <div className="stat">
+                        <span className="stat-label">WPM</span>
+                        <span className="stat-value">{racePlayerResult.wpm}</span>
+                      </div>
+                      <div className="stat">
+                        <span className="stat-label">Accuracy</span>
+                        <span className="stat-value">{racePlayerResult.acc}%</span>
+                      </div>
+                      <div className="stat">
+                        <span className="stat-label">Raw</span>
+                        <span className="stat-value">{racePlayerResult.raw}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="result-stats">
-                    <div className="stat">
-                      <span className="stat-label">WPM</span>
-                      <span className="stat-value">{racePlayerResult.wpm}</span>
+
+                  {/* Opponent Results */}
+                  <div className="result-panel opponent-result">
+                    <div className="result-header">
+                      <h2>{raceOpponent || "Opponent"}</h2>
+                      <div
+                        className={`result-badge ${
+                          !racePlayerResult.isWinner && !racePlayerResult.isTie
+                            ? "winner"
+                            : racePlayerResult.isTie
+                            ? "tie"
+                            : "loser"
+                        }`}
+                      >
+                        {!racePlayerResult.isWinner && !racePlayerResult.isTie
+                          ? "WINNER"
+                          : racePlayerResult.isTie
+                          ? "TIE"
+                          : "LOSER"}
+                      </div>
                     </div>
-                    <div className="stat">
-                      <span className="stat-label">Accuracy</span>
-                      <span className="stat-value">{racePlayerResult.acc}%</span>
-                    </div>
-                    <div className="stat">
-                      <span className="stat-label">Raw</span>
-                      <span className="stat-value">{racePlayerResult.raw}</span>
-                    </div>
-                    <div className="stat">
-                      <span className="stat-label">Duration</span>
-                      <span className="stat-value">60s</span>
+                    <div className="result-stats">
+                      <div className="stat">
+                        <span className="stat-label">WPM</span>
+                        <span className="stat-value">{raceOpponentResult.wpm}</span>
+                      </div>
+                      <div className="stat">
+                        <span className="stat-label">Accuracy</span>
+                        <span className="stat-value">{raceOpponentResult.acc}%</span>
+                      </div>
+                      <div className="stat">
+                        <span className="stat-label">Raw</span>
+                        <span className="stat-value">{raceOpponentResult.raw}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               <div className="flex flex-col items-center gap-3 mt-6">
                 <button
@@ -1509,7 +1761,6 @@ export function SpeedTypeTest({
 
       {/* ====================================================================
           LANGUAGE MODAL (Pop-up from Globe Click)
-          Strictly the 6 options: Russian/English 1k, 5k, 10k
           ==================================================================== */}
       <div
         className={`modal-overlay ${isLangModalOpen ? "active" : ""}`}

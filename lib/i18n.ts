@@ -615,7 +615,7 @@ const messages: Record<Lang, Messages> = {
 
     // Faz 14.0 — SpeedType ve Grammar Test
     speedType: "SpeedType",
-    speedTypeDesc: "MonkeyType tarzı Rusça klavye hız ve doğruluk testi.",
+    speedTypeDesc: "Rusça klavye hız ve doğruluk testi.",
     grammarTest: "Gramer Testi",
     grammarTestDesc: "Tüm ünitelerden karışık 10 soruluk kapsamlı gramer testi.",
     wpm: "WPM",
@@ -919,7 +919,7 @@ const messages: Record<Lang, Messages> = {
 
     // Faz 14.0 — SpeedType ve Grammar Test
     speedType: "SpeedType",
-    speedTypeDesc: "MonkeyType-style Russian keyboard speed and accuracy test.",
+    speedTypeDesc: "Russian keyboard speed and accuracy test.",
     grammarTest: "Grammar Test",
     grammarTestDesc: "10-question comprehensive mixed grammar test from all units.",
     wpm: "WPM",
