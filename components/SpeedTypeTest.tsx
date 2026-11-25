@@ -71,6 +71,8 @@ export function SpeedTypeTest({
   const [langSearch, setLangSearch] = useState<string>("");
 
   // Game state
+  const [testSessionKey, setTestSessionKey] = useState<number>(0);
+  const [raceSessionKey, setRaceSessionKey] = useState<number>(0);
   const [gameWords, setGameWords] = useState<string[]>([]);
   const [timerDisplay, setTimerDisplay] = useState<string>("30");
   const [isRunning, setIsRunning] = useState<boolean>(false);
@@ -229,8 +231,6 @@ export function SpeedTypeTest({
   const addWords = useCallback(() => {
     const dict = languageData.find((l) => l.id === selectedLanguage) || languageData[0];
     const source = dict.words;
-    const wordsEl = wordsElRef.current;
-    if (!wordsEl) return;
 
     const newWords: string[] = [];
     for (let i = 0; i < 20; i++) {
@@ -243,16 +243,6 @@ export function SpeedTypeTest({
         w = String(Math.floor(Math.random() * 1000));
       }
       newWords.push(w);
-
-      const div = document.createElement("div");
-      div.className = "word";
-      w.split("").forEach((c) => {
-        const span = document.createElement("span");
-        span.className = "letter";
-        span.textContent = c;
-        div.appendChild(span);
-      });
-      wordsEl.appendChild(div);
     }
 
     setGameWords((prev) => [...prev, ...newWords]);
@@ -400,6 +390,9 @@ export function SpeedTypeTest({
     state.total = 0;
     state.wpmHistory = [];
 
+    // Force React to render pristine, fresh DOM elements for all words and letters
+    setTestSessionKey((prev) => prev + 1);
+
     const newWords = generateWords(selectedLanguage, mode, punctuation, numbers, wordsSetting);
     setGameWords(newWords);
     setIsRunning(false);
@@ -415,9 +408,31 @@ export function SpeedTypeTest({
 
     if (wordsElRef.current) {
       wordsElRef.current.style.transform = "translateY(0px)";
+      // Clear any classes or leftover extra DOM nodes immediately
+      const words = Array.from(wordsElRef.current.children) as HTMLElement[];
+      words.forEach((wordEl) => {
+        wordEl.className = "word";
+        const extras: HTMLElement[] = [];
+        Array.from(wordEl.children).forEach((child) => {
+          const el = child as HTMLElement;
+          if (el.classList.contains("extra")) {
+            extras.push(el);
+          } else {
+            el.className = "letter";
+          }
+        });
+        extras.forEach((ex) => {
+          try {
+            wordEl.removeChild(ex);
+          } catch {}
+        });
+      });
     }
+
     if (caretElRef.current) {
       caretElRef.current.style.transform = "translateY(0px)";
+      caretElRef.current.style.left = "0px";
+      caretElRef.current.style.top = "0px";
     }
 
     requestAnimationFrame(() => {
@@ -442,7 +457,7 @@ export function SpeedTypeTest({
       }, 30);
       return () => clearTimeout(timer);
     }
-  }, [activeView, gameWords, updateCaret]);
+  }, [activeView, gameWords, testSessionKey, updateCaret]);
 
   /* ==========================================================================
      KEY & COMPOSITION HANDLING (SOLO MODE)
@@ -933,6 +948,8 @@ export function SpeedTypeTest({
     setRacePlayerProgress(0);
     setRaceOpponentProgress(0);
 
+    setRaceSessionKey((prev) => prev + 1);
+
     if (raceInputRef.current) {
       raceInputRef.current.disabled = false;
       raceInputRef.current.focus();
@@ -940,9 +957,18 @@ export function SpeedTypeTest({
 
     if (raceWordsElRef.current) {
       raceWordsElRef.current.style.transform = "translateY(0px)";
+      const words = Array.from(raceWordsElRef.current.children) as HTMLElement[];
+      words.forEach((wordEl) => {
+        wordEl.className = "word";
+        Array.from(wordEl.children).forEach((child) => {
+          (child as HTMLElement).className = "letter";
+        });
+      });
     }
     if (raceCaretElRef.current) {
       raceCaretElRef.current.style.transform = "translateY(0px)";
+      raceCaretElRef.current.style.left = "0px";
+      raceCaretElRef.current.style.top = "0px";
     }
 
     state.intervalId = setInterval(() => {
@@ -1455,7 +1481,7 @@ export function SpeedTypeTest({
                   className={!isFocused ? "blurred" : ""}
                 >
                   {gameWords.map((word, wIdx) => (
-                    <div key={wIdx} className="word">
+                    <div key={`${testSessionKey}-${wIdx}`} className="word">
                       {word.split("").map((c, cIdx) => (
                         <span key={cIdx} className="letter">
                           {c}
@@ -1751,7 +1777,7 @@ export function SpeedTypeTest({
                     className={!isRaceFocused && !isCountdownActive ? "blurred" : ""}
                   >
                     {raceWords.map((word, wIdx) => (
-                      <div key={wIdx} className="word">
+                      <div key={`${raceSessionKey}-${wIdx}`} className="word">
                         {word.split("").map((c, cIdx) => (
                           <span key={cIdx} className="letter">
                             {c}
