@@ -307,36 +307,16 @@ export interface Messages {
   testYourselfDesc: string;
   enterRussianSentence: string;
 
-  // Faz 13.2 — Monkeytype (10 Parmak Testi) ve Yeni Modlar
-  newModes: string;
-  newModesBadge: string;
-  typingSpeedTest: string;
-  typingSpeedDesc: string;
-  aiGrammarAnalysis: string;
-  aiGrammarDesc: string;
-  typingWpm: string;
-  typingAccuracy: string;
-  typingRaw: string;
-  typingCharacters: string;
-  typingConsistency: string;
-  typingTime: string;
-  typingWords: string;
-  restartTest: string;
-  clickToFocus: string;
-  shiftEnterRestart: string;
-  typingDifficulty: string;
-  typingRace: string;
-  raceYouWon: string;
-  raceYouLost: string;
-  raceGhostSpeed: string;
-  racePlayerProgress: string;
+  // Faz 14.0 — SpeedType ve Grammar Test
   speedType: string;
-  typeThisText: string;
+  speedTypeDesc: string;
+  grammarTest: string;
+  grammarTestDesc: string;
   wpm: string;
   accuracy: string;
-  time: string;
-  restart: string;
-  testCompleted: string;
+  timeLeft: string;
+  restartTest: string;
+  typingTestInstruction: string;
 }
 
 /** Tüm çeviriler */
@@ -633,36 +613,16 @@ const messages: Record<Lang, Messages> = {
     testYourselfDesc: "Herhangi bir Rusça kelime veya cümleyi yapay zeka ile kelime kelime analiz edin.",
     enterRussianSentence: "Analiz edilecek Rusça metni buraya yazın...",
 
-    // Faz 13.2 — Monkeytype (10 Parmak Testi) ve Yeni Modlar
-    newModes: "Yeni Modlar",
-    newModesBadge: "New Modes!",
-    typingSpeedTest: "10 Parmak Hız Testi",
-    typingSpeedDesc: "Rusça 10 parmak yazma hızını ve doğruluğunu test edin.",
-    aiGrammarAnalysis: "AI Gramer Analizi",
-    aiGrammarDesc: "Yazdığınız herhangi bir cümlenin gramerini yapay zeka ile analiz edin.",
-    typingWpm: "dak/kel",
-    typingAccuracy: "doğruluk",
-    typingRaw: "sade",
-    typingCharacters: "karakterler",
-    typingConsistency: "tutarlılık",
-    typingTime: "süre",
-    typingWords: "kelime",
-    restartTest: "Yeniden Başlat",
-    clickToFocus: "Yazmaya başlamak için buraya dokunun",
-    shiftEnterRestart: "Yeniden başlatmak için Shift + Enter",
-    typingDifficulty: "Zorluk",
-    typingRace: "Race",
-    raceYouWon: "Kazandınız!",
-    raceYouLost: "Kaybettiniz",
-    raceGhostSpeed: "Hayalet (40 WPM)",
-    racePlayerProgress: "İlerlemeniz",
-    speedType: "Hız Testi",
-    typeThisText: "Aşağıdaki metni klavyenizden yazın",
+    // Faz 14.0 — SpeedType ve Grammar Test
+    speedType: "SpeedType",
+    speedTypeDesc: "MonkeyType tarzı Rusça klavye hız ve doğruluk testi.",
+    grammarTest: "Gramer Testi",
+    grammarTestDesc: "Tüm ünitelerden karışık 10 soruluk kapsamlı gramer testi.",
     wpm: "WPM",
     accuracy: "Doğruluk",
-    time: "Süre",
-    restart: "Yeniden Başlat",
-    testCompleted: "Test Tamamlandı",
+    timeLeft: "Kalan Süre",
+    restartTest: "Tekrar Dene",
+    typingTestInstruction: "Yazmaya başlayın...",
   },
 
   en: {
@@ -957,36 +917,16 @@ const messages: Record<Lang, Messages> = {
     testYourselfDesc: "Analyze any Russian word or sentence word-by-word with AI.",
     enterRussianSentence: "Enter Russian text to analyze here...",
 
-    // Faz 13.2 — Monkeytype (10 Parmak Testi) ve Yeni Modlar
-    newModes: "New Modes",
-    newModesBadge: "New Modes!",
-    typingSpeedTest: "Typing Speed Test",
-    typingSpeedDesc: "Test your Russian 10-finger typing speed and accuracy.",
-    aiGrammarAnalysis: "AI Grammar Analysis",
-    aiGrammarDesc: "Analyze any Russian sentence grammar with artificial intelligence.",
-    typingWpm: "wpm",
-    typingAccuracy: "accuracy",
-    typingRaw: "raw",
-    typingCharacters: "characters",
-    typingConsistency: "consistency",
-    typingTime: "time",
-    typingWords: "words",
-    restartTest: "Restart Test",
-    clickToFocus: "Click here to focus and type",
-    shiftEnterRestart: "Shift + Enter to restart",
-    typingDifficulty: "Difficulty",
-    typingRace: "Race",
-    raceYouWon: "You Won!",
-    raceYouLost: "You Lost",
-    raceGhostSpeed: "Ghost (40 WPM)",
-    racePlayerProgress: "Your Progress",
-    speedType: "Speed Type",
-    typeThisText: "Type the text below",
+    // Faz 14.0 — SpeedType ve Grammar Test
+    speedType: "SpeedType",
+    speedTypeDesc: "MonkeyType-style Russian keyboard speed and accuracy test.",
+    grammarTest: "Grammar Test",
+    grammarTestDesc: "10-question comprehensive mixed grammar test from all units.",
     wpm: "WPM",
     accuracy: "Accuracy",
-    time: "Time",
-    restart: "Restart",
-    testCompleted: "Test Completed",
+    timeLeft: "Time Left",
+    restartTest: "Restart Test",
+    typingTestInstruction: "Start typing...",
   },
 };
 

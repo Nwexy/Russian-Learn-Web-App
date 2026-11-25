@@ -4,7 +4,7 @@
  * İstemci ve sunucu taraflarında sorunsuz çalışır.
  */
 
-import type { GrammarNote } from "@/types";
+import type { GrammarNote, MiniExercise } from "@/types";
 
 import grammar01Gender from "@/content/grammar/grammar-01-gender.json";
 import grammar02Pronouns from "@/content/grammar/grammar-02-pronouns.json";
@@ -65,3 +65,27 @@ export function getGrammarByUnit(unitId: string): GrammarNote[] {
     )
   );
 }
+
+/**
+ * Tüm gramer notlarından mini alıştırmaları toplayıp tek bir dizi olarak döner.
+ */
+export function getAllMiniExercises(): MiniExercise[] {
+  const notes = loadGrammarNotes();
+  const all: MiniExercise[] = [];
+  for (const n of notes) {
+    if (n.miniExercises && n.miniExercises.length > 0) {
+      all.push(...n.miniExercises);
+    }
+  }
+  return all;
+}
+
+/**
+ * Karışık 10 soruluk (veya belirtilen sayıda) gramer testi sorusu üretir.
+ */
+export function getRandomGrammarTest(count: number = 10): MiniExercise[] {
+  const all = getAllMiniExercises();
+  const shuffled = [...all].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+

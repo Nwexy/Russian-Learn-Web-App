@@ -35,7 +35,6 @@ import {
   CheckCircle2,
   BookOpen,
   Keyboard,
-  Sparkles,
 } from "lucide-react";
 import {
   Dialog,
@@ -78,13 +77,15 @@ import { PronunciationText } from "@/components/pronunciation-text";
 import { shouldShowPronunciation, renderHighlightedText, renderSentenceWithBlank, renderMcHint } from "@/lib/exercises-ui";
 import { SpeakButton } from "@/components/SpeakButton";
 import { WordBankDnd } from "@/components/WordBankDnd";
+import { SpeedTypeTest } from "@/components/SpeedTypeTest";
+import { GrammarTestSession } from "@/components/GrammarTestSession";
 import type { Item, ExerciseType, WordToken } from "@/types";
 
-/** Alıştırma modu: 4 tekil tür veya Karışık Mod */
-export type PracticeMode = "mixed" | ExerciseType;
+/** Alıştırma modu: tekil türler, Karışık Mod, SpeedType veya Grammar Test */
+export type PracticeMode = "mixed" | ExerciseType | "speedType" | "grammarTest";
 
 /** Alıştırma durumları */
-type Phase = "select" | "active" | "result";
+type Phase = "select" | "active" | "result" | "speedType" | "grammarTest";
 
 
 /** Fisher-Yates ile kopya karıştırma (eşleştirme sağ sütunu için) */
@@ -135,22 +136,6 @@ export default function PracticePage() {
     "wordBank",
   ]);
   const [isMixedModesDialogOpen, setIsMixedModesDialogOpen] = useState(false);
-
-  // Faz 13.2 — Yeni Modlar Badge Görüldü Mantığı
-  const [showNewModesBadge, setShowNewModesBadge] = useState(false);
-
-  useEffect(() => {
-    try {
-      const hasSeen = localStorage.getItem("hasSeenNewModes") === "true";
-      if (!hasSeen) {
-        setShowNewModesBadge(true);
-        localStorage.setItem("hasSeenNewModes", "true");
-        window.dispatchEvent(new Event("newModesSeen"));
-      }
-    } catch {
-      // Ignore localStorage error
-    }
-  }, []);
 
   const toggleMixedMode = (mode: ExerciseType) => {
     setSelectedMixedModes((prev) => {
@@ -490,9 +475,17 @@ export default function PracticePage() {
 
   /** Butonla başlat */
   const startExercise = useCallback(() => {
+    if (exerciseType === "speedType") {
+      setPhase("speedType");
+      return;
+    }
+    if (exerciseType === "grammarTest") {
+      setPhase("grammarTest");
+      return;
+    }
     if (items.length === 0) return;
     if (exerciseType === "mixed" && selectedMixedModes.length < 2) return;
-    initExerciseWith(items, exerciseType, questionCount);
+    initExerciseWith(items, exerciseType as ExerciseType | "mixed", questionCount);
   }, [items, exerciseType, questionCount, selectedMixedModes, initExerciseWith]);
 
   /* ========================================
@@ -1226,16 +1219,32 @@ export default function PracticePage() {
       return hasRu && Boolean(trans && trans.trim().length > 0);
     });
 
-    const types: { key: ExerciseType; label: string; icon: React.ReactNode; desc: string }[] = [
+    const isSpecialMode = exerciseType === "speedType" || exerciseType === "grammarTest";
+
+    const types: {
+      key: PracticeMode;
+      label: string;
+      icon: React.ReactNode;
+      desc: string;
+      isDisabled?: boolean;
+    }[] = [
       { key: "multipleChoice", label: t.multipleChoice, icon: <Type className="w-6 h-6 text-foreground" />, desc: t.chooseAnswer },
       { key: "fillBlank", label: t.fillBlank, icon: <PenLine className="w-6 h-6 text-foreground" />, desc: t.typeYourAnswer },
       { key: "matching", label: t.matching, icon: <Link2 className="w-6 h-6 text-foreground" />, desc: t.matchPairs },
-      { key: "listening", label: t.listening, icon: <Headphones className="w-6 h-6 text-foreground" />, desc: t.listenAndType },
-      { key: "speaking", label: t.speaking, icon: <Mic className="w-6 h-6 text-foreground" />, desc: t.speakNow },
-      { key: "wordBank", label: t.sentenceBuilder, icon: <Blocks className="w-6 h-6 text-foreground" />, desc: t.tapWordsInOrder },
+      { key: "listening", label: t.listening, icon: <Headphones className="w-6 h-6 text-foreground" />, desc: t.listenAndType, isDisabled: !ttsSupported },
+      { key: "speaking", label: t.speaking, icon: <Mic className="w-6 h-6 text-foreground" />, desc: t.speakNow, isDisabled: !speechSupported },
+      { key: "wordBank", label: t.sentenceBuilder, icon: <Blocks className="w-6 h-6 text-foreground" />, desc: t.tapWordsInOrder, isDisabled: !hasWordBankItems },
+      { key: "speedType", label: t.speedType, icon: <Keyboard className="w-6 h-6 text-foreground" />, desc: t.speedTypeDesc },
+      { key: "grammarTest", label: t.grammarTest, icon: <BookOpen className="w-6 h-6 text-foreground" />, desc: t.grammarTestDesc },
     ];
 
     const hasEnoughItems = items.length >= 2;
+    const canStart =
+      isSpecialMode
+        ? true
+        : exerciseType === "mixed"
+        ? hasEnoughItems && selectedMixedModes.length >= 2
+        : hasEnoughItems;
 
     return (
       <div className="page-container">
@@ -1248,33 +1257,35 @@ export default function PracticePage() {
 
         {unitFilterSelector}
 
-        {/* Soru Sayısı Seçici */}
-        <div className="w-full max-w-3xl mx-auto mb-6 p-4 rounded-xl border border-border bg-card/80 backdrop-blur-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm relative z-0">
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold text-foreground">
-              {t.questionCount}
-            </span>
-            <span className="text-xs text-muted-foreground mt-0.5">
-              {t.questionCountTooltip}
-            </span>
+        {/* Soru Sayısı Seçici (Özel modlarda gizlenir) */}
+        {!isSpecialMode && (
+          <div className="w-full max-w-3xl mx-auto mb-6 p-4 rounded-xl border border-border bg-card/80 backdrop-blur-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 shadow-sm relative z-0">
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold text-foreground">
+                {t.questionCount}
+              </span>
+              <span className="text-xs text-muted-foreground mt-0.5">
+                {t.questionCountTooltip}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              {[10, 15, 20, 30, 40, 50].map((cnt) => (
+                <button
+                  key={cnt}
+                  type="button"
+                  onClick={() => setQuestionCount(cnt)}
+                  className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
+                    questionCount === cnt
+                      ? "bg-accent text-white shadow-sm ring-2 ring-accent/30"
+                      : "bg-secondary text-foreground/80 hover:bg-secondary/80 hover:text-foreground border border-border"
+                  }`}
+                >
+                  {cnt}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {[10, 15, 20, 30, 40, 50].map((cnt) => (
-              <button
-                key={cnt}
-                type="button"
-                onClick={() => setQuestionCount(cnt)}
-                className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
-                  questionCount === cnt
-                    ? "bg-accent text-white shadow-sm ring-2 ring-accent/30"
-                    : "bg-secondary text-foreground/80 hover:bg-secondary/80 hover:text-foreground border border-border"
-                }`}
-              >
-                {cnt}
-              </button>
-            ))}
-          </div>
-        </div>
+        )}
 
         <div className="page-header text-center sm:text-left mb-6">
           <h1 className="page-title">{t.practiceTitle}</h1>
@@ -1333,13 +1344,10 @@ export default function PracticePage() {
                 )}
               </div>
 
-              {/* 6 Tekil Alıştırma Kartı */}
+              {/* 8 Tekil Alıştırma Kartı (SpeedType ve Grammar Test dahil) */}
               {types.map((tp) => {
                 const isSelected = exerciseType === tp.key;
-                const isDisabled =
-                  (tp.key === "listening" && !ttsSupported) ||
-                  (tp.key === "speaking" && !speechSupported) ||
-                  (tp.key === "wordBank" && !hasWordBankItems);
+                const isDisabled = Boolean(tp.isDisabled);
 
                 return (
                   <div
@@ -1379,83 +1387,17 @@ export default function PracticePage() {
               })}
             </div>
 
-            {/* Faz 13.2: Yeni Modlar / New Modes */}
-            <div className="w-full max-w-3xl mx-auto mt-10 mb-8 pt-8 border-t border-border/60">
-              <div className="flex items-center gap-3 mb-4">
-                <h2 className="text-xl font-extrabold text-foreground tracking-tight">
-                  {t.newModes}
-                </h2>
-                {showNewModesBadge && (
-                  <span className="new-modes-badge">
-                    {t.newModesBadge || "New Modes!"}
-                  </span>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Kart 1: Typing Speed (Monkeytype) */}
-                <Link
-                  href="/typing-test"
-                  className="p-5 sm:p-6 rounded-2xl border-2 border-border bg-card hover:bg-card-hover hover:border-primary/50 transition-all cursor-pointer flex flex-col gap-3 group shadow-sm hover:shadow-md"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <Keyboard className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
-                        {t.typingSpeedTest}
-                      </h3>
-                      {showNewModesBadge && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-500 border border-rose-500/30">
-                          NEW
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {t.typingSpeedDesc}
-                    </p>
-                  </div>
-                </Link>
-
-                {/* Kart 2: AI Grammar Analysis (Test Yourself) */}
-                <Link
-                  href="/practice/test-yourself"
-                  className="p-5 sm:p-6 rounded-2xl border-2 border-border bg-card hover:bg-card-hover hover:border-primary/50 transition-all cursor-pointer flex flex-col gap-3 group shadow-sm hover:shadow-md"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <Sparkles className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">
-                        {t.aiGrammarAnalysis}
-                      </h3>
-                      {showNewModesBadge && (
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-500 border border-rose-500/30">
-                          NEW
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground leading-relaxed">
-                      {t.aiGrammarDesc}
-                    </p>
-                  </div>
-                </Link>
-              </div>
-            </div>
-
             {/* Sabit (Sticky) Başlat Butonu Alanı (Faz 11.9: Şeffaf Arka Plan) */}
             <div className="sticky bottom-6 z-40 w-full max-w-md mx-auto my-6 px-4 flex flex-col items-center gap-2 pointer-events-none">
               <button
                 type="button"
                 className={`pointer-events-auto w-full py-4 px-8 text-lg font-bold rounded-xl text-white transition-all duration-300 flex items-center justify-center gap-2 cursor-pointer ${
-                  !hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)
+                  !canStart
                     ? "bg-muted text-muted-foreground opacity-60 cursor-not-allowed shadow-none"
                     : "bg-accent hover:opacity-95 shadow-lg shadow-accent/50 hover:shadow-xl hover:shadow-accent/60 active:scale-[0.99] animate-pulse"
                 }`}
                 onClick={startExercise}
-                disabled={!hasEnoughItems || (exerciseType === "mixed" && selectedMixedModes.length < 2)}
+                disabled={!canStart}
               >
                 <span>{t.start}</span>
               </button>
@@ -1475,12 +1417,17 @@ export default function PracticePage() {
                 </DialogHeader>
 
                 <div className="space-y-2.5 my-2">
-                  {types.map((tp) => {
-                    const isChecked = selectedMixedModes.includes(tp.key);
-                    return (
-                      <div
-                        key={tp.key}
-                        onClick={() => toggleMixedMode(tp.key)}
+                  {types
+                    .filter(
+                      (tp): tp is typeof tp & { key: ExerciseType } =>
+                        tp.key !== "speedType" && tp.key !== "grammarTest"
+                    )
+                    .map((tp) => {
+                      const isChecked = selectedMixedModes.includes(tp.key);
+                      return (
+                        <div
+                          key={tp.key}
+                          onClick={() => toggleMixedMode(tp.key)}
                         className={`flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer select-none ${
                           isChecked
                             ? "border-accent bg-accent/10 shadow-sm"
@@ -1581,6 +1528,28 @@ export default function PracticePage() {
             </div>
           )}
         </div>
+      </div>
+    );
+  }
+
+  /* ========================================
+     RENDER — SPEEDTYPE (MONKEYTYPE KLONU)
+     ======================================== */
+  if (phase === "speedType") {
+    return (
+      <div className="page-container">
+        <SpeedTypeTest items={items} uiLang={uiLang} onExit={() => setPhase("select")} />
+      </div>
+    );
+  }
+
+  /* ========================================
+     RENDER — GRAMMAR TEST
+     ======================================== */
+  if (phase === "grammarTest") {
+    return (
+      <div className="page-container">
+        <GrammarTestSession uiLang={uiLang} onExit={() => setPhase("select")} />
       </div>
     );
   }
