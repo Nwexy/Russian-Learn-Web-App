@@ -330,6 +330,13 @@ export interface Messages {
   raceYouLost: string;
   raceGhostSpeed: string;
   racePlayerProgress: string;
+  speedType: string;
+  typeThisText: string;
+  wpm: string;
+  accuracy: string;
+  time: string;
+  restart: string;
+  testCompleted: string;
 }
 
 /** Tüm çeviriler */
@@ -649,6 +656,13 @@ const messages: Record<Lang, Messages> = {
     raceYouLost: "Kaybettiniz",
     raceGhostSpeed: "Hayalet (40 WPM)",
     racePlayerProgress: "İlerlemeniz",
+    speedType: "Hız Testi",
+    typeThisText: "Aşağıdaki metni klavyenizden yazın",
+    wpm: "WPM",
+    accuracy: "Doğruluk",
+    time: "Süre",
+    restart: "Yeniden Başlat",
+    testCompleted: "Test Tamamlandı",
   },
 
   en: {
@@ -966,6 +980,13 @@ const messages: Record<Lang, Messages> = {
     raceYouLost: "You Lost",
     raceGhostSpeed: "Ghost (40 WPM)",
     racePlayerProgress: "Your Progress",
+    speedType: "Speed Type",
+    typeThisText: "Type the text below",
+    wpm: "WPM",
+    accuracy: "Accuracy",
+    time: "Time",
+    restart: "Restart",
+    testCompleted: "Test Completed",
   },
 };
 

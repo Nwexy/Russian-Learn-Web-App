@@ -10,6 +10,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Keyboard } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
@@ -117,6 +118,13 @@ export function Navbar() {
                 {t.newModesBadge || "New Modes!"}
               </span>
             )}
+          </Link>
+          <Link
+            href="/typing-test"
+            className={`navbar-link ${isActive("/typing-test") ? "navbar-link-active" : ""}`}
+          >
+            <Keyboard className="navbar-icon" size={18} strokeWidth={2} />
+            <span>{t.speedType}</span>
           </Link>
           <Link
             href="/grammar"

@@ -4,6 +4,8 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- Monkeytype tarzi "Hiz Testi" (Speed Type) sayfasi eklendi.
+- Rusca klavye kullanimi icin WPM ve Dogruluk olcum sistemi getirildi.
 - Typing test (Monkeytype) arayuzu tamamen yenilendi, ust menu eklendi.
 - Dil secimi yerine "Zorluk" (Difficulty) secimi eklendi (Very Easy - Very Hard). Kelime havuzu harf uzunluguna gore filtreleniyor.
 - "Race" modu eklendi (sabit hizda ilerleyen bir hayalete karsi yaris).

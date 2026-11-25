@@ -1395,7 +1395,7 @@ export default function PracticePage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Kart 1: Typing Speed (Monkeytype) */}
                 <Link
-                  href="/practice/typing"
+                  href="/typing-test"
                   className="p-5 sm:p-6 rounded-2xl border-2 border-border bg-card hover:bg-card-hover hover:border-primary/50 transition-all cursor-pointer flex flex-col gap-3 group shadow-sm hover:shadow-md"
                 >
                   <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center group-hover:scale-105 transition-transform">
