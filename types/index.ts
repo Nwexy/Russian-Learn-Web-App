@@ -179,3 +179,15 @@ export interface GrammarNote {
   miniExercises: MiniExercise[];
 }
 
+/** Faz 13.0 — Test Yourself / Gemini analiz edilen kelime */
+export interface AnalyzedWord {
+  word: string;
+  meaning: string;
+  type?: string;
+  gender?: string;
+  case?: string;
+  tense?: string;
+  grammarNote?: string;
+}
+
+

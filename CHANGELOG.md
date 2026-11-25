@@ -3,6 +3,11 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-11-25
+- "Test Yourself" sayfasi eklendi.
+- Gemini API kullanilarak Rusca kelime ve cumlelerin gramer analizi yapilabiliyor.
+- Navbar'a Test Yourself linki eklendi.
+
 ## 2026-11-18
 - Multiple Choice sorularinda ipucu metnindeki hedef kelimenin rengi, cevap verilene kadar notr (gri), cevap verildikten sonra dogruysa yesil, yanlissa kirmizi olacak sekilde duzeltildi.
 - Word Bank modunda tiklanarak yapilan kelime ekleme/cikarma islemlerine framer-motion ile akici animasyon geri getirildi.

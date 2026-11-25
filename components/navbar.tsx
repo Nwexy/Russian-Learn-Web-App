@@ -9,6 +9,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Sparkles } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
@@ -110,6 +111,13 @@ export function Navbar() {
               />
             </svg>
             <span>{t.grammar}</span>
+          </Link>
+          <Link
+            href="/test-yourself"
+            className={`navbar-link ${isActive("/test-yourself") ? "navbar-link-active" : ""}`}
+          >
+            <Sparkles className="navbar-icon" size={18} strokeWidth={2} />
+            <span>{t.testYourself}</span>
           </Link>
           <Link
             href="/settings"
