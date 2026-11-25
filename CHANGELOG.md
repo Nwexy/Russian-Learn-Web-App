@@ -4,6 +4,9 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- Typing test (Monkeytype) arayuzu tamamen yenilendi, ust menu eklendi.
+- Dil secimi yerine "Zorluk" (Difficulty) secimi eklendi (Very Easy - Very Hard). Kelime havuzu harf uzunluguna gore filtreleniyor.
+- "Race" modu eklendi (sabit hizda ilerleyen bir hayalete karsi yaris).
 - Yerel Monkeytype projesindeki 10 parmak hizi testi Rusca'ya uyarlandi ve Practice sayfasina eklendi.
 - Test Yourself (AI Grammar Analysis) Navbar'dan kaldirilip Practice sayfasina tasindi.
 - Practice sayfasina ve Navbar'a dikkat cekici "New Modes!" etiketi eklendi.

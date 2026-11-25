@@ -2,11 +2,28 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { ArrowLeft, RotateCcw, Volume2, VolumeX, Keyboard, Clock, FileText } from "lucide-react";
+import {
+  ArrowLeft,
+  RotateCcw,
+  Volume2,
+  VolumeX,
+  Keyboard,
+  Flag,
+  SlidersHorizontal,
+  Check,
+  User,
+  Bot,
+  Trophy,
+  X,
+} from "lucide-react";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { Card } from "@/components/ui/card";
-import { RUSSIAN_WORDS } from "@/lib/russian-words";
+import {
+  TypingDifficulty,
+  TYPING_DIFFICULTIES,
+  generateTypingWords,
+} from "@/lib/typing";
 
 type Mode = "time" | "words";
 
@@ -29,7 +46,12 @@ export default function TypingSpeedPage() {
   const [mode, setMode] = useState<Mode>("time");
   const [timeLimit, setTimeLimit] = useState<number>(30);
   const [wordLimit, setWordLimit] = useState<number>(25);
+  const [punctuation, setPunctuation] = useState<boolean>(false);
+  const [numbers, setNumbers] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [isRaceMode, setIsRaceMode] = useState<boolean>(false);
+  const [difficulty, setDifficulty] = useState<TypingDifficulty>("medium");
+  const [isDifficultyModalOpen, setIsDifficultyModalOpen] = useState<boolean>(false);
 
   // Game Engine State
   const [words, setWords] = useState<WordState[]>([]);
@@ -38,6 +60,9 @@ export default function TypingSpeedPage() {
   const [isRunning, setIsRunning] = useState<boolean>(false);
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [timeLeft, setTimeLeft] = useState<number>(30);
+
+  // Ghost progress for Race Mode
+  const [ghostProgress, setGhostProgress] = useState<number>(0);
 
   // Stats Counters
   const [correctChars, setCorrectChars] = useState<number>(0);
@@ -89,20 +114,24 @@ export default function TypingSpeedPage() {
     }
   }, [soundEnabled]);
 
-  // Generate words array
-  const generateWords = useCallback((count: number): WordState[] => {
-    const pool = RUSSIAN_WORDS.length > 0 ? RUSSIAN_WORDS : ["привет", "город", "книга", "работа"];
-    const generated: WordState[] = [];
-    for (let i = 0; i < count; i++) {
-      const w = pool[Math.floor(Math.random() * pool.length)];
-      generated.push({
+  // Generate words array based on config and difficulty
+  const createWordBatch = useCallback(
+    (count: number): WordState[] => {
+      const rawWords = generateTypingWords({
+        count,
+        difficulty,
+        punctuation,
+        numbers,
+      });
+
+      return rawWords.map((w) => ({
         original: w,
         letters: w.split("").map((c) => ({ char: c, state: "untyped" })),
         hasError: false,
-      });
-    }
-    return generated;
-  }, []);
+      }));
+    },
+    [difficulty, punctuation, numbers]
+  );
 
   // Initialize or reset game
   const resetGame = useCallback(() => {
@@ -112,7 +141,7 @@ export default function TypingSpeedPage() {
     }
 
     const count = mode === "words" ? wordLimit : 120;
-    const initialWords = generateWords(count);
+    const initialWords = createWordBatch(count);
 
     setWords(initialWords);
     setCurrentWordIdx(0);
@@ -120,6 +149,7 @@ export default function TypingSpeedPage() {
     setIsRunning(false);
     setIsFinished(false);
     setTimeLeft(mode === "time" ? timeLimit : 0);
+    setGhostProgress(0);
     setCorrectChars(0);
     setIncorrectChars(0);
     setExtraChars(0);
@@ -134,7 +164,7 @@ export default function TypingSpeedPage() {
       hiddenInputRef.current.focus();
     }
     setIsFocused(true);
-  }, [mode, timeLimit, wordLimit, generateWords]);
+  }, [mode, timeLimit, wordLimit, createWordBatch]);
 
   useEffect(() => {
     resetGame();
@@ -150,7 +180,7 @@ export default function TypingSpeedPage() {
     setIsFinished(true);
   }, []);
 
-  // Timer Tick
+  // Timer Tick & Race Ghost update
   useEffect(() => {
     if (!isRunning) return;
 
@@ -160,6 +190,19 @@ export default function TypingSpeedPage() {
         const curWpm = Math.round(((correctChars + currentWordIdx) / 5) / (elapsedSec / 60));
         setLiveWpm(curWpm);
         setWpmHistory((prev) => [...prev, curWpm]);
+      }
+
+      // Race mode ghost tracking (40 WPM constant speed)
+      if (isRaceMode) {
+        if (mode === "words") {
+          const ghostWordsTyped = elapsedSec * (40 / 60);
+          const p = Math.min(100, Math.round((ghostWordsTyped / wordLimit) * 100));
+          setGhostProgress(p);
+        } else {
+          // Time mode ghost progress: relative to total timeLimit
+          const p = Math.min(100, Math.round((elapsedSec / timeLimit) * 100));
+          setGhostProgress(p);
+        }
       }
 
       if (mode === "time") {
@@ -178,7 +221,7 @@ export default function TypingSpeedPage() {
         clearInterval(timerIntervalRef.current);
       }
     };
-  }, [isRunning, mode, correctChars, currentWordIdx, finishGame]);
+  }, [isRunning, mode, timeLimit, wordLimit, isRaceMode, correctChars, currentWordIdx, finishGame]);
 
   // Update Caret position and 3-line scroll
   const updateCaretPosition = useCallback(() => {
@@ -189,7 +232,6 @@ export default function TypingSpeedPage() {
     if (!wordEl) return;
 
     requestAnimationFrame(() => {
-      // Calculate line height
       let lineHeight = 48;
       if (container.children.length >= 2) {
         const first = container.children[0] as HTMLElement;
@@ -248,7 +290,7 @@ export default function TypingSpeedPage() {
 
     if (isFinished) return;
 
-    // Start timer on first keystroke
+    // Start timer on first printable keystroke
     if (!isRunning && e.key.length === 1) {
       setIsRunning(true);
       startTimeRef.current = Date.now();
@@ -270,7 +312,6 @@ export default function TypingSpeedPage() {
           const letters = [...w.letters];
 
           if (isCtrl) {
-            // Delete whole word input
             for (let i = 0; i < currentCharIdx; i++) {
               if (letters[i].state === "correct") setCorrectChars((c) => Math.max(0, c - 1));
               if (letters[i].state === "incorrect") setIncorrectChars((c) => Math.max(0, c - 1));
@@ -281,7 +322,6 @@ export default function TypingSpeedPage() {
               .map((l) => ({ ...l, state: "untyped" as const }));
             setCurrentCharIdx(0);
           } else {
-            // Single char backspace
             const targetIdx = currentCharIdx - 1;
             const targetLetter = letters[targetIdx];
             if (targetLetter.state === "correct") setCorrectChars((c) => Math.max(0, c - 1));
@@ -299,7 +339,6 @@ export default function TypingSpeedPage() {
           return next;
         });
       } else if (currentWordIdx > 0) {
-        // Backspace into previous word if it has errors
         const prevWord = words[currentWordIdx - 1];
         if (prevWord && prevWord.hasError) {
           setCurrentWordIdx((prev) => prev - 1);
@@ -317,7 +356,7 @@ export default function TypingSpeedPage() {
       return;
     }
 
-    // SPACEBAR: Finish current word
+    // SPACEBAR: Complete current word
     if (e.key === " " || e.key === "Spacebar") {
       e.preventDefault();
       playSound("key");
@@ -327,7 +366,6 @@ export default function TypingSpeedPage() {
       );
       const isShort = currentCharIdx < currentWord.original.length;
 
-      // Mark untyped letters as missed / incorrect
       if (isShort) {
         setWords((prev) => {
           const next = [...prev];
@@ -353,7 +391,7 @@ export default function TypingSpeedPage() {
         });
       }
 
-      // Check if words limit reached in words mode
+      // Check words limit in words mode
       if (mode === "words" && currentWordIdx + 1 >= wordLimit) {
         finishGame();
         return;
@@ -361,7 +399,7 @@ export default function TypingSpeedPage() {
 
       // Append more words in time mode if nearing end
       if (mode === "time" && currentWordIdx >= words.length - 15) {
-        setWords((prev) => [...prev, ...generateWords(30)]);
+        setWords((prev) => [...prev, ...createWordBatch(30)]);
       }
 
       setCurrentWordIdx((prev) => prev + 1);
@@ -402,7 +440,7 @@ export default function TypingSpeedPage() {
         const nextCharIdx = currentCharIdx + 1;
         setCurrentCharIdx(nextCharIdx);
 
-        // Auto end on last word completion in words mode
+        // Auto finish on last letter of last word in words mode
         if (
           mode === "words" &&
           currentWordIdx === wordLimit - 1 &&
@@ -411,7 +449,6 @@ export default function TypingSpeedPage() {
           finishGame();
         }
       } else {
-        // Extra letters beyond word length (max 4 extra)
         const currentExtras = currentWord.letters.filter((l) => l.state === "extra").length;
         if (currentExtras < 4) {
           setExtraChars((ex) => ex + 1);
@@ -453,6 +490,27 @@ export default function TypingSpeedPage() {
     }
   }
 
+  // Current Difficulty Object
+  const currentDiffOption = TYPING_DIFFICULTIES.find((d) => d.id === difficulty);
+  const currentDiffLabel = currentDiffOption
+    ? uiLang === "tr"
+      ? currentDiffOption.labelTr
+      : currentDiffOption.labelEn
+    : "Medium";
+
+  // Player Race Progress calculation
+  let playerProgress = 0;
+  if (mode === "words") {
+    playerProgress = Math.min(100, Math.round((currentWordIdx / wordLimit) * 100));
+  } else {
+    // In time mode, target words is roughly based on 40 WPM pace
+    const targetWords = Math.max(10, Math.round(40 * (timeLimit / 60)));
+    playerProgress = Math.min(100, Math.round((currentWordIdx / targetWords) * 100));
+  }
+
+  // Race outcome
+  const playerWon = finalWpm >= 40;
+
   return (
     <div className="page-container max-w-5xl mx-auto px-4 py-8">
       {/* Geri Dön Butonu */}
@@ -480,113 +538,223 @@ export default function TypingSpeedPage() {
         </p>
       </div>
 
-      {/* CONFIG BAR */}
-      <div
-        className={`flex flex-wrap items-center justify-center gap-2 sm:gap-4 p-2 sm:p-3 rounded-2xl bg-card/70 border border-border/70 backdrop-blur-md mb-8 transition-opacity duration-300 ${
-          isRunning ? "opacity-30 pointer-events-none" : "opacity-100"
-        }`}
-      >
-        {/* Mode Selector */}
-        <div className="flex items-center gap-1 bg-secondary/80 p-1 rounded-xl">
+      {/* BÖLÜM A: MONKEYTYPE ÜST MENÜSÜ (HEADER) */}
+      <div className="flex items-center justify-center mb-4">
+        <div
+          className={`inline-flex flex-wrap items-center justify-center gap-2 sm:gap-3 px-4 py-2 rounded-xl bg-card/80 dark:bg-card/60 border border-border/70 text-xs font-mono text-muted-foreground shadow-sm transition-opacity duration-300 ${
+            isRunning ? "opacity-30 pointer-events-none" : "opacity-100"
+          }`}
+        >
+          {/* Mode Selector */}
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("time");
+                resetGame();
+              }}
+              className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                mode === "time"
+                  ? "text-primary font-bold bg-primary/10"
+                  : "hover:text-foreground"
+              }`}
+            >
+              time
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("words");
+                resetGame();
+              }}
+              className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                mode === "words"
+                  ? "text-primary font-bold bg-primary/10"
+                  : "hover:text-foreground"
+              }`}
+            >
+              words
+            </button>
+          </div>
+
+          {/* Ayırıcı */}
+          <span className="text-border/80 select-none">|</span>
+
+          {/* Options (Time or Words limits) */}
+          {mode === "time" ? (
+            <div className="flex items-center gap-1">
+              {[15, 30, 60, 120].map((sec) => (
+                <button
+                  key={sec}
+                  type="button"
+                  onClick={() => {
+                    setTimeLimit(sec);
+                    resetGame();
+                  }}
+                  className={`px-2 py-1 rounded-md transition-colors cursor-pointer ${
+                    timeLimit === sec
+                      ? "text-primary font-bold bg-primary/10"
+                      : "hover:text-foreground"
+                  }`}
+                >
+                  {sec}
+                </button>
+              ))}
+            </div>
+          ) : (
+            <div className="flex items-center gap-1">
+              {[10, 25, 50, 100].map((w) => (
+                <button
+                  key={w}
+                  type="button"
+                  onClick={() => {
+                    setWordLimit(w);
+                    resetGame();
+                  }}
+                  className={`px-2 py-1 rounded-md transition-colors cursor-pointer ${
+                    wordLimit === w
+                      ? "text-primary font-bold bg-primary/10"
+                      : "hover:text-foreground"
+                  }`}
+                >
+                  {w}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Ayırıcı */}
+          <span className="text-border/80 select-none">|</span>
+
+          {/* punct & numbers toggle butonları */}
+          <div className="flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => {
+                setPunctuation((prev) => !prev);
+                resetGame();
+              }}
+              className={`px-2 py-1 rounded-md transition-colors cursor-pointer ${
+                punctuation
+                  ? "text-primary font-bold bg-primary/10"
+                  : "hover:text-foreground"
+              }`}
+              title="Toggle Punctuation"
+            >
+              punct
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setNumbers((prev) => !prev);
+                resetGame();
+              }}
+              className={`px-2 py-1 rounded-md transition-colors cursor-pointer ${
+                numbers
+                  ? "text-primary font-bold bg-primary/10"
+                  : "hover:text-foreground"
+              }`}
+              title="Toggle Numbers"
+            >
+              numbers
+            </button>
+          </div>
+
+          {/* Ayırıcı */}
+          <span className="text-border/80 select-none">|</span>
+
+          {/* Sound Audio Toggle */}
           <button
             type="button"
-            onClick={() => {
-              setMode("time");
-              resetGame();
-            }}
-            className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-              mode === "time" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+            onClick={() => setSoundEnabled((prev) => !prev)}
+            className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+              soundEnabled
+                ? "text-primary hover:text-primary/80"
+                : "text-muted-foreground/50 hover:text-muted-foreground"
             }`}
+            title={soundEnabled ? "Sound: On" : "Sound: Off"}
           >
-            <Clock size={13} />
-            {t.typingTime}
+            {soundEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
           </button>
+
+          {/* Ayırıcı */}
+          <span className="text-border/80 select-none">|</span>
+
+          {/* Race Modu Toggle Butonu */}
           <button
             type="button"
             onClick={() => {
-              setMode("words");
+              setIsRaceMode((prev) => !prev);
               resetGame();
             }}
-            className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer ${
-              mode === "words" ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+            className={`px-2.5 py-1 rounded-md flex items-center gap-1.5 transition-all cursor-pointer font-semibold ${
+              isRaceMode
+                ? "bg-amber-500/20 text-amber-500 border border-amber-500/40 shadow-sm"
+                : "hover:text-foreground"
             }`}
+            title="Toggle Race Mode"
           >
-            <FileText size={13} />
-            {t.typingWords}
+            <Flag size={13} />
+            <span>{t.typingRace || "Race"}</span>
           </button>
         </div>
+      </div>
 
-        <div className="w-px h-5 bg-border/80 hidden sm:block" />
-
-        {/* Time / Words limits */}
-        {mode === "time" ? (
-          <div className="flex items-center gap-1">
-            {[15, 30, 60].map((sec) => (
-              <button
-                key={sec}
-                type="button"
-                onClick={() => {
-                  setTimeLimit(sec);
-                  resetGame();
-                }}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-                  timeLimit === sec
-                    ? "bg-secondary text-foreground ring-1 ring-primary/40 font-bold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {sec}s
-              </button>
-            ))}
-          </div>
-        ) : (
-          <div className="flex items-center gap-1">
-            {[10, 25, 50, 100].map((w) => (
-              <button
-                key={w}
-                type="button"
-                onClick={() => {
-                  setWordLimit(w);
-                  resetGame();
-                }}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${
-                  wordLimit === w
-                    ? "bg-secondary text-foreground ring-1 ring-primary/40 font-bold"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                {w}
-              </button>
-            ))}
-          </div>
-        )}
-
-        <div className="w-px h-5 bg-border/80 hidden sm:block" />
-
-        {/* Sound Toggle */}
+      {/* BÖLÜM B: ZORLUK (DIFFICULTY) SEÇİCİ ETİKETİ */}
+      <div className="flex justify-center mb-5">
         <button
           type="button"
-          onClick={() => setSoundEnabled((prev) => !prev)}
-          className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
-            soundEnabled
-              ? "bg-primary/10 border-primary/30 text-primary"
-              : "border-border/60 text-muted-foreground hover:text-foreground"
-          }`}
-          title={soundEnabled ? "Mute" : "Unmute"}
+          onClick={() => setIsDifficultyModalOpen(true)}
+          className="inline-flex items-center gap-2 text-xs font-mono text-muted-foreground hover:text-primary transition-colors cursor-pointer px-3 py-1.5 rounded-lg hover:bg-secondary/60 border border-transparent hover:border-border/60"
+          title={uiLang === "tr" ? "Zorluk Seviyesini Değiştir" : "Change Difficulty"}
         >
-          {soundEnabled ? <Volume2 size={16} /> : <VolumeX size={16} />}
-        </button>
-
-        {/* Restart Button */}
-        <button
-          type="button"
-          onClick={resetGame}
-          className="p-1.5 rounded-lg border border-border/60 text-muted-foreground hover:text-foreground hover:bg-secondary/60 transition-colors cursor-pointer"
-          title={t.restartTest}
-        >
-          <RotateCcw size={16} />
+          <SlidersHorizontal size={14} className="opacity-70" />
+          <span className="font-semibold">{currentDiffLabel}</span>
         </button>
       </div>
+
+      {/* BÖLÜM C: RACE (YARIŞ) MODU İLERLEME ÇUBUKLARI */}
+      {isRaceMode && !isFinished && (
+        <div className="w-full max-w-3xl mx-auto mb-6 p-4 rounded-2xl bg-card/60 border border-border/70 backdrop-blur-sm space-y-3">
+          {/* Oyuncu İlerleme Çubuğu */}
+          <div>
+            <div className="flex items-center justify-between text-xs font-mono mb-1">
+              <span className="flex items-center gap-1.5 font-bold text-foreground">
+                <User size={13} className="text-primary" />
+                {uiLang === "tr" ? "Sen" : "You"}
+              </span>
+              <span className="text-primary font-bold">
+                {liveWpm} WPM ({playerProgress}%)
+              </span>
+            </div>
+            <div className="w-full h-2.5 bg-secondary/80 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary rounded-full transition-all duration-200"
+                style={{ width: `${playerProgress}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Hayalet (Ghost) İlerleme Çubuğu */}
+          <div>
+            <div className="flex items-center justify-between text-xs font-mono mb-1">
+              <span className="flex items-center gap-1.5 font-bold text-muted-foreground">
+                <Bot size={13} className="text-amber-500" />
+                {t.raceGhostSpeed}
+              </span>
+              <span className="text-amber-500 font-bold">
+                40 WPM ({ghostProgress}%)
+              </span>
+            </div>
+            <div className="w-full h-2.5 bg-secondary/80 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-amber-500/80 rounded-full transition-all duration-300"
+                style={{ width: `${ghostProgress}%` }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* GAME RUNNING AREA */}
       {!isFinished ? (
@@ -633,7 +801,6 @@ export default function TypingSpeedPage() {
               className="flex flex-wrap gap-x-3.5 gap-y-3 text-xl sm:text-2xl font-mono leading-relaxed select-none"
             >
               {words.map((w, wIdx) => {
-                const isCurrent = wIdx === currentWordIdx;
                 return (
                   <div
                     key={wIdx}
@@ -700,7 +867,34 @@ export default function TypingSpeedPage() {
         </div>
       ) : (
         /* RESULTS SCREEN (Monkeytype style) */
-        <Card className="p-8 sm:p-10 bg-card/80 border border-border/80 rounded-3xl shadow-2xl max-w-2xl mx-auto text-center space-y-8 animate-in fade-in zoom-in-95 duration-200">
+        <Card className="p-8 sm:p-10 bg-card/80 border border-border/80 rounded-3xl shadow-2xl max-w-2xl mx-auto text-center space-y-6 animate-in fade-in zoom-in-95 duration-200">
+          {/* Race Mode Victory / Defeat Feedback */}
+          {isRaceMode && (
+            <div
+              className={`p-4 rounded-2xl flex items-center justify-center gap-3 border ${
+                playerWon
+                  ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-500"
+                  : "bg-rose-500/15 border-rose-500/30 text-rose-500"
+              }`}
+            >
+              {playerWon ? <Trophy size={26} /> : <Flag size={26} />}
+              <div className="text-left">
+                <h3 className="text-lg font-bold">
+                  {playerWon ? t.raceYouWon : t.raceYouLost}
+                </h3>
+                <p className="text-xs opacity-90">
+                  {playerWon
+                    ? uiLang === "tr"
+                      ? `40 WPM hızındaki hayaleti geçtiniz (${finalWpm} WPM)!`
+                      : `You beat the 40 WPM ghost (${finalWpm} WPM)!`
+                    : uiLang === "tr"
+                    ? `Hayalet yarışı kazandı (Hedef: 40 WPM, Siz: ${finalWpm} WPM).`
+                    : `The ghost won the race (Target: 40 WPM, You: ${finalWpm} WPM).`}
+                </p>
+              </div>
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-6 pb-6 border-b border-border/60">
             <div>
               <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">
@@ -723,10 +917,10 @@ export default function TypingSpeedPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-left">
             <div className="p-3 rounded-xl bg-secondary/50 border border-border/50">
               <span className="text-[11px] uppercase tracking-wider text-muted-foreground block font-bold">
-                {uiLang === "tr" ? "Test Türü" : "Test Type"}
+                {t.typingDifficulty}
               </span>
-              <span className="text-base font-bold text-foreground font-mono mt-0.5 block">
-                {mode} {mode === "time" ? `${timeLimit}s` : wordLimit}
+              <span className="text-sm font-bold text-foreground font-mono mt-0.5 block">
+                {currentDiffLabel}
               </span>
             </div>
             <div className="p-3 rounded-xl bg-secondary/50 border border-border/50">
@@ -769,6 +963,69 @@ export default function TypingSpeedPage() {
             </span>
           </div>
         </Card>
+      )}
+
+      {/* BÖLÜM B: ZORLUK (DIFFICULTY) POPOVER / MODAL */}
+      {isDifficultyModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
+          onClick={() => setIsDifficultyModalOpen(false)}
+        >
+          <div
+            className="w-full max-w-sm rounded-2xl bg-card border border-border/80 shadow-2xl p-5 space-y-3"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between pb-2 border-b border-border/60">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal size={16} className="text-primary" />
+                <h3 className="text-sm font-bold text-foreground">
+                  {t.typingDifficulty}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsDifficultyModalOpen(false)}
+                className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Zorluk Seviyeleri Listesi (Arama Çubuğu KESİNLİKLE Yoktur) */}
+            <div className="space-y-1.5 pt-1">
+              {TYPING_DIFFICULTIES.map((opt) => {
+                const isSelected = difficulty === opt.id;
+                const title = uiLang === "tr" ? opt.labelTr : opt.labelEn;
+                const desc = uiLang === "tr" ? opt.descTr : opt.descEn;
+
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => {
+                      setDifficulty(opt.id);
+                      setIsDifficultyModalOpen(false);
+                      resetGame();
+                    }}
+                    className={`w-full text-left p-3 rounded-xl border transition-all flex items-center justify-between cursor-pointer ${
+                      isSelected
+                        ? "bg-primary/10 border-primary/40 text-primary font-bold shadow-sm"
+                        : "border-transparent hover:bg-secondary/70 text-foreground"
+                    }`}
+                  >
+                    <div>
+                      <div className="text-sm font-semibold">{title}</div>
+                      <div className="text-xs text-muted-foreground font-mono mt-0.5">
+                        {desc}
+                      </div>
+                    </div>
+                    {isSelected && <Check size={18} className="text-primary" />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

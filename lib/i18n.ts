@@ -324,6 +324,12 @@ export interface Messages {
   restartTest: string;
   clickToFocus: string;
   shiftEnterRestart: string;
+  typingDifficulty: string;
+  typingRace: string;
+  raceYouWon: string;
+  raceYouLost: string;
+  raceGhostSpeed: string;
+  racePlayerProgress: string;
 }
 
 /** Tüm çeviriler */
@@ -637,6 +643,12 @@ const messages: Record<Lang, Messages> = {
     restartTest: "Yeniden Başlat",
     clickToFocus: "Yazmaya başlamak için buraya dokunun",
     shiftEnterRestart: "Yeniden başlatmak için Shift + Enter",
+    typingDifficulty: "Zorluk",
+    typingRace: "Race",
+    raceYouWon: "Kazandınız!",
+    raceYouLost: "Kaybettiniz",
+    raceGhostSpeed: "Hayalet (40 WPM)",
+    racePlayerProgress: "İlerlemeniz",
   },
 
   en: {
@@ -948,6 +960,12 @@ const messages: Record<Lang, Messages> = {
     restartTest: "Restart Test",
     clickToFocus: "Click here to focus and type",
     shiftEnterRestart: "Shift + Enter to restart",
+    typingDifficulty: "Difficulty",
+    typingRace: "Race",
+    raceYouWon: "You Won!",
+    raceYouLost: "You Lost",
+    raceGhostSpeed: "Ghost (40 WPM)",
+    racePlayerProgress: "Your Progress",
   },
 };
 
