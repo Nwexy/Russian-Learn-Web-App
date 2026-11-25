@@ -712,16 +712,16 @@ export function SpeedTypeTest({
 
   const [raceScreen, setRaceScreen] = useState<RaceScreenState>("username");
   const [raceUsername, setRaceUsername] = useState<string>("Player");
-  const [raceLanguage, setRaceLanguage] = useState<string>(
-    languageData.some((l) => l.id === selectedLanguage) ? selectedLanguage : "russian_1k"
-  );
+  const [raceLanguage, setRaceLanguage] = useState<string>("russian");
   const [raceOpponent, setRaceOpponent] = useState<string>("Opponent");
   const [raceWords, setRaceWords] = useState<string[]>([]);
+  const raceWordsRef = useRef<string[]>([]);
   const [countdown, setCountdown] = useState<number | string>(3);
   const [isCountdownActive, setIsCountdownActive] = useState<boolean>(false);
   const [raceTimer, setRaceTimer] = useState<number>(60);
   const [racePlayerWpm, setRacePlayerWpm] = useState<number>(0);
   const [raceOpponentWpm, setRaceOpponentWpm] = useState<number>(0);
+  const [racePlayerProgress, setRacePlayerProgress] = useState<number>(0);
   const [raceOpponentProgress, setRaceOpponentProgress] = useState<number>(0);
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState<boolean>(false);
   const [isRaceFocused, setIsRaceFocused] = useState<boolean>(true);
@@ -843,6 +843,38 @@ export function SpeedTypeTest({
     []
   );
 
+  const calculateRaceProgress = useCallback(() => {
+    const words = raceWordsRef.current;
+    if (!words || words.length === 0) return 0;
+    const totalChars = words.reduce((acc, w) => acc + w.length + 1, 0) - 1;
+    if (totalChars <= 0) return 0;
+
+    const state = raceStateRef.current;
+    let typedChars = 0;
+    for (let i = 0; i < Math.min(state.wordIdx, words.length); i++) {
+      typedChars += words[i].length + 1;
+    }
+    typedChars += state.charIdx;
+    return Math.min(100, Math.max(0, Math.round((typedChars / totalChars) * 100)));
+  }, []);
+
+  const updateAndSendProgress = useCallback(
+    (forceSend = false) => {
+      const state = raceStateRef.current;
+      const sec = Math.max((Date.now() - state.startTime) / 1000, 1);
+      const curWpm = Math.round((state.correct + state.wordIdx) / 4.8 / (sec / 60));
+      setRacePlayerWpm(curWpm);
+
+      const curProg = calculateRaceProgress();
+      setRacePlayerProgress(curProg);
+
+      if (forceSend || state.total % 3 === 0 || curProg === 100) {
+        sendLiveProgress(curWpm, curProg, state.charIdx);
+      }
+    },
+    [calculateRaceProgress, sendLiveProgress]
+  );
+
   const endRace = useCallback(() => {
     const state = raceStateRef.current;
     if (state.intervalId) {
@@ -861,7 +893,11 @@ export function SpeedTypeTest({
     setRacePlayerResult((prev) => ({ ...prev, ...res }));
     setIsWaitingForOpponent(true);
 
+    const curProg = calculateRaceProgress();
+    setRacePlayerProgress(curProg);
+
     if (raceIdRef.current && playerIdRef.current) {
+      sendLiveProgress(pWpm, curProg, state.charIdx);
       fetch("/api/race", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -873,7 +909,7 @@ export function SpeedTypeTest({
         }),
       }).catch(() => {});
     }
-  }, []);
+  }, [calculateRaceProgress, sendLiveProgress]);
 
   const startRace = useCallback(() => {
     const state = raceStateRef.current;
@@ -888,6 +924,8 @@ export function SpeedTypeTest({
     state.playerDone = false;
     setRaceTimer(60);
     setRacePlayerWpm(0);
+    setRacePlayerProgress(0);
+    setRaceOpponentProgress(0);
 
     if (raceInputRef.current) {
       raceInputRef.current.disabled = false;
@@ -904,16 +942,7 @@ export function SpeedTypeTest({
     state.intervalId = setInterval(() => {
       state.timer--;
       setRaceTimer(state.timer);
-      const sec = (Date.now() - state.startTime) / 1000;
-      if (sec >= 1) {
-        const curWpm = Math.round((state.correct + state.wordIdx) / 4.8 / (sec / 60));
-        setRacePlayerWpm(curWpm);
-        const curProg = Math.min(
-          Math.round((state.wordIdx / Math.max(raceWords.length, 1)) * 100),
-          100
-        );
-        sendLiveProgress(curWpm, curProg, state.charIdx);
-      }
+      updateAndSendProgress(true);
       if (state.timer <= 0) {
         endRace();
       }
@@ -922,7 +951,7 @@ export function SpeedTypeTest({
     requestAnimationFrame(() => {
       updateRaceCaret();
     });
-  }, [raceWords.length, endRace, sendLiveProgress, updateRaceCaret]);
+  }, [endRace, updateAndSendProgress, updateRaceCaret]);
 
   const startRaceCountdown = useCallback(() => {
     setRaceScreen("race");
@@ -967,10 +996,13 @@ export function SpeedTypeTest({
             setRaceScreen("waiting");
           } else if (data.type === "MatchFound") {
             raceIdRef.current = data.raceId;
+            raceWordsRef.current = data.words;
             setRaceOpponent(data.opponentName);
             setRaceWords(data.words);
+            setRacePlayerProgress(0);
             setRaceOpponentProgress(0);
             setRaceOpponentWpm(0);
+            setRacePlayerWpm(0);
             startRaceCountdown();
           } else if (data.type === "OpponentProgress") {
             setRaceOpponentWpm(data.wpm);
@@ -1072,9 +1104,10 @@ export function SpeedTypeTest({
         el.className = "letter";
       }
       playSound(600, 0.05);
+      updateAndSendProgress(false);
     }
     updateRaceCaret();
-  }, [raceWords, playSound, updateRaceCaret]);
+  }, [raceWords, playSound, updateRaceCaret, updateAndSendProgress]);
 
   const handleRaceSpace = useCallback(() => {
     const state = raceStateRef.current;
@@ -1096,13 +1129,7 @@ export function SpeedTypeTest({
     state.charIdx = 0;
     playSound(600, 0.05);
 
-    const sec = Math.max((Date.now() - state.startTime) / 1000, 1);
-    const curWpm = Math.round((state.correct + state.wordIdx) / 4.8 / (sec / 60));
-    const curProg = Math.min(
-      Math.round((state.wordIdx / Math.max(raceWords.length, 1)) * 100),
-      100
-    );
-    sendLiveProgress(curWpm, curProg, state.charIdx);
+    updateAndSendProgress(true);
 
     if (state.wordIdx >= raceWords.length) {
       state.playerDone = true;
@@ -1110,7 +1137,7 @@ export function SpeedTypeTest({
       return;
     }
     updateRaceCaret();
-  }, [raceWords, playSound, endRace, updateRaceCaret, sendLiveProgress]);
+  }, [raceWords, playSound, endRace, updateRaceCaret, updateAndSendProgress]);
 
   const handleRaceChar = useCallback(
     (char: string) => {
@@ -1138,6 +1165,8 @@ export function SpeedTypeTest({
         state.total++;
         state.charIdx++;
 
+        updateAndSendProgress(false);
+
         if (state.wordIdx === raceWords.length - 1 && state.charIdx === currentWordStr.length) {
           state.playerDone = true;
           endRace();
@@ -1146,7 +1175,7 @@ export function SpeedTypeTest({
       }
       updateRaceCaret();
     },
-    [raceWords, playSound, endRace, updateRaceCaret]
+    [raceWords, playSound, endRace, updateRaceCaret, updateAndSendProgress]
   );
 
   const handleRaceKeyDown = useCallback(
@@ -1597,12 +1626,8 @@ export function SpeedTypeTest({
                         onChange={(e) => setRaceLanguage(e.target.value)}
                         className="custom-select-trigger w-full cursor-pointer bg-[#2a2d3a] border-2 border-[#3a3d4a] rounded-xl text-white outline-none"
                       >
-                        {languageData.map((l) => (
-                          <option key={l.id} value={l.id}>
-                            {l.id.startsWith("russian") ? "RU " : "EN "}
-                            {l.name}
-                          </option>
-                        ))}
+                        <option value="russian">RU Russian</option>
+                        <option value="english">EN English</option>
                       </select>
                     </div>
                   </div>
@@ -1683,6 +1708,20 @@ export function SpeedTypeTest({
                   <div className="race-stats">
                     <span className="race-timer-stat">{raceTimer}s</span>
                     <span className="race-wpm-stat">{racePlayerWpm} WPM</span>
+                  </div>
+                </div>
+
+                {/* Player Live Progress Bar */}
+                <div className="player-progress-container mb-3 px-1">
+                  <div className="flex justify-between items-center text-xs text-muted-foreground mb-1 font-mono">
+                    <span className="font-semibold text-[#8c9eff]">Your Progress</span>
+                    <span className="font-bold text-[#8c9eff]">{racePlayerProgress}%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div
+                      className="progress-fill"
+                      style={{ width: `${racePlayerProgress}%` }}
+                    />
                   </div>
                 </div>
 

@@ -4,6 +4,9 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- Yaris (Race) modunda progress-fill cubugunun aniden %100 olma hatasi giderildi; kat edilen mesafeye gore harf ve kelime bazinda kademeli olarak artmasi saglandi.
+- Yaris (Race) modunda hem oyuncu hem de rakip paneline canli progress-bar eklendi.
+- Yaris (Race) modundaki dil secim listesinden kelime sayisi seviyeleri (1k, 5k, 10k) kaldirildi, sadece Rusca ve Ingilizce secenekleri birakildi.
 - SpeedType yazma alaninda ve Yaris (Race) modunda imlecin (caret) yukari kayma hatasi giderildi, kelimelerle ve harflerle dikey/yatay tam hizalamasi saglandi.
 - Yaris (Race) konteynerinin flex dikey ortalama yapisi duzeltilerek kelimelerin kaymasi onlendi, yaris esnasinda satir kaydirma mantigi senkronize edildi.
 - Odaklanilmamis (unfocused) blur durumundaki "Click here to focus" bildirim kapsulu MonkeyType stiliyle uyarlandi.

@@ -46,7 +46,8 @@ if (!globalThis.__raceManager) {
 const manager = globalThis.__raceManager;
 
 function generateWordList(langId: string): string[] {
-  const dict = languageData.find((l) => l.id === langId) || languageData[0];
+  const isEn = langId.toLowerCase().startsWith("en");
+  const dict = languageData.find((l) => (isEn ? l.id.startsWith("english") : l.id.startsWith("russian"))) || languageData[0];
   const source = dict.words;
   const count = 70;
   const list: string[] = [];
@@ -115,7 +116,7 @@ export function joinQueue(playerId: string, username: string, language: string) 
     );
   }
 
-  const langKey = language.toLowerCase();
+  const langKey = language.toLowerCase().startsWith("en") ? "english" : "russian";
   let queue = manager.queues.get(langKey);
   if (!queue) {
     queue = [];
