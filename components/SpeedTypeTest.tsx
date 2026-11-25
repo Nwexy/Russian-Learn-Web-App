@@ -38,16 +38,11 @@ type Mode = "time" | "words";
 type TimeOption = 15 | 30 | 60 | 120;
 type WordsOption = 10 | 25 | 50 | 100;
 type ActiveView = "solo" | "race";
-type RaceScreenState = "username" | "waiting" | "race" | "results";
-
-const OPPONENT_NAMES = [
-  "Alexey", "Daria", "Mikhail", "Anna", "Vladimir",
-  "Sofia", "Dmitry", "Elena", "Ivan", "Polina", "Nikita", "Olga"
-];
+type RaceScreenState = "username" | "race" | "results";
 
 export function SpeedTypeTest({
   onExit,
-  initialLanguage = "russian",
+  initialLanguage = "russian_1k",
   items,
   uiLang,
 }: SpeedTypeTestProps) {
@@ -58,7 +53,9 @@ export function SpeedTypeTest({
   const [punctuation, setPunctuation] = useState<boolean>(false);
   const [numbers, setNumbers] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>(initialLanguage);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(
+    languageData.some((l) => l.id === initialLanguage) ? initialLanguage : "russian_1k"
+  );
 
   // View state
   const [activeView, setActiveView] = useState<ActiveView>("solo");
@@ -83,6 +80,7 @@ export function SpeedTypeTest({
   const [finalConsistency, setFinalConsistency] = useState<number>(0);
 
   // DOM refs
+  const typingAreaRef = useRef<HTMLDivElement>(null);
   const wordsElRef = useRef<HTMLDivElement>(null);
   const inputElRef = useRef<HTMLInputElement>(null);
   const caretElRef = useRef<HTMLDivElement>(null);
@@ -90,7 +88,10 @@ export function SpeedTypeTest({
   const chartInstanceRef = useRef<Chart | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  // Mutable typing game progress refs (to prevent re-rendering entire layout on every keystroke)
+  // Composition flag for IME / mnemonic keyboards
+  const isComposingRef = useRef<boolean>(false);
+
+  // Mutable typing game progress refs
   const typingStateRef = useRef({
     wordIdx: 0,
     charIdx: 0,
@@ -113,7 +114,9 @@ export function SpeedTypeTest({
     if (!soundEnabled) return;
     try {
       if (!audioCtxRef.current) {
-        const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        const AudioContextClass =
+          window.AudioContext ||
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
         audioCtxRef.current = new AudioContextClass();
       }
       const ctx = audioCtxRef.current;
@@ -137,7 +140,7 @@ export function SpeedTypeTest({
   }, [soundEnabled]);
 
   /* ==========================================================================
-     LINE HEIGHT & CARET CALCULATION
+     LINE HEIGHT & CARET CALCULATION (Precise bounding box alignment)
      ========================================================================== */
   const getLineHeight = useCallback(() => {
     const wordsEl = wordsElRef.current;
@@ -153,9 +156,10 @@ export function SpeedTypeTest({
   }, []);
 
   const updateCaret = useCallback(() => {
+    const areaEl = typingAreaRef.current;
     const wordsEl = wordsElRef.current;
     const caretEl = caretElRef.current;
-    if (!wordsEl || !caretEl) return;
+    if (!areaEl || !wordsEl || !caretEl) return;
 
     const { wordIdx, charIdx } = typingStateRef.current;
     const wordEl = wordsEl.children[wordIdx] as HTMLElement;
@@ -167,54 +171,62 @@ export function SpeedTypeTest({
       const currentLine = Math.round(currentWordTop / lineHeight);
       const targetScrollLine = Math.max(0, currentLine - 1);
       const targetOffset = targetScrollLine * lineHeight;
+      wordsEl.style.transform = `translateY(-${targetOffset}px)`;
 
+      const areaRect = areaEl.getBoundingClientRect();
       const letterEl = wordEl.children[charIdx] as HTMLElement;
       const caretHeight = caretEl.offsetHeight || 28;
-      let top: number, left: number;
+      let top = 0;
+      let left = 0;
 
       if (letterEl) {
-        top = wordEl.offsetTop + letterEl.offsetTop + (letterEl.offsetHeight - caretHeight) / 2;
-        left = wordEl.offsetLeft + letterEl.offsetLeft;
+        const letterRect = letterEl.getBoundingClientRect();
+        left = letterRect.left - areaRect.left;
+        top = letterRect.top - areaRect.top + (letterRect.height - caretHeight) / 2;
       } else {
         const last = wordEl.lastElementChild as HTMLElement;
         if (last) {
-          top = wordEl.offsetTop + last.offsetTop + (last.offsetHeight - caretHeight) / 2;
-          left = wordEl.offsetLeft + last.offsetLeft + last.offsetWidth;
+          const lastRect = last.getBoundingClientRect();
+          left = lastRect.right - areaRect.left;
+          top = lastRect.top - areaRect.top + (lastRect.height - caretHeight) / 2;
         } else {
-          top = wordEl.offsetTop + (wordEl.offsetHeight - caretHeight) / 2;
-          left = wordEl.offsetLeft;
+          const wordRect = wordEl.getBoundingClientRect();
+          left = wordRect.left - areaRect.left;
+          top = wordRect.top - areaRect.top + (wordRect.height - caretHeight) / 2;
         }
       }
 
-      caretEl.style.top = `${top}px`;
+      caretEl.style.transform = "none";
       caretEl.style.left = `${left}px`;
-      wordsEl.style.transform = `translateY(-${targetOffset}px)`;
-      caretEl.style.transform = `translateY(-${targetOffset}px)`;
+      caretEl.style.top = `${top}px`;
     });
   }, [getLineHeight]);
 
   /* ==========================================================================
      WORD GENERATION & RENDERING
      ========================================================================== */
-  const generateWords = useCallback((lang: string, m: Mode, punc: boolean, num: boolean, wCount: number) => {
-    const dict = languageData.find((l) => l.id === lang) || languageData[0];
-    const source = dict.words;
-    const count = m === "words" ? wCount : 100;
-    const generated: string[] = [];
+  const generateWords = useCallback(
+    (lang: string, m: Mode, punc: boolean, num: boolean, wCount: number) => {
+      const dict = languageData.find((l) => l.id === lang) || languageData[0];
+      const source = dict.words;
+      const count = m === "words" ? wCount : 100;
+      const generated: string[] = [];
 
-    for (let i = 0; i < count; i++) {
-      let w = source[Math.floor(Math.random() * source.length)];
-      if (punc && Math.random() < 0.2) {
-        const p = ".,:;?!-"[Math.floor(Math.random() * 7)];
-        w = Math.random() < 0.5 ? w + p : p + w;
+      for (let i = 0; i < count; i++) {
+        let w = source[Math.floor(Math.random() * source.length)];
+        if (punc && Math.random() < 0.2) {
+          const p = ".,:;?!-"[Math.floor(Math.random() * 7)];
+          w = Math.random() < 0.5 ? w + p : p + w;
+        }
+        if (num && Math.random() < 0.1) {
+          w = String(Math.floor(Math.random() * 1000));
+        }
+        generated.push(w);
       }
-      if (num && Math.random() < 0.1) {
-        w = String(Math.floor(Math.random() * 1000));
-      }
-      generated.push(w);
-    }
-    return generated;
-  }, []);
+      return generated;
+    },
+    []
+  );
 
   const addWords = useCallback(() => {
     const dict = languageData.find((l) => l.id === selectedLanguage) || languageData[0];
@@ -351,6 +363,7 @@ export function SpeedTypeTest({
 
   const startGame = useCallback(() => {
     const state = typingStateRef.current;
+    if (state.running) return;
     state.running = true;
     state.startTime = Date.now();
     state.timer = timeSetting;
@@ -406,7 +419,7 @@ export function SpeedTypeTest({
       wordsElRef.current.style.transform = "translateY(0px)";
     }
     if (caretElRef.current) {
-      caretElRef.current.style.transform = "translateY(0px)";
+      caretElRef.current.style.transform = "none";
     }
 
     requestAnimationFrame(() => {
@@ -424,31 +437,39 @@ export function SpeedTypeTest({
   }, [activeView, init]);
 
   /* ==========================================================================
-     KEY HANDLING
+     KEY & COMPOSITION HANDLING (SOLO MODE)
+     Solves the Cyrillic mnemonic/composition bug (ы, с, й, ц, and consecutive ый)
      ========================================================================== */
-  const handleKey = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    const state = typingStateRef.current;
-    if (!isFocused) return;
+  const handleSoloBackspace = useCallback(
+    (isCtrl: boolean) => {
+      const state = typingStateRef.current;
+      const wordsEl = wordsElRef.current;
+      if (!wordsEl) return;
 
-    if (!state.running && e.key.length === 1) {
-      startGame();
-    }
+      const currentWordStr = gameWords[state.wordIdx];
+      const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
+      if (!wordEl || !currentWordStr) return;
 
-    const wordsEl = wordsElRef.current;
-    if (!wordsEl) return;
-
-    const currentWordStr = gameWords[state.wordIdx];
-    const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
-    if (!wordEl || !currentWordStr) return;
-
-    if (e.key === "Backspace") {
-      const isCtrl = e.ctrlKey;
       if (state.charIdx > 0) {
         if (isCtrl) {
-          // Ctrl + Backspace: Delete whole word up to start
           while (state.charIdx > 0) {
             state.charIdx--;
             const el = wordEl.children[state.charIdx] as HTMLElement;
+            if (el) {
+              if (el.classList.contains("correct")) state.correct--;
+              if (el.classList.contains("incorrect")) state.incorrect--;
+              if (el.classList.contains("extra")) {
+                el.remove();
+                state.extra--;
+              } else {
+                el.className = "letter";
+              }
+            }
+          }
+        } else {
+          state.charIdx--;
+          const el = wordEl.children[state.charIdx] as HTMLElement;
+          if (el) {
             if (el.classList.contains("correct")) state.correct--;
             if (el.classList.contains("incorrect")) state.incorrect--;
             if (el.classList.contains("extra")) {
@@ -458,67 +479,85 @@ export function SpeedTypeTest({
               el.className = "letter";
             }
           }
-        } else {
-          // Single backspace
-          state.charIdx--;
-          const el = wordEl.children[state.charIdx] as HTMLElement;
-          if (el.classList.contains("correct")) state.correct--;
-          if (el.classList.contains("incorrect")) state.incorrect--;
-          if (el.classList.contains("extra")) {
-            el.remove();
-            state.extra--;
-          } else {
-            el.className = "letter";
-          }
         }
         playSound(600, 0.05);
       } else if (state.wordIdx > 0) {
-        // Backspace to previous word if previous word has error
         const prevWordEl = wordsEl.children[state.wordIdx - 1] as HTMLElement;
         if (prevWordEl && prevWordEl.classList.contains("error")) {
           state.wordIdx--;
           prevWordEl.classList.remove("error");
           state.charIdx = prevWordEl.children.length;
-          updateCaret();
         }
       }
-    } else if (e.key === " ") {
-      e.preventDefault();
+      updateCaret();
+    },
+    [gameWords, playSound, updateCaret]
+  );
 
-      const hasErrors = Array.from(wordEl.children).some(
-        (c) => c.classList.contains("incorrect") || c.classList.contains("extra")
-      );
+  const handleSoloSpace = useCallback(() => {
+    const state = typingStateRef.current;
+    if (!state.running) {
+      startGame();
+    }
+    const wordsEl = wordsElRef.current;
+    if (!wordsEl) return;
 
-      for (let i = state.charIdx; i < currentWordStr.length; i++) {
-        const letterEl = wordEl.children[i] as HTMLElement;
-        if (letterEl) {
-          letterEl.classList.add("incorrect");
-          state.missed++;
-        }
+    const currentWordStr = gameWords[state.wordIdx];
+    const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
+    if (!wordEl || !currentWordStr) return;
+
+    // Do not skip words with empty space
+    if (state.charIdx === 0) return;
+
+    const hasErrors = Array.from(wordEl.children).some(
+      (c) => c.classList.contains("incorrect") || c.classList.contains("extra")
+    );
+
+    for (let i = state.charIdx; i < currentWordStr.length; i++) {
+      const letterEl = wordEl.children[i] as HTMLElement;
+      if (letterEl) {
+        letterEl.classList.add("incorrect");
+        state.missed++;
       }
+    }
 
-      if (hasErrors || state.charIdx < currentWordStr.length) {
-        wordEl.classList.add("error");
+    if (hasErrors || state.charIdx < currentWordStr.length) {
+      wordEl.classList.add("error");
+    }
+
+    state.wordIdx++;
+    state.charIdx = 0;
+    playSound(600, 0.05);
+
+    if (mode === "words" && state.wordIdx >= wordsSetting) {
+      endGame();
+      return;
+    }
+
+    if (mode === "time" && state.wordIdx > gameWords.length - 20) {
+      addWords();
+    }
+    updateCaret();
+  }, [gameWords, mode, wordsSetting, startGame, playSound, endGame, addWords, updateCaret]);
+
+  const handleSoloChar = useCallback(
+    (char: string) => {
+      const state = typingStateRef.current;
+      if (!state.running) {
+        startGame();
       }
+      const wordsEl = wordsElRef.current;
+      if (!wordsEl) return;
 
-      state.wordIdx++;
-      state.charIdx = 0;
-      playSound(600, 0.05);
+      const currentWordStr = gameWords[state.wordIdx];
+      const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
+      if (!wordEl || !currentWordStr) return;
 
-      if (mode === "words" && state.wordIdx >= wordsSetting) {
-        endGame();
-        return;
-      }
-
-      if (mode === "time" && state.wordIdx > gameWords.length - 20) {
-        addWords();
-      }
-    } else if (e.key.length === 1) {
       const target = currentWordStr[state.charIdx];
       const el = wordEl.children[state.charIdx] as HTMLElement;
 
       if (el) {
-        if (e.key === target) {
+        if (char === target) {
           el.classList.add("correct");
           state.correct++;
           playSound(600, 0.05);
@@ -530,17 +569,20 @@ export function SpeedTypeTest({
         state.total++;
         state.charIdx++;
 
-        if (mode === "words" && state.wordIdx === wordsSetting - 1 && state.charIdx === currentWordStr.length) {
+        if (
+          mode === "words" &&
+          state.wordIdx === wordsSetting - 1 &&
+          state.charIdx === currentWordStr.length
+        ) {
           endGame();
           return;
         }
       } else {
-        // Max 1 extra character limit
         const currentExtras = wordEl.querySelectorAll(".extra").length;
-        if (currentExtras < 1) {
+        if (currentExtras < 10) {
           const span = document.createElement("span");
           span.className = "letter extra incorrect";
-          span.textContent = e.key;
+          span.textContent = char;
           wordEl.appendChild(span);
           state.charIdx++;
           state.extra++;
@@ -548,10 +590,72 @@ export function SpeedTypeTest({
           playSound(200, 0.1);
         }
       }
-    }
+      updateCaret();
+    },
+    [gameWords, mode, wordsSetting, startGame, playSound, endGame, updateCaret]
+  );
 
-    updateCaret();
-  }, [isFocused, gameWords, mode, wordsSetting, playSound, updateCaret, endGame, addWords, startGame]);
+  const handleSoloKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (isComposingRef.current || e.nativeEvent.isComposing) {
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        handleSoloBackspace(e.ctrlKey);
+      } else if (e.key === " ") {
+        e.preventDefault();
+        handleSoloSpace();
+        if (inputElRef.current) inputElRef.current.value = "";
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        init();
+      }
+    },
+    [handleSoloBackspace, handleSoloSpace, init]
+  );
+
+  const handleSoloInput = useCallback(
+    (e: React.FormEvent<HTMLInputElement>) => {
+      if (isComposingRef.current || (e.nativeEvent as InputEvent).isComposing) {
+        return;
+      }
+      const val = e.currentTarget.value;
+      if (!val) return;
+      for (const ch of val) {
+        if (ch === " ") {
+          handleSoloSpace();
+        } else {
+          handleSoloChar(ch);
+        }
+      }
+      e.currentTarget.value = "";
+    },
+    [handleSoloSpace, handleSoloChar]
+  );
+
+  const handleSoloCompositionStart = useCallback(() => {
+    isComposingRef.current = true;
+  }, []);
+
+  const handleSoloCompositionEnd = useCallback(
+    (e: React.CompositionEvent<HTMLInputElement>) => {
+      isComposingRef.current = false;
+      const text = e.data || e.currentTarget.value;
+      if (text) {
+        for (const ch of text) {
+          if (ch === " ") {
+            handleSoloSpace();
+          } else {
+            handleSoloChar(ch);
+          }
+        }
+      }
+      e.currentTarget.value = "";
+    },
+    [handleSoloSpace, handleSoloChar]
+  );
 
   // Global keyboard shortcuts (Shift+Enter or Escape to restart)
   useEffect(() => {
@@ -591,21 +695,19 @@ export function SpeedTypeTest({
   };
 
   /* ==========================================================================
-     RACE MODE LOGIC & SIMULATION
+     RACE MODE LOGIC (SOLO TIME TRIAL — AI BOTS REMOVED)
      ========================================================================== */
   const [raceScreen, setRaceScreen] = useState<RaceScreenState>("username");
   const [raceUsername, setRaceUsername] = useState<string>("Player");
-  const [raceLanguage, setRaceLanguage] = useState<string>("russian");
-  const [raceOpponent, setRaceOpponent] = useState<string>("Alexey");
+  const [raceLanguage, setRaceLanguage] = useState<string>(
+    languageData.some((l) => l.id === selectedLanguage) ? selectedLanguage : "russian_1k"
+  );
   const [raceWords, setRaceWords] = useState<string[]>([]);
   const [countdown, setCountdown] = useState<number | string>(3);
   const [isCountdownActive, setIsCountdownActive] = useState<boolean>(false);
   const [raceTimer, setRaceTimer] = useState<number>(60);
   const [racePlayerWpm, setRacePlayerWpm] = useState<number>(0);
-  const [raceOpponentWpm, setRaceOpponentWpm] = useState<number>(0);
-  const [raceOpponentProgress, setRaceOpponentProgress] = useState<number>(0);
-  const [racePlayerResult, setRacePlayerResult] = useState({ wpm: 0, acc: 0, raw: 0, isWinner: false, isTie: false });
-  const [raceOpponentResult, setRaceOpponentResult] = useState({ wpm: 0, acc: 0, raw: 0 });
+  const [racePlayerResult, setRacePlayerResult] = useState({ wpm: 0, acc: 0, raw: 0 });
 
   const raceStateRef = useRef({
     wordIdx: 0,
@@ -616,49 +718,62 @@ export function SpeedTypeTest({
     startTime: 0,
     timer: 60,
     intervalId: null as NodeJS.Timeout | null,
-    opponentIntervalId: null as NodeJS.Timeout | null,
     running: false,
     playerDone: false,
   });
 
+  const raceAreaRef = useRef<HTMLDivElement>(null);
   const raceWordsElRef = useRef<HTMLDivElement>(null);
   const raceCaretElRef = useRef<HTMLDivElement>(null);
   const raceInputRef = useRef<HTMLInputElement>(null);
+  const isRaceComposingRef = useRef<boolean>(false);
 
   const updateRaceCaret = useCallback(() => {
+    const areaEl = raceAreaRef.current;
     const wordsEl = raceWordsElRef.current;
     const caretEl = raceCaretElRef.current;
-    if (!wordsEl || !caretEl) return;
+    if (!areaEl || !wordsEl || !caretEl) return;
 
     const { wordIdx, charIdx } = raceStateRef.current;
     const wordEl = wordsEl.children[wordIdx] as HTMLElement;
     if (!wordEl) return;
 
     requestAnimationFrame(() => {
+      const areaRect = areaEl.getBoundingClientRect();
       const letterEl = wordEl.children[charIdx] as HTMLElement;
-      let top: number, left: number;
+      const caretHeight = caretEl.offsetHeight || 28;
+      let top = 0;
+      let left = 0;
+
       if (letterEl) {
-        top = wordEl.offsetTop + letterEl.offsetTop + (letterEl.offsetHeight - 26) / 2;
-        left = wordEl.offsetLeft + letterEl.offsetLeft;
+        const letterRect = letterEl.getBoundingClientRect();
+        left = letterRect.left - areaRect.left;
+        top = letterRect.top - areaRect.top + (letterRect.height - caretHeight) / 2;
       } else {
         const last = wordEl.lastElementChild as HTMLElement;
         if (last) {
-          top = wordEl.offsetTop + last.offsetTop + (last.offsetHeight - 26) / 2;
-          left = wordEl.offsetLeft + last.offsetLeft + last.offsetWidth;
+          const lastRect = last.getBoundingClientRect();
+          left = lastRect.right - areaRect.left;
+          top = lastRect.top - areaRect.top + (lastRect.height - caretHeight) / 2;
         } else {
-          top = wordEl.offsetTop + (wordEl.offsetHeight - 26) / 2;
-          left = wordEl.offsetLeft;
+          const wordRect = wordEl.getBoundingClientRect();
+          left = wordRect.left - areaRect.left;
+          top = wordRect.top - areaRect.top + (wordRect.height - caretHeight) / 2;
         }
       }
-      caretEl.style.top = `${top}px`;
+
+      caretEl.style.transform = "none";
       caretEl.style.left = `${left}px`;
+      caretEl.style.top = `${top}px`;
     });
   }, []);
 
   const endRace = useCallback(() => {
     const state = raceStateRef.current;
-    if (state.intervalId) clearInterval(state.intervalId);
-    if (state.opponentIntervalId) clearInterval(state.opponentIntervalId);
+    if (state.intervalId) {
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+    }
     state.running = false;
 
     const sec = Math.max((Date.now() - state.startTime) / 1000, 1);
@@ -667,15 +782,7 @@ export function SpeedTypeTest({
     const pRaw = Math.round((state.total + state.wordIdx) / 4.8 / min) || 0;
     const pAcc = state.total > 0 ? Math.round((state.correct / state.total) * 100) : 0;
 
-    const oppWpm = Math.floor(Math.random() * 25) + 40; // 40-65 realistic WPM
-    const oppRaw = oppWpm + Math.floor(Math.random() * 5);
-    const oppAcc = Math.floor(Math.random() * 8) + 92;
-
-    const isWinner = pWpm > oppWpm;
-    const isTie = pWpm === oppWpm;
-
-    setRacePlayerResult({ wpm: pWpm, acc: pAcc, raw: pRaw, isWinner, isTie });
-    setRaceOpponentResult({ wpm: oppWpm, acc: oppAcc, raw: oppRaw });
+    setRacePlayerResult({ wpm: pWpm, acc: pAcc, raw: pRaw });
     setRaceScreen("results");
   }, []);
 
@@ -691,15 +798,12 @@ export function SpeedTypeTest({
     state.total = 0;
     setRaceTimer(60);
     setRacePlayerWpm(0);
-    setRaceOpponentWpm(0);
-    setRaceOpponentProgress(0);
 
     if (raceInputRef.current) {
       raceInputRef.current.disabled = false;
       raceInputRef.current.focus();
     }
 
-    // Player timer interval
     state.intervalId = setInterval(() => {
       state.timer--;
       setRaceTimer(state.timer);
@@ -713,20 +817,10 @@ export function SpeedTypeTest({
       }
     }, 1000);
 
-    // Opponent simulation interval (human-like typing progression)
-    let oppProg = 0;
-    const oppSpeedFactor = (Math.random() * 0.4 + 0.8) / 60; // 48-72 wpm average target
-    state.opponentIntervalId = setInterval(() => {
-      if (!state.running) return;
-      oppProg += oppSpeedFactor * 1.5;
-      if (oppProg > 100) oppProg = 100;
-      setRaceOpponentProgress(Math.round(oppProg));
-      setRaceOpponentWpm(Math.round(oppProg * 0.58 + Math.random() * 3));
-      if (oppProg >= 100 && state.playerDone) {
-        endRace();
-      }
-    }, 100);
-  }, [endRace]);
+    requestAnimationFrame(() => {
+      updateRaceCaret();
+    });
+  }, [endRace, updateRaceCaret]);
 
   const startRaceCountdown = useCallback(() => {
     setRaceScreen("race");
@@ -749,25 +843,15 @@ export function SpeedTypeTest({
   }, [startRace]);
 
   const handleStartRacing = useCallback(() => {
-    setRaceScreen("waiting");
-    // Pick random opponent
-    const randomOpp = OPPONENT_NAMES[Math.floor(Math.random() * OPPONENT_NAMES.length)];
-    setRaceOpponent(randomOpp);
-
-    // Generate shared word list
-    const sharedWords = generateWords(raceLanguage, "words", false, false, 50);
-    setRaceWords(sharedWords);
-
-    // Simulate matchmaking delay
-    setTimeout(() => {
-      startRaceCountdown();
-    }, 1600);
+    // Generate words from the exact 6 language datasets
+    const words = generateWords(raceLanguage, "words", false, false, 80);
+    setRaceWords(words);
+    startRaceCountdown();
   }, [raceLanguage, generateWords, startRaceCountdown]);
 
-  const handleRaceKey = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleRaceBackspace = useCallback(() => {
     const state = raceStateRef.current;
     if (!state.running) return;
-
     const wordsEl = raceWordsElRef.current;
     if (!wordsEl) return;
 
@@ -775,35 +859,62 @@ export function SpeedTypeTest({
     const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
     if (!wordEl || !currentWordStr) return;
 
-    if (e.key === "Backspace") {
-      if (state.charIdx > 0) {
-        state.charIdx--;
-        const el = wordEl.children[state.charIdx] as HTMLElement;
+    if (state.charIdx > 0) {
+      state.charIdx--;
+      const el = wordEl.children[state.charIdx] as HTMLElement;
+      if (el) {
         if (el.classList.contains("correct")) state.correct--;
         if (el.classList.contains("incorrect")) state.incorrect--;
         el.className = "letter";
-        playSound(600, 0.05);
       }
-    } else if (e.key === " ") {
-      e.preventDefault();
-      for (let i = state.charIdx; i < currentWordStr.length; i++) {
-        const letterEl = wordEl.children[i] as HTMLElement;
-        if (letterEl) letterEl.classList.add("incorrect");
-      }
-      state.wordIdx++;
-      state.charIdx = 0;
       playSound(600, 0.05);
+    }
+    updateRaceCaret();
+  }, [raceWords, playSound, updateRaceCaret]);
 
-      if (state.wordIdx >= raceWords.length) {
-        state.playerDone = true;
-        endRace();
-        return;
-      }
-    } else if (e.key.length === 1) {
+  const handleRaceSpace = useCallback(() => {
+    const state = raceStateRef.current;
+    if (!state.running) return;
+    const wordsEl = raceWordsElRef.current;
+    if (!wordsEl) return;
+
+    const currentWordStr = raceWords[state.wordIdx];
+    const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
+    if (!wordEl || !currentWordStr) return;
+
+    if (state.charIdx === 0) return;
+
+    for (let i = state.charIdx; i < currentWordStr.length; i++) {
+      const letterEl = wordEl.children[i] as HTMLElement;
+      if (letterEl) letterEl.classList.add("incorrect");
+    }
+    state.wordIdx++;
+    state.charIdx = 0;
+    playSound(600, 0.05);
+
+    if (state.wordIdx >= raceWords.length) {
+      state.playerDone = true;
+      endRace();
+      return;
+    }
+    updateRaceCaret();
+  }, [raceWords, playSound, endRace, updateRaceCaret]);
+
+  const handleRaceChar = useCallback(
+    (char: string) => {
+      const state = raceStateRef.current;
+      if (!state.running) return;
+      const wordsEl = raceWordsElRef.current;
+      if (!wordsEl) return;
+
+      const currentWordStr = raceWords[state.wordIdx];
+      const wordEl = wordsEl.children[state.wordIdx] as HTMLElement;
+      if (!wordEl || !currentWordStr) return;
+
       const target = currentWordStr[state.charIdx];
       const el = wordEl.children[state.charIdx] as HTMLElement;
       if (el) {
-        if (e.key === target) {
+        if (char === target) {
           el.classList.add("correct");
           state.correct++;
           playSound(600, 0.05);
@@ -821,16 +932,72 @@ export function SpeedTypeTest({
           return;
         }
       }
-    }
+      updateRaceCaret();
+    },
+    [raceWords, playSound, endRace, updateRaceCaret]
+  );
 
-    updateRaceCaret();
-  }, [raceWords, playSound, updateRaceCaret, endRace]);
+  const handleRaceKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (isRaceComposingRef.current || e.nativeEvent.isComposing) return;
 
-  const currentLangObj = languageData.find((l) => l.id === selectedLanguage) || languageData[0];
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        handleRaceBackspace();
+      } else if (e.key === " ") {
+        e.preventDefault();
+        handleRaceSpace();
+        if (raceInputRef.current) raceInputRef.current.value = "";
+      }
+    },
+    [handleRaceBackspace, handleRaceSpace]
+  );
+
+  const handleRaceInput = useCallback(
+    (e: React.FormEvent<HTMLInputElement>) => {
+      if (isRaceComposingRef.current || (e.nativeEvent as InputEvent).isComposing) return;
+      const val = e.currentTarget.value;
+      if (!val) return;
+      for (const ch of val) {
+        if (ch === " ") {
+          handleRaceSpace();
+        } else {
+          handleRaceChar(ch);
+        }
+      }
+      e.currentTarget.value = "";
+    },
+    [handleRaceSpace, handleRaceChar]
+  );
+
+  const handleRaceCompositionStart = useCallback(() => {
+    isRaceComposingRef.current = true;
+  }, []);
+
+  const handleRaceCompositionEnd = useCallback(
+    (e: React.CompositionEvent<HTMLInputElement>) => {
+      isRaceComposingRef.current = false;
+      const text = e.data || e.currentTarget.value;
+      if (text) {
+        for (const ch of text) {
+          if (ch === " ") {
+            handleRaceSpace();
+          } else {
+            handleRaceChar(ch);
+          }
+        }
+      }
+      e.currentTarget.value = "";
+    },
+    [handleRaceSpace, handleRaceChar]
+  );
+
+  const currentLangObj =
+    languageData.find((l) => l.id === selectedLanguage) || languageData[0];
 
   return (
     <div className="w-full relative flex flex-col items-center">
-      {/* Optional Top Exit Button */}
+      {/* Top Exit Button */}
       {onExit && (
         <div className="w-full max-w-[1200px] flex justify-start px-6 pt-4">
           <button
@@ -838,7 +1005,14 @@ export function SpeedTypeTest({
             onClick={onExit}
             className="flex items-center gap-2 text-sm font-semibold text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors cursor-pointer bg-white/5 hover:bg-white/10 px-4 py-2 rounded-lg border border-white/10"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+            >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
             <span>Back</span>
@@ -954,7 +1128,14 @@ export function SpeedTypeTest({
                 onClick={() => setSoundEnabled(!soundEnabled)}
                 aria-label="Toggle Sound"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                   {soundEnabled ? (
                     <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -976,7 +1157,7 @@ export function SpeedTypeTest({
                   setRaceScreen("username");
                 }}
               >
-                🏁 Race
+                Race
               </button>
             </div>
           </div>
@@ -994,7 +1175,14 @@ export function SpeedTypeTest({
                   pointerEvents: isRunning ? "none" : "auto",
                 }}
               >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
                   <circle cx="12" cy="12" r="10" />
                   <line x1="2" y1="12" x2="22" y2="12" />
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
@@ -1002,13 +1190,13 @@ export function SpeedTypeTest({
                 <span id="langDisplay">{currentLangObj.name.toLowerCase()}</span>
               </div>
 
-              {/* Stats / Timer (Appears smoothly centered above words) */}
+              {/* Stats / Timer */}
               <div className={`stats-container ${isRunning ? "visible" : ""}`} id="live-stats">
                 <span id="timer">{timerDisplay}</span>
               </div>
 
               {/* Words Container */}
-              <div id="typing-area">
+              <div id="typing-area" ref={typingAreaRef}>
                 <div ref={caretElRef} id="caret" className="caret" />
                 <div ref={wordsElRef} id="words">
                   {gameWords.map((word, wIdx) => (
@@ -1028,7 +1216,7 @@ export function SpeedTypeTest({
                 </div>
               </div>
 
-              {/* Hidden Input to capture keystrokes cleanly */}
+              {/* Hidden Input to capture keystrokes cleanly (composition-safe) */}
               <input
                 ref={inputElRef}
                 type="text"
@@ -1036,10 +1224,10 @@ export function SpeedTypeTest({
                 autoComplete="off"
                 autoCapitalize="off"
                 spellCheck="false"
-                onKeyDown={handleKey}
-                onChange={() => {
-                  if (inputElRef.current) inputElRef.current.value = "";
-                }}
+                onKeyDown={handleSoloKeyDown}
+                onInput={handleSoloInput}
+                onCompositionStart={handleSoloCompositionStart}
+                onCompositionEnd={handleSoloCompositionEnd}
               />
 
               {/* Restart Button Below Typing Area */}
@@ -1054,7 +1242,16 @@ export function SpeedTypeTest({
                   }}
                   aria-label="Restart"
                 >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <path d="M21 2v6h-6" />
                     <path d="M3 12a9 9 0 0 1 15-6.7L21 8" />
                     <path d="M3 22v-6h6" />
@@ -1110,7 +1307,14 @@ export function SpeedTypeTest({
                   onClick={init}
                   aria-label="Restart Test"
                 >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <path d="M23 4v6h-6" />
                     <path d="M1 20v-6h6" />
                     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
@@ -1126,7 +1330,7 @@ export function SpeedTypeTest({
       )}
 
       {/* ====================================================================
-          VIEW 2: RACE MODE (ONLINE / OPPONENT SIMULATION)
+          VIEW 2: RACE MODE (SOLO SPEED TRIAL — NO AI BOTS)
           ==================================================================== */}
       {activeView === "race" && (
         <div id="race-wrapper">
@@ -1134,8 +1338,8 @@ export function SpeedTypeTest({
           {raceScreen === "username" && (
             <div className="race-screen active">
               <div className="username-container">
-                <h1 className="race-title">🏁 Online Race</h1>
-                <p className="race-subtitle">Enter your username to start racing</p>
+                <h1 className="race-title">Race Mode</h1>
+                <p className="race-subtitle">Enter your username and select a language</p>
 
                 <input
                   type="text"
@@ -1155,21 +1359,18 @@ export function SpeedTypeTest({
                         onChange={(e) => setRaceLanguage(e.target.value)}
                         className="custom-select-trigger w-full cursor-pointer bg-[#2a2d3a] border-2 border-[#3a3d4a] rounded-xl text-white outline-none"
                       >
-                        <option value="russian">🇷🇺 Russian</option>
-                        <option value="english">🇺🇸 English</option>
-                        <option value="turkish">🇹🇷 Turkish</option>
-                        <option value="python">🐍 Python</option>
-                        <option value="csharp">👾 C#</option>
+                        {languageData.map((l) => (
+                          <option key={l.id} value={l.id}>
+                            {l.id.startsWith("russian") ? "RU " : "EN "}
+                            {l.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  className="race-btn"
-                  onClick={handleStartRacing}
-                >
+                <button type="button" className="race-btn" onClick={handleStartRacing}>
                   Start Racing
                 </button>
 
@@ -1182,25 +1383,14 @@ export function SpeedTypeTest({
                     }}
                     className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors"
                   >
-                    ← Back to Solo Practice
+                    Back to Solo Practice
                   </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Screen 2: Waiting / Matchmaking */}
-          {raceScreen === "waiting" && (
-            <div className="race-screen active">
-              <div className="waiting-container">
-                <div className="loading-spinner" />
-                <h2 className="text-2xl font-bold mb-2">Finding opponent...</h2>
-                <p className="text-[#8a8b8c]">Please wait while we match you with another player</p>
-              </div>
-            </div>
-          )}
-
-          {/* Screen 3: Active Race */}
+          {/* Screen 2: Active Race */}
           {raceScreen === "race" && (
             <div id="race-screen" className="race-screen active">
               {/* Countdown Overlay */}
@@ -1214,17 +1404,24 @@ export function SpeedTypeTest({
               <div className={`player-panel ${isCountdownActive ? "blur-content" : ""}`}>
                 <div className="race-header">
                   <div className="race-info">
-                    <span className="text-white">{raceUsername || "You"}</span>
-                    <span className="vs-text">VS</span>
-                    <span className="text-[#8a8b8c]">{raceOpponent}</span>
+                    <span className="text-white font-bold text-lg">
+                      {raceUsername || "Player"}
+                    </span>
+                    <span className="race-mode-badge">60s Speed Trial</span>
                   </div>
                   <div className="race-stats">
-                    <span>{raceTimer}s</span>
-                    <span>{racePlayerWpm} WPM</span>
+                    <span className="race-timer-stat">{raceTimer}s</span>
+                    <span className="race-wpm-stat">{racePlayerWpm} WPM</span>
                   </div>
                 </div>
 
-                <div id="race-game-container">
+                <div
+                  id="race-game-container"
+                  ref={raceAreaRef}
+                  onClick={() => {
+                    if (raceInputRef.current) raceInputRef.current.focus();
+                  }}
+                >
                   <div ref={raceCaretElRef} id="race-caret" className="caret" />
                   <div ref={raceWordsElRef} id="race-words">
                     {raceWords.map((word, wIdx) => (
@@ -1244,46 +1441,26 @@ export function SpeedTypeTest({
                     autoComplete="off"
                     autoCapitalize="off"
                     spellCheck="false"
-                    onKeyDown={handleRaceKey}
-                    onChange={() => {
-                      if (raceInputRef.current) raceInputRef.current.value = "";
-                    }}
+                    onKeyDown={handleRaceKeyDown}
+                    onInput={handleRaceInput}
+                    onCompositionStart={handleRaceCompositionStart}
+                    onCompositionEnd={handleRaceCompositionEnd}
                   />
-                </div>
-              </div>
-
-              {/* Opponent Panel */}
-              <div className="opponent-panel">
-                <div className="opponent-header">
-                  <span>{raceOpponent}</span>
-                  <span>{raceOpponentWpm} WPM</span>
-                </div>
-                <div className="opponent-progress">
-                  <div className="progress-bar">
-                    <div
-                      className="progress-fill"
-                      style={{ width: `${raceOpponentProgress}%` }}
-                    />
-                  </div>
-                  <span id="opp-progress-text">{raceOpponentProgress}%</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Screen 4: Race Results */}
+          {/* Screen 3: Race Results */}
           {raceScreen === "results" && (
             <div className="race-screen active">
               <h1 className="results-title">Race Results</h1>
 
-              <div className="results-container">
-                {/* Your Results */}
-                <div className="result-panel your-result">
+              <div className="results-container flex justify-center max-w-md mx-auto">
+                <div className="result-panel your-result w-full">
                   <div className="result-header">
-                    <h2>{raceUsername || "You"}</h2>
-                    <div className={`result-badge ${racePlayerResult.isWinner ? "winner" : racePlayerResult.isTie ? "tie" : "loser"}`}>
-                      {racePlayerResult.isWinner ? "WINNER" : racePlayerResult.isTie ? "TIE" : "LOSER"}
-                    </div>
+                    <h2>{raceUsername || "Player"}</h2>
+                    <div className="result-badge winner">COMPLETED</div>
                   </div>
                   <div className="result-stats">
                     <div className="stat">
@@ -1298,35 +1475,15 @@ export function SpeedTypeTest({
                       <span className="stat-label">Raw</span>
                       <span className="stat-value">{racePlayerResult.raw}</span>
                     </div>
-                  </div>
-                </div>
-
-                {/* Opponent Results */}
-                <div className="result-panel opponent-result">
-                  <div className="result-header">
-                    <h2>{raceOpponent}</h2>
-                    <div className={`result-badge ${!racePlayerResult.isWinner && !racePlayerResult.isTie ? "winner" : racePlayerResult.isTie ? "tie" : "loser"}`}>
-                      {!racePlayerResult.isWinner && !racePlayerResult.isTie ? "WINNER" : racePlayerResult.isTie ? "TIE" : "LOSER"}
-                    </div>
-                  </div>
-                  <div className="result-stats">
                     <div className="stat">
-                      <span className="stat-label">WPM</span>
-                      <span className="stat-value">{raceOpponentResult.wpm}</span>
-                    </div>
-                    <div className="stat">
-                      <span className="stat-label">Accuracy</span>
-                      <span className="stat-value">{raceOpponentResult.acc}%</span>
-                    </div>
-                    <div className="stat">
-                      <span className="stat-label">Raw</span>
-                      <span className="stat-value">{raceOpponentResult.raw}</span>
+                      <span className="stat-label">Duration</span>
+                      <span className="stat-value">60s</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col items-center gap-3">
+              <div className="flex flex-col items-center gap-3 mt-6">
                 <button
                   type="button"
                   className="race-btn px-8 max-w-xs"
@@ -1342,7 +1499,7 @@ export function SpeedTypeTest({
                   }}
                   className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors mt-2"
                 >
-                  ← Back to Solo Practice
+                  Back to Solo Practice
                 </button>
               </div>
             </div>
@@ -1352,6 +1509,7 @@ export function SpeedTypeTest({
 
       {/* ====================================================================
           LANGUAGE MODAL (Pop-up from Globe Click)
+          Strictly the 6 options: Russian/English 1k, 5k, 10k
           ==================================================================== */}
       <div
         className={`modal-overlay ${isLangModalOpen ? "active" : ""}`}
@@ -1361,7 +1519,14 @@ export function SpeedTypeTest({
       >
         <div className="lang-modal">
           <div className="modal-search">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <circle cx="11" cy="11" r="8" />
               <line x1="21" y1="21" x2="16.65" y2="16.65" />
             </svg>
@@ -1386,7 +1551,14 @@ export function SpeedTypeTest({
                     init();
                   }}
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                   <span>{l.name}</span>
@@ -1398,5 +1570,3 @@ export function SpeedTypeTest({
     </div>
   );
 }
-
-export default SpeedTypeTest;

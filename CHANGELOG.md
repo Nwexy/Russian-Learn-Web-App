@@ -4,6 +4,11 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- Test Yourself navbar'dan kaldirildi, Practice sayfasina bagimsiz bir buton olarak eklendi.
+- SpeedType dil listesi (Russian/English 1k, 5k, 10k) olarak guncellendi.
+- SpeedType'ta Rusca (ы, с, й, ц) harflerinin bosluk gerektirmeden yazilmasini engelleyen klavye (composition) hatasi giderildi.
+- Yaris modundaki yapay zeka (bot) oyunculari tamamen kaldirildi.
+- Yaris modundaki oyuncu isimleri hizalama hatalari, kaymis caret (imlec) ve gorunmemesi gereken input kutusu duzeltildi.
 - SpeedTypeApp (.NET projesi) tasarimi, ses efektleri, MonkeyType 3 satir kaydirma mantigi, WPM hesaplamasi, Chart.js grafikleri ve Race moduyla birebir siteye aktarildi.
 - Practice sayfasinda SpeedType ve Grammar Test ozel mod olarak ayristirildi.
 - /speed-type rotasi uzerinden bagimsiz calisabilen tam ekran hiz testi sayfasi eklendi.
