@@ -156,10 +156,9 @@ export function SpeedTypeTest({
   }, []);
 
   const updateCaret = useCallback(() => {
-    const areaEl = typingAreaRef.current;
     const wordsEl = wordsElRef.current;
     const caretEl = caretElRef.current;
-    if (!areaEl || !wordsEl || !caretEl) return;
+    if (!wordsEl || !caretEl) return;
 
     const { wordIdx, charIdx } = typingStateRef.current;
     const wordEl = wordsEl.children[wordIdx] as HTMLElement;
@@ -171,34 +170,27 @@ export function SpeedTypeTest({
       const currentLine = Math.round(currentWordTop / lineHeight);
       const targetScrollLine = Math.max(0, currentLine - 1);
       const targetOffset = targetScrollLine * lineHeight;
-      wordsEl.style.transform = `translateY(-${targetOffset}px)`;
 
-      const areaRect = areaEl.getBoundingClientRect();
       const letterEl = wordEl.children[charIdx] as HTMLElement;
       const caretHeight = caretEl.offsetHeight || 28;
-      let top = 0;
-      let left = 0;
+      const top = wordEl.offsetTop + (wordEl.offsetHeight - caretHeight) / 2;
+      let left = wordEl.offsetLeft;
 
       if (letterEl) {
-        const letterRect = letterEl.getBoundingClientRect();
-        left = letterRect.left - areaRect.left;
-        top = letterRect.top - areaRect.top + (letterRect.height - caretHeight) / 2;
+        left = wordEl.offsetLeft + letterEl.offsetLeft;
       } else {
         const last = wordEl.lastElementChild as HTMLElement;
         if (last) {
-          const lastRect = last.getBoundingClientRect();
-          left = lastRect.right - areaRect.left;
-          top = lastRect.top - areaRect.top + (lastRect.height - caretHeight) / 2;
+          left = wordEl.offsetLeft + last.offsetLeft + last.offsetWidth;
         } else {
-          const wordRect = wordEl.getBoundingClientRect();
-          left = wordRect.left - areaRect.left;
-          top = wordRect.top - areaRect.top + (wordRect.height - caretHeight) / 2;
+          left = wordEl.offsetLeft;
         }
       }
 
-      caretEl.style.transform = "none";
       caretEl.style.left = `${left}px`;
       caretEl.style.top = `${top}px`;
+      wordsEl.style.transform = `translateY(-${targetOffset}px)`;
+      caretEl.style.transform = `translateY(-${targetOffset}px)`;
     });
   }, [getLineHeight]);
 
@@ -419,7 +411,7 @@ export function SpeedTypeTest({
       wordsElRef.current.style.transform = "translateY(0px)";
     }
     if (caretElRef.current) {
-      caretElRef.current.style.transform = "none";
+      caretElRef.current.style.transform = "translateY(0px)";
     }
 
     requestAnimationFrame(() => {
@@ -435,6 +427,16 @@ export function SpeedTypeTest({
       init();
     }
   }, [activeView, init]);
+
+  // Auto-align caret whenever game words are populated or changed
+  useEffect(() => {
+    if (activeView === "solo" && gameWords.length > 0) {
+      const timer = setTimeout(() => {
+        updateCaret();
+      }, 30);
+      return () => clearTimeout(timer);
+    }
+  }, [activeView, gameWords, updateCaret]);
 
   /* ==========================================================================
      KEY & COMPOSITION HANDLING (SOLO MODE)
@@ -690,6 +692,15 @@ export function SpeedTypeTest({
     if (inputElRef.current) {
       inputElRef.current.focus();
     }
+    updateCaret();
+  };
+
+  const handleRaceContainerClick = () => {
+    setIsRaceFocused(true);
+    if (raceInputRef.current) {
+      raceInputRef.current.focus();
+    }
+    updateRaceCaret();
   };
 
   /* ==========================================================================
@@ -713,6 +724,7 @@ export function SpeedTypeTest({
   const [raceOpponentWpm, setRaceOpponentWpm] = useState<number>(0);
   const [raceOpponentProgress, setRaceOpponentProgress] = useState<number>(0);
   const [isWaitingForOpponent, setIsWaitingForOpponent] = useState<boolean>(false);
+  const [isRaceFocused, setIsRaceFocused] = useState<boolean>(true);
 
   const [racePlayerResult, setRacePlayerResult] = useState({
     wpm: 0,
@@ -759,45 +771,57 @@ export function SpeedTypeTest({
     };
   }, []);
 
+  const getRaceLineHeight = useCallback(() => {
+    const wordsEl = raceWordsElRef.current;
+    if (!wordsEl || wordsEl.children.length < 2) return 48;
+    const first = wordsEl.children[0] as HTMLElement;
+    for (let i = 1; i < wordsEl.children.length; i++) {
+      const el = wordsEl.children[i] as HTMLElement;
+      if (el.offsetTop > first.offsetTop) {
+        return el.offsetTop - first.offsetTop;
+      }
+    }
+    return 48;
+  }, []);
+
   const updateRaceCaret = useCallback(() => {
-    const areaEl = raceAreaRef.current;
     const wordsEl = raceWordsElRef.current;
     const caretEl = raceCaretElRef.current;
-    if (!areaEl || !wordsEl || !caretEl) return;
+    if (!wordsEl || !caretEl) return;
 
     const { wordIdx, charIdx } = raceStateRef.current;
     const wordEl = wordsEl.children[wordIdx] as HTMLElement;
     if (!wordEl) return;
 
     requestAnimationFrame(() => {
-      const areaRect = areaEl.getBoundingClientRect();
+      const lineHeight = getRaceLineHeight();
+      const currentWordTop = wordEl.offsetTop;
+      const currentLine = Math.round(currentWordTop / lineHeight);
+      const targetScrollLine = Math.max(0, currentLine - 1);
+      const targetOffset = targetScrollLine * lineHeight;
+
       const letterEl = wordEl.children[charIdx] as HTMLElement;
       const caretHeight = caretEl.offsetHeight || 28;
-      let top = 0;
-      let left = 0;
+      const top = wordEl.offsetTop + (wordEl.offsetHeight - caretHeight) / 2;
+      let left = wordEl.offsetLeft;
 
       if (letterEl) {
-        const letterRect = letterEl.getBoundingClientRect();
-        left = letterRect.left - areaRect.left;
-        top = letterRect.top - areaRect.top + (letterRect.height - caretHeight) / 2;
+        left = wordEl.offsetLeft + letterEl.offsetLeft;
       } else {
         const last = wordEl.lastElementChild as HTMLElement;
         if (last) {
-          const lastRect = last.getBoundingClientRect();
-          left = lastRect.right - areaRect.left;
-          top = lastRect.top - areaRect.top + (lastRect.height - caretHeight) / 2;
+          left = wordEl.offsetLeft + last.offsetLeft + last.offsetWidth;
         } else {
-          const wordRect = wordEl.getBoundingClientRect();
-          left = wordRect.left - areaRect.left;
-          top = wordRect.top - areaRect.top + (wordRect.height - caretHeight) / 2;
+          left = wordEl.offsetLeft;
         }
       }
 
-      caretEl.style.transform = "none";
       caretEl.style.left = `${left}px`;
       caretEl.style.top = `${top}px`;
+      wordsEl.style.transform = `translateY(-${targetOffset}px)`;
+      caretEl.style.transform = `translateY(-${targetOffset}px)`;
     });
-  }, []);
+  }, [getRaceLineHeight]);
 
   // Send live progress over HTTP POST to backend
   const sendLiveProgress = useCallback(
@@ -868,6 +892,13 @@ export function SpeedTypeTest({
     if (raceInputRef.current) {
       raceInputRef.current.disabled = false;
       raceInputRef.current.focus();
+    }
+
+    if (raceWordsElRef.current) {
+      raceWordsElRef.current.style.transform = "translateY(0px)";
+    }
+    if (raceCaretElRef.current) {
+      raceCaretElRef.current.style.transform = "translateY(0px)";
     }
 
     state.intervalId = setInterval(() => {
@@ -985,6 +1016,42 @@ export function SpeedTypeTest({
       }).catch(() => {});
     });
   }, [connectRaceSse, raceUsername, raceLanguage]);
+
+  // Auto-align caret in race mode when words load or race screen opens
+  useEffect(() => {
+    if (activeView === "race" && raceWords.length > 0 && raceScreen === "race") {
+      const timer = setTimeout(() => {
+        updateRaceCaret();
+      }, 40);
+      return () => clearTimeout(timer);
+    }
+  }, [activeView, raceWords, raceScreen, updateRaceCaret]);
+
+  // Recalibrate caret on focus
+  useEffect(() => {
+    if (isFocused && activeView === "solo") {
+      updateCaret();
+    }
+  }, [isFocused, activeView, updateCaret]);
+
+  useEffect(() => {
+    if (isRaceFocused && activeView === "race" && raceScreen === "race") {
+      updateRaceCaret();
+    }
+  }, [isRaceFocused, activeView, raceScreen, updateRaceCaret]);
+
+  // Window resize listener to recalibrate caret wrapping
+  useEffect(() => {
+    const handleResize = () => {
+      if (activeView === "solo") {
+        updateCaret();
+      } else if (activeView === "race" && raceScreen === "race") {
+        updateRaceCaret();
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [activeView, raceScreen, updateCaret, updateRaceCaret]);
 
   const handleRaceBackspace = useCallback(() => {
     const state = raceStateRef.current;
@@ -1342,8 +1409,16 @@ export function SpeedTypeTest({
 
               {/* Words Container */}
               <div id="typing-area" ref={typingAreaRef}>
-                <div ref={caretElRef} id="caret" className="caret" />
-                <div ref={wordsElRef} id="words">
+                <div
+                  ref={caretElRef}
+                  id="caret"
+                  className={`caret ${!isFocused ? "blurred" : ""}`}
+                />
+                <div
+                  ref={wordsElRef}
+                  id="words"
+                  className={!isFocused ? "blurred" : ""}
+                >
                   {gameWords.map((word, wIdx) => (
                     <div key={wIdx} className="word">
                       {word.split("").map((c, cIdx) => (
@@ -1356,8 +1431,24 @@ export function SpeedTypeTest({
                 </div>
 
                 {/* Focus Overlay */}
-                <div className={`focus-overlay ${isFocused ? "hidden" : ""}`}>
-                  <div className="focus-message">Click here to focus</div>
+                <div
+                  className={`focus-overlay ${isFocused ? "hidden" : ""}`}
+                  onClick={handleGameContainerClick}
+                >
+                  <div className="focus-message">
+                    <svg
+                      width="18"
+                      height="18"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                    >
+                      <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+                      <path d="M13 13l6 6" />
+                    </svg>
+                    <span>Click here to focus</span>
+                  </div>
                 </div>
               </div>
 
@@ -1369,6 +1460,8 @@ export function SpeedTypeTest({
                 autoComplete="off"
                 autoCapitalize="off"
                 spellCheck="false"
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
                 onKeyDown={handleSoloKeyDown}
                 onInput={handleSoloInput}
                 onCompositionStart={handleSoloCompositionStart}
@@ -1596,12 +1689,18 @@ export function SpeedTypeTest({
                 <div
                   id="race-game-container"
                   ref={raceAreaRef}
-                  onClick={() => {
-                    if (raceInputRef.current) raceInputRef.current.focus();
-                  }}
+                  onClick={handleRaceContainerClick}
                 >
-                  <div ref={raceCaretElRef} id="race-caret" className="caret" />
-                  <div ref={raceWordsElRef} id="race-words">
+                  <div
+                    ref={raceCaretElRef}
+                    id="race-caret"
+                    className={`caret ${!isRaceFocused && !isCountdownActive ? "blurred" : ""}`}
+                  />
+                  <div
+                    ref={raceWordsElRef}
+                    id="race-words"
+                    className={!isRaceFocused && !isCountdownActive ? "blurred" : ""}
+                  >
                     {raceWords.map((word, wIdx) => (
                       <div key={wIdx} className="word">
                         {word.split("").map((c, cIdx) => (
@@ -1612,6 +1711,28 @@ export function SpeedTypeTest({
                       </div>
                     ))}
                   </div>
+
+                  {/* Race Focus Overlay */}
+                  <div
+                    className={`focus-overlay ${isRaceFocused || isCountdownActive ? "hidden" : ""}`}
+                    onClick={handleRaceContainerClick}
+                  >
+                    <div className="focus-message">
+                      <svg
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                      >
+                        <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+                        <path d="M13 13l6 6" />
+                      </svg>
+                      <span>Click here to focus</span>
+                    </div>
+                  </div>
+
                   <input
                     ref={raceInputRef}
                     type="text"
@@ -1619,6 +1740,8 @@ export function SpeedTypeTest({
                     autoComplete="off"
                     autoCapitalize="off"
                     spellCheck="false"
+                    onFocus={() => setIsRaceFocused(true)}
+                    onBlur={() => setIsRaceFocused(false)}
                     onKeyDown={handleRaceKeyDown}
                     onInput={handleRaceInput}
                     onCompositionStart={handleRaceCompositionStart}

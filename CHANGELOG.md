@@ -4,6 +4,11 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- SpeedType yazma alaninda ve Yaris (Race) modunda imlecin (caret) yukari kayma hatasi giderildi, kelimelerle ve harflerle dikey/yatay tam hizalamasi saglandi.
+- Yaris (Race) konteynerinin flex dikey ortalama yapisi duzeltilerek kelimelerin kaymasi onlendi, yaris esnasinda satir kaydirma mantigi senkronize edildi.
+- Odaklanilmamis (unfocused) blur durumundaki "Click here to focus" bildirim kapsulu MonkeyType stiliyle uyarlandi.
+- SpeedType arkaplanlari sitenin genel tasarim sistemiyle (page-container, tema degiskenleri) esitlendi.
+- SpeedType yazma alanina focus olunmadiginda metinlerin blurlu gozukmesi ve tiklandiginda odaklanmasi saglandi.
 - SpeedType Yaris (Race) moduna gercek zamanli 1v1 cok oyunculu (multiplayer) eslesme, anlik rakip ilerlemesi ve sonuclar karsilastirmasi (SSE backend) eklendi.
 - Test Yourself navbar'dan kaldirildi, Practice sayfasina bagimsiz bir buton olarak eklendi.
 - SpeedType dil listesi (Russian/English 1k, 5k, 10k) olarak guncellendi.
