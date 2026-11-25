@@ -44,14 +44,18 @@ export async function POST(req: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const modelName = process.env.GEMINI_MODEL || "gemini-1.5-flash";
-    const model = genAI.getGenerativeModel({
-      model: modelName,
-      generationConfig: {
-        responseMimeType: "application/json",
-        temperature: 0.2,
-      },
-    });
+    const candidateModels = Array.from(
+      new Set(
+        [
+          process.env.GEMINI_MODEL,
+          "gemini-3.5-flash",
+          "gemini-3.5-flash-lite",
+          "gemini-3.1-flash-lite",
+          "gemini-3-flash-preview",
+          "gemini-1.5-flash",
+        ].filter(Boolean) as string[]
+      )
+    );
 
     const prompt = `Aşağıdaki Rusça cümleyi kelime kelime analiz et. Noktalama işaretlerini ayrı kelime olarak alma, yalnızca kelimeleri analiz et. Her kelime için şu bilgileri içeren bir JSON dizisi döndür:
 - "word": Rusça kelime (yalın veya cümledeki hali)
@@ -77,9 +81,35 @@ Yalnızca belirtilen JSON dizisini döndür:
   }
 ]`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    let rawText = response.text().trim();
+    let rawText = "";
+    let lastError: Error | null = null;
+
+    for (const modelName of candidateModels) {
+      try {
+        const model = genAI.getGenerativeModel({
+          model: modelName,
+          generationConfig: {
+            responseMimeType: "application/json",
+            temperature: 0.2,
+          },
+        });
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const textOutput = response.text().trim();
+        if (textOutput) {
+          rawText = textOutput;
+          break;
+        }
+      } catch (err: unknown) {
+        lastError = err as Error;
+        // Mevcut model başarısız olursa (ör. 404 eski model veya 503 yoğunluk), bir sonraki adayı dene
+      }
+    }
+
+    if (!rawText) {
+      throw lastError || new Error("Gemini modellerinden yanıt alınamadı.");
+    }
 
     // Markdown kod blokları varsa temizle
     if (rawText.startsWith("```json")) {
