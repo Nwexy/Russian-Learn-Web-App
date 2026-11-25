@@ -298,15 +298,6 @@ export interface Messages {
   lockedUnits: string;
   navHelp: string;
 
-  // Faz 13.0 — Test Yourself (Gemini API)
-  testYourself: string;
-  analyze: string;
-  analyzing: string;
-  analysisError: string;
-  analysisResult: string;
-  testYourselfDesc: string;
-  enterRussianSentence: string;
-
   // Faz 14.0 — SpeedType ve Grammar Test
   speedType: string;
   speedTypeDesc: string;
@@ -636,15 +627,6 @@ const messages: Record<Lang, Messages> = {
     lockedUnits: "Kilitli Üniteler",
     navHelp: "İstediğiniz üniteye hızlıca geçiş yapın",
 
-    // Faz 13.0 — Test Yourself (Gemini API)
-    testYourself: "Kendini Test Et",
-    analyze: "Analiz Et",
-    analyzing: "Analiz ediliyor...",
-    analysisError: "Analiz sırasında bir hata oluştu. Lütfen tekrar deneyin.",
-    analysisResult: "Analiz Sonucu",
-    testYourselfDesc: "Herhangi bir Rusça kelime veya cümleyi yapay zeka ile kelime kelime analiz edin.",
-    enterRussianSentence: "Analiz edilecek Rusça metni buraya yazın...",
-
     // Faz 14.0 — SpeedType ve Grammar Test
     speedType: "SpeedType",
     speedTypeDesc: "Rusça klavye hız ve doğruluk testi.",
@@ -971,15 +953,6 @@ const messages: Record<Lang, Messages> = {
     openUnits: "Unlocked Units",
     lockedUnits: "Locked Units",
     navHelp: "Quickly navigate to any unit",
-
-    // Faz 13.0 — Test Yourself (Gemini API)
-    testYourself: "Test Yourself",
-    analyze: "Analyze",
-    analyzing: "Analyzing...",
-    analysisError: "An error occurred during analysis. Please try again.",
-    analysisResult: "Analysis Result",
-    testYourselfDesc: "Analyze any Russian word or sentence word-by-word with AI.",
-    enterRussianSentence: "Enter Russian text to analyze here...",
 
     // Faz 14.0 — SpeedType ve Grammar Test
     speedType: "SpeedType",

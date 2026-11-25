@@ -4,8 +4,13 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- Test Yourself ozelligi tamamen kaldirildi: /test-yourself sayfasi, /api/analyze rotasi, ilgili i18n anahtarlari (testYourself, testYourselfDesc, analyze, analyzing, analysisError, analysisResult, enterRussianSentence), AnalyzedWord ve AnalysisResult tipleri ve Practice sayfasindaki baglanti silindi. Practice sayfasindaki Ozel Araclar bolumu SpeedType icin tek sutunlu yapiya guncellendi.
 - SpeedType modunda test bitmeden yeniden baslatma (repeat) yapildiginda eski yazilan harflerin ve kelimelerin stillerinin ve ekstra karakterlerinin temizlenmeme hatasi giderildi; her tekrarda kelimeler ve harf durumlari tamamen sifirlanacak sekilde duzeltildi.
 - SpeedType ve Yaris (Race) modlarinin arayuz metinleri uluslararasilastirma (i18n) sistemine baglandi; ayarlar sayfasindan arayuz dili Turkce veya Ingilizce secildiginde tum butonlar, etiketler, ipuclari ve sonuclar dinamik olarak secilen dilde gorunecek sekilde duzeltildi.
+- SpeedType ve Yaris (Race) modlarinin arayuz metinleri uluslararasilastirma (i18n) sistemine baglandi; ayarlar sayfasindan arayuz dili Turkce veya Ingilizce secildiginde tum butonlar, etiketler, ipuclari ve sonuclar dinamik olarak secilen dilde gorunecek sekilde duzeltildi.
+- Yaris (Race) modunda progress-fill cubugunun aniden %100 olma hatasi giderildi; kat edilen mesafeye gore harf ve kelime bazinda kademeli olarak artmasi saglandi.
+- Yaris (Race) modunda hem oyuncu hem de rakip paneline canli progress-bar eklendi.
+- Yaris (Race) modundaki dil secim listesinden kelime sayisi seviyeleri (1k, 5k, 10k) kaldirildi, sadece Rusca ve Ingilizce secenekleri birakildi.
 - Yaris (Race) modunda progress-fill cubugunun aniden %100 olma hatasi giderildi; kat edilen mesafeye gore harf ve kelime bazinda kademeli olarak artmasi saglandi.
 - Yaris (Race) modunda hem oyuncu hem de rakip paneline canli progress-bar eklendi.
 - Yaris (Race) modundaki dil secim listesinden kelime sayisi seviyeleri (1k, 5k, 10k) kaldirildi, sadece Rusca ve Ingilizce secenekleri birakildi.
