@@ -19,21 +19,23 @@ const EXAMPLE_SENTENCES = [
 ];
 
 export default function TestYourselfPage() {
-  const { uiLang } = useLang();
+  const { uiLang, translationLang } = useLang();
   const t = getMessages(uiLang);
 
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [analyzedText, setAnalyzedText] = useState("");
+  const [fullTranslation, setFullTranslation] = useState("");
   const [words, setWords] = useState<AnalyzedWord[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleAnalyze = async (textToAnalyze?: string) => {
     const targetText = (textToAnalyze ?? input).trim();
+    const activeLang = translationLang || uiLang || "tr";
 
     if (!targetText) {
       toast.error(
-        uiLang === "tr"
+        activeLang === "tr"
           ? "Lütfen analiz edilecek bir Rusça metin girin."
           : "Please enter Russian text to analyze."
       );
@@ -49,7 +51,7 @@ export default function TestYourselfPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: targetText }),
+        body: JSON.stringify({ text: targetText, lang: activeLang }),
       });
 
       const data = await res.json().catch(() => null);
@@ -63,8 +65,9 @@ export default function TestYourselfPage() {
       if (data && Array.isArray(data.words)) {
         setWords(data.words);
         setAnalyzedText(data.text || targetText);
+        setFullTranslation(data.fullTranslation || "");
         toast.success(
-          uiLang === "tr"
+          activeLang === "tr"
             ? `${data.words.length} kelime başarıyla analiz edildi.`
             : `Successfully analyzed ${data.words.length} words.`
         );
@@ -87,6 +90,7 @@ export default function TestYourselfPage() {
     setInput("");
     setWords([]);
     setAnalyzedText("");
+    setFullTranslation("");
     setHasSearched(false);
   };
 
@@ -211,9 +215,16 @@ export default function TestYourselfPage() {
                 <span>{t.analysisResult}</span>
               </h2>
               {analyzedText && (
-                <div className="flex items-center gap-2 mt-1.5 text-base sm:text-lg font-medium text-foreground">
-                  <span className="italic">"{analyzedText}"</span>
-                  <SpeakButton text={analyzedText} size="sm" />
+                <div className="mt-2">
+                  <div className="flex items-center gap-2 text-base sm:text-lg font-medium text-foreground">
+                    <span className="italic">"{analyzedText}"</span>
+                    <SpeakButton text={analyzedText} size="sm" />
+                  </div>
+                  {fullTranslation && (
+                    <p className="text-muted-foreground text-base sm:text-lg italic mt-1.5 font-normal">
+                      {fullTranslation}
+                    </p>
+                  )}
                 </div>
               )}
             </div>
@@ -295,3 +306,4 @@ export default function TestYourselfPage() {
     </div>
   );
 }
+

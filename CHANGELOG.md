@@ -4,6 +4,8 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-25
+- Test Yourself sayfasinda Gemini API'nin secili arayuz/ceviri diline gore cevap vermesi saglandi.
+- Analysis Result kismina cümlenin tamaminin cevirisi eklendi.
 - "Test Yourself" sayfasi eklendi.
 - Gemini API kullanilarak Rusca kelime ve cumlelerin gramer analizi yapilabiliyor.
 - Navbar'a Test Yourself linki eklendi.

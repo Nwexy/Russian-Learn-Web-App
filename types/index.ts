@@ -190,4 +190,11 @@ export interface AnalyzedWord {
   grammarNote?: string;
 }
 
+/** Faz 13.1 — Test Yourself / Gemini analiz sonucu */
+export interface AnalysisResult {
+  text: string;
+  fullTranslation?: string;
+  words: AnalyzedWord[];
+}
+
 
