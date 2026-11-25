@@ -317,6 +317,38 @@ export interface Messages {
   timeLeft: string;
   restartTest: string;
   typingTestInstruction: string;
+  speedTypeTime: string;
+  speedTypeWords: string;
+  speedTypePunct: string;
+  speedTypeNumbers: string;
+  speedTypeRace: string;
+  speedTypeSoundOn: string;
+  speedTypeSoundOff: string;
+  speedTypeFocusMessage: string;
+  speedTypeRestartHint: string;
+  speedTypeTestType: string;
+  speedTypeRaw: string;
+  speedTypeCharacters: string;
+  speedTypeConsistency: string;
+  speedTypeSearchPlaceholder: string;
+  raceTitle: string;
+  raceSubtitle: string;
+  raceUsernamePlaceholder: string;
+  raceStartBtn: string;
+  raceBackToSolo: string;
+  raceFindingOpponent: string;
+  raceFindingDesc: string;
+  raceCancelMatchmaking: string;
+  raceYourProgress: string;
+  raceOpponentDisconnected: string;
+  raceResults: string;
+  raceWaitingForOpponent: string;
+  raceAgain: string;
+  raceWinner: string;
+  raceLoser: string;
+  raceTie: string;
+  raceRussian: string;
+  raceEnglish: string;
 }
 
 /** Tüm çeviriler */
@@ -623,6 +655,38 @@ const messages: Record<Lang, Messages> = {
     timeLeft: "Kalan Süre",
     restartTest: "Tekrar Dene",
     typingTestInstruction: "Yazmaya başlayın...",
+    speedTypeTime: "süre",
+    speedTypeWords: "kelime",
+    speedTypePunct: "noktalama",
+    speedTypeNumbers: "sayılar",
+    speedTypeRace: "Yarış",
+    speedTypeSoundOn: "Sesi kapat",
+    speedTypeSoundOff: "Sesi aç",
+    speedTypeFocusMessage: "Odaklanmak için buraya tıklayın",
+    speedTypeRestartHint: "Yeniden başlatmak için Shift + Enter",
+    speedTypeTestType: "test türü",
+    speedTypeRaw: "ham",
+    speedTypeCharacters: "karakterler",
+    speedTypeConsistency: "tutarlılık",
+    speedTypeSearchPlaceholder: "Aramak için yazın...",
+    raceTitle: "Çevrimiçi 1v1 Yarış",
+    raceSubtitle: "Canlı olarak başka bir oyuncuyla yarışmak için kullanıcı adınızı girin",
+    raceUsernamePlaceholder: "Kullanıcı adınız",
+    raceStartBtn: "Yarışı Başlat",
+    raceBackToSolo: "← Tekli Alıştırmaya Dön",
+    raceFindingOpponent: "Rakip aranıyor...",
+    raceFindingDesc: "Sizi başka bir oyuncuyla eşleştirirken lütfen bekleyin",
+    raceCancelMatchmaking: "Eşleşmeyi İptal Et",
+    raceYourProgress: "Sizin İlerlemeniz",
+    raceOpponentDisconnected: "Rakibin bağlantısı kesildi!",
+    raceResults: "Yarış Sonuçları",
+    raceWaitingForOpponent: "Rakibin bitirmesi bekleniyor...",
+    raceAgain: "Yeniden Yarış",
+    raceWinner: "KAZANAN",
+    raceLoser: "KAYBEDEN",
+    raceTie: "BERABERE",
+    raceRussian: "RU Rusça",
+    raceEnglish: "EN İngilizce",
   },
 
   en: {
@@ -927,6 +991,38 @@ const messages: Record<Lang, Messages> = {
     timeLeft: "Time Left",
     restartTest: "Restart Test",
     typingTestInstruction: "Start typing...",
+    speedTypeTime: "time",
+    speedTypeWords: "words",
+    speedTypePunct: "punct",
+    speedTypeNumbers: "numbers",
+    speedTypeRace: "Race",
+    speedTypeSoundOn: "Mute sound",
+    speedTypeSoundOff: "Enable sound",
+    speedTypeFocusMessage: "Click here to focus",
+    speedTypeRestartHint: "Shift + Enter to restart",
+    speedTypeTestType: "test type",
+    speedTypeRaw: "raw",
+    speedTypeCharacters: "characters",
+    speedTypeConsistency: "consistency",
+    speedTypeSearchPlaceholder: "Type to search...",
+    raceTitle: "Online 1v1 Race",
+    raceSubtitle: "Enter your username to race against another player live",
+    raceUsernamePlaceholder: "Your username",
+    raceStartBtn: "Start Racing",
+    raceBackToSolo: "← Back to Solo Practice",
+    raceFindingOpponent: "Finding opponent...",
+    raceFindingDesc: "Please wait while we match you with another player",
+    raceCancelMatchmaking: "Cancel Matchmaking",
+    raceYourProgress: "Your Progress",
+    raceOpponentDisconnected: "Opponent disconnected!",
+    raceResults: "Race Results",
+    raceWaitingForOpponent: "Waiting for opponent to finish...",
+    raceAgain: "Race Again",
+    raceWinner: "WINNER",
+    raceLoser: "LOSER",
+    raceTie: "TIE",
+    raceRussian: "RU Russian",
+    raceEnglish: "EN English",
   },
 };
 

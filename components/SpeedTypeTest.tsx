@@ -12,6 +12,8 @@ import {
   Tooltip,
 } from "chart.js";
 import { languageData, type LanguageItem } from "@/lib/speedtype-words";
+import { useLang } from "@/lib/lang-context";
+import { getMessages } from "@/lib/i18n";
 import "./speedtype.css";
 
 import type { Item, Lang } from "@/types";
@@ -46,6 +48,10 @@ export function SpeedTypeTest({
   items,
   uiLang,
 }: SpeedTypeTestProps) {
+  const { uiLang: contextUiLang } = useLang();
+  const activeUiLang = uiLang || contextUiLang || "tr";
+  const t = getMessages(activeUiLang);
+
   // Config
   const [mode, setMode] = useState<Mode>("time");
   const [timeSetting, setTimeSetting] = useState<TimeOption>(30);
@@ -711,9 +717,9 @@ export function SpeedTypeTest({
   const eventSourceRef = useRef<EventSource | null>(null);
 
   const [raceScreen, setRaceScreen] = useState<RaceScreenState>("username");
-  const [raceUsername, setRaceUsername] = useState<string>("Player");
+  const [raceUsername, setRaceUsername] = useState<string>("");
   const [raceLanguage, setRaceLanguage] = useState<string>("russian");
-  const [raceOpponent, setRaceOpponent] = useState<string>("Opponent");
+  const [raceOpponent, setRaceOpponent] = useState<string>("");
   const [raceWords, setRaceWords] = useState<string[]>([]);
   const raceWordsRef = useRef<string[]>([]);
   const [countdown, setCountdown] = useState<number | string>(3);
@@ -1018,7 +1024,7 @@ export function SpeedTypeTest({
             setRaceScreen("results");
           } else if (data.type === "OpponentDisconnected") {
             setIsWaitingForOpponent(false);
-            alert("Opponent disconnected!");
+            alert(t.raceOpponentDisconnected);
             setRaceScreen("username");
           }
         } catch {
@@ -1030,7 +1036,7 @@ export function SpeedTypeTest({
         // SSE automatic reconnect
       };
     },
-    [startRaceCountdown]
+    [startRaceCountdown, t.raceOpponentDisconnected]
   );
 
   const handleStartRacing = useCallback(() => {
@@ -1042,12 +1048,12 @@ export function SpeedTypeTest({
         body: JSON.stringify({
           action: "join",
           playerId: playerIdRef.current,
-          username: raceUsername || "Player",
+          username: raceUsername.trim() || (activeUiLang === "tr" ? "Oyuncu" : "Player"),
           language: raceLanguage,
         }),
       }).catch(() => {});
     });
-  }, [connectRaceSse, raceUsername, raceLanguage]);
+  }, [connectRaceSse, raceUsername, activeUiLang, raceLanguage]);
 
   // Auto-align caret in race mode when words load or race screen opens
   useEffect(() => {
@@ -1256,7 +1262,7 @@ export function SpeedTypeTest({
             >
               <path d="M19 12H5M12 19l-7-7 7-7" />
             </svg>
-            <span>Back</span>
+            <span>{t.back}</span>
           </button>
         </div>
       )}
@@ -1285,7 +1291,7 @@ export function SpeedTypeTest({
                   init();
                 }}
               >
-                time
+                {t.speedTypeTime}
               </button>
               <button
                 type="button"
@@ -1295,7 +1301,7 @@ export function SpeedTypeTest({
                   init();
                 }}
               >
-                words
+                {t.speedTypeWords}
               </button>
             </div>
 
@@ -1303,17 +1309,17 @@ export function SpeedTypeTest({
 
             {mode === "time" ? (
               <div className="config-group">
-                {([15, 30, 60, 120] as TimeOption[]).map((t) => (
+                {([15, 30, 60, 120] as TimeOption[]).map((tVal) => (
                   <button
-                    key={t}
+                    key={tVal}
                     type="button"
-                    className={`config-btn ${timeSetting === t ? "active" : ""}`}
+                    className={`config-btn ${timeSetting === tVal ? "active" : ""}`}
                     onClick={() => {
-                      setTimeSetting(t);
+                      setTimeSetting(tVal);
                       init();
                     }}
                   >
-                    {t}
+                    {tVal}
                   </button>
                 ))}
               </div>
@@ -1346,7 +1352,7 @@ export function SpeedTypeTest({
                   init();
                 }}
               >
-                punct
+                {t.speedTypePunct}
               </button>
               <button
                 type="button"
@@ -1356,7 +1362,7 @@ export function SpeedTypeTest({
                   init();
                 }}
               >
-                numbers
+                {t.speedTypeNumbers}
               </button>
             </div>
 
@@ -1367,7 +1373,7 @@ export function SpeedTypeTest({
                 type="button"
                 className={`icon-btn ${soundEnabled ? "active" : ""}`}
                 onClick={() => setSoundEnabled(!soundEnabled)}
-                aria-label="Toggle Sound"
+                aria-label={soundEnabled ? t.speedTypeSoundOn : t.speedTypeSoundOff}
               >
                 <svg
                   width="20"
@@ -1398,7 +1404,7 @@ export function SpeedTypeTest({
                   setRaceScreen("username");
                 }}
               >
-                Race
+                {t.speedTypeRace}
               </button>
             </div>
           </div>
@@ -1476,7 +1482,7 @@ export function SpeedTypeTest({
                       <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
                       <path d="M13 13l6 6" />
                     </svg>
-                    <span>Click here to focus</span>
+                    <span>{t.speedTypeFocusMessage}</span>
                   </div>
                 </div>
               </div>
@@ -1507,7 +1513,7 @@ export function SpeedTypeTest({
                     e.stopPropagation();
                     init();
                   }}
-                  aria-label="Restart"
+                  aria-label={t.restartTest}
                 >
                   <svg
                     width="20"
@@ -1539,7 +1545,7 @@ export function SpeedTypeTest({
                     <div className="value">{finalWpm}</div>
                   </div>
                   <div className="big-stat">
-                    <div className="title">acc</div>
+                    <div className="title">{activeUiLang === "tr" ? "doğruluk" : "acc"}</div>
                     <div className="value">{finalAcc}%</div>
                   </div>
                 </div>
@@ -1550,19 +1556,22 @@ export function SpeedTypeTest({
 
               <div className="result-details">
                 <div className="detail-stat">
-                  <div className="title">test type</div>
-                  <div className="value">{finalType}</div>
+                  <div className="title">{t.speedTypeTestType}</div>
+                  <div className="value">
+                    {mode === "time" ? t.speedTypeTime : t.speedTypeWords}{" "}
+                    {mode === "time" ? timeSetting : wordsSetting}
+                  </div>
                 </div>
                 <div className="detail-stat">
-                  <div className="title">raw</div>
+                  <div className="title">{t.speedTypeRaw}</div>
                   <div className="value">{finalRaw}</div>
                 </div>
                 <div className="detail-stat">
-                  <div className="title">characters</div>
+                  <div className="title">{t.speedTypeCharacters}</div>
                   <div className="value">{finalChars}</div>
                 </div>
                 <div className="detail-stat">
-                  <div className="title">consistency</div>
+                  <div className="title">{t.speedTypeConsistency}</div>
                   <div className="value">{finalConsistency}%</div>
                 </div>
               </div>
@@ -1572,7 +1581,7 @@ export function SpeedTypeTest({
                   type="button"
                   className="restart-btn"
                   onClick={init}
-                  aria-label="Restart Test"
+                  aria-label={t.restartTest}
                 >
                   <svg
                     width="24"
@@ -1588,7 +1597,8 @@ export function SpeedTypeTest({
                   </svg>
                 </button>
                 <div className="key-hint">
-                  <kbd>Shift</kbd> + <kbd>Enter</kbd> to restart
+                  <kbd>Shift</kbd> + <kbd>Enter</kbd>{" "}
+                  {activeUiLang === "tr" ? "ile yeniden başlat" : "to restart"}
                 </div>
               </div>
             </div>
@@ -1605,15 +1615,15 @@ export function SpeedTypeTest({
           {raceScreen === "username" && (
             <div className="race-screen active">
               <div className="username-container">
-                <h1 className="race-title">Online 1v1 Race</h1>
-                <p className="race-subtitle">Enter your username to race against another player live</p>
+                <h1 className="race-title">{t.raceTitle}</h1>
+                <p className="race-subtitle">{t.raceSubtitle}</p>
 
                 <input
                   type="text"
                   className="username-input"
                   value={raceUsername}
                   onChange={(e) => setRaceUsername(e.target.value)}
-                  placeholder="Your username"
+                  placeholder={t.raceUsernamePlaceholder}
                   maxLength={20}
                   autoComplete="off"
                 />
@@ -1626,15 +1636,15 @@ export function SpeedTypeTest({
                         onChange={(e) => setRaceLanguage(e.target.value)}
                         className="custom-select-trigger w-full cursor-pointer bg-[#2a2d3a] border-2 border-[#3a3d4a] rounded-xl text-white outline-none"
                       >
-                        <option value="russian">RU Russian</option>
-                        <option value="english">EN English</option>
+                        <option value="russian">{t.raceRussian}</option>
+                        <option value="english">{t.raceEnglish}</option>
                       </select>
                     </div>
                   </div>
                 </div>
 
                 <button type="button" className="race-btn" onClick={handleStartRacing}>
-                  Start Racing
+                  {t.raceStartBtn}
                 </button>
 
                 <div className="mt-4">
@@ -1646,7 +1656,7 @@ export function SpeedTypeTest({
                     }}
                     className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors"
                   >
-                    Back to Solo Practice
+                    {t.raceBackToSolo}
                   </button>
                 </div>
               </div>
@@ -1658,8 +1668,8 @@ export function SpeedTypeTest({
             <div className="race-screen active">
               <div className="waiting-container">
                 <div className="loading-spinner" />
-                <h2 className="text-2xl font-bold mb-2">Finding opponent...</h2>
-                <p className="text-[#8a8b8c]">Please wait while we match you with another player</p>
+                <h2 className="text-2xl font-bold mb-2">{t.raceFindingOpponent}</h2>
+                <p className="text-[#8a8b8c]">{t.raceFindingDesc}</p>
                 <div className="mt-6">
                   <button
                     type="button"
@@ -1676,7 +1686,7 @@ export function SpeedTypeTest({
                     }}
                     className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors"
                   >
-                    Cancel Matchmaking
+                    {t.raceCancelMatchmaking}
                   </button>
                 </div>
               </div>
@@ -1698,11 +1708,11 @@ export function SpeedTypeTest({
                 <div className="race-header">
                   <div className="race-info">
                     <span className="text-white font-bold text-lg">
-                      {raceUsername || "Player"}
+                      {raceUsername.trim() || (activeUiLang === "tr" ? "Oyuncu" : "Player")}
                     </span>
                     <span className="vs-text">VS</span>
                     <span className="text-[#8a8b8c] font-bold text-lg">
-                      {raceOpponent || "Opponent"}
+                      {raceOpponent || (activeUiLang === "tr" ? "Rakip" : "Opponent")}
                     </span>
                   </div>
                   <div className="race-stats">
@@ -1714,7 +1724,7 @@ export function SpeedTypeTest({
                 {/* Player Live Progress Bar */}
                 <div className="player-progress-container mb-3 px-1">
                   <div className="flex justify-between items-center text-xs text-muted-foreground mb-1 font-mono">
-                    <span className="font-semibold text-[#8c9eff]">Your Progress</span>
+                    <span className="font-semibold text-[#8c9eff]">{t.raceYourProgress}</span>
                     <span className="font-bold text-[#8c9eff]">{racePlayerProgress}%</span>
                   </div>
                   <div className="progress-bar">
@@ -1768,7 +1778,7 @@ export function SpeedTypeTest({
                         <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
                         <path d="M13 13l6 6" />
                       </svg>
-                      <span>Click here to focus</span>
+                      <span>{t.speedTypeFocusMessage}</span>
                     </div>
                   </div>
 
@@ -1791,7 +1801,7 @@ export function SpeedTypeTest({
                 {/* Opponent Live Progress Panel */}
                 <div className="opponent-panel mt-6">
                   <div className="opponent-header">
-                    <span>{raceOpponent}</span>
+                    <span>{raceOpponent || (activeUiLang === "tr" ? "Rakip" : "Opponent")}</span>
                     <span>{raceOpponentWpm} WPM</span>
                   </div>
                   <div className="opponent-progress">
@@ -1811,14 +1821,14 @@ export function SpeedTypeTest({
           {/* Screen 4: Race Results (1v1 Head-to-Head Comparison) */}
           {raceScreen === "results" && (
             <div className="race-screen active">
-              <h1 className="results-title">Race Results</h1>
+              <h1 className="results-title">{t.raceResults}</h1>
 
               {isWaitingForOpponent ? (
                 <div className="waiting-container">
                   <div className="loading-spinner" />
-                  <h2 className="text-2xl font-bold mb-2">Waiting for opponent to finish...</h2>
+                  <h2 className="text-2xl font-bold mb-2">{t.raceWaitingForOpponent}</h2>
                   <p className="text-[#8a8b8c]">
-                    Your WPM: {racePlayerResult.wpm} | Accuracy: {racePlayerResult.acc}%
+                    {t.wpm}: {racePlayerResult.wpm} | {t.accuracy}: {racePlayerResult.acc}%
                   </p>
                 </div>
               ) : (
@@ -1826,7 +1836,7 @@ export function SpeedTypeTest({
                   {/* Your Results */}
                   <div className="result-panel your-result">
                     <div className="result-header">
-                      <h2>{raceUsername || "You"}</h2>
+                      <h2>{raceUsername.trim() || (activeUiLang === "tr" ? "Sen" : "You")}</h2>
                       <div
                         className={`result-badge ${
                           racePlayerResult.isWinner
@@ -1837,10 +1847,10 @@ export function SpeedTypeTest({
                         }`}
                       >
                         {racePlayerResult.isWinner
-                          ? "WINNER"
+                          ? t.raceWinner
                           : racePlayerResult.isTie
-                          ? "TIE"
-                          : "LOSER"}
+                          ? t.raceTie
+                          : t.raceLoser}
                       </div>
                     </div>
                     <div className="result-stats">
@@ -1849,11 +1859,11 @@ export function SpeedTypeTest({
                         <span className="stat-value">{racePlayerResult.wpm}</span>
                       </div>
                       <div className="stat">
-                        <span className="stat-label">Accuracy</span>
+                        <span className="stat-label">{t.accuracy}</span>
                         <span className="stat-value">{racePlayerResult.acc}%</span>
                       </div>
                       <div className="stat">
-                        <span className="stat-label">Raw</span>
+                        <span className="stat-label">{t.speedTypeRaw}</span>
                         <span className="stat-value">{racePlayerResult.raw}</span>
                       </div>
                     </div>
@@ -1862,7 +1872,7 @@ export function SpeedTypeTest({
                   {/* Opponent Results */}
                   <div className="result-panel opponent-result">
                     <div className="result-header">
-                      <h2>{raceOpponent || "Opponent"}</h2>
+                      <h2>{raceOpponent || (activeUiLang === "tr" ? "Rakip" : "Opponent")}</h2>
                       <div
                         className={`result-badge ${
                           !racePlayerResult.isWinner && !racePlayerResult.isTie
@@ -1873,10 +1883,10 @@ export function SpeedTypeTest({
                         }`}
                       >
                         {!racePlayerResult.isWinner && !racePlayerResult.isTie
-                          ? "WINNER"
+                          ? t.raceWinner
                           : racePlayerResult.isTie
-                          ? "TIE"
-                          : "LOSER"}
+                          ? t.raceTie
+                          : t.raceLoser}
                       </div>
                     </div>
                     <div className="result-stats">
@@ -1885,11 +1895,11 @@ export function SpeedTypeTest({
                         <span className="stat-value">{raceOpponentResult.wpm}</span>
                       </div>
                       <div className="stat">
-                        <span className="stat-label">Accuracy</span>
+                        <span className="stat-label">{t.accuracy}</span>
                         <span className="stat-value">{raceOpponentResult.acc}%</span>
                       </div>
                       <div className="stat">
-                        <span className="stat-label">Raw</span>
+                        <span className="stat-label">{t.speedTypeRaw}</span>
                         <span className="stat-value">{raceOpponentResult.raw}</span>
                       </div>
                     </div>
@@ -1903,7 +1913,7 @@ export function SpeedTypeTest({
                   className="race-btn px-8 max-w-xs"
                   onClick={handleStartRacing}
                 >
-                  Race Again
+                  {t.raceAgain}
                 </button>
                 <button
                   type="button"
@@ -1913,7 +1923,7 @@ export function SpeedTypeTest({
                   }}
                   className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors mt-2"
                 >
-                  Back to Solo Practice
+                  {t.raceBackToSolo}
                 </button>
               </div>
             </div>
@@ -1945,7 +1955,7 @@ export function SpeedTypeTest({
             </svg>
             <input
               type="text"
-              placeholder="Type to search..."
+              placeholder={t.speedTypeSearchPlaceholder}
               value={langSearch}
               onChange={(e) => setLangSearch(e.target.value)}
               autoFocus
