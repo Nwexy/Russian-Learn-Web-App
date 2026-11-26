@@ -4,6 +4,7 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-26
+- Practice sayfasindaki SpeedType (Ozel Araclar) bolumu tamamlanan unite kosulunun disina tasindi; siteye ilk kez girildiginde (0 unite acik olsa bile) gorunur hale getirildi.
 - Netlify CLI (`netlify-cli`) ve `netlify.toml` / `@netlify/plugin-nextjs` yapilandirmasi tamamlandi; `.netlify` klasoru `.gitignore` dosyasina eklendi.
 - Yaris (Race) modunda sure doldugunda `playerDone` durumunun guncellenmemesi, rakip beklenirken sonuc ekranina gecilmemesi, matchmaking broadcast beklemesi ve presence tabanli baglanti kopma algilama duzeltildi.
 - Yaris (Race) modu Supabase Realtime ile yeniden yazildi; in-memory SSE backend (lib/race-hub.ts ve app/api/race/route.ts) tamamen kaldirildi.

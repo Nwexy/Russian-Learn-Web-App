@@ -1378,38 +1378,6 @@ export default function PracticePage() {
               )}
             </div>
 
-            {/* Bağımsız Özel Modlar: SpeedType (Faz 14.1) */}
-            <div className="w-full max-w-3xl mx-auto my-8 px-4">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="h-px flex-1 bg-border/60" />
-                <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">
-                  {uiLang === "tr" ? "Özel Araçlar" : "Special Tools"}
-                </span>
-                <div className="h-px flex-1 bg-border/60" />
-              </div>
-
-              <div className="grid grid-cols-1 gap-4">
-                <Link
-                  href="/speed-type"
-                  className="p-5 rounded-2xl border border-border bg-card/90 hover:bg-card hover:border-accent/50 shadow-sm transition-all duration-200 flex items-start gap-4 group cursor-pointer"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:bg-accent group-hover:text-white transition-all">
-                    <Zap className="w-6 h-6" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-base font-bold text-foreground group-hover:text-accent transition-colors">
-                        {t.speedType}
-                      </h3>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
-                      {t.speedTypeDesc}
-                    </p>
-                  </div>
-                </Link>
-              </div>
-            </div>
-
             {/* Karışık Mod Seçimi Modal (Faz 11.7) */}
             <Dialog open={isMixedModesDialogOpen} onOpenChange={setIsMixedModesDialogOpen}>
               <DialogContent className="sm:max-w-md">
@@ -1483,6 +1451,38 @@ export default function PracticePage() {
             </Dialog>
           </>
         )}
+
+        {/* Bağımsız Özel Modlar: SpeedType (Ünite tamamlamadan bağımsız her zaman görünür) */}
+        <div className="w-full max-w-3xl mx-auto my-8 px-4">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="h-px flex-1 bg-border/60" />
+            <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground/80">
+              {uiLang === "tr" ? "Özel Araçlar" : "Special Tools"}
+            </span>
+            <div className="h-px flex-1 bg-border/60" />
+          </div>
+
+          <div className="grid grid-cols-1 gap-4">
+            <Link
+              href="/speed-type"
+              className="p-5 rounded-2xl border border-border bg-card/90 hover:bg-card hover:border-accent/50 shadow-sm transition-all duration-200 flex items-start gap-4 group cursor-pointer"
+            >
+              <div className="w-12 h-12 rounded-xl bg-accent/10 text-accent flex items-center justify-center shrink-0 group-hover:scale-105 group-hover:bg-accent group-hover:text-white transition-all">
+                <Zap className="w-6 h-6" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-base font-bold text-foreground group-hover:text-accent transition-colors">
+                    {t.speedType}
+                  </h3>
+                </div>
+                <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                  {t.speedTypeDesc}
+                </p>
+              </div>
+            </Link>
+          </div>
+        </div>
 
         {/* Yanlışlarım Banner */}
         <div className="w-full max-w-sm mx-auto mb-10 flex justify-center">
