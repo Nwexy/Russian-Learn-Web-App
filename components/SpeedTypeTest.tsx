@@ -688,6 +688,8 @@ export function SpeedTypeTest({
         return;
       }
 
+      if (activeView !== "solo") return;
+
       if (e.key === "Escape") {
         e.preventDefault();
         init();
@@ -707,7 +709,7 @@ export function SpeedTypeTest({
 
     window.addEventListener("keydown", handleGlobalKeyDown);
     return () => window.removeEventListener("keydown", handleGlobalKeyDown);
-  }, [isLangModalOpen, isFocused, init]);
+  }, [isLangModalOpen, activeView, isFocused, init]);
 
   // Focus click handler
   const handleGameContainerClick = () => {
@@ -734,6 +736,8 @@ export function SpeedTypeTest({
   const matchmakingChannelRef = useRef<RealtimeChannel | null>(null);
   const raceChannelRef = useRef<RealtimeChannel | null>(null);
   const isMatchedRef = useRef<boolean>(false);
+  const bothFinishedRef = useRef<boolean>(false);
+  const countdownIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const raceOpponentResultRef = useRef<{ wpm: number; acc: number; raw: number } | null>(null);
   const racePlayerResultRef = useRef<{ wpm: number; acc: number; raw: number }>({ wpm: 0, acc: 0, raw: 0 });
 
@@ -791,6 +795,14 @@ export function SpeedTypeTest({
       playerIdRef.current = "p_" + Math.random().toString(36).slice(2, 9);
     }
     return () => {
+      if (countdownIntervalRef.current) {
+        clearInterval(countdownIntervalRef.current);
+        countdownIntervalRef.current = null;
+      }
+      if (raceStateRef.current.intervalId) {
+        clearInterval(raceStateRef.current.intervalId);
+        raceStateRef.current.intervalId = null;
+      }
       if (matchmakingChannelRef.current) {
         supabase.removeChannel(matchmakingChannelRef.current);
         matchmakingChannelRef.current = null;
@@ -911,6 +923,7 @@ export function SpeedTypeTest({
       state.intervalId = null;
     }
     state.running = false;
+    state.playerDone = true;
 
     const sec = Math.max((Date.now() - state.startTime) / 1000, 1);
     const min = sec / 60;
@@ -939,6 +952,7 @@ export function SpeedTypeTest({
 
     // Check if opponent already finished
     if (raceOpponentResultRef.current) {
+      bothFinishedRef.current = true;
       const oppResult = raceOpponentResultRef.current;
       setRacePlayerResult({
         wpm: res.wpm,
@@ -952,6 +966,7 @@ export function SpeedTypeTest({
       setRaceScreen("results");
     } else {
       setIsWaitingForOpponent(true);
+      setRaceScreen("results");
     }
   }, [calculateRaceProgress, sendLiveProgress]);
 
@@ -1009,19 +1024,26 @@ export function SpeedTypeTest({
   }, [endRace, updateAndSendProgress, updateRaceCaret]);
 
   const startRaceCountdown = useCallback(() => {
+    if (countdownIntervalRef.current) {
+      clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
     setRaceScreen("race");
     setIsCountdownActive(true);
     let count = 3;
     setCountdown(count);
 
-    const countInterval = setInterval(() => {
+    countdownIntervalRef.current = setInterval(() => {
       count--;
       if (count > 0) {
         setCountdown(count);
       } else if (count === 0) {
         setCountdown("GO!");
       } else {
-        clearInterval(countInterval);
+        if (countdownIntervalRef.current) {
+          clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+        }
         setIsCountdownActive(false);
         startRace();
       }
@@ -1050,8 +1072,11 @@ export function SpeedTypeTest({
       raceIdRef.current = roomId;
       raceWordsRef.current = words;
       isMatchedRef.current = true;
+      bothFinishedRef.current = false;
+      raceStateRef.current.playerDone = false;
       raceOpponentResultRef.current = null;
       racePlayerResultRef.current = { wpm: 0, acc: 0, raw: 0 };
+      setIsWaitingForOpponent(false);
       setRaceOpponent(opponentName);
       setRaceWords(words);
       setRacePlayerProgress(0);
@@ -1069,21 +1094,48 @@ export function SpeedTypeTest({
       if (raceChannelRef.current) {
         supabase.removeChannel(raceChannelRef.current);
       }
-      const raceChannel = supabase.channel(`race:${roomId}`);
+      const myId = playerIdRef.current;
+      const raceChannel = supabase.channel(`race:${roomId}`, {
+        config: { presence: { key: myId } },
+      });
       raceChannelRef.current = raceChannel;
+
+      const handleUnexpectedDisconnect = () => {
+        if (bothFinishedRef.current) return;
+        if (raceStateRef.current.running || raceStateRef.current.playerDone) {
+          if (countdownIntervalRef.current) {
+            clearInterval(countdownIntervalRef.current);
+            countdownIntervalRef.current = null;
+          }
+          if (raceStateRef.current.intervalId) {
+            clearInterval(raceStateRef.current.intervalId);
+            raceStateRef.current.intervalId = null;
+          }
+          raceStateRef.current.running = false;
+          setIsCountdownActive(false);
+          setIsWaitingForOpponent(false);
+          if (raceChannelRef.current) {
+            supabase.removeChannel(raceChannelRef.current);
+            raceChannelRef.current = null;
+          }
+          alert(t.raceOpponentDisconnected);
+          setRaceScreen("username");
+        }
+      };
 
       raceChannel
         .on("broadcast", { event: "progress" }, ({ payload }) => {
-          if (payload.playerId !== playerIdRef.current) {
+          if (payload.playerId !== myId) {
             setRaceOpponentWpm(payload.wpm);
             setRaceOpponentProgress(payload.progress);
           }
         })
         .on("broadcast", { event: "finished" }, ({ payload }) => {
-          if (payload.playerId !== playerIdRef.current) {
+          if (payload.playerId !== myId) {
             raceOpponentResultRef.current = payload.result;
             setRaceOpponentResult(payload.result);
             if (raceStateRef.current.playerDone) {
+              bothFinishedRef.current = true;
               const myResult = racePlayerResultRef.current;
               setRacePlayerResult({
                 wpm: myResult.wpm,
@@ -1098,21 +1150,21 @@ export function SpeedTypeTest({
           }
         })
         .on("broadcast", { event: "disconnected" }, ({ payload }) => {
-          if (payload.playerId !== playerIdRef.current) {
-            if (raceStateRef.current.running || raceStateRef.current.playerDone) {
-              if (raceStateRef.current.intervalId) {
-                clearInterval(raceStateRef.current.intervalId);
-                raceStateRef.current.intervalId = null;
-              }
-              raceStateRef.current.running = false;
-              setIsWaitingForOpponent(false);
-              alert(t.raceOpponentDisconnected);
-              setRaceScreen("username");
-            }
+          if (payload.playerId !== myId) {
+            handleUnexpectedDisconnect();
           }
         })
-        .subscribe((status) => {
+        .on("presence", { event: "leave" }, ({ leftPresences }) => {
+          const opponentLeft = (leftPresences as unknown as { id?: string }[]).some(
+            (p) => p.id && p.id !== myId
+          );
+          if (opponentLeft) {
+            handleUnexpectedDisconnect();
+          }
+        })
+        .subscribe(async (status) => {
           if (status === "SUBSCRIBED") {
+            await raceChannel.track({ id: myId });
             startRaceCountdown();
           }
         });
@@ -1123,6 +1175,9 @@ export function SpeedTypeTest({
   const handleStartRacing = useCallback(() => {
     setRaceScreen("waiting");
     isMatchedRef.current = false;
+    bothFinishedRef.current = false;
+    raceStateRef.current.playerDone = false;
+    setIsWaitingForOpponent(false);
     raceOpponentResultRef.current = null;
 
     const langKey = raceLanguage.toLowerCase().startsWith("en")
@@ -1142,12 +1197,12 @@ export function SpeedTypeTest({
     }
 
     const channel = supabase.channel(`matchmaking:${langKey}`, {
-      config: { presence: { key: myId } },
+      config: { broadcast: { ack: true }, presence: { key: myId } },
     });
     matchmakingChannelRef.current = channel;
 
     channel
-      .on("presence", { event: "sync" }, () => {
+      .on("presence", { event: "sync" }, async () => {
         if (isMatchedRef.current) return;
         const presenceState = channel.presenceState();
         const players: { id: string; username: string }[] = [];
@@ -1173,7 +1228,7 @@ export function SpeedTypeTest({
               .toString(36)
               .slice(2, 7)}`;
             const words = generateRaceWords(langKey);
-            channel.send({
+            await channel.send({
               type: "broadcast",
               event: "match_found",
               payload: {
@@ -1185,7 +1240,7 @@ export function SpeedTypeTest({
                 guestUsername: players[1].username,
               },
             });
-            // Host joins the race room directly
+            // Host joins the race room after match_found ack
             joinRaceRoom(roomId, words, players[1].username);
           }
         }
@@ -2070,6 +2125,10 @@ export function SpeedTypeTest({
                 <button
                   type="button"
                   onClick={() => {
+                    if (raceChannelRef.current) {
+                      supabase.removeChannel(raceChannelRef.current);
+                      raceChannelRef.current = null;
+                    }
                     setActiveView("solo");
                     init();
                   }}
