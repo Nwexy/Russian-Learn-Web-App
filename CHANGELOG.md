@@ -3,6 +3,13 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-11-26
+- Yaris (Race) modu Supabase Realtime ile yeniden yazildi; in-memory SSE backend (lib/race-hub.ts ve app/api/race/route.ts) tamamen kaldirildi.
+- Matchmaking artik Supabase Presence ile istemci tarafinda yapiliyor; sunucu tarafinda state tutulmuyor.
+- Yaris sirasindaki ilerleme ve sonuc bilgileri Supabase Broadcast uzerinden gercek zamanli iletiliyor.
+- Netlify gibi serverless platformlarda 1v1 cok oyunculu yaris modu artik calisiyor.
+- lib/supabase.ts istemci modulu eklendi; .env.local dosyasina Supabase URL ve publishable key tanimandi.
+
 ## 2026-11-25
 - Test Yourself ozelligi tamamen kaldirildi: /test-yourself sayfasi, /api/analyze rotasi, ilgili i18n anahtarlari (testYourself, testYourselfDesc, analyze, analyzing, analysisError, analysisResult, enterRussianSentence), AnalyzedWord ve AnalysisResult tipleri ve Practice sayfasindaki baglanti silindi. Practice sayfasindaki Ozel Araclar bolumu SpeedType icin tek sutunlu yapiya guncellendi.
 - SpeedType modunda test bitmeden yeniden baslatma (repeat) yapildiginda eski yazilan harflerin ve kelimelerin stillerinin ve ekstra karakterlerinin temizlenmeme hatasi giderildi; her tekrarda kelimeler ve harf durumlari tamamen sifirlanacak sekilde duzeltildi.

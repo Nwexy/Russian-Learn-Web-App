@@ -12,6 +12,8 @@ import {
   Tooltip,
 } from "chart.js";
 import { languageData, type LanguageItem } from "@/lib/speedtype-words";
+import { supabase } from "@/lib/supabase";
+import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import "./speedtype.css";
@@ -729,7 +731,11 @@ export function SpeedTypeTest({
      ========================================================================== */
   const playerIdRef = useRef<string>("");
   const raceIdRef = useRef<string>("");
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const matchmakingChannelRef = useRef<RealtimeChannel | null>(null);
+  const raceChannelRef = useRef<RealtimeChannel | null>(null);
+  const isMatchedRef = useRef<boolean>(false);
+  const raceOpponentResultRef = useRef<{ wpm: number; acc: number; raw: number } | null>(null);
+  const racePlayerResultRef = useRef<{ wpm: number; acc: number; raw: number }>({ wpm: 0, acc: 0, raw: 0 });
 
   const [raceScreen, setRaceScreen] = useState<RaceScreenState>("username");
   const [raceUsername, setRaceUsername] = useState<string>("");
@@ -785,9 +791,13 @@ export function SpeedTypeTest({
       playerIdRef.current = "p_" + Math.random().toString(36).slice(2, 9);
     }
     return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
+      if (matchmakingChannelRef.current) {
+        supabase.removeChannel(matchmakingChannelRef.current);
+        matchmakingChannelRef.current = null;
+      }
+      if (raceChannelRef.current) {
+        supabase.removeChannel(raceChannelRef.current);
+        raceChannelRef.current = null;
       }
     };
   }, []);
@@ -844,22 +854,20 @@ export function SpeedTypeTest({
     });
   }, [getRaceLineHeight]);
 
-  // Send live progress over HTTP POST to backend
+  // Send live progress via Supabase Realtime broadcast
   const sendLiveProgress = useCallback(
     (wpm: number, progress: number, charIndex: number) => {
-      if (!raceIdRef.current || !playerIdRef.current) return;
-      fetch("/api/race", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "progress",
+      if (!raceChannelRef.current || !raceIdRef.current) return;
+      raceChannelRef.current.send({
+        type: "broadcast",
+        event: "progress",
+        payload: {
           playerId: playerIdRef.current,
-          raceId: raceIdRef.current,
           wpm,
           progress,
           charIndex,
-        }),
-      }).catch(() => {});
+        },
+      });
     },
     []
   );
@@ -911,24 +919,39 @@ export function SpeedTypeTest({
     const pAcc = state.total > 0 ? Math.round((state.correct / state.total) * 100) : 0;
 
     const res = { wpm: pWpm, acc: pAcc, raw: pRaw };
+    racePlayerResultRef.current = res;
     setRacePlayerResult((prev) => ({ ...prev, ...res }));
-    setIsWaitingForOpponent(true);
 
     const curProg = calculateRaceProgress();
     setRacePlayerProgress(curProg);
 
-    if (raceIdRef.current && playerIdRef.current) {
+    if (raceChannelRef.current) {
       sendLiveProgress(pWpm, curProg, state.charIdx);
-      fetch("/api/race", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "finish",
+      raceChannelRef.current.send({
+        type: "broadcast",
+        event: "finished",
+        payload: {
           playerId: playerIdRef.current,
-          raceId: raceIdRef.current,
           result: res,
-        }),
-      }).catch(() => {});
+        },
+      });
+    }
+
+    // Check if opponent already finished
+    if (raceOpponentResultRef.current) {
+      const oppResult = raceOpponentResultRef.current;
+      setRacePlayerResult({
+        wpm: res.wpm,
+        acc: res.acc,
+        raw: res.raw,
+        isWinner: res.wpm > oppResult.wpm,
+        isTie: res.wpm === oppResult.wpm,
+      });
+      setRaceOpponentResult(oppResult);
+      setIsWaitingForOpponent(false);
+      setRaceScreen("results");
+    } else {
+      setIsWaitingForOpponent(true);
     }
   }, [calculateRaceProgress, sendLiveProgress]);
 
@@ -1005,81 +1028,187 @@ export function SpeedTypeTest({
     }, 900);
   }, [startRace]);
 
-  // Connect Server-Sent Events to the real-time matchmaking hub
-  const connectRaceSse = useCallback(
-    (onConnected?: () => void) => {
-      if (eventSourceRef.current) {
-        if (eventSourceRef.current.readyState === EventSource.OPEN) {
-          onConnected?.();
-          return;
-        }
-        eventSourceRef.current.close();
+  // Generate word list for race mode (client-side)
+  const generateRaceWords = useCallback((langKey: string) => {
+    const isEn = langKey.toLowerCase().startsWith("en");
+    const dict =
+      languageData.find((l) =>
+        isEn ? l.id.startsWith("english") : l.id.startsWith("russian")
+      ) || languageData[0];
+    const source = dict.words;
+    const count = 70;
+    const list: string[] = [];
+    for (let i = 0; i < count; i++) {
+      list.push(source[Math.floor(Math.random() * source.length)]);
+    }
+    return list;
+  }, []);
+
+  // Join a Supabase Realtime race room for 1v1
+  const joinRaceRoom = useCallback(
+    (roomId: string, words: string[], opponentName: string) => {
+      raceIdRef.current = roomId;
+      raceWordsRef.current = words;
+      isMatchedRef.current = true;
+      raceOpponentResultRef.current = null;
+      racePlayerResultRef.current = { wpm: 0, acc: 0, raw: 0 };
+      setRaceOpponent(opponentName);
+      setRaceWords(words);
+      setRacePlayerProgress(0);
+      setRaceOpponentProgress(0);
+      setRaceOpponentWpm(0);
+      setRacePlayerWpm(0);
+
+      // Clean up matchmaking channel
+      if (matchmakingChannelRef.current) {
+        supabase.removeChannel(matchmakingChannelRef.current);
+        matchmakingChannelRef.current = null;
       }
 
-      const es = new EventSource(`/api/race?playerId=${playerIdRef.current}`);
-      eventSourceRef.current = es;
+      // Set up race channel
+      if (raceChannelRef.current) {
+        supabase.removeChannel(raceChannelRef.current);
+      }
+      const raceChannel = supabase.channel(`race:${roomId}`);
+      raceChannelRef.current = raceChannel;
 
-      es.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.type === "Connected") {
-            onConnected?.();
-          } else if (data.type === "Waiting") {
-            setRaceScreen("waiting");
-          } else if (data.type === "MatchFound") {
-            raceIdRef.current = data.raceId;
-            raceWordsRef.current = data.words;
-            setRaceOpponent(data.opponentName);
-            setRaceWords(data.words);
-            setRacePlayerProgress(0);
-            setRaceOpponentProgress(0);
-            setRaceOpponentWpm(0);
-            setRacePlayerWpm(0);
-            startRaceCountdown();
-          } else if (data.type === "OpponentProgress") {
-            setRaceOpponentWpm(data.wpm);
-            setRaceOpponentProgress(data.progress);
-          } else if (data.type === "BothFinished") {
-            setIsWaitingForOpponent(false);
-            setRacePlayerResult({
-              ...data.yourResult,
-              isWinner: data.isWinner,
-              isTie: data.isTie,
-            });
-            setRaceOpponentResult(data.oppResult);
-            setRaceScreen("results");
-          } else if (data.type === "OpponentDisconnected") {
-            setIsWaitingForOpponent(false);
-            alert(t.raceOpponentDisconnected);
-            setRaceScreen("username");
+      raceChannel
+        .on("broadcast", { event: "progress" }, ({ payload }) => {
+          if (payload.playerId !== playerIdRef.current) {
+            setRaceOpponentWpm(payload.wpm);
+            setRaceOpponentProgress(payload.progress);
           }
-        } catch {
-          // ignore keepalive pings
-        }
-      };
-
-      es.onerror = () => {
-        // SSE automatic reconnect
-      };
+        })
+        .on("broadcast", { event: "finished" }, ({ payload }) => {
+          if (payload.playerId !== playerIdRef.current) {
+            raceOpponentResultRef.current = payload.result;
+            setRaceOpponentResult(payload.result);
+            if (raceStateRef.current.playerDone) {
+              const myResult = racePlayerResultRef.current;
+              setRacePlayerResult({
+                wpm: myResult.wpm,
+                acc: myResult.acc,
+                raw: myResult.raw,
+                isWinner: myResult.wpm > payload.result.wpm,
+                isTie: myResult.wpm === payload.result.wpm,
+              });
+              setIsWaitingForOpponent(false);
+              setRaceScreen("results");
+            }
+          }
+        })
+        .on("broadcast", { event: "disconnected" }, ({ payload }) => {
+          if (payload.playerId !== playerIdRef.current) {
+            if (raceStateRef.current.running || raceStateRef.current.playerDone) {
+              if (raceStateRef.current.intervalId) {
+                clearInterval(raceStateRef.current.intervalId);
+                raceStateRef.current.intervalId = null;
+              }
+              raceStateRef.current.running = false;
+              setIsWaitingForOpponent(false);
+              alert(t.raceOpponentDisconnected);
+              setRaceScreen("username");
+            }
+          }
+        })
+        .subscribe((status) => {
+          if (status === "SUBSCRIBED") {
+            startRaceCountdown();
+          }
+        });
     },
     [startRaceCountdown, t.raceOpponentDisconnected]
   );
 
   const handleStartRacing = useCallback(() => {
     setRaceScreen("waiting");
-    connectRaceSse(() => {
-      fetch("/api/race", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "join",
-          playerId: playerIdRef.current,
-          username: raceUsername.trim() || (activeUiLang === "tr" ? "Oyuncu" : "Player"),
-          language: raceLanguage,
-        }),
-      }).catch(() => {});
+    isMatchedRef.current = false;
+    raceOpponentResultRef.current = null;
+
+    const langKey = raceLanguage.toLowerCase().startsWith("en")
+      ? "english"
+      : "russian";
+    const myId = playerIdRef.current;
+    const myUsername =
+      raceUsername.trim() || (activeUiLang === "tr" ? "Oyuncu" : "Player");
+
+    // Clean up previous channels
+    if (matchmakingChannelRef.current) {
+      supabase.removeChannel(matchmakingChannelRef.current);
+    }
+    if (raceChannelRef.current) {
+      supabase.removeChannel(raceChannelRef.current);
+      raceChannelRef.current = null;
+    }
+
+    const channel = supabase.channel(`matchmaking:${langKey}`, {
+      config: { presence: { key: myId } },
     });
-  }, [connectRaceSse, raceUsername, activeUiLang, raceLanguage]);
+    matchmakingChannelRef.current = channel;
+
+    channel
+      .on("presence", { event: "sync" }, () => {
+        if (isMatchedRef.current) return;
+        const presenceState = channel.presenceState();
+        const players: { id: string; username: string }[] = [];
+        for (const key in presenceState) {
+          const presences = presenceState[key] as unknown as {
+            id: string;
+            username: string;
+          }[];
+          if (presences && presences.length > 0) {
+            players.push({
+              id: presences[0].id,
+              username: presences[0].username,
+            });
+          }
+        }
+
+        if (players.length >= 2) {
+          players.sort((a, b) => a.id.localeCompare(b.id));
+          if (players[0].id === myId) {
+            // I am the host - create the match
+            isMatchedRef.current = true;
+            const roomId = `room_${Date.now()}_${Math.random()
+              .toString(36)
+              .slice(2, 7)}`;
+            const words = generateRaceWords(langKey);
+            channel.send({
+              type: "broadcast",
+              event: "match_found",
+              payload: {
+                roomId,
+                words,
+                hostId: myId,
+                hostUsername: myUsername,
+                guestId: players[1].id,
+                guestUsername: players[1].username,
+              },
+            });
+            // Host joins the race room directly
+            joinRaceRoom(roomId, words, players[1].username);
+          }
+        }
+      })
+      .on("broadcast", { event: "match_found" }, ({ payload }) => {
+        if (isMatchedRef.current) return;
+        if (payload.guestId === myId) {
+          isMatchedRef.current = true;
+          joinRaceRoom(payload.roomId, payload.words, payload.hostUsername);
+        }
+      })
+      .subscribe(async (status) => {
+        if (status === "SUBSCRIBED") {
+          await channel.track({ id: myId, username: myUsername });
+        }
+      });
+  }, [
+    raceUsername,
+    activeUiLang,
+    raceLanguage,
+    generateRaceWords,
+    joinRaceRoom,
+  ]);
 
   // Auto-align caret in race mode when words load or race screen opens
   useEffect(() => {
@@ -1700,14 +1829,11 @@ export function SpeedTypeTest({
                   <button
                     type="button"
                     onClick={() => {
-                      fetch("/api/race", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                          action: "leave",
-                          playerId: playerIdRef.current,
-                        }),
-                      }).catch(() => {});
+                      if (matchmakingChannelRef.current) {
+                        supabase.removeChannel(matchmakingChannelRef.current);
+                        matchmakingChannelRef.current = null;
+                      }
+                      isMatchedRef.current = false;
                       setRaceScreen("username");
                     }}
                     className="text-sm text-[#8a8b8c] hover:text-[#e2e2e6] transition-colors"
