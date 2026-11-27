@@ -9,6 +9,7 @@ import {
   SUPPORT_AD_URL,
   SUPPORT_AD_HANDLE,
   getSupportAdCopy,
+  initSupportSession,
   trackSupportClick,
 } from "@/lib/support-ad";
 
@@ -75,6 +76,7 @@ export function MobileBottomAd() {
   }, []);
 
   useEffect(() => {
+    initSupportSession();
     const handleManualPreview = () => {
       showAdOnce();
     };

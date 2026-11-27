@@ -4,6 +4,7 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-27
+- Buy Me a Coffee reklam tiklamalarina cihaz/sistem (device, os, browser, screen_size), tekil ziyaretci (visitor_id), oturum suresi (session_duration_sec) ve Netlify uzerinden ulke/sehir (country, city) takibi eklendi (/api/ad-click).
 - Practice ve Unite Testlerindeki tum soru tiplerine "Skip" (Gec) butonu eklendi.
 - Gecilen sorular yanlis kabul edilip Mistakes (Yanlislar) havuzuna eklendi.
 - Ayarlar sayfasindaki social-icons bolumune Buy Me a Coffee ikonu eklendi; contact-wrapper icindeki Discord karti kaldirilarak yerine interaktif kahve sayaci (1/3/5) ve QR kodlu ozel Buy Me a Coffee karti eklendi.

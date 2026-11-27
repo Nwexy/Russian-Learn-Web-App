@@ -8,6 +8,7 @@ import {
   SUPPORT_AD_URL,
   SUPPORT_AD_HANDLE,
   getSupportAdCopy,
+  initSupportSession,
   trackSupportClick,
   type SupportAdCopy,
 } from "@/lib/support-ad";
@@ -207,6 +208,7 @@ export function SidebarAds() {
   }, [isVisible]);
 
   useEffect(() => {
+    initSupportSession();
     const handleManualPreview = () => {
       showAdsOnce();
     };
