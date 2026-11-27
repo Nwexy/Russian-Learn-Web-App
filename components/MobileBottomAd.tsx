@@ -12,7 +12,7 @@ import {
 } from "@/lib/support-ad";
 
 const AD_INTERVAL_MS = 180_000; // 3 dakika
-const AD_DURATION_MS = 7_500; // 7.5 saniye
+const AD_DURATION_MS = 10_000; // 10 saniye
 const STORAGE_KEY = "mobileAdDismissed";
 
 function isExcludedPath(pathname: string | null): boolean {

@@ -573,6 +573,11 @@ body {
   filter: drop-shadow(0 0 12px rgba(37, 211, 102, 0.7));
 }
 
+.social-btn.telegram:hover .social-icon {
+  color: #229ed9;
+  filter: drop-shadow(0 0 12px rgba(34, 158, 217, 0.75));
+}
+
 .social-btn.gmail:hover .social-icon {
   color: #ea4335;
   filter: drop-shadow(0 0 12px rgba(234, 67, 53, 0.7));
