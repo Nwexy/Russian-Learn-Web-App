@@ -14,7 +14,7 @@ interface AdSlotProps {
 }
 
 function AdSlot({ side, onDismiss }: AdSlotProps) {
-  const slideOffset = side === "left" ? -32 : 32;
+  const slideOffset = side === "left" ? -48 : 48;
 
   return (
     <motion.div
@@ -24,19 +24,19 @@ function AdSlot({ side, onDismiss }: AdSlotProps) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: slideOffset }}
       transition={{ duration: 0.35, ease: "easeOut" }}
-      className="pointer-events-auto relative flex h-full w-full flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-400/50 bg-gray-100/80 p-3 text-center text-gray-500 shadow-sm backdrop-blur-sm dark:border-gray-600/70 dark:bg-gray-900/75 dark:text-gray-400"
+      className="pointer-events-auto relative flex h-full w-full flex-col items-center justify-center rounded-none border-2 border-dashed border-gray-400/50 bg-gray-100/80 p-3 text-center text-gray-500 shadow-sm backdrop-blur-sm dark:border-gray-600/70 dark:bg-gray-900/75 dark:text-gray-400"
     >
       <button
         type="button"
         onClick={onDismiss}
         aria-label="Reklami kapat"
         title="Reklami kapat"
-        className="absolute right-2 top-2 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
+        className="absolute right-2.5 top-2.5 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-800 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100"
       >
         <X className="h-3.5 w-3.5" />
       </button>
 
-      <div className="select-none px-1">
+      <div className="select-none px-2">
         <p className="text-xs font-semibold leading-snug tracking-wide">
           Reklam Alanı / Ad Space
         </p>
@@ -47,6 +47,7 @@ function AdSlot({ side, onDismiss }: AdSlotProps) {
 
 export function SidebarAds() {
   const [isVisible, setIsVisible] = useState(false);
+  const [bounds, setBounds] = useState({ top: 65, bottom: 0 });
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const hideTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -61,7 +62,78 @@ export function SidebarAds() {
     }
   }, []);
 
+  const showAdsOnce = useCallback(() => {
+    setIsVisible(true);
+
+    if (hideTimeoutRef.current !== null) {
+      clearTimeout(hideTimeoutRef.current);
+    }
+
+    hideTimeoutRef.current = setTimeout(() => {
+      setIsVisible(false);
+      hideTimeoutRef.current = null;
+    }, AD_DURATION_MS);
+  }, []);
+
   useEffect(() => {
+    let rafId: number | null = null;
+
+    const updateBounds = () => {
+      rafId = null;
+      const navbar = document.querySelector<HTMLElement>(".navbar");
+      const footer = document.getElementById("app-footer");
+
+      const top = navbar
+        ? Math.max(0, Math.round(navbar.getBoundingClientRect().bottom))
+        : 65;
+
+      let bottom = 0;
+      if (footer) {
+        const footerTop = footer.getBoundingClientRect().top;
+        if (footerTop < window.innerHeight) {
+          bottom = Math.max(0, Math.round(window.innerHeight - footerTop));
+        }
+      }
+
+      setBounds((prev) =>
+        prev.top === top && prev.bottom === bottom ? prev : { top, bottom }
+      );
+    };
+
+    const scheduleUpdate = () => {
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(updateBounds);
+      }
+    };
+
+    updateBounds();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate, { passive: true });
+
+    let resizeObserver: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(scheduleUpdate);
+      resizeObserver.observe(document.body);
+    }
+
+    return () => {
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      if (resizeObserver) {
+        resizeObserver.disconnect();
+      }
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId);
+      }
+    };
+  }, [isVisible]);
+
+  useEffect(() => {
+    const handleManualPreview = () => {
+      showAdsOnce();
+    };
+    window.addEventListener("sidebar-ads:preview", handleManualPreview);
+
     let dismissed = false;
     try {
       dismissed = sessionStorage.getItem(STORAGE_KEY) === "true";
@@ -69,37 +141,27 @@ export function SidebarAds() {
       dismissed = false;
     }
 
-    if (dismissed) {
-      return;
+    if (!dismissed) {
+      intervalRef.current = setInterval(() => {
+        try {
+          if (sessionStorage.getItem(STORAGE_KEY) === "true") {
+            clearTimers();
+            setIsVisible(false);
+            return;
+          }
+        } catch {
+          // sessionStorage erisilemiyorsa devam et
+        }
+
+        showAdsOnce();
+      }, AD_INTERVAL_MS);
     }
 
-    intervalRef.current = setInterval(() => {
-      try {
-        if (sessionStorage.getItem(STORAGE_KEY) === "true") {
-          clearTimers();
-          setIsVisible(false);
-          return;
-        }
-      } catch {
-        // sessionStorage erisilemiyorsa devam et
-      }
-
-      setIsVisible(true);
-
-      if (hideTimeoutRef.current !== null) {
-        clearTimeout(hideTimeoutRef.current);
-      }
-
-      hideTimeoutRef.current = setTimeout(() => {
-        setIsVisible(false);
-        hideTimeoutRef.current = null;
-      }, AD_DURATION_MS);
-    }, AD_INTERVAL_MS);
-
     return () => {
+      window.removeEventListener("sidebar-ads:preview", handleManualPreview);
       clearTimers();
     };
-  }, [clearTimers]);
+  }, [clearTimers, showAdsOnce]);
 
   const handleDismiss = useCallback(() => {
     setIsVisible(false);
@@ -111,15 +173,26 @@ export function SidebarAds() {
     }
   }, [clearTimers]);
 
+  const verticalStyle = {
+    top: `${bounds.top}px`,
+    bottom: `${bounds.bottom}px`,
+  };
+
   return (
     <>
-      <div className="pointer-events-none fixed bottom-24 left-4 top-24 z-30 hidden w-32 lg:flex">
+      <div
+        style={verticalStyle}
+        className="pointer-events-none fixed left-0 z-30 hidden w-44 lg:flex"
+      >
         <AnimatePresence>
           {isVisible && <AdSlot key="left-ad" side="left" onDismiss={handleDismiss} />}
         </AnimatePresence>
       </div>
 
-      <div className="pointer-events-none fixed bottom-24 right-4 top-24 z-30 hidden w-32 lg:flex">
+      <div
+        style={verticalStyle}
+        className="pointer-events-none fixed right-0 z-30 hidden w-44 lg:flex"
+      >
         <AnimatePresence>
           {isVisible && <AdSlot key="right-ad" side="right" onDismiss={handleDismiss} />}
         </AnimatePresence>
