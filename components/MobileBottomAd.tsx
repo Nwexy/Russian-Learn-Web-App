@@ -12,7 +12,7 @@ import {
 } from "@/lib/support-ad";
 
 const AD_INTERVAL_MS = 180_000; // 3 dakika
-const AD_DURATION_MS = 15_000; // 15 saniye
+const AD_DURATION_MS = 7_500; // 7.5 saniye
 const STORAGE_KEY = "mobileAdDismissed";
 
 function isExcludedPath(pathname: string | null): boolean {
@@ -168,7 +168,7 @@ export function MobileBottomAd() {
                     <span className="text-[10px] font-bold uppercase tracking-widest text-amber-700 dark:text-[#FFDD00]">
                       {copy.badge}
                     </span>
-                    <span className="truncate font-mono text-[10px] text-slate-400 dark:text-slate-500">
+                    <span className="hidden truncate font-mono text-[10px] text-slate-400 sm:inline dark:text-slate-500">
                       {SUPPORT_AD_HANDLE}
                     </span>
                   </div>

@@ -12,7 +12,7 @@ import {
 } from "@/lib/support-ad";
 
 const AD_INTERVAL_MS = 180_000; // 3 dakika
-const AD_DURATION_MS = 15_000; // 15 saniye
+const AD_DURATION_MS = 7_500; // 7.5 saniye
 const STORAGE_KEY = "adsDismissed";
 
 interface AdSlotProps {
