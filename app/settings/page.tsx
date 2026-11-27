@@ -7,11 +7,13 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Coffee, ExternalLink } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { clearAllMistakes } from "@/lib/mistakes";
 import { exportData, importData } from "@/lib/backup";
+import { SUPPORT_AD_URL, SUPPORT_AD_HANDLE } from "@/lib/support-ad";
 import { FlagTr, FlagUs } from "@/components/icons/flag-icons";
 import type { Lang } from "@/types";
 
@@ -20,6 +22,7 @@ export default function SettingsPage() {
   const { uiLang, translationLang, showPronunciation, setUiLang, setTranslationLang, setShowPronunciation } = useLang();
   const t = getMessages(uiLang);
   const [cleared, setCleared] = useState(false);
+  const [bmcCount, setBmcCount] = useState<1 | 3 | 5>(1);
   const [waInput, setWaInput] = useState("");
   const [gmSubject, setGmSubject] = useState("");
   const [gmBody, setGmBody] = useState("");
@@ -387,63 +390,100 @@ export default function SettingsPage() {
               <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
             </svg>
           </a>
+          <a
+            href={SUPPORT_AD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-btn bmc"
+            data-i18n-tooltip="tooltip_bmc"
+            data-tooltip="Buy Me a Coffee"
+            title="Buy Me a Coffee"
+            aria-label="Buy Me a Coffee"
+          >
+            <Coffee className="social-icon" strokeWidth={2.1} aria-hidden="true" />
+          </a>
         </div>
 
         {/* İletişim Mockup Kartları */}
         <div className="contact-wrapper">
-          {/* DISCORD PROFİL KARTI */}
-          <div className="discord-profile">
-            <div className="dc-banner" />
-            <div className="dc-header">
-              <div className="dc-avatar-wrapper">
-                <img
-                  src="https://discordapp.com/assets/1cbd08c76f8af6dddce02c5138971129.png"
-                  id="discordAvatar"
-                  alt="Nwexy"
-                />
-                <div className="dc-status" />
+          {/* BUY ME A COFFEE MOCKUP KARTI */}
+          <div className="bmc-mockup">
+            <div className="bmc-banner">
+              <span className="bmc-banner-badge">
+                <Coffee size={12} aria-hidden="true" />
+                <span>Buy Me a Coffee</span>
+              </span>
+            </div>
+            <div className="bmc-header">
+              <div className="bmc-avatar-wrapper">
+                <img src="/avatar.jpg" alt="Nwexy" />
+                <div className="bmc-avatar-badge" aria-hidden="true">
+                  <Coffee size={12} strokeWidth={2.5} />
+                </div>
               </div>
             </div>
-            <div className="dc-body">
-              <h3 className="dc-display-name" id="discordGlobalName">
-                Nwexy
-              </h3>
-              <p className="dc-username">
-                <span id="discordUsername">
-                  {uiLang === "tr"
-                    ? ""
-                    : ""}
+            <div className="bmc-body">
+              <div className="bmc-profile-row">
+                <div className="bmc-profile-info">
+                  <h3 className="bmc-display-name">Nwexy</h3>
+                  <a
+                    href={SUPPORT_AD_URL}
+                    className="bmc-handle"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {SUPPORT_AD_HANDLE}
+                  </a>
+                  <p className="bmc-subtitle">
+                    {uiLang === "tr"
+                      ? "Rusça Öğren projesinin gelişimine bir kahveyle destek ol."
+                      : "Support the free development of Learn Russian with a coffee."}
+                  </p>
+                </div>
+                <a
+                  href={SUPPORT_AD_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bmc-qr-box"
+                  title="Buy Me a Coffee QR"
+                  aria-label="Buy Me a Coffee QR"
+                >
+                  <img src="/bmc_qr.png" alt="Buy Me a Coffee QR Code" width={58} height={58} />
+                </a>
+              </div>
+
+              <div className="bmc-selector">
+                <span className="bmc-selector-left">
+                  <Coffee size={18} strokeWidth={2.3} aria-hidden="true" />
+                  <span className="bmc-selector-times">x</span>
                 </span>
-              </p>
-              <a
-                href="https://nwexy.netlify.app/"
-                className="dc-link"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                nwexy.netlify.app
-              </a>
+                <div className="bmc-count-group" role="group" aria-label="Coffee count">
+                  {([1, 3, 5] as const).map((cnt) => (
+                    <button
+                      key={cnt}
+                      type="button"
+                      onClick={() => setBmcCount(cnt)}
+                      className={`bmc-count-btn ${bmcCount === cnt ? "active" : ""}`}
+                    >
+                      {cnt}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
               <a
-                href="https://discord.com/users/616186436550656000"
+                href={SUPPORT_AD_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="dc-btn"
+                className="bmc-btn"
               >
-                <svg
-                  style={{ width: "16px", height: "16px" }}
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="m22 2-7 20-4-9-9-4Z" />
-                  <path d="M22 2 11 13" />
-                </svg>
-                <span>{uiLang === "tr" ? "Mesaj Gönder!" : "Send Message!"}</span>
+                <Coffee size={16} strokeWidth={2.4} aria-hidden="true" />
+                <span>
+                  {uiLang === "tr"
+                    ? `${bmcCount} Kahve Ismarla`
+                    : `Buy ${bmcCount} ${bmcCount === 1 ? "Coffee" : "Coffees"}`}
+                </span>
+                <ExternalLink size={14} aria-hidden="true" />
               </a>
             </div>
           </div>
