@@ -17,6 +17,7 @@ import { PwaRegister } from "@/components/pwa-register";
 import { Toaster } from "@/components/ui/sonner";
 import { TtsFallbackNotifier } from "@/components/tts-fallback-notifier";
 import { SidebarAds } from "@/components/SidebarAds";
+import { MobileBottomAd } from "@/components/MobileBottomAd";
 
 const inter = Inter({
   variable: "--font-geist-sans",
@@ -66,6 +67,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <SidebarAds />
             <Footer />
+            <MobileBottomAd />
             <Toaster position="top-right" richColors />
             <TtsFallbackNotifier />
           </LangProvider>

@@ -4,6 +4,9 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-27
+- Mobil cihazlar icin ekranin altindan cikan (sticky bottom) reklam bandi eklendi.
+- Reklamlarin Test Yourself ve Practice sayfalarinda (yazi yazarken) cikmasi engellendi.
+- Mobil reklamlar icin oturum bazli kapatma (sessionStorage) eklendi.
 - Reklamlar icin sag ve sol dikey alanlar (placeholder) eklendi.
 - Reklamlar 3 dakikada bir cikacak sekilde, 15 saniye kalacak sekilde ve kapatilabilir (session bazli) olacak sekilde zamanlandi.
 - Reklamlar mobil cihazlarda gizlendi.
