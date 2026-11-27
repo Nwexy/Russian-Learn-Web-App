@@ -13,6 +13,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { SkipForward } from "lucide-react";
 import { db } from "@/lib/db";
 import { getUnitById, getUnitTitle } from "@/lib/content";
 import { getProgress } from "@/lib/progress";
@@ -60,6 +61,7 @@ export default function UnitPracticePage() {
   // Soru başına durum
   const [revealed, setRevealed] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [isSkipped, setIsSkipped] = useState(false);
   const [mcSelected, setMcSelected] = useState<number | null>(null);
   const [answer, setAnswer] = useState("");
 
@@ -72,6 +74,14 @@ export default function UnitPracticePage() {
   const [matchRightOrder, setMatchRightOrder] = useState<{ id: string; translation: string }[]>([]);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const matchWrongTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearMatchTimer = useCallback(() => {
+    if (matchWrongTimerRef.current !== null) {
+      clearTimeout(matchWrongTimerRef.current);
+      matchWrongTimerRef.current = null;
+    }
+  }, []);
 
   /** Ünitenin kelimelerini yükle */
   useEffect(() => {
@@ -115,12 +125,17 @@ export default function UnitPracticePage() {
       setLoading(false);
     }
     load();
-  }, [unit]);
+    return () => {
+      clearMatchTimer();
+    };
+  }, [unit, clearMatchTimer]);
 
   /** Soru başına durumu sıfırla; eşleştirme sorusuysa sağ sütunu hazırla */
   const prepareQuestion = useCallback((q: MixedQuestion | undefined) => {
+    clearMatchTimer();
     setRevealed(false);
     setIsCorrect(null);
+    setIsSkipped(false);
     setMcSelected(null);
     setAnswer("");
     setMatchLeft(null);
@@ -131,7 +146,7 @@ export default function UnitPracticePage() {
     if (q?.kind === "matching") {
       setMatchRightOrder(shuffled(q.data.pairs.map((p) => ({ id: p.id, translation: p.translation }))));
     }
-  }, []);
+  }, [clearMatchTimer]);
 
   /** Yeni oturum başlat (yükleme bitince otomatik çağrılır) */
   const startSession = useCallback(() => {
@@ -262,11 +277,87 @@ export default function UnitPracticePage() {
           : q.kind === "listening" ? t.listening
             : t.speaking;
 
+  const handleSkip = async () => {
+    if (revealed) return;
+    setIsSkipped(true);
+
+    if (q.kind === "multipleChoice") {
+      const mc = q.data;
+      setMcSelected(null);
+      await settle(
+        false,
+        "multipleChoice",
+        mc.item.id,
+        {
+          question: mc.question,
+          options: mc.options,
+          correctIndex: mc.correctIndex,
+          direction: mc.direction,
+          variant: mc.variant,
+          hint: mc.hint,
+        },
+        "",
+        mc.options[mc.correctIndex]
+      );
+    } else if (q.kind === "fillBlank") {
+      const fb = q.data;
+      setAnswer("");
+      await settle(
+        false,
+        "fillBlank",
+        fb.item.id,
+        {
+          sentenceWithBlank: fb.sentenceWithBlank,
+          correctWord: fb.correctWord,
+          hint: fb.hint,
+          fullTranslation: fb.fullTranslation,
+        },
+        "",
+        fb.correctWord
+      );
+    } else if (q.kind === "matching") {
+      clearMatchTimer();
+      setMatchLeft(null);
+      setMatchRight(null);
+      setMatchWrong(false);
+      setMatchHadError(true);
+      setIsCorrect(false);
+      setRevealed(true);
+
+      const unmatched = q.data.pairs.filter((p) => !matchedIds.has(p.id));
+      for (const pair of unmatched) {
+        await recordMistake({
+          exerciseType: "matching",
+          itemId: pair.id,
+          questionData: { ru: pair.ru, translation: pair.translation },
+          userAnswer: "",
+          correctAnswer: pair.translation,
+        });
+      }
+    } else if (q.kind === "listening") {
+      const ls = q.data;
+      setAnswer("");
+      await settle(false, "listening", ls.item.id, { correctWord: ls.correctWord }, "", ls.correctWord);
+    }
+  };
+
   const header = (
     <>
       <div className="practice-progress-row">
         <span className="review-progress">{index + 1} / {questions.length}</span>
-        <span className="practice-type-badge">{getUnitTitle(unit, uiLang)} — {typeLabel}</span>
+        <div className="flex items-center gap-2">
+          <span className="practice-type-badge">{getUnitTitle(unit, uiLang)} — {typeLabel}</span>
+          {!revealed && (
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors cursor-pointer"
+            >
+              <SkipForward className="w-3.5 h-3.5" />
+              <span>{t.skip}</span>
+            </button>
+          )}
+        </div>
       </div>
       <div className="review-progress-bar">
         <div className="review-progress-fill" style={{ width: `${(index / questions.length) * 100}%` }} />
@@ -274,12 +365,14 @@ export default function UnitPracticePage() {
     </>
   );
 
+  const wrongLabel = isSkipped ? `${t.skipped} (${t.wrong})` : t.wrong;
+
   /** Ortak geri bildirim: doğru/yanlış + anlam + okunuş + tam cümle çevirisi */
   const feedback = (item: Item | null, wrongText?: string, fullTranslation?: string) => (
     <div className="practice-feedback">
       <div>
         <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-          {isCorrect ? t.correct : wrongText ? `${t.wrong} — ${t.showCorrect}: ${wrongText}` : t.wrong}
+          {isCorrect ? t.correct : wrongText ? `${wrongLabel} — ${t.showCorrect}: ${wrongText}` : wrongLabel}
         </span>
         {fullTranslation ? (
           <div className="feedback-sentence-translation">
@@ -476,7 +569,9 @@ export default function UnitPracticePage() {
             correctAnswer: leftPair.translation,
           });
         }
-        setTimeout(() => {
+        if (matchWrongTimerRef.current !== null) clearTimeout(matchWrongTimerRef.current);
+        matchWrongTimerRef.current = setTimeout(() => {
+          matchWrongTimerRef.current = null;
           setMatchLeft(null);
           setMatchRight(null);
           setMatchWrong(false);
@@ -513,7 +608,7 @@ export default function UnitPracticePage() {
               if (matched) cls += " match-item-matched";
               else if (matchLeft === pair.id) cls += matchWrong ? " match-item-wrong" : " match-item-selected";
               return (
-                <button key={pair.id} className={cls} onClick={() => onLeft(pair.id)} disabled={matched}>
+                <button key={pair.id} className={cls} onClick={() => onLeft(pair.id)} disabled={matched || revealed}>
                   {pair.ru}
                 </button>
               );
@@ -526,14 +621,34 @@ export default function UnitPracticePage() {
               if (matched) cls += " match-item-matched";
               else if (matchRight === r.id) cls += matchWrong ? " match-item-wrong" : " match-item-selected";
               return (
-                <button key={`r-${r.id}`} className={cls} onClick={() => onRight(r.id)} disabled={matched}>
+                <button key={`r-${r.id}`} className={cls} onClick={() => onRight(r.id)} disabled={matched || revealed}>
                   {r.translation}
                 </button>
               );
             })}
           </div>
         </div>
-        {revealed && feedback(null)}
+        {revealed && (
+          <div className="practice-feedback" style={{ marginTop: "1.5rem" }}>
+            <div>
+              <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
+                {isCorrect ? t.correct : wrongLabel}
+              </span>
+              {isSkipped && (
+                <div className="text-xs text-muted-foreground mt-1.5 space-y-0.5">
+                  {pairs.map((p) => (
+                    <div key={p.id}>
+                      {p.ru} {t.meaningEquals} {p.translation}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <button className="practice-btn practice-btn-primary" onClick={next}>
+              {t.next}
+            </button>
+          </div>
+        )}
       </div>
     );
   }

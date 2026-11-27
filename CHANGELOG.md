@@ -4,6 +4,8 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-27
+- Practice ve Unite Testlerindeki tum soru tiplerine "Skip" (Gec) butonu eklendi.
+- Gecilen sorular yanlis kabul edilip Mistakes (Yanlislar) havuzuna eklendi.
 - Ayarlar sayfasindaki social-icons bolumune Buy Me a Coffee ikonu eklendi; contact-wrapper icindeki Discord karti kaldirilarak yerine interaktif kahve sayaci (1/3/5) ve QR kodlu ozel Buy Me a Coffee karti eklendi.
 - Masaustu dikey reklam alanlari (SidebarAds) ve mobil alt bant reklami (MobileBottomAd) buymeacoffee.com/nwexy destek karti olarak TR/EN dil destegiyle uyarlandi.
 - Mobil cihazlar icin ekranin altindan cikan (sticky bottom) reklam bandi eklendi.

@@ -79,6 +79,8 @@ export interface Messages {
   start: string;
   next: string;
   check: string;
+  skip: string;
+  skipped: string;
   correct: string;
   wrong: string;
   showCorrect: string;
@@ -410,6 +412,8 @@ const messages: Record<Lang, Messages> = {
     start: "Başlat",
     next: "Sonraki",
     check: "Kontrol Et",
+    skip: "Geç",
+    skipped: "Geçildi",
     correct: "Doğru",
     wrong: "Yanlış",
     showCorrect: "Doğru cevap",
@@ -737,6 +741,8 @@ const messages: Record<Lang, Messages> = {
     start: "Start",
     next: "Next",
     check: "Check",
+    skip: "Skip",
+    skipped: "Skipped",
     correct: "Correct",
     wrong: "Wrong",
     showCorrect: "Correct answer",

@@ -35,6 +35,7 @@ import {
   CheckCircle2,
   BookOpen,
   Zap,
+  SkipForward,
 } from "lucide-react";
 import {
   Dialog,
@@ -186,6 +187,8 @@ export default function PracticePage() {
   const [matchShuffledRight, setMatchShuffledRight] = useState<{ id: string; translation: string }[]>([]);
   const [matchAttempts, setMatchAttempts] = useState(0);
   const [matchCorrectCount, setMatchCorrectCount] = useState(0);
+  const [matchRevealed, setMatchRevealed] = useState(false);
+  const [isSkipped, setIsSkipped] = useState(false);
 
   // Dinleme state (Tekil mod)
   const [listenQuestions, setListenQuestions] = useState<ListeningQuestion[]>([]);
@@ -212,6 +215,25 @@ export default function PracticePage() {
   const [wbIsCorrect, setWbIsCorrect] = useState<boolean | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const matchWrongTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const matchFinishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const mixedMatchWrongTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const speakingAbortedRef = useRef(false);
+
+  const clearMatchTimers = useCallback(() => {
+    if (matchWrongTimerRef.current !== null) {
+      clearTimeout(matchWrongTimerRef.current);
+      matchWrongTimerRef.current = null;
+    }
+    if (matchFinishTimerRef.current !== null) {
+      clearTimeout(matchFinishTimerRef.current);
+      matchFinishTimerRef.current = null;
+    }
+    if (mixedMatchWrongTimerRef.current !== null) {
+      clearTimeout(mixedMatchWrongTimerRef.current);
+      mixedMatchWrongTimerRef.current = null;
+    }
+  }, []);
 
   /** Dersi tamamlanmış üniteler */
   const completedUnits = units.filter((u) => completedUnitIds.has(u.id));
@@ -233,7 +255,10 @@ export default function PracticePage() {
 
   /** Karışık mod sorusunu hazırla */
   const prepareMixedQuestion = useCallback((q: MixedQuestion) => {
+    speakingAbortedRef.current = true;
     stopSpeechRecognition();
+    clearMatchTimers();
+    setIsSkipped(false);
     setMixedRevealed(false);
     setMixedIsCorrect(null);
     setMixedAnswer("");
@@ -259,7 +284,7 @@ export default function PracticePage() {
       );
       setMixedWbSelectedTokens([]);
     }
-  }, []);
+  }, [clearMatchTimers]);
 
   /** Seçilen filtrelere göre kelimeleri yükler */
   const loadFilteredItems = useCallback(
@@ -298,8 +323,12 @@ export default function PracticePage() {
   const initExerciseWith = useCallback(
     (pool: Item[], type: PracticeMode, qCount: number) => {
       setScore(0);
+      setIsSkipped(false);
+      setMatchRevealed(false);
       setPhase("active");
+      speakingAbortedRef.current = true;
       stopSpeechRecognition();
+      clearMatchTimers();
 
       switch (type) {
         case "mixed": {
@@ -386,7 +415,7 @@ export default function PracticePage() {
         }
       }
     },
-    [translationLang, ttsSupported, speechSupported, prepareMixedQuestion, selectedMixedModes]
+    [translationLang, ttsSupported, speechSupported, prepareMixedQuestion, selectedMixedModes, clearMatchTimers]
   );
 
   /** İlk veri yükleme */
@@ -425,7 +454,9 @@ export default function PracticePage() {
     }
     load();
     return () => {
+      speakingAbortedRef.current = true;
       stopSpeechRecognition();
+      clearMatchTimers();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -509,7 +540,10 @@ export default function PracticePage() {
   };
 
   const handleMixedNext = () => {
+    speakingAbortedRef.current = true;
     stopSpeechRecognition();
+    clearMatchTimers();
+    setIsSkipped(false);
     if (mixedIndex + 1 >= mixedQuestions.length) {
       setPhase("result");
     } else {
@@ -598,6 +632,7 @@ export default function PracticePage() {
   };
 
   const handleMcNext = () => {
+    setIsSkipped(false);
     if (mcIndex + 1 >= mcQuestions.length) {
       setPhase("result");
     } else {
@@ -605,6 +640,35 @@ export default function PracticePage() {
       setMcSelected(null);
       setMcRevealed(false);
     }
+  };
+
+  const handleMcSkip = async () => {
+    if (mcRevealed) return;
+    const q = mcQuestions[mcIndex];
+    if (!q) return;
+    setIsSkipped(true);
+    setMcSelected(null);
+    setMcRevealed(true);
+    try {
+      await recordMistake({
+        exerciseType: "multipleChoice",
+        itemId: q.item.id,
+        questionData: {
+          question: q.question,
+          options: q.options,
+          correctIndex: q.correctIndex,
+          direction: q.direction,
+          item: q.item,
+          variant: q.variant,
+          hint: q.hint,
+        },
+        userAnswer: "",
+        correctAnswer: q.options[q.correctIndex],
+      });
+    } catch (err) {
+      console.error("recordMistake error:", err);
+    }
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   /* ========================================
@@ -646,6 +710,7 @@ export default function PracticePage() {
   };
 
   const handleFbNext = () => {
+    setIsSkipped(false);
     if (fbIndex + 1 >= fbQuestions.length) {
       setPhase("result");
     } else {
@@ -657,11 +722,39 @@ export default function PracticePage() {
     }
   };
 
+  const handleFbSkip = async () => {
+    if (fbRevealed) return;
+    const q = fbQuestions[fbIndex];
+    if (!q) return;
+    setIsSkipped(true);
+    setFbAnswer("");
+    setFbCorrect(false);
+    setFbRevealed(true);
+    try {
+      await recordMistake({
+        exerciseType: "fillBlank",
+        itemId: q.item.id,
+        questionData: {
+          sentenceWithBlank: q.sentenceWithBlank,
+          correctWord: q.correctWord,
+          hint: q.hint,
+          fullTranslation: q.fullTranslation,
+          item: q.item,
+        },
+        userAnswer: "",
+        correctAnswer: q.correctWord,
+      });
+    } catch (err) {
+      console.error("recordMistake error:", err);
+    }
+    getMistakeCount().then(setMistakeCount).catch(() => { });
+  };
+
   /* ========================================
      TEKİL EŞLEŞTİRME HANDLERLARI
      ======================================== */
   const handleMatchLeft = (id: string) => {
-    if (matchedIds.has(id)) return;
+    if (matchedIds.has(id) || matchRevealed) return;
     setMatchSelectedLeft(id);
     setMatchWrong(false);
 
@@ -678,7 +771,7 @@ export default function PracticePage() {
   };
 
   const handleMatchRight = (id: string) => {
-    if (matchedIds.has(id)) return;
+    if (matchedIds.has(id) || matchRevealed) return;
     setMatchSelectedRight(id);
     setMatchWrong(false);
     if (matchSelectedLeft !== null) {
@@ -698,7 +791,9 @@ export default function PracticePage() {
       await removeMistakeByKey("matching", leftId);
 
       if (matchData && newMatched.size >= matchData.pairs.length) {
-        setTimeout(() => {
+        if (matchFinishTimerRef.current !== null) clearTimeout(matchFinishTimerRef.current);
+        matchFinishTimerRef.current = setTimeout(() => {
+          matchFinishTimerRef.current = null;
           setScore(matchData!.pairs.length);
           setPhase("result");
         }, 400);
@@ -721,12 +816,40 @@ export default function PracticePage() {
         }
         getMistakeCount().then(setMistakeCount).catch(() => { });
       }
-      setTimeout(() => {
+      if (matchWrongTimerRef.current !== null) clearTimeout(matchWrongTimerRef.current);
+      matchWrongTimerRef.current = setTimeout(() => {
+        matchWrongTimerRef.current = null;
         setMatchSelectedLeft(null);
         setMatchSelectedRight(null);
         setMatchWrong(false);
       }, 600);
     }
+  };
+
+  const handleMatchSkip = async () => {
+    if (!matchData || matchRevealed) return;
+    clearMatchTimers();
+    setMatchSelectedLeft(null);
+    setMatchSelectedRight(null);
+    setMatchWrong(false);
+    setIsSkipped(true);
+    setMatchRevealed(true);
+
+    const unmatched = matchData.pairs.filter((p) => !matchedIds.has(p.id));
+    for (const pair of unmatched) {
+      try {
+        await recordMistake({
+          exerciseType: "matching",
+          itemId: pair.id,
+          questionData: { ru: pair.ru, translation: pair.translation },
+          userAnswer: "",
+          correctAnswer: pair.translation,
+        });
+      } catch (err) {
+        console.error("recordMistake error:", err);
+      }
+    }
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   /* ========================================
@@ -767,6 +890,7 @@ export default function PracticePage() {
   };
 
   const handleListenNext = () => {
+    setIsSkipped(false);
     if (listenIndex + 1 >= listenQuestions.length) {
       setPhase("result");
     } else {
@@ -778,6 +902,28 @@ export default function PracticePage() {
     }
   };
 
+  const handleListenSkip = async () => {
+    if (listenRevealed) return;
+    const q = listenQuestions[listenIndex];
+    if (!q) return;
+    setIsSkipped(true);
+    setListenAnswer("");
+    setListenCorrect(false);
+    setListenRevealed(true);
+    try {
+      await recordMistake({
+        exerciseType: "listening",
+        itemId: q.item.id,
+        questionData: { correctWord: q.correctWord, item: q.item },
+        userAnswer: "",
+        correctAnswer: q.correctWord,
+      });
+    } catch (err) {
+      console.error("recordMistake error:", err);
+    }
+    getMistakeCount().then(setMistakeCount).catch(() => { });
+  };
+
   /* ========================================
      KARIŞIK VE TEKİL KONUŞMA (SPEAKING) HANDLERLARI
      ======================================== */
@@ -785,16 +931,19 @@ export default function PracticePage() {
     if (mixedRevealed) return;
 
     if (mixedSpeakingListening) {
+      speakingAbortedRef.current = true;
       stopSpeechRecognition();
       setMixedSpeakingListening(false);
       return;
     }
 
+    speakingAbortedRef.current = false;
     setMixedSpeakingListening(true);
     setMixedSpeakingError(null);
 
     try {
       const transcript = await recognizeSpeech("ru-RU");
+      if (speakingAbortedRef.current) return;
       setMixedSpeakingListening(false);
       setMixedSpeakingTranscript(transcript);
 
@@ -828,6 +977,7 @@ export default function PracticePage() {
         getMistakeCount().then(setMistakeCount).catch(() => { });
       }
     } catch (err: unknown) {
+      if (speakingAbortedRef.current) return;
       setMixedSpeakingListening(false);
       const errMsg = err instanceof Error ? err.message : String(err);
       if (errMsg === "not-allowed" || errMsg.includes("permission")) {
@@ -846,16 +996,19 @@ export default function PracticePage() {
     if (!q) return;
 
     if (speakingListening) {
+      speakingAbortedRef.current = true;
       stopSpeechRecognition();
       setSpeakingListening(false);
       return;
     }
 
+    speakingAbortedRef.current = false;
     setSpeakingListening(true);
     setSpeakingError(null);
 
     try {
       const transcript = await recognizeSpeech("ru-RU");
+      if (speakingAbortedRef.current) return;
       setSpeakingListening(false);
       setSpeakingTranscript(transcript);
 
@@ -889,6 +1042,7 @@ export default function PracticePage() {
       }
       getMistakeCount().then(setMistakeCount).catch(() => { });
     } catch (err: unknown) {
+      if (speakingAbortedRef.current) return;
       setSpeakingListening(false);
       const errMsg = err instanceof Error ? err.message : String(err);
       if (errMsg === "not-allowed" || errMsg.includes("permission")) {
@@ -902,7 +1056,9 @@ export default function PracticePage() {
   };
 
   const handleSpeakingNext = () => {
+    speakingAbortedRef.current = true;
     stopSpeechRecognition();
+    setIsSkipped(false);
     if (speakingIndex + 1 >= speakingQuestions.length) {
       setPhase("result");
     } else {
@@ -913,6 +1069,37 @@ export default function PracticePage() {
       setSpeakingTranscript("");
       setSpeakingError(null);
     }
+  };
+
+  const handleSpeakingSkip = async () => {
+    if (speakingRevealed) return;
+    const q = speakingQuestions[speakingIndex];
+    if (!q) return;
+    speakingAbortedRef.current = true;
+    stopSpeechRecognition();
+    setSpeakingListening(false);
+    setSpeakingError(null);
+    setSpeakingTranscript("");
+    setIsSkipped(true);
+    setSpeakingCorrect(false);
+    setSpeakingRevealed(true);
+
+    const expectedDisplay =
+      q.item.numberValue !== undefined && q.item.numberValue !== null
+        ? `${q.item.numberValue} (${q.targetText})`
+        : q.targetText;
+    try {
+      await recordMistake({
+        exerciseType: "speaking",
+        itemId: q.item.id,
+        questionData: { targetText: q.targetText, translation: q.translation, item: q.item },
+        userAnswer: "",
+        correctAnswer: expectedDisplay,
+      });
+    } catch (err) {
+      console.error("recordMistake error:", err);
+    }
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   /* ========================================
@@ -973,6 +1160,7 @@ export default function PracticePage() {
   };
 
   const handleWbNext = () => {
+    setIsSkipped(false);
     if (wbIndex + 1 >= wbQuestions.length) {
       setPhase("result");
     } else {
@@ -986,6 +1174,37 @@ export default function PracticePage() {
       setWbRevealed(false);
       setWbIsCorrect(null);
     }
+  };
+
+  const handleWbSkip = async () => {
+    if (wbRevealed) return;
+    const q = wbQuestions[wbIndex];
+    if (!q) return;
+    setIsSkipped(true);
+    setWbSelectedTokens([]);
+    setWbBankTokens(
+      q.shuffledWords.map((w, idx) => ({ id: `wb-skip-${wbIndex}-${idx}-${w}`, word: w }))
+    );
+    setWbIsCorrect(false);
+    setWbRevealed(true);
+    try {
+      await recordMistake({
+        exerciseType: "wordBank",
+        itemId: q.item.id,
+        questionData: {
+          targetSentence: q.targetSentence,
+          hint: q.hint,
+          targetWords: q.targetWords,
+          shuffledWords: q.shuffledWords,
+          item: q.item,
+        },
+        userAnswer: "",
+        correctAnswer: q.targetSentence,
+      });
+    } catch (err) {
+      console.error("recordMistake error:", err);
+    }
+    getMistakeCount().then(setMistakeCount).catch(() => { });
   };
 
   /** Çoklu ünite tetikleyici buton metni */
@@ -1530,8 +1749,133 @@ export default function PracticePage() {
   /* ========================================
      RENDER — KARIŞIK MOD (MIXED)
      ======================================== */
+  const renderSkipButton = (onSkip: () => void) => (
+    <button
+      type="button"
+      onClick={onSkip}
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors cursor-pointer"
+    >
+      <SkipForward className="w-3.5 h-3.5" />
+      <span>{t.skip}</span>
+    </button>
+  );
+
   if (exerciseType === "mixed" && mixedQuestions.length > 0) {
     const q = mixedQuestions[mixedIndex];
+
+    const handleMixedSkip = async () => {
+      if (mixedRevealed) return;
+      setIsSkipped(true);
+
+      if (q.kind === "multipleChoice") {
+        const mc = q.data;
+        setMixedMcSelected(null);
+        await settleMixed(
+          false,
+          "multipleChoice",
+          mc.item.id,
+          {
+            question: mc.question,
+            options: mc.options,
+            correctIndex: mc.correctIndex,
+            direction: mc.direction,
+            variant: mc.variant,
+            hint: mc.hint,
+          },
+          "",
+          mc.options[mc.correctIndex]
+        );
+      } else if (q.kind === "fillBlank") {
+        const fb = q.data;
+        setMixedAnswer("");
+        await settleMixed(
+          false,
+          "fillBlank",
+          fb.item.id,
+          {
+            sentenceWithBlank: fb.sentenceWithBlank,
+            correctWord: fb.correctWord,
+            hint: fb.hint,
+            fullTranslation: fb.fullTranslation,
+          },
+          "",
+          fb.correctWord
+        );
+      } else if (q.kind === "matching") {
+        clearMatchTimers();
+        setMixedMatchLeft(null);
+        setMixedMatchRight(null);
+        setMixedMatchWrong(false);
+        setMixedMatchHadError(true);
+        setMixedIsCorrect(false);
+        setMixedRevealed(true);
+
+        const unmatched = q.data.pairs.filter((p) => !mixedMatchedIds.has(p.id));
+        for (const pair of unmatched) {
+          try {
+            await recordMistake({
+              exerciseType: "matching",
+              itemId: pair.id,
+              questionData: { ru: pair.ru, translation: pair.translation },
+              userAnswer: "",
+              correctAnswer: pair.translation,
+            });
+          } catch (err) {
+            console.error("recordMistake error:", err);
+          }
+        }
+        getMistakeCount().then(setMistakeCount).catch(() => { });
+      } else if (q.kind === "listening") {
+        const lis = q.data;
+        setMixedAnswer("");
+        await settleMixed(
+          false,
+          "listening",
+          lis.item.id,
+          { correctWord: lis.correctWord },
+          "",
+          lis.correctWord
+        );
+      } else if (q.kind === "speaking") {
+        const sq = q.data;
+        speakingAbortedRef.current = true;
+        stopSpeechRecognition();
+        setMixedSpeakingListening(false);
+        setMixedSpeakingError(null);
+        setMixedSpeakingTranscript("");
+        const expectedDisplay =
+          sq.item.numberValue !== undefined && sq.item.numberValue !== null
+            ? `${sq.item.numberValue} (${sq.targetText})`
+            : sq.targetText;
+        await settleMixed(
+          false,
+          "speaking",
+          sq.item.id,
+          { targetText: sq.targetText, translation: sq.translation, item: sq.item },
+          "",
+          expectedDisplay
+        );
+      } else if (q.kind === "wordBank") {
+        const wb = q.data;
+        setMixedWbSelectedTokens([]);
+        setMixedWbBankTokens(
+          wb.shuffledWords.map((w, idx) => ({ id: `m-wb-skip-${idx}-${w}`, word: w }))
+        );
+        await settleMixed(
+          false,
+          "wordBank",
+          wb.item.id,
+          {
+            targetSentence: wb.targetSentence,
+            hint: wb.hint,
+            targetWords: wb.targetWords,
+            shuffledWords: wb.shuffledWords,
+          },
+          "",
+          wb.targetSentence
+        );
+      }
+    };
 
     const typeLabel =
       q.kind === "multipleChoice"
@@ -1551,7 +1895,10 @@ export default function PracticePage() {
         {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{mixedIndex + 1} / {mixedQuestions.length}</span>
-          <span className="practice-type-badge">{t.mixedMode} — {typeLabel}</span>
+          <div className="flex items-center gap-2">
+            <span className="practice-type-badge">{t.mixedMode} — {typeLabel}</span>
+            {!mixedRevealed && renderSkipButton(handleMixedSkip)}
+          </div>
         </div>
         <div className="review-progress-bar">
           <div className="review-progress-fill" style={{ width: `${(mixedIndex / mixedQuestions.length) * 100}%` }} />
@@ -1559,11 +1906,13 @@ export default function PracticePage() {
       </>
     );
 
+    const mixedWrongLabel = isSkipped ? `${t.skipped} (${t.wrong})` : t.wrong;
+
     const mixedFeedback = (item: Item | null, wrongText?: string) => (
       <div className="practice-feedback">
         <div>
           <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
-            {mixedIsCorrect ? t.correct : wrongText ? `${t.wrong} — ${t.showCorrect}: ${wrongText}` : t.wrong}
+            {mixedIsCorrect ? t.correct : wrongText ? `${mixedWrongLabel} — ${t.showCorrect}: ${wrongText}` : mixedWrongLabel}
           </span>
           {item && (
             <span className="feedback-meaning">
@@ -1765,7 +2114,11 @@ export default function PracticePage() {
             }
             getMistakeCount().then(setMistakeCount).catch(() => { });
           }
-          setTimeout(() => {
+          if (mixedMatchWrongTimerRef.current !== null) {
+            clearTimeout(mixedMatchWrongTimerRef.current);
+          }
+          mixedMatchWrongTimerRef.current = setTimeout(() => {
+            mixedMatchWrongTimerRef.current = null;
             setMixedMatchLeft(null);
             setMixedMatchRight(null);
             setMixedMatchWrong(false);
@@ -1774,7 +2127,7 @@ export default function PracticePage() {
       };
 
       const handleLeft = (id: string) => {
-        if (mixedMatchedIds.has(id)) return;
+        if (mixedMatchedIds.has(id) || mixedRevealed) return;
         setMixedMatchLeft(id);
         setMixedMatchWrong(false);
         if (Boolean(showPronunciation) && isTTSSupported()) {
@@ -1785,7 +2138,7 @@ export default function PracticePage() {
       };
 
       const handleRight = (id: string) => {
-        if (mixedMatchedIds.has(id)) return;
+        if (mixedMatchedIds.has(id) || mixedRevealed) return;
         setMixedMatchRight(id);
         setMixedMatchWrong(false);
         if (mixedMatchLeft !== null) tryMatch(mixedMatchLeft, id);
@@ -1803,7 +2156,7 @@ export default function PracticePage() {
                 if (done) cls += " match-item-matched";
                 else if (mixedMatchLeft === p.id) cls += mixedMatchWrong ? " match-item-wrong" : " match-item-selected";
                 return (
-                  <button key={p.id} className={cls} onClick={() => handleLeft(p.id)} disabled={done}>
+                  <button key={p.id} className={cls} onClick={() => handleLeft(p.id)} disabled={done || mixedRevealed}>
                     {p.ru}
                   </button>
                 );
@@ -1816,7 +2169,7 @@ export default function PracticePage() {
                 if (done) cls += " match-item-matched";
                 else if (mixedMatchRight === it.id) cls += mixedMatchWrong ? " match-item-wrong" : " match-item-selected";
                 return (
-                  <button key={`r-${it.id}`} className={cls} onClick={() => handleRight(it.id)} disabled={done}>
+                  <button key={`r-${it.id}`} className={cls} onClick={() => handleRight(it.id)} disabled={done || mixedRevealed}>
                     {it.translation}
                   </button>
                 );
@@ -1825,9 +2178,20 @@ export default function PracticePage() {
           </div>
           {mixedRevealed && (
             <div className="practice-feedback" style={{ marginTop: "1.5rem" }}>
-              <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
-                {mixedIsCorrect ? t.correct : t.wrong}
-              </span>
+              <div>
+                <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
+                  {mixedIsCorrect ? t.correct : mixedWrongLabel}
+                </span>
+                {isSkipped && (
+                  <div className="text-xs text-muted-foreground mt-1.5 space-y-0.5">
+                    {pairs.map((p) => (
+                      <div key={p.id}>
+                        {p.ru} {t.meaningEquals} {p.translation}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
               <button className="practice-btn practice-btn-primary" onClick={handleMixedNext}>
                 {t.next}
               </button>
@@ -1915,12 +2279,14 @@ export default function PracticePage() {
             <button
               type="button"
               onClick={() => handleMixedSpeakingMicToggle(sq)}
-              disabled={mixedRevealed && mixedIsCorrect === true}
+              disabled={mixedRevealed}
               className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${mixedSpeakingListening
                 ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
                 : mixedRevealed && mixedIsCorrect === true
                   ? "bg-emerald-600 text-white cursor-default"
-                  : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
+                  : mixedRevealed
+                    ? "bg-secondary text-muted-foreground opacity-60 cursor-not-allowed"
+                    : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
                 }`}
             >
               <Mic className={`w-5 h-5 ${mixedSpeakingListening ? "animate-bounce" : ""}`} />
@@ -1970,7 +2336,7 @@ export default function PracticePage() {
               <div className="practice-feedback w-full max-w-md flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div>
                   <span className="feedback-wrong text-base font-bold text-rose-500 block">
-                    {t.wrongPronunciation}
+                    {isSkipped ? mixedWrongLabel : t.wrongPronunciation}
                   </span>
                   <span className="text-xs font-semibold text-foreground mt-1 block">
                     {targetDisplay}
@@ -1981,7 +2347,7 @@ export default function PracticePage() {
                     </span>
                   )}
                 </div>
-                <button className="practice-btn practice-btn-secondary" onClick={handleMixedNext}>
+                <button className="practice-btn practice-btn-primary" onClick={handleMixedNext}>
                   {t.next}
                 </button>
               </div>
@@ -2038,7 +2404,7 @@ export default function PracticePage() {
                 <span className={mixedIsCorrect ? "feedback-correct" : "feedback-wrong"}>
                   {mixedIsCorrect
                     ? t.correct
-                    : `${t.wrong} — ${t.showCorrect}: ${wb.targetSentence}`}
+                    : `${mixedWrongLabel} — ${t.showCorrect}: ${wb.targetSentence}`}
                 </span>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="feedback-meaning">{wb.targetSentence}</span>
@@ -2068,7 +2434,10 @@ export default function PracticePage() {
         {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{mcIndex + 1} / {mcQuestions.length}</span>
-          <span className="practice-type-badge">{t.multipleChoice}</span>
+          <div className="flex items-center gap-2">
+            <span className="practice-type-badge">{t.multipleChoice}</span>
+            {!mcRevealed && renderSkipButton(handleMcSkip)}
+          </div>
         </div>
         <div className="review-progress-bar">
           <div className="review-progress-fill" style={{ width: `${(mcIndex / mcQuestions.length) * 100}%` }} />
@@ -2130,7 +2499,7 @@ export default function PracticePage() {
           <div className="practice-feedback">
             <div>
               <span className={mcSelected === q.correctIndex ? "feedback-correct" : "feedback-wrong"}>
-                {mcSelected === q.correctIndex ? t.correct : t.wrong}
+                {mcSelected === q.correctIndex ? t.correct : isSkipped ? `${t.skipped} (${t.wrong})` : t.wrong}
               </span>
               <span className="feedback-meaning">
                 {" "} — {q.item.ru} {t.meaningEquals} {getMeaning(q.item, translationLang)}
@@ -2158,7 +2527,10 @@ export default function PracticePage() {
         {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{fbIndex + 1} / {fbQuestions.length}</span>
-          <span className="practice-type-badge">{t.fillBlank}</span>
+          <div className="flex items-center gap-2">
+            <span className="practice-type-badge">{t.fillBlank}</span>
+            {!fbRevealed && renderSkipButton(handleFbSkip)}
+          </div>
         </div>
         <div className="review-progress-bar">
           <div className="review-progress-fill" style={{ width: `${(fbIndex / fbQuestions.length) * 100}%` }} />
@@ -2211,7 +2583,7 @@ export default function PracticePage() {
           <div className="practice-feedback">
             <div>
               <span className={fbCorrect ? "feedback-correct" : "feedback-wrong"}>
-                {fbCorrect ? t.correct : `${t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
+                {fbCorrect ? t.correct : `${isSkipped ? `${t.skipped} (${t.wrong})` : t.wrong} — ${t.showCorrect}: ${q.correctWord}`}
               </span>
               {shouldShowPronunciation(fbRevealed) && (
                 <PronunciationText item={q.item} className="pronunciation-inline" />
@@ -2237,7 +2609,10 @@ export default function PracticePage() {
           <span className="review-progress">
             {matchedIds.size} / {matchData.pairs.length}
           </span>
-          <span className="practice-type-badge">{t.matching}</span>
+          <div className="flex items-center gap-2">
+            <span className="practice-type-badge">{t.matching}</span>
+            {!matchRevealed && matchedIds.size < matchData.pairs.length && renderSkipButton(handleMatchSkip)}
+          </div>
         </div>
         <div className="review-progress-bar">
           <div className="review-progress-fill" style={{ width: `${(matchedIds.size / matchData.pairs.length) * 100}%` }} />
@@ -2255,7 +2630,7 @@ export default function PracticePage() {
               if (matched) cls += " match-item-matched";
               else if (matchSelectedLeft === pair.id) cls += matchWrong ? " match-item-wrong" : " match-item-selected";
               return (
-                <button key={pair.id} className={cls} onClick={() => handleMatchLeft(pair.id)} disabled={matched}>
+                <button key={pair.id} className={cls} onClick={() => handleMatchLeft(pair.id)} disabled={matched || matchRevealed}>
                   {pair.ru}
                 </button>
               );
@@ -2270,13 +2645,40 @@ export default function PracticePage() {
               if (matched) cls += " match-item-matched";
               else if (matchSelectedRight === item.id) cls += matchWrong ? " match-item-wrong" : " match-item-selected";
               return (
-                <button key={`r-${item.id}`} className={cls} onClick={() => handleMatchRight(item.id)} disabled={matched}>
+                <button key={`r-${item.id}`} className={cls} onClick={() => handleMatchRight(item.id)} disabled={matched || matchRevealed}>
                   {item.translation}
                 </button>
               );
             })}
           </div>
         </div>
+
+        {matchRevealed && (
+          <div className="practice-feedback" style={{ marginTop: "1.5rem" }}>
+            <div>
+              <span className="feedback-wrong">
+                {`${t.skipped} (${t.wrong})`}
+              </span>
+              <div className="text-xs text-muted-foreground mt-1.5 space-y-0.5">
+                {matchData.pairs.map((pair) => (
+                  <div key={pair.id}>
+                    {pair.ru} {t.meaningEquals} {pair.translation}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <button
+              className="practice-btn practice-btn-primary"
+              onClick={() => {
+                setIsSkipped(false);
+                setMatchRevealed(false);
+                setPhase("result");
+              }}
+            >
+              {t.next}
+            </button>
+          </div>
+        )}
       </div>
     );
   }
@@ -2290,7 +2692,10 @@ export default function PracticePage() {
         {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{listenIndex + 1} / {listenQuestions.length}</span>
-          <span className="practice-type-badge">{t.listening}</span>
+          <div className="flex items-center gap-2">
+            <span className="practice-type-badge">{t.listening}</span>
+            {!listenRevealed && renderSkipButton(handleListenSkip)}
+          </div>
         </div>
         <div className="review-progress-bar">
           <div className="review-progress-fill" style={{ width: `${(listenIndex / listenQuestions.length) * 100}%` }} />
@@ -2336,7 +2741,7 @@ export default function PracticePage() {
               <span className={listenCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {listenCorrect
                   ? t.correct
-                  : `${t.wrong} — ${t.showCorrect}: ${listenQuestions[listenIndex].correctWord}`}
+                  : `${isSkipped ? `${t.skipped} (${t.wrong})` : t.wrong} — ${t.showCorrect}: ${listenQuestions[listenIndex].correctWord}`}
               </span>
               <span className="feedback-meaning">
                 {" "} — {listenQuestions[listenIndex].item.ru} {t.meaningEquals} {getMeaning(listenQuestions[listenIndex].item, translationLang)}
@@ -2367,7 +2772,10 @@ export default function PracticePage() {
         {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{speakingIndex + 1} / {speakingQuestions.length}</span>
-          <span className="practice-type-badge">{t.speaking}</span>
+          <div className="flex items-center gap-2">
+            <span className="practice-type-badge">{t.speaking}</span>
+            {!speakingRevealed && renderSkipButton(handleSpeakingSkip)}
+          </div>
         </div>
         <div className="review-progress-bar">
           <div className="review-progress-fill" style={{ width: `${(speakingIndex / speakingQuestions.length) * 100}%` }} />
@@ -2388,12 +2796,14 @@ export default function PracticePage() {
           <button
             type="button"
             onClick={handleSpeakingMicToggle}
-            disabled={speakingRevealed && speakingCorrect === true}
+            disabled={speakingRevealed}
             className={`px-6 py-3.5 rounded-2xl font-bold flex items-center justify-center gap-3 transition-all cursor-pointer shadow-md ${speakingListening
               ? "bg-rose-600 text-white animate-pulse ring-4 ring-rose-500/30 hover:bg-rose-700"
               : speakingRevealed && speakingCorrect === true
                 ? "bg-emerald-600 text-white cursor-default"
-                : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
+                : speakingRevealed
+                  ? "bg-secondary text-muted-foreground opacity-60 cursor-not-allowed"
+                  : "bg-accent text-white hover:opacity-95 ring-2 ring-accent/30"
               }`}
           >
             <Mic className={`w-5 h-5 ${speakingListening ? "animate-bounce" : ""}`} />
@@ -2443,7 +2853,7 @@ export default function PracticePage() {
             <div className="practice-feedback w-full max-w-md flex flex-col sm:flex-row items-center justify-between gap-3">
               <div>
                 <span className="feedback-wrong text-base font-bold text-rose-500 block">
-                  {t.wrongPronunciation}
+                  {isSkipped ? `${t.skipped} (${t.wrong})` : t.wrongPronunciation}
                 </span>
                 <span className="text-xs font-semibold text-foreground mt-1 block">
                   {targetDisplay}
@@ -2454,7 +2864,7 @@ export default function PracticePage() {
                   </span>
                 )}
               </div>
-              <button className="practice-btn practice-btn-secondary" onClick={handleSpeakingNext}>
+              <button className="practice-btn practice-btn-primary" onClick={handleSpeakingNext}>
                 {t.next}
               </button>
             </div>
@@ -2475,7 +2885,10 @@ export default function PracticePage() {
         {unitFilterSelector}
         <div className="practice-progress-row">
           <span className="review-progress">{wbIndex + 1} / {wbQuestions.length}</span>
-          <span className="practice-type-badge">{t.sentenceBuilder}</span>
+          <div className="flex items-center gap-2">
+            <span className="practice-type-badge">{t.sentenceBuilder}</span>
+            {!wbRevealed && renderSkipButton(handleWbSkip)}
+          </div>
         </div>
         <div className="review-progress-bar">
           <div className="review-progress-fill" style={{ width: `${(wbIndex / wbQuestions.length) * 100}%` }} />
@@ -2521,7 +2934,7 @@ export default function PracticePage() {
               <span className={wbIsCorrect ? "feedback-correct" : "feedback-wrong"}>
                 {wbIsCorrect
                   ? t.correct
-                  : `${t.wrong} — ${t.showCorrect}: ${q.targetSentence}`}
+                  : `${isSkipped ? `${t.skipped} (${t.wrong})` : t.wrong} — ${t.showCorrect}: ${q.targetSentence}`}
               </span>
               <div className="flex items-center gap-2 mt-1">
                 <span className="feedback-meaning">{q.targetSentence}</span>

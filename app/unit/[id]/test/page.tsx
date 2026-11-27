@@ -9,6 +9,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { SkipForward } from "lucide-react";
 import { db } from "@/lib/db";
 import { getUnitById, getUnitTitle } from "@/lib/content";
 import { useLang } from "@/lib/lang-context";
@@ -52,6 +53,7 @@ export default function TestPage() {
   const [mcSelected, setMcSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
+  const [isSkipped, setIsSkipped] = useState(false);
 
   useEffect(() => {
     if (!unit) return;
@@ -122,6 +124,7 @@ export default function TestPage() {
     setMcSelected(null);
     setRevealed(false);
     setIsCorrect(null);
+    setIsSkipped(false);
   };
 
   /** Çoktan seçmeli cevabı kontrol et */
@@ -269,11 +272,45 @@ export default function TestPage() {
     await checkAnswer(idx);
   };
 
+  const handleSkip = async () => {
+    if (revealed) return;
+    setMcSelected(null);
+    setIsCorrect(false);
+    setIsSkipped(true);
+    setRevealed(true);
+    await recordMistake({
+      exerciseType: "multipleChoice",
+      itemId: q.item.id,
+      questionData: {
+        question: q.question,
+        options: q.options,
+        correctIndex: q.correctIndex,
+        direction: q.direction,
+        variant: q.variant,
+        hint: q.hint,
+      },
+      userAnswer: "",
+      correctAnswer: q.options[q.correctIndex],
+    });
+  };
+
   return (
     <div className="page-container">
       <div className="practice-progress-row">
         <span className="review-progress">{index + 1} / {questions.length}</span>
-        <span className="practice-type-badge">{t.unitTest}</span>
+        <div className="flex items-center gap-2">
+          <span className="practice-type-badge">{t.unitTest}</span>
+          {!revealed && (
+            <button
+              type="button"
+              onClick={handleSkip}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border border-border bg-transparent text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors cursor-pointer"
+            >
+              <SkipForward className="w-3.5 h-3.5" />
+              <span>{t.skip}</span>
+            </button>
+          )}
+        </div>
       </div>
       <div className="review-progress-bar">
         <div className="review-progress-fill" style={{ width: `${(index / questions.length) * 100}%` }} />
@@ -331,7 +368,7 @@ export default function TestPage() {
         <div className="practice-feedback">
           <div>
             <span className={isCorrect ? "feedback-correct" : "feedback-wrong"}>
-              {isCorrect ? t.correct : t.wrong}
+              {isCorrect ? t.correct : isSkipped ? `${t.skipped} (${t.wrong})` : t.wrong}
             </span>
             <span className="feedback-meaning"> — {feedbackMeaning}</span>
             {shouldShowPronunciation(revealed) && (
