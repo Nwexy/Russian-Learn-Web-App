@@ -4,6 +4,7 @@ Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
 ## 2026-11-27
+- Masaustu dikey reklam alanlari (SidebarAds) ve mobil alt bant reklami (MobileBottomAd) buymeacoffee.com/nwexy destek karti olarak TR/EN dil destegiyle uyarlandi.
 - Mobil cihazlar icin ekranin altindan cikan (sticky bottom) reklam bandi eklendi.
 - Reklamlarin Test Yourself ve Practice sayfalarinda (yazi yazarken) cikmasi engellendi.
 - Mobil reklamlar icin oturum bazli kapatma (sessionStorage) eklendi.
