@@ -8,6 +8,7 @@ import {
   SUPPORT_AD_URL,
   SUPPORT_AD_HANDLE,
   getSupportAdCopy,
+  trackSupportClick,
   type SupportAdCopy,
 } from "@/lib/support-ad";
 
@@ -55,6 +56,9 @@ function AdSlot({ side, copy, onDismiss }: AdSlotProps) {
         href={SUPPORT_AD_URL}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() =>
+          trackSupportClick(side === "left" ? "sidebar_left" : "sidebar_right")
+        }
         className="group relative z-10 flex h-full w-full flex-col items-center justify-between px-3.5 pb-5 pt-11 text-center no-underline"
       >
         {/* Ust QR */}

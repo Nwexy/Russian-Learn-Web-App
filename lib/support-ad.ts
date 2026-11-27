@@ -1,7 +1,44 @@
 import type { Lang } from "@/types";
+import { supabase } from "@/lib/supabase";
 
 export const SUPPORT_AD_URL = "https://buymeacoffee.com/nwexy";
 export const SUPPORT_AD_HANDLE = "buymeacoffee.com/nwexy";
+
+export type SupportClickSource =
+  | "sidebar_left"
+  | "sidebar_right"
+  | "mobile_bottom"
+  | "settings_social"
+  | "settings_card"
+  | "settings_qr";
+
+export function trackSupportClick(source: SupportClickSource): void {
+  try {
+    const pagePath =
+      typeof window !== "undefined" ? window.location.pathname : null;
+    const device =
+      typeof window !== "undefined"
+        ? window.innerWidth < 1024
+          ? "mobile"
+          : "desktop"
+        : "unknown";
+
+    void supabase
+      .from("ad_clicks")
+      .insert({
+        source,
+        page_path: pagePath,
+        device,
+      })
+      .then(({ error }) => {
+        if (error) {
+          console.warn("ad_clicks insert warning:", error.message);
+        }
+      });
+  } catch {
+    // Izleme hatasi kullaniciyi engellemesin
+  }
+}
 
 export interface SupportAdCopy {
   badge: string;

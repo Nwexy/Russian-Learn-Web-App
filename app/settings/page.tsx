@@ -13,7 +13,7 @@ import { useLang } from "@/lib/lang-context";
 import { getMessages } from "@/lib/i18n";
 import { clearAllMistakes } from "@/lib/mistakes";
 import { exportData, importData } from "@/lib/backup";
-import { SUPPORT_AD_URL, SUPPORT_AD_HANDLE } from "@/lib/support-ad";
+import { SUPPORT_AD_URL, SUPPORT_AD_HANDLE, trackSupportClick } from "@/lib/support-ad";
 import { FlagTr, FlagUs } from "@/components/icons/flag-icons";
 import type { Lang } from "@/types";
 
@@ -407,6 +407,7 @@ export default function SettingsPage() {
             href={SUPPORT_AD_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackSupportClick("settings_social")}
             className="social-btn bmc"
             data-i18n-tooltip="tooltip_bmc"
             data-tooltip="Buy Me a Coffee"
@@ -444,6 +445,7 @@ export default function SettingsPage() {
                     className="bmc-handle"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackSupportClick("settings_card")}
                   >
                     {SUPPORT_AD_HANDLE}
                   </a>
@@ -457,6 +459,7 @@ export default function SettingsPage() {
                   href={SUPPORT_AD_URL}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => trackSupportClick("settings_qr")}
                   className="bmc-qr-box"
                   title="Buy Me a Coffee QR"
                   aria-label="Buy Me a Coffee QR"
@@ -469,6 +472,7 @@ export default function SettingsPage() {
                 href={SUPPORT_AD_URL}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackSupportClick("settings_card")}
                 className="bmc-btn"
               >
                 <Coffee size={16} strokeWidth={2.4} aria-hidden="true" />

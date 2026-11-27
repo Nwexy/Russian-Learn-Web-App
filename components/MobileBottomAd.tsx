@@ -9,6 +9,7 @@ import {
   SUPPORT_AD_URL,
   SUPPORT_AD_HANDLE,
   getSupportAdCopy,
+  trackSupportClick,
 } from "@/lib/support-ad";
 
 const AD_INTERVAL_MS = 180_000; // 3 dakika
@@ -156,6 +157,7 @@ export function MobileBottomAd() {
               href={SUPPORT_AD_URL}
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackSupportClick("mobile_bottom")}
               className="group flex w-full items-center justify-between gap-3 no-underline"
             >
               <div className="flex min-w-0 items-center gap-3">
