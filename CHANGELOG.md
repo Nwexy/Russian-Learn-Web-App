@@ -3,6 +3,11 @@
 Tüm önemli değişiklikler bu dosyada tutulur.
 Format: tarih + kısa maddeler.
 
+## 2026-11-27
+- Reklamlar icin sag ve sol dikey alanlar (placeholder) eklendi.
+- Reklamlar 3 dakikada bir cikacak sekilde, 15 saniye kalacak sekilde ve kapatilabilir (session bazli) olacak sekilde zamanlandi.
+- Reklamlar mobil cihazlarda gizlendi.
+
 ## 2026-11-26
 - Practice sayfasindaki SpeedType (Ozel Araclar) bolumu tamamlanan unite kosulunun disina tasindi; siteye ilk kez girildiginde (0 unite acik olsa bile) gorunur hale getirildi.
 - Netlify CLI (`netlify-cli`) ve `netlify.toml` / `@netlify/plugin-nextjs` yapilandirmasi tamamlandi; `.netlify` klasoru `.gitignore` dosyasina eklendi.
