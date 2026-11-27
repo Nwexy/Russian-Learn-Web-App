@@ -22,7 +22,6 @@ export default function SettingsPage() {
   const { uiLang, translationLang, showPronunciation, setUiLang, setTranslationLang, setShowPronunciation } = useLang();
   const t = getMessages(uiLang);
   const [cleared, setCleared] = useState(false);
-  const [bmcCount, setBmcCount] = useState<1 | 3 | 5>(1);
   const [waInput, setWaInput] = useState("");
   const [gmSubject, setGmSubject] = useState("");
   const [gmBody, setGmBody] = useState("");

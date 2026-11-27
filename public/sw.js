@@ -3,7 +3,7 @@
  * Offline-first onbellek mekanizmasi.
  */
 
-const CACHE_NAME = 'russian-learn-v2';
+const CACHE_NAME = 'russian-learn-v3';
 
 // Ilk yuklemede onbellege alinacak temel statik kaynaklar
 const PRECACHE_URLS = [
@@ -12,6 +12,7 @@ const PRECACHE_URLS = [
   '/icon-192x192.png',
   '/icon-512x512.png',
   '/avatar.jpg',
+  '/bmc_qr.png',
   '/practice',
   '/review',
   '/grammar',
@@ -107,7 +108,7 @@ self.addEventListener('fetch', (event) => {
               caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
             }
           })
-          .catch(() => {});
+          .catch(() => { });
         return cachedResponse;
       }
 
