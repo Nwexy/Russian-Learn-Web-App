@@ -132,7 +132,7 @@ export function MobileBottomAd() {
             animate={{ y: 0 }}
             exit={{ y: "100%" }}
             transition={{ duration: 0.3, ease: "easeOut" }}
-            className="pointer-events-auto relative flex h-[72px] w-full items-center justify-center border-t-2 border-dashed border-gray-400/50 bg-gray-100/95 px-10 text-center text-gray-600 shadow-lg backdrop-blur-md dark:border-gray-600/70 dark:bg-gray-900/95 dark:text-gray-300"
+            className="pointer-events-auto relative flex h-[100px] w-full items-center justify-center border-t-2 border-dashed border-gray-400/50 bg-gray-100/95 px-10 text-center text-gray-600 shadow-lg backdrop-blur-md dark:border-gray-600/70 dark:bg-gray-900/95 dark:text-gray-300"
           >
             <button
               type="button"
@@ -158,3 +158,4 @@ export function MobileBottomAd() {
     </div>
   );
 }
+
